@@ -284,7 +284,7 @@ static NSString* getHOTP(CCHmacAlgorithm algo, uint8_t digits, NSData* key, uint
     if (internal)
         _image = [NSURL URLWithString:decode([query objectForKey:@"image"])];
     if (_image == nil)
-        _image = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"default" ofType:@"png"]];
+        _image = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"forgerock-logo" ofType:@"png"]];
 
     // Get defaults
     if (internal) {

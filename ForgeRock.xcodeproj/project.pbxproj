@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E164F3C61ADE9CA800A440B3 /* forgerock-logo-text.png in Resources */ = {isa = PBXBuildFile; fileRef = E164F3C51ADE9CA800A440B3 /* forgerock-logo-text.png */; };
+		E164F3C81ADE9CAF00A440B3 /* forgerock-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = E164F3C71ADE9CAF00A440B3 /* forgerock-logo.png */; };
 		F100667B18EF1E4900F9EF2C /* TokenCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F100667A18EF1E4900F9EF2C /* TokenCell.m */; };
 		F1030ED21818322000E478F7 /* CircleProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = F1030ED11818322000E478F7 /* CircleProgressView.m */; };
 		F109DBEA18412A2300548A3E /* QRCodeScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F109DBE918412A2300548A3E /* QRCodeScanViewController.m */; };
@@ -30,11 +32,8 @@
 		F18E16F218F2603800722FE7 /* qrcode.png in Resources */ = {isa = PBXBuildFile; fileRef = F18E16F118F2603800722FE7 /* qrcode.png */; };
 		F18E16F818F3D1F100722FE7 /* CollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F18E16F718F3D1F100722FE7 /* CollectionViewController.m */; };
 		F18E16FC18F47D3E00722FE7 /* BlockActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = F18E16FB18F47D3E00722FE7 /* BlockActionSheet.m */; };
-		F18E170D18F4AB3000722FE7 /* token.png in Resources */ = {isa = PBXBuildFile; fileRef = F18E170618F4AB3000722FE7 /* token.png */; };
-		F1AD9C6B190FF5500023501C /* default.png in Resources */ = {isa = PBXBuildFile; fileRef = F1AD9C6A190FF5500023501C /* default.png */; };
 		F1AD9C6E191052B10023501C /* URLImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = F1AD9C6D191052B10023501C /* URLImageView.m */; };
 		F1AD9C70191053780023501C /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1AD9C6F191053780023501C /* AssetsLibrary.framework */; };
-		F1E5CDE91815CB06009BE32F /* iTunesArtwork@2x in Resources */ = {isa = PBXBuildFile; fileRef = F1E5CDE81815CB06009BE32F /* iTunesArtwork@2x */; };
 		F1E7BF8918E9C85400C2DC82 /* TokenCode.m in Sources */ = {isa = PBXBuildFile; fileRef = F1E7BF8818E9C85400C2DC82 /* TokenCode.m */; };
 /* End PBXBuildFile section */
 
@@ -49,6 +48,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E164F3C51ADE9CA800A440B3 /* forgerock-logo-text.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forgerock-logo-text.png"; sourceTree = "<group>"; };
+		E164F3C71ADE9CAF00A440B3 /* forgerock-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forgerock-logo.png"; sourceTree = "<group>"; };
 		F100667918EF1E4900F9EF2C /* TokenCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TokenCell.h; sourceTree = "<group>"; };
 		F100667A18EF1E4900F9EF2C /* TokenCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TokenCell.m; sourceTree = "<group>"; };
 		F1030ED01818322000E478F7 /* CircleProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CircleProgressView.h; sourceTree = "<group>"; };
@@ -66,18 +67,18 @@
 		F1673F1618EB40EC00ECD2DB /* RenameTokenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenameTokenViewController.h; sourceTree = "<group>"; };
 		F1673F1718EB40EC00ECD2DB /* RenameTokenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RenameTokenViewController.m; sourceTree = "<group>"; };
 		F1673F1918EC51C900ECD2DB /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
-		F17A85FD17EC12670098E7F3 /* FreeOTP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FreeOTP.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F17A85FD17EC12670098E7F3 /* ForgeRock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ForgeRock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F17A860017EC12670098E7F3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		F17A860217EC12670098E7F3 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		F17A860417EC12670098E7F3 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		F17A860817EC12670098E7F3 /* FreeOTP-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FreeOTP-Info.plist"; sourceTree = "<group>"; };
+		F17A860817EC12670098E7F3 /* ForgeRock-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ForgeRock-Info.plist"; sourceTree = "<group>"; };
 		F17A860A17EC12670098E7F3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		F17A860C17EC12670098E7F3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		F17A860E17EC12670098E7F3 /* FreeOTP-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FreeOTP-Prefix.pch"; sourceTree = "<group>"; };
+		F17A860E17EC12670098E7F3 /* ForgeRock-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ForgeRock-Prefix.pch"; sourceTree = "<group>"; };
 		F17A860F17EC12670098E7F3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		F17A861017EC12670098E7F3 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		F17A861B17EC12670098E7F3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		F17A862117EC12670098E7F3 /* FreeOTPTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FreeOTPTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F17A862117EC12670098E7F3 /* ForgeRockTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ForgeRockTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F17A862217EC12670098E7F3 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		F18A62CB1808A64F00345419 /* AddTokenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddTokenViewController.h; sourceTree = "<group>"; };
 		F18A62CC1808A64F00345419 /* AddTokenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddTokenViewController.m; sourceTree = "<group>"; };
@@ -86,12 +87,9 @@
 		F18E16F718F3D1F100722FE7 /* CollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CollectionViewController.m; sourceTree = "<group>"; };
 		F18E16FA18F47D3E00722FE7 /* BlockActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlockActionSheet.h; sourceTree = "<group>"; };
 		F18E16FB18F47D3E00722FE7 /* BlockActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlockActionSheet.m; sourceTree = "<group>"; };
-		F18E170618F4AB3000722FE7 /* token.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = token.png; sourceTree = "<group>"; };
-		F1AD9C6A190FF5500023501C /* default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = default.png; sourceTree = "<group>"; };
 		F1AD9C6C191052B10023501C /* URLImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = URLImageView.h; sourceTree = "<group>"; };
 		F1AD9C6D191052B10023501C /* URLImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = URLImageView.m; sourceTree = "<group>"; };
 		F1AD9C6F191053780023501C /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
-		F1E5CDE81815CB06009BE32F /* iTunesArtwork@2x */ = {isa = PBXFileReference; lastKnownFileType = file; name = "iTunesArtwork@2x"; path = "FreeOTP/iTunesArtwork@2x"; sourceTree = "<group>"; };
 		F1E7BF8718E9C85400C2DC82 /* TokenCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TokenCode.h; sourceTree = "<group>"; };
 		F1E7BF8818E9C85400C2DC82 /* TokenCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TokenCode.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -124,8 +122,7 @@
 		F17A85F417EC12670098E7F3 = {
 			isa = PBXGroup;
 			children = (
-				F1E5CDE81815CB06009BE32F /* iTunesArtwork@2x */,
-				F17A860617EC12670098E7F3 /* FreeOTP */,
+				F17A860617EC12670098E7F3 /* ForgeRock-Authenticator */,
 				F17A85FF17EC12670098E7F3 /* Frameworks */,
 				F17A85FE17EC12670098E7F3 /* Products */,
 			);
@@ -134,8 +131,8 @@
 		F17A85FE17EC12670098E7F3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F17A85FD17EC12670098E7F3 /* FreeOTP.app */,
-				F17A862117EC12670098E7F3 /* FreeOTPTests.xctest */,
+				F17A85FD17EC12670098E7F3 /* ForgeRock.app */,
+				F17A862117EC12670098E7F3 /* ForgeRockTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -152,11 +149,11 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		F17A860617EC12670098E7F3 /* FreeOTP */ = {
+		F17A860617EC12670098E7F3 /* ForgeRock-Authenticator */ = {
 			isa = PBXGroup;
 			children = (
-				F1AD9C6A190FF5500023501C /* default.png */,
-				F18E170618F4AB3000722FE7 /* token.png */,
+				E164F3C71ADE9CAF00A440B3 /* forgerock-logo.png */,
+				E164F3C51ADE9CA800A440B3 /* forgerock-logo-text.png */,
 				F18E16F118F2603800722FE7 /* qrcode.png */,
 				F1673F1918EC51C900ECD2DB /* Main.storyboard */,
 				F18A62CB1808A64F00345419 /* AddTokenViewController.h */,
@@ -190,16 +187,17 @@
 				F17A861B17EC12670098E7F3 /* Images.xcassets */,
 				F17A860717EC12670098E7F3 /* Supporting Files */,
 			);
+			name = "ForgeRock-Authenticator";
 			path = FreeOTP;
 			sourceTree = "<group>";
 		};
 		F17A860717EC12670098E7F3 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				F17A860817EC12670098E7F3 /* FreeOTP-Info.plist */,
+				F17A860817EC12670098E7F3 /* ForgeRock-Info.plist */,
 				F17A860917EC12670098E7F3 /* InfoPlist.strings */,
 				F17A860C17EC12670098E7F3 /* main.m */,
-				F17A860E17EC12670098E7F3 /* FreeOTP-Prefix.pch */,
+				F17A860E17EC12670098E7F3 /* ForgeRock-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -207,9 +205,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F17A85FC17EC12670098E7F3 /* FreeOTP */ = {
+		F17A85FC17EC12670098E7F3 /* ForgeRock */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F17A863217EC12670098E7F3 /* Build configuration list for PBXNativeTarget "FreeOTP" */;
+			buildConfigurationList = F17A863217EC12670098E7F3 /* Build configuration list for PBXNativeTarget "ForgeRock" */;
 			buildPhases = (
 				F17A85F917EC12670098E7F3 /* Sources */,
 				F17A85FA17EC12670098E7F3 /* Frameworks */,
@@ -219,14 +217,14 @@
 			);
 			dependencies = (
 			);
-			name = FreeOTP;
+			name = ForgeRock;
 			productName = FreeOTP;
-			productReference = F17A85FD17EC12670098E7F3 /* FreeOTP.app */;
+			productReference = F17A85FD17EC12670098E7F3 /* ForgeRock.app */;
 			productType = "com.apple.product-type.application";
 		};
-		F17A862017EC12670098E7F3 /* FreeOTPTests */ = {
+		F17A862017EC12670098E7F3 /* ForgeRockTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F17A863517EC12670098E7F3 /* Build configuration list for PBXNativeTarget "FreeOTPTests" */;
+			buildConfigurationList = F17A863517EC12670098E7F3 /* Build configuration list for PBXNativeTarget "ForgeRockTests" */;
 			buildPhases = (
 				F17A861D17EC12670098E7F3 /* Sources */,
 				F17A861E17EC12670098E7F3 /* Frameworks */,
@@ -237,9 +235,9 @@
 			dependencies = (
 				F17A862717EC12670098E7F3 /* PBXTargetDependency */,
 			);
-			name = FreeOTPTests;
+			name = ForgeRockTests;
 			productName = FreeOTPTests;
-			productReference = F17A862117EC12670098E7F3 /* FreeOTPTests.xctest */;
+			productReference = F17A862117EC12670098E7F3 /* ForgeRockTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -249,14 +247,14 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0510;
-				ORGANIZATIONNAME = "Nathaniel McCallum";
+				ORGANIZATIONNAME = ForgeRock;
 				TargetAttributes = {
 					F17A862017EC12670098E7F3 = {
 						TestTargetID = F17A85FC17EC12670098E7F3;
 					};
 				};
 			};
-			buildConfigurationList = F17A85F817EC12670098E7F3 /* Build configuration list for PBXProject "FreeOTP" */;
+			buildConfigurationList = F17A85F817EC12670098E7F3 /* Build configuration list for PBXProject "ForgeRock" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -269,8 +267,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F17A85FC17EC12670098E7F3 /* FreeOTP */,
-				F17A862017EC12670098E7F3 /* FreeOTPTests */,
+				F17A85FC17EC12670098E7F3 /* ForgeRock */,
+				F17A862017EC12670098E7F3 /* ForgeRockTests */,
 			);
 		};
 /* End PBXProject section */
@@ -281,10 +279,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				F18E16F218F2603800722FE7 /* qrcode.png in Resources */,
-				F1E5CDE91815CB06009BE32F /* iTunesArtwork@2x in Resources */,
-				F1AD9C6B190FF5500023501C /* default.png in Resources */,
 				F17A861C17EC12670098E7F3 /* Images.xcassets in Resources */,
-				F18E170D18F4AB3000722FE7 /* token.png in Resources */,
+				E164F3C61ADE9CA800A440B3 /* forgerock-logo-text.png in Resources */,
+				E164F3C81ADE9CAF00A440B3 /* forgerock-logo.png in Resources */,
 				F1673F1A18EC51C900ECD2DB /* Main.storyboard in Resources */,
 				F17A860B17EC12670098E7F3 /* InfoPlist.strings in Resources */,
 			);
@@ -334,7 +331,7 @@
 /* Begin PBXTargetDependency section */
 		F17A862717EC12670098E7F3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = F17A85FC17EC12670098E7F3 /* FreeOTP */;
+			target = F17A85FC17EC12670098E7F3 /* ForgeRock */;
 			targetProxy = F17A862617EC12670098E7F3 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -429,10 +426,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "FreeOTP/FreeOTP-Prefix.pch";
-				INFOPLIST_FILE = "FreeOTP/FreeOTP-Info.plist";
+				GCC_PREFIX_HEADER = "FreeOTP/ForgeRock-Prefix.pch";
+				INFOPLIST_FILE = "FreeOTP/ForgeRock-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = ForgeRock;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -444,10 +441,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "FreeOTP/FreeOTP-Prefix.pch";
-				INFOPLIST_FILE = "FreeOTP/FreeOTP-Info.plist";
+				GCC_PREFIX_HEADER = "FreeOTP/ForgeRock-Prefix.pch";
+				INFOPLIST_FILE = "FreeOTP/ForgeRock-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = ForgeRock;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -469,7 +466,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "FreeOTPTests/FreeOTPTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = ForgeRockTests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
 			};
@@ -487,7 +484,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FreeOTP/FreeOTP-Prefix.pch";
 				INFOPLIST_FILE = "FreeOTPTests/FreeOTPTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = ForgeRockTests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
 			};
@@ -496,7 +493,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F17A85F817EC12670098E7F3 /* Build configuration list for PBXProject "FreeOTP" */ = {
+		F17A85F817EC12670098E7F3 /* Build configuration list for PBXProject "ForgeRock" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F17A863017EC12670098E7F3 /* Debug */,
@@ -505,7 +502,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F17A863217EC12670098E7F3 /* Build configuration list for PBXNativeTarget "FreeOTP" */ = {
+		F17A863217EC12670098E7F3 /* Build configuration list for PBXNativeTarget "ForgeRock" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F17A863317EC12670098E7F3 /* Debug */,
@@ -514,7 +511,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F17A863517EC12670098E7F3 /* Build configuration list for PBXNativeTarget "FreeOTPTests" */ = {
+		F17A863517EC12670098E7F3 /* Build configuration list for PBXNativeTarget "ForgeRockTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F17A863617EC12670098E7F3 /* Debug */,
