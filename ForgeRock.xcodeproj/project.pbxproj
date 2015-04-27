@@ -145,7 +145,7 @@
 			isa = PBXGroup;
 			children = (
 				E1C725F81AEE7CBB00388026 /* Unit Tests */,
-				F17A860617EC12670098E7F3 /* ForgeRock-Authenticator */,
+				F17A860617EC12670098E7F3 /* Authenticator */,
 				F17A85FF17EC12670098E7F3 /* Frameworks */,
 				F17A85FE17EC12670098E7F3 /* Products */,
 			);
@@ -172,7 +172,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		F17A860617EC12670098E7F3 /* ForgeRock-Authenticator */ = {
+		F17A860617EC12670098E7F3 /* Authenticator */ = {
 			isa = PBXGroup;
 			children = (
 				E164F3C71ADE9CAF00A440B3 /* forgerock-logo.png */,
@@ -210,6 +210,7 @@
 				F17A861B17EC12670098E7F3 /* Images.xcassets */,
 				F17A860717EC12670098E7F3 /* Supporting Files */,
 			);
+			name = Authenticator;
 			path = "ForgeRock-Authenticator";
 			sourceTree = "<group>";
 		};
