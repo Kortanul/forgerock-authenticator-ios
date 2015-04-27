@@ -210,8 +210,7 @@
 				F17A861B17EC12670098E7F3 /* Images.xcassets */,
 				F17A860717EC12670098E7F3 /* Supporting Files */,
 			);
-			name = "ForgeRock-Authenticator";
-			path = FreeOTP;
+			path = "ForgeRock-Authenticator";
 			sourceTree = "<group>";
 		};
 		F17A860717EC12670098E7F3 /* Supporting Files */ = {
@@ -450,8 +449,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "FreeOTP/ForgeRock-Prefix.pch";
-				INFOPLIST_FILE = "FreeOTP/ForgeRock-Info.plist";
+				GCC_PREFIX_HEADER = "ForgeRock-Authenticator/ForgeRock-Prefix.pch";
+				INFOPLIST_FILE = "ForgeRock-Authenticator/ForgeRock-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = ForgeRock;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -465,8 +464,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "FreeOTP/ForgeRock-Prefix.pch";
-				INFOPLIST_FILE = "FreeOTP/ForgeRock-Info.plist";
+				GCC_PREFIX_HEADER = "ForgeRock-Authenticator/ForgeRock-Prefix.pch";
+				INFOPLIST_FILE = "ForgeRock-Authenticator/ForgeRock-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = ForgeRock;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -484,7 +483,7 @@
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "unit-tests/ForgeRock-Prefix.pch";
+				GCC_PREFIX_HEADER = "unit-tests/ForgeRockTests-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -507,7 +506,7 @@
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "unit-tests/ForgeRock-Prefix.pch";
+				GCC_PREFIX_HEADER = "unit-tests/ForgeRockTests-Prefix.pch";
 				INFOPLIST_FILE = "unit-tests/ForgeRockTests-Info.plist";
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = ForgeRockTests;
