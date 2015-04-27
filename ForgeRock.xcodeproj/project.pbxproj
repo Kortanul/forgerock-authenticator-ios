@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		E164F3C61ADE9CA800A440B3 /* forgerock-logo-text.png in Resources */ = {isa = PBXBuildFile; fileRef = E164F3C51ADE9CA800A440B3 /* forgerock-logo-text.png */; };
 		E164F3C81ADE9CAF00A440B3 /* forgerock-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = E164F3C71ADE9CAF00A440B3 /* forgerock-logo.png */; };
+		E1C725FA1AEE7D0300388026 /* base32test.m in Sources */ = {isa = PBXBuildFile; fileRef = E1C725F91AEE7D0300388026 /* base32test.m */; };
 		F100667B18EF1E4900F9EF2C /* TokenCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F100667A18EF1E4900F9EF2C /* TokenCell.m */; };
 		F1030ED21818322000E478F7 /* CircleProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = F1030ED11818322000E478F7 /* CircleProgressView.m */; };
 		F109DBEA18412A2300548A3E /* QRCodeScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F109DBE918412A2300548A3E /* QRCodeScanViewController.m */; };
@@ -50,6 +51,9 @@
 /* Begin PBXFileReference section */
 		E164F3C51ADE9CA800A440B3 /* forgerock-logo-text.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forgerock-logo-text.png"; sourceTree = "<group>"; };
 		E164F3C71ADE9CAF00A440B3 /* forgerock-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forgerock-logo.png"; sourceTree = "<group>"; };
+		E1C725F91AEE7D0300388026 /* base32test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = base32test.m; path = "unit-tests/base32test.m"; sourceTree = "<group>"; };
+		E1C725FD1AEE820500388026 /* ForgeRockTests-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "ForgeRockTests-Info.plist"; path = "unit-tests/ForgeRockTests-Info.plist"; sourceTree = "<group>"; };
+		E1C7260E1AEE83B500388026 /* ForgeRockTests-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "ForgeRockTests-Prefix.pch"; path = "unit-tests/ForgeRockTests-Prefix.pch"; sourceTree = "<group>"; };
 		F100667918EF1E4900F9EF2C /* TokenCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TokenCell.h; sourceTree = "<group>"; };
 		F100667A18EF1E4900F9EF2C /* TokenCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TokenCell.m; sourceTree = "<group>"; };
 		F1030ED01818322000E478F7 /* CircleProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CircleProgressView.h; sourceTree = "<group>"; };
@@ -119,9 +123,28 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E1C725F81AEE7CBB00388026 /* Unit Tests */ = {
+			isa = PBXGroup;
+			children = (
+				E1C7260C1AEE833400388026 /* Supporting Files */,
+				E1C725F91AEE7D0300388026 /* base32test.m */,
+			);
+			name = "Unit Tests";
+			sourceTree = "<group>";
+		};
+		E1C7260C1AEE833400388026 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				E1C7260E1AEE83B500388026 /* ForgeRockTests-Prefix.pch */,
+				E1C725FD1AEE820500388026 /* ForgeRockTests-Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		F17A85F417EC12670098E7F3 = {
 			isa = PBXGroup;
 			children = (
+				E1C725F81AEE7CBB00388026 /* Unit Tests */,
 				F17A860617EC12670098E7F3 /* ForgeRock-Authenticator */,
 				F17A85FF17EC12670098E7F3 /* Frameworks */,
 				F17A85FE17EC12670098E7F3 /* Products */,
@@ -323,6 +346,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1C725FA1AEE7D0300388026 /* base32test.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -453,19 +477,20 @@
 		F17A863617EC12670098E7F3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/FreeOTP.app/FreeOTP";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/ForgeRock.app/ForgeRock";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "FreeOTP/FreeOTP-Prefix.pch";
+				GCC_PREFIX_HEADER = "unit-tests/ForgeRock-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = "FreeOTPTests/FreeOTPTests-Info.plist";
+				INFOPLIST_FILE = "unit-tests/ForgeRockTests-Info.plist";
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = ForgeRockTests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
@@ -475,15 +500,16 @@
 		F17A863717EC12670098E7F3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/FreeOTP.app/FreeOTP";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/ForgeRock.app/ForgeRock";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "FreeOTP/FreeOTP-Prefix.pch";
-				INFOPLIST_FILE = "FreeOTPTests/FreeOTPTests-Info.plist";
+				GCC_PREFIX_HEADER = "unit-tests/ForgeRock-Prefix.pch";
+				INFOPLIST_FILE = "unit-tests/ForgeRockTests-Info.plist";
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = ForgeRockTests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
