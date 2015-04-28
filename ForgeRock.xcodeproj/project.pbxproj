@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E16458491AEE8E8D00D1740F /* base32.c in Sources */ = {isa = PBXBuildFile; fileRef = F15300401801B9DF00A0E179 /* base32.c */; };
 		E164F3C61ADE9CA800A440B3 /* forgerock-logo-text.png in Resources */ = {isa = PBXBuildFile; fileRef = E164F3C51ADE9CA800A440B3 /* forgerock-logo-text.png */; };
 		E164F3C81ADE9CAF00A440B3 /* forgerock-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = E164F3C71ADE9CAF00A440B3 /* forgerock-logo.png */; };
 		E1C725FA1AEE7D0300388026 /* base32test.m in Sources */ = {isa = PBXBuildFile; fileRef = E1C725F91AEE7D0300388026 /* base32test.m */; };
@@ -39,12 +40,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		F17A862617EC12670098E7F3 /* PBXContainerItemProxy */ = {
+		E16458461AEE8B7400D1740F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F17A85F517EC12670098E7F3 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = F17A85FC17EC12670098E7F3;
-			remoteInfo = FreeOTP;
+			remoteInfo = ForgeRock;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -256,7 +257,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				F17A862717EC12670098E7F3 /* PBXTargetDependency */,
+				E16458471AEE8B7400D1740F /* PBXTargetDependency */,
 			);
 			name = ForgeRockTests;
 			productName = FreeOTPTests;
@@ -346,6 +347,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E16458491AEE8E8D00D1740F /* base32.c in Sources */,
 				E1C725FA1AEE7D0300388026 /* base32test.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -353,10 +355,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		F17A862717EC12670098E7F3 /* PBXTargetDependency */ = {
+		E16458471AEE8B7400D1740F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F17A85FC17EC12670098E7F3 /* ForgeRock */;
-			targetProxy = F17A862617EC12670098E7F3 /* PBXContainerItemProxy */;
+			targetProxy = E16458461AEE8B7400D1740F /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
