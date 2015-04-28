@@ -17,6 +17,24 @@
 #import <string.h>
 #import "base32.h"
 
+/*
+ Decode a base32 encoded string into the provided buffer.
+ 
+ Uses the algorithm described in RFC 4648
+ (http://tools.ietf.org/html/rfc4648#page-8)
+ 
+ Includes parsing the padding symbol '='.
+ 
+ Params:
+ 
+ encoded - A null terminated char* containing the encoded base32
+ result - An initialised buffer to contain the decoded result
+ bufSize - The size of the initialised buffer
+ 
+ Return:
+ 
+ A count of length of the decoded string
+*/
 int
 base32_decode(const char *encoded, uint8_t *result, int bufSize)
 {
@@ -26,7 +44,7 @@ base32_decode(const char *encoded, uint8_t *result, int bufSize)
 
     for (const char *ptr = encoded; count < bufSize && *ptr; ++ptr) {
         char ch = *ptr;
-        if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n' || ch == '-')
+        if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n' || ch == '-' || ch == '=')
             continue;
         buffer <<= 5;
         
