@@ -19,7 +19,7 @@
 #import "base32.h"
 
 @interface base32test : XCTestCase
-+ (NSString*) keyToString:(uint8_t*)key withLength:(int)length;
+
 @end
 
 @implementation base32test
@@ -56,10 +56,34 @@
     XCTAssertEqualObjects([base32test keyToString:key withLength:res], @"Badger!Bad", @"Pass");
 }
 
-// base32 assumpts that a char is 1 byte
-- (void) testSizesOfDataTypes {
-    long cs = sizeof(char);
-    XCTAssert(cs == 1, @"sizeof char: %lu", cs);
+- (void)testShouldEncodeNonPaddedString {
+    // Given
+    NSString* unencoded_string = @"Badger!Bad";
+    const uint8_t* unencoded = (unsigned char*)[unencoded_string UTF8String];
+    char encoded[4096];
+    
+    // When
+    int resultLength = base32_encode(unencoded, (int)[unencoded_string length], encoded, sizeof(encoded));
+    
+    // Then
+    NSString* result = [base32test keyToString:(unsigned char*)encoded withLength:resultLength];
+    NSString* target = @"IJQWIZ3FOIQUEYLE";
+    XCTAssert([result isEqualToString:target], @"Result %@ should have matched %@", result, target);
+}
+
+- (void)testShouldEncodeStringRequiringPadding {
+    // Given
+    NSString* unencoded_string = @"Badger!";
+    const uint8_t* unencoded = (unsigned char*)[unencoded_string UTF8String];
+    char encoded[4096];
+    
+    // When
+    int resultLength = base32_encode(unencoded, (int)[unencoded_string length], encoded, sizeof(encoded));
+    
+    // Then
+    NSString* result = [base32test keyToString:(unsigned char*)encoded withLength:resultLength];
+    NSString* target = @"IJQWIZ3FOIQQ====";
+    XCTAssert([result isEqualToString:target], @"Result %@ should have matched %@", result, target);
 }
 
 // Decode the Char* (equivalent to uint8?) to an NSString
