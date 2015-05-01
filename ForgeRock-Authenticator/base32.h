@@ -20,23 +20,15 @@
  */
 
 
-/*
- Encode and decode base32 encoding using the following alphabet:
- "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
- 
- This alphabet is specified in the RFC 4668
- (http://tools.ietf.org/html/rfc4648)
-
- White-space and hyphens will be allowed but ignored. All other characters 
- are considered invalid.
- 
- Encoding is performed in quantums of 8 encoded characters. If the output
- string is less than a full quantum, it will be padded with the '=' 
- character to make a full quantun.
- 
- All functions return the number of output bytes or -1 on error. If the
- output buffer is too small, the result will silently be truncated.
- */
+/***********************************************************************
+ * Encode and decode Base32 based on the RFC 4648
+ * (http://tools.ietf.org/html/rfc4648)
+ *
+ * String to be encoded is assumed to be ASCII characters.
+ *
+ * Encoded output will consist of the following alphabet:
+ * "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
+ ***********************************************************************/
 
 #ifndef _BASE32_H_
 #define _BASE32_H_

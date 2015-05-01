@@ -35,7 +35,7 @@
 - (void)testShouldDecodeStringIncludingPadding {
     // Given
     uint8_t key[4096];
-    const char *tmp = [@"IJQWIZ3FOIQQ====" cStringUsingEncoding:NSASCIIStringEncoding];
+    const char *tmp = "IJQWIZ3FOIQQ====";
     
     // When
     int res = base32_decode(tmp, key, sizeof(key));
@@ -47,7 +47,7 @@
 - (void)testShouldDecodeStringWithoutPadding {
     // Given
     uint8_t key[4096];
-    const char *tmp = [@"IJQWIZ3FOIQUEYLE" cStringUsingEncoding:NSASCIIStringEncoding];
+    const char *tmp = "IJQWIZ3FOIQUEYLE";
 
     // When
     int res = base32_decode(tmp, key, sizeof(key));
@@ -58,12 +58,12 @@
 
 - (void)testShouldEncodeNonPaddedString {
     // Given
-    NSString* unencoded_string = @"Badger!Bad";
-    const uint8_t* unencoded = (unsigned char*)[unencoded_string UTF8String];
+    const uint8_t* unencoded = (unsigned char*)"Badger!Bad";
+    int length = (int)strlen((char*)unencoded);
     char encoded[4096];
     
     // When
-    int resultLength = base32_encode(unencoded, (int)[unencoded_string length], encoded, sizeof(encoded));
+    int resultLength = base32_encode(unencoded, length, encoded, sizeof(encoded));
     
     // Then
     NSString* result = [base32test keyToString:(unsigned char*)encoded withLength:resultLength];
@@ -73,18 +73,45 @@
 
 - (void)testShouldEncodeStringRequiringPadding {
     // Given
-    NSString* unencoded_string = @"Badger!";
-    const uint8_t* unencoded = (unsigned char*)[unencoded_string UTF8String];
+    const uint8_t* unencoded = (unsigned char*)"Badger!";
+    int length = (int)strlen((char*)unencoded);
     char encoded[4096];
     
     // When
-    int resultLength = base32_encode(unencoded, (int)[unencoded_string length], encoded, sizeof(encoded));
+    int resultLength = base32_encode(unencoded, length, encoded, sizeof(encoded));
     
     // Then
     NSString* result = [base32test keyToString:(unsigned char*)encoded withLength:resultLength];
     NSString* target = @"IJQWIZ3FOIQQ====";
     XCTAssert([result isEqualToString:target], @"Result %@ should have matched %@", result, target);
 }
+
+- (void)testShouldErrorOnEncodeInPadding {
+    // Given
+    const uint8_t* unencoded = (unsigned char*)"Badger!Bad";
+    int length = (int)strlen((char*)unencoded);
+    char encoded[14];
+    
+    // When
+    int result = base32_encode(unencoded, length, encoded, 14);
+    
+    // Then
+    XCTAssert(result == -1, @"Buffer size should have been exceeded");
+}
+
+- (void)testShouldErrorOnEncode {
+    // Given
+    const uint8_t* unencoded = (unsigned char*)"Badger!Bad";
+    int length = (int)strlen((char*)unencoded);
+    char encoded[10];
+    
+    // When
+    int result = base32_encode(unencoded, length, encoded, 10);
+    
+    // Then
+    XCTAssert(result == -1, @"Buffer size should have been exceeded");
+}
+
 
 // Decode the Char* (equivalent to uint8?) to an NSString
 + (NSString*) keyToString:(uint8_t*)key withLength:(int)length {

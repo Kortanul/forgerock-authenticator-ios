@@ -20,27 +20,41 @@
  
  */
 
+/*************************************************************************
+ * Base32 encode and decode functions.
+ *
+ * Padding:
+ * The RFC defines that encoding is performed in quantums of 8 encoded
+ * characters. If the output string is less than a full quantum, it
+ * will be padded with the '=' character to make a full quantum.
+ *
+ * Return/Error:
+ * All functions return the number of output bytes or -1 on error.
+ *
+ * Buffer:
+ * If the output buffer is too small, the result will silently be truncated.
+ *************************************************************************/
+
+
 #import <string.h>
 #import "base32.h"
 
-/*
- Decode a base32 encoded string into the provided buffer.
- 
- Uses the algorithm described in RFC 4648
- (http://tools.ietf.org/html/rfc4648#page-8)
- 
- Includes parsing the padding symbol '='.
- 
- Params:
- 
- encoded - A null terminated char* containing the encoded base32
- result - An initialised buffer to contain the decoded result
- bufSize - The size of the initialised buffer
- 
- Return:
- 
- A count of length of the decoded string
-*/
+/*************************************************************************
+ * Decode a base32 encoded string into the provided buffer.
+ *
+ * Encoded input string to decode can include white-space and hyphens
+ * which will be ignored. All other characters are considered invalid.
+ *
+ * Handles padding symbols at the end of the encoded input string.
+ *
+ * Parameters:
+ *   encoded - A null terminated char* containing the encoded base32
+ *   result - An initialised buffer to contain the decoded result
+ *   bufSize - The size of the initialised buffer
+ *
+ * Return:
+ *   A count of length of the decoded string
+ *************************************************************************/
 int
 base32_decode(const char *encoded, uint8_t *result, int bufSize)
 {
@@ -48,8 +62,8 @@ base32_decode(const char *encoded, uint8_t *result, int bufSize)
     int bitsLeft = 0;
     int count = 0;
 
-    for (const char *ptr = encoded; count < bufSize && *ptr; ++ptr) {
-        char ch = *ptr;
+    for (; count < bufSize && *encoded; ++encoded) {
+        char ch = *encoded;
         if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n' || ch == '-' || ch == '=')
             continue;
         buffer <<= 5;
@@ -84,25 +98,22 @@ base32_decode(const char *encoded, uint8_t *result, int bufSize)
     return count;
 }
 
-/*
- Encode a string with base32 encoding into the provided buffer.
- 
- Uses the algorithm described in RFC 4648
- (http://tools.ietf.org/html/rfc4648#page-8)
- 
- Includes inserting padding symbols as required.
- 
- Params:
- 
- data - A possibly null terminated buffer containing the characters to encode
- length - The number of characters in 'data'
- result - A pre-initialised buffer to store the encoded characters in
- bufSize - The size of the 'result' buffer
- 
- Return:
- 
- A count of length of the encoded string
- */
+/*********************************************************************************
+ * Encode a string with base32 encoding into the provided buffer.
+ *
+ * If the encoded string does not make up a complete quantum of encoded characters
+ * then padding symbols will be included accordingly.
+ *
+ * Parameters:
+ *   data - A possibly null terminated buffer containing the characters to encode
+ *   length - The number of characters in 'data'
+ *   result - A pre-initialised buffer to store the encoded characters in
+ *   bufSize - The size of the 'result' buffer
+ *
+ * Return:
+ *   A count of length of the encoded string
+ *
+ *********************************************************************************/
 int
 base32_encode(const uint8_t *data, int length, char *result, int bufSize)
 {
@@ -141,18 +152,21 @@ base32_encode(const uint8_t *data, int length, char *result, int bufSize)
                 quantum = 8;
             }
         }
-    }
-    
-    // If the number of encoded characters does not make a full quantum, insert padding
-    if (quantum != 8) {
-        while (quantum > 0) {
-            result[count++] = '=';
-            quantum--;
+        
+        // If the number of encoded characters does not make a full quantum, insert padding
+        if (quantum != 8) {
+            while (quantum > 0 && count < bufSize) {
+                result[count++] = '=';
+                quantum--;
+            }
         }
     }
     
-    if (count < bufSize)
+    // Finally check if we exceeded buffer size.
+    if (count < bufSize) {
         result[count] = '\000';
-
-    return count;
+        return count;
+    } else {
+        return -1;
+    }
 }
