@@ -1,22 +1,24 @@
-//
-// FreeOTP
-//
-// Authors: Nathaniel McCallum <npmccallum@redhat.com>
-//
-// Copyright (C) 2013  Nathaniel McCallum, Red Hat
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-//
+/*
+ FreeOTP
+ 
+ Authors: Nathaniel McCallum <npmccallum@redhat.com>
+ 
+ Copyright (C) 2013  Nathaniel McCallum, Red Hat
+ 
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+ 
+      http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ 
+ Portions copyright 2015 ForgeRock Ltd.
+ */
 
 #import "Token.h"
 #import "base32.h"
@@ -214,6 +216,41 @@ static NSString* getHOTP(CCHmacAlgorithm algo, uint8_t digits, NSData* key, uint
     return [self initWithURL:url internal:NO];
 }
 
+/***************************************************************************************
+ * Performs parsing of the oauth URL to extract all configuration detail
+ * for the Token to be created.
+ * 
+ * Extracted parameters include:
+ * - Token type (HOTP, TOTP)
+ * - Issuer
+ * - Label
+ * - Secret Key
+ * - Algorithm (SHA1, MD5 etc)
+ * - Counter
+ *
+ * Importantly this function is used in two ways and is signalled by the
+ * 'internal' flag.
+ *
+ * The primary function (internal == NO) is to handle the oath:// url
+ * format generated for configuring a client App. This will be provided as
+ * a QR code to this App.
+ *
+ * The second usage is as an internal persistence format for the App. Each Token
+ * is stored in its oath:// format for convenience. When de-serialising the
+ * Token, the flag (internal == YES) enables some extra paths for detching the
+ * associated image for the Token.
+ *
+ * Parameters:
+ *     url is the entire URL to parse
+ *
+ *     internal indicates whether this url is being used for parsing the QR code
+ *     driven url (internal == NO) or whether this function is de-serialising a persisted
+ *     token (internal == YES).
+ *
+ * Returns:
+ *     An instantiated Token instance
+ *
+ ***************************************************************************************/
 - (id)initWithURL:(NSURL*)url internal:(BOOL)internal {
     if (!(self = [super init]))
         return nil;
@@ -253,10 +290,14 @@ static NSString* getHOTP(CCHmacAlgorithm algo, uint8_t digits, NSData* key, uint
     NSMutableDictionary *query = [[NSMutableDictionary alloc] init];
     array = [[url query] componentsSeparatedByString:@"&"];
     for (NSString *kv in array) {
-        NSArray *tmp = [kv componentsSeparatedByString:@"="];
-        if (tmp.count != 2)
+        // Value can contain '=' symbols, so look for first symbol.
+        NSRange index = [kv rangeOfString:@"="];
+        if (index.location == NSNotFound) {
             continue;
-        [query setValue:decode([tmp objectAtIndex:1]) forKey:[tmp objectAtIndex:0]];
+        }
+        NSString *name = [kv substringToIndex:index.location];
+        NSString *value = [kv substringFromIndex:index.location + index.length];
+        [query setValue:decode(value) forKey:name];
     }
     
     // Get key

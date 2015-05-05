@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E1281A321AF908EF00C22E2B /* Tokentest.m in Sources */ = {isa = PBXBuildFile; fileRef = E1281A311AF908EF00C22E2B /* Tokentest.m */; };
 		E16458491AEE8E8D00D1740F /* base32.c in Sources */ = {isa = PBXBuildFile; fileRef = F15300401801B9DF00A0E179 /* base32.c */; };
 		E164F3C61ADE9CA800A440B3 /* forgerock-logo-text.png in Resources */ = {isa = PBXBuildFile; fileRef = E164F3C51ADE9CA800A440B3 /* forgerock-logo-text.png */; };
 		E164F3C81ADE9CAF00A440B3 /* forgerock-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = E164F3C71ADE9CAF00A440B3 /* forgerock-logo.png */; };
@@ -50,6 +51,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E1281A311AF908EF00C22E2B /* Tokentest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Tokentest.m; path = "unit-tests/Tokentest.m"; sourceTree = "<group>"; };
 		E164F3C51ADE9CA800A440B3 /* forgerock-logo-text.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forgerock-logo-text.png"; sourceTree = "<group>"; };
 		E164F3C71ADE9CAF00A440B3 /* forgerock-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forgerock-logo.png"; sourceTree = "<group>"; };
 		E1C725F91AEE7D0300388026 /* base32test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = base32test.m; path = "unit-tests/base32test.m"; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 			children = (
 				E1C7260C1AEE833400388026 /* Supporting Files */,
 				E1C725F91AEE7D0300388026 /* base32test.m */,
+				E1281A311AF908EF00C22E2B /* Tokentest.m */,
 			);
 			name = "Unit Tests";
 			sourceTree = "<group>";
@@ -347,6 +350,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1281A321AF908EF00C22E2B /* Tokentest.m in Sources */,
 				E16458491AEE8E8D00D1740F /* base32.c in Sources */,
 				E1C725FA1AEE7D0300388026 /* base32test.m in Sources */,
 			);
