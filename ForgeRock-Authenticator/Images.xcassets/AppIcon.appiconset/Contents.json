@@ -3,61 +3,61 @@
     {
       "size" : "29x29",
       "idiom" : "iphone",
-      "filename" : "forgerock-logo.png",
+      "filename" : "forgerock-logo-opaque-58.png",
       "scale" : "2x"
     },
     {
       "size" : "40x40",
       "idiom" : "iphone",
-      "filename" : "forgerock-logo-1.png",
+      "filename" : "forgerock-logo-opaque-80.png",
       "scale" : "2x"
     },
     {
       "size" : "60x60",
       "idiom" : "iphone",
-      "filename" : "forgerock-logo-2.png",
+      "filename" : "forgerock-logo-opaque-120.png",
       "scale" : "2x"
     },
     {
       "size" : "60x60",
       "idiom" : "iphone",
-      "filename" : "forgerock-logo-2-1.png",
+      "filename" : "forgerock-logo-opaque-180.png",
       "scale" : "3x"
     },
     {
       "size" : "29x29",
       "idiom" : "ipad",
-      "filename" : "forgerock-logo-1-1.png",
+      "filename" : "forgerock-logo-opaque-29.png",
       "scale" : "1x"
     },
     {
       "size" : "29x29",
       "idiom" : "ipad",
-      "filename" : "forgerock-logo-3.png",
+      "filename" : "forgerock-logo-opaque-58-1.png",
       "scale" : "2x"
     },
     {
       "size" : "40x40",
       "idiom" : "ipad",
-      "filename" : "forgerock-logo-1-1-1.png",
+      "filename" : "forgerock-logo-opaque-40.png",
       "scale" : "1x"
     },
     {
       "size" : "40x40",
       "idiom" : "ipad",
-      "filename" : "forgerock-logo-4.png",
+      "filename" : "forgerock-logo-opaque-80-1.png",
       "scale" : "2x"
     },
     {
       "size" : "76x76",
       "idiom" : "ipad",
-      "filename" : "forgerock-logo-1-1-2.png",
+      "filename" : "forgerock-logo-opaque-76.png",
       "scale" : "1x"
     },
     {
       "size" : "76x76",
       "idiom" : "ipad",
-      "filename" : "forgerock-logo-5.png",
+      "filename" : "forgerock-logo-opaque-152.png",
       "scale" : "2x"
     }
   ],
