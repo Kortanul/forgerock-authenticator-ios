@@ -41,7 +41,7 @@
     
     // Then
     NSString* code = [[result code] currentCode]; // Testing parsing by testing generated code.
-    XCTAssert(strncmp([code UTF8String], "352916", code.length) == 0, @"Secret Key parsing failed");
+    XCTAssert(strcmp([code UTF8String], "352916") == 0, @"Secret Key parsing failed");
 }
 
 - (void)testSecretKeyCanParseEqualSymbol {
@@ -53,7 +53,7 @@
     
     // Then
     NSString* code = [[result code] currentCode]; // Testing parsing by testing generated code.
-    XCTAssert(strncmp([code UTF8String], "545550", code.length) == 0, @"Secret Key parsing failed");
+    XCTAssert(strcmp([code UTF8String], "545550") == 0, @"Secret Key parsing failed");
 }
 
 @end
