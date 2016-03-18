@@ -20,10 +20,7 @@
 
 #import "CollectionViewController.h"
 
-#import "AddTokenViewController.h"
 #import "QRCodeScanViewController.h"
-#import "RenameTokenViewController.h"
-#import "TokenImagePickerController.h"
 
 #import "BlockActionSheet.h"
 #import "TokenCell.h"
@@ -144,8 +141,6 @@
         as.title = [NSString stringWithFormat:@"%@\n%@", cell.issuer.text, cell.label.text];
 
     // Add the remaining buttons.
-    [as addButtonWithTitle:NSLocalizedString(@"Change Icon", nil)];
-    [as addButtonWithTitle:NSLocalizedString(@"Rename", nil)];
     as.destructiveButtonIndex = [as addButtonWithTitle:NSLocalizedString(@"Delete", nil)];
     as.cancelButtonIndex = [as addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
 
@@ -171,34 +166,6 @@
                 };
 
                 break;
-            }
-
-            case 2: { // Rename
-                RenameTokenViewController* c = [self.storyboard instantiateViewControllerWithIdentifier:@"renameToken"];
-                c.token = indexPath.row;
-                UINavigationController* nc = [[UINavigationController alloc] initWithRootViewController:c];
-                if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
-                    [self presentViewController:nc animated:YES completion:nil];
-                } else {
-                    c.popover = self.popover = [[UIPopoverController alloc] initWithContentViewController:nc];
-                    self.popover.delegate = self;
-                    self.popover.popoverContentSize = CGSizeMake(320, 375);
-
-                    [self.popover presentPopoverFromRect:cell.frame inView:self.collectionView permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-                }
-
-                break;
-            }
-
-            case 3: { // Change Icon
-                TokenImagePickerController* ipc = [[TokenImagePickerController alloc] initWithTokenID:indexPath.row];
-                if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
-                    [self presentViewController:ipc animated:YES completion:nil];
-                } else {
-                    ipc.popover = self.popover = [[UIPopoverController alloc] initWithContentViewController:ipc];
-                    self.popover.delegate = self;
-                    [self.popover presentPopoverFromRect:cell.frame inView:self.collectionView permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-                }
             }
         }
     };
@@ -281,22 +248,6 @@
     [self.collectionView reloadData];
 }
 
-- (IBAction)addClicked:(id)sender
-{
-    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
-        [self performSegueWithIdentifier:@"addToken" sender:self];
-        return;
-    }
-
-    AddTokenViewController* c = [self.storyboard instantiateViewControllerWithIdentifier:@"addToken"];
-    UINavigationController* nc = [[UINavigationController alloc] initWithRootViewController:c];
-
-    c.popover = self.popover = [[UIPopoverController alloc] initWithContentViewController:nc];
-    self.popover.delegate = self;
-    self.popover.popoverContentSize = CGSizeMake(320, 715);
-    [self.popover presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-}
-
 - (IBAction)scanClicked:(id)sender
 {
     [self performSegueWithIdentifier:@"scanToken" sender:self];
@@ -352,14 +303,9 @@
     self.collectionView.delegate = self;
 
     // Setup buttons.
-    UIBarButtonItem* add = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addClicked:)];
-    if ([AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo] == nil) {
-        self.navigationItem.rightBarButtonItems = @[add];
-    } else {
-        id icon = [UIImage imageNamed:@"qrcode.png"];
-        id scan = [[UIBarButtonItem alloc] initWithImage:icon style:UIBarButtonItemStylePlain target:self action:@selector(scanClicked:)];
-        self.navigationItem.rightBarButtonItems = @[add, scan];
-    }
+    id icon = [UIImage imageNamed:@"qrcode.png"];
+    id scan = [[UIBarButtonItem alloc] initWithImage:icon style:UIBarButtonItemStylePlain target:self action:@selector(scanClicked:)];
+    self.navigationItem.rightBarButtonItems = @[scan];
 }
 
 - (void)viewWillAppear:(BOOL)animated

@@ -16,10 +16,8 @@
 		F1030ED21818322000E478F7 /* CircleProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = F1030ED11818322000E478F7 /* CircleProgressView.m */; };
 		F109DBEA18412A2300548A3E /* QRCodeScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F109DBE918412A2300548A3E /* QRCodeScanViewController.m */; };
 		F109DBEF1841562600548A3E /* TokenStore.m in Sources */ = {isa = PBXBuildFile; fileRef = F109DBEE1841562600548A3E /* TokenStore.m */; };
-		F11EB05519117F77005FD565 /* TokenImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = F11EB05419117F77005FD565 /* TokenImagePickerController.m */; };
 		F15300431801BB8800A0E179 /* base32.c in Sources */ = {isa = PBXBuildFile; fileRef = F15300401801B9DF00A0E179 /* base32.c */; };
 		F15300461801BCD900A0E179 /* Token.m in Sources */ = {isa = PBXBuildFile; fileRef = F15300451801BCD900A0E179 /* Token.m */; };
-		F1673F1818EB40EC00ECD2DB /* RenameTokenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F1673F1718EB40EC00ECD2DB /* RenameTokenViewController.m */; };
 		F1673F1A18EC51C900ECD2DB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F1673F1918EC51C900ECD2DB /* Main.storyboard */; };
 		F17A860117EC12670098E7F3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F17A860017EC12670098E7F3 /* Foundation.framework */; };
 		F17A860317EC12670098E7F3 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F17A860217EC12670098E7F3 /* CoreGraphics.framework */; };
@@ -31,7 +29,6 @@
 		F17A862317EC12670098E7F3 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F17A862217EC12670098E7F3 /* XCTest.framework */; };
 		F17A862417EC12670098E7F3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F17A860017EC12670098E7F3 /* Foundation.framework */; };
 		F17A862517EC12670098E7F3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F17A860417EC12670098E7F3 /* UIKit.framework */; };
-		F18A62CD1808A64F00345419 /* AddTokenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F18A62CC1808A64F00345419 /* AddTokenViewController.m */; };
 		F18E16F218F2603800722FE7 /* qrcode.png in Resources */ = {isa = PBXBuildFile; fileRef = F18E16F118F2603800722FE7 /* qrcode.png */; };
 		F18E16F818F3D1F100722FE7 /* CollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F18E16F718F3D1F100722FE7 /* CollectionViewController.m */; };
 		F18E16FC18F47D3E00722FE7 /* BlockActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = F18E16FB18F47D3E00722FE7 /* BlockActionSheet.m */; };
@@ -65,14 +62,10 @@
 		F109DBE918412A2300548A3E /* QRCodeScanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QRCodeScanViewController.m; sourceTree = "<group>"; };
 		F109DBED1841562600548A3E /* TokenStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TokenStore.h; sourceTree = "<group>"; };
 		F109DBEE1841562600548A3E /* TokenStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TokenStore.m; sourceTree = "<group>"; };
-		F11EB05319117F77005FD565 /* TokenImagePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TokenImagePickerController.h; sourceTree = "<group>"; };
-		F11EB05419117F77005FD565 /* TokenImagePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TokenImagePickerController.m; sourceTree = "<group>"; };
 		F15300401801B9DF00A0E179 /* base32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base32.c; sourceTree = "<group>"; };
 		F15300421801BA1D00A0E179 /* base32.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = base32.h; sourceTree = "<group>"; };
 		F15300441801BCD900A0E179 /* Token.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Token.h; sourceTree = "<group>"; };
 		F15300451801BCD900A0E179 /* Token.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Token.m; sourceTree = "<group>"; };
-		F1673F1618EB40EC00ECD2DB /* RenameTokenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenameTokenViewController.h; sourceTree = "<group>"; };
-		F1673F1718EB40EC00ECD2DB /* RenameTokenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RenameTokenViewController.m; sourceTree = "<group>"; };
 		F1673F1918EC51C900ECD2DB /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		F17A85FD17EC12670098E7F3 /* ForgeRock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ForgeRock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F17A860017EC12670098E7F3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -87,8 +80,6 @@
 		F17A861B17EC12670098E7F3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		F17A862117EC12670098E7F3 /* ForgeRockTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ForgeRockTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F17A862217EC12670098E7F3 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		F18A62CB1808A64F00345419 /* AddTokenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddTokenViewController.h; sourceTree = "<group>"; };
-		F18A62CC1808A64F00345419 /* AddTokenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddTokenViewController.m; sourceTree = "<group>"; };
 		F18E16F118F2603800722FE7 /* qrcode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = qrcode.png; sourceTree = "<group>"; };
 		F18E16F618F3D1F100722FE7 /* CollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollectionViewController.h; sourceTree = "<group>"; };
 		F18E16F718F3D1F100722FE7 /* CollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CollectionViewController.m; sourceTree = "<group>"; };
@@ -183,8 +174,6 @@
 				E164F3C51ADE9CA800A440B3 /* forgerock-logo-text.png */,
 				F18E16F118F2603800722FE7 /* qrcode.png */,
 				F1673F1918EC51C900ECD2DB /* Main.storyboard */,
-				F18A62CB1808A64F00345419 /* AddTokenViewController.h */,
-				F18A62CC1808A64F00345419 /* AddTokenViewController.m */,
 				F17A860F17EC12670098E7F3 /* AppDelegate.h */,
 				F17A861017EC12670098E7F3 /* AppDelegate.m */,
 				F18E16FA18F47D3E00722FE7 /* BlockActionSheet.h */,
@@ -197,16 +186,12 @@
 				F100667A18EF1E4900F9EF2C /* TokenCell.m */,
 				F109DBE818412A2300548A3E /* QRCodeScanViewController.h */,
 				F109DBE918412A2300548A3E /* QRCodeScanViewController.m */,
-				F1673F1618EB40EC00ECD2DB /* RenameTokenViewController.h */,
-				F1673F1718EB40EC00ECD2DB /* RenameTokenViewController.m */,
 				F1AD9C6C191052B10023501C /* URLImageView.h */,
 				F1AD9C6D191052B10023501C /* URLImageView.m */,
 				F15300441801BCD900A0E179 /* Token.h */,
 				F15300451801BCD900A0E179 /* Token.m */,
 				F1E7BF8718E9C85400C2DC82 /* TokenCode.h */,
 				F1E7BF8818E9C85400C2DC82 /* TokenCode.m */,
-				F11EB05319117F77005FD565 /* TokenImagePickerController.h */,
-				F11EB05419117F77005FD565 /* TokenImagePickerController.m */,
 				F109DBED1841562600548A3E /* TokenStore.h */,
 				F109DBEE1841562600548A3E /* TokenStore.m */,
 				F15300421801BA1D00A0E179 /* base32.h */,
@@ -330,10 +315,7 @@
 			files = (
 				F1E7BF8918E9C85400C2DC82 /* TokenCode.m in Sources */,
 				F109DBEF1841562600548A3E /* TokenStore.m in Sources */,
-				F11EB05519117F77005FD565 /* TokenImagePickerController.m in Sources */,
 				F18E16FC18F47D3E00722FE7 /* BlockActionSheet.m in Sources */,
-				F1673F1818EB40EC00ECD2DB /* RenameTokenViewController.m in Sources */,
-				F18A62CD1808A64F00345419 /* AddTokenViewController.m in Sources */,
 				F18E16F818F3D1F100722FE7 /* CollectionViewController.m in Sources */,
 				F15300461801BCD900A0E179 /* Token.m in Sources */,
 				F15300431801BB8800A0E179 /* base32.c in Sources */,
