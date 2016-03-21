@@ -11,18 +11,18 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2015 ForgeRock AS.
+ * Copyright 2015-2016 ForgeRock AS.
  */
 
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
-#import "Token.h"
+#import "FRAOathMechanism.h"
 
-@interface Tokentest : XCTestCase
+@interface FRAOathMechanismTests : XCTestCase
 
 @end
 
-@implementation Tokentest
+@implementation FRAOathMechanismTests
 
 - (void)setUp {
     [super setUp];
@@ -34,25 +34,25 @@
 
 - (void)testSecretKeyParse {
     // Given
-    NSString* token = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0";
+    NSString* qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0";
     
     // When
-    Token* result = [[Token alloc] initWithString:token];
+    FRAOathMechanism* mechanism = [[FRAOathMechanism alloc] initWithString:qrString];
     
     // Then
-    NSString* code = [[result code] currentCode]; // Testing parsing by testing generated code.
+    NSString* code = [[mechanism code] currentCode]; // Testing parsing by testing generated code.
     XCTAssert(strcmp([code UTF8String], "352916") == 0, @"Secret Key parsing failed");
 }
 
 - (void)testSecretKeyCanParseEqualSymbol {
     // Given
-    NSString* token = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOI======&issuer=Forgerock&counter=0";
+    NSString* qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOI======&issuer=Forgerock&counter=0";
     
     // When
-    Token* result = [[Token alloc] initWithString:token];
+    FRAOathMechanism* mechanism = [[FRAOathMechanism alloc] initWithString:qrString];
     
     // Then
-    NSString* code = [[result code] currentCode]; // Testing parsing by testing generated code.
+    NSString* code = [[mechanism code] currentCode]; // Testing parsing by testing generated code.
     XCTAssert(strcmp([code UTF8String], "545550") == 0, @"Secret Key parsing failed");
 }
 

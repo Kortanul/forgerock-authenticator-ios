@@ -1,73 +1,68 @@
-//
-// FreeOTP
-//
-// Authors: Nathaniel McCallum <npmccallum@redhat.com>
-//
-// Copyright (C) 2014  Nathaniel McCallum, Red Hat
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-//
+/*
+ * The contents of this file are subject to the terms of the Common Development and
+ * Distribution License (the License). You may not use this file except in compliance with the
+ * License.
+ *
+ * You can obtain a copy of the License at legal/CDDLv1.0.txt. See the License for the
+ * specific language governing permission and limitations under the License.
+ *
+ * When distributing Covered Software, include this CDDL Header Notice in each file and include
+ * the License file at legal/CDDLv1.0.txt. If applicable, add the following below the CDDL
+ * Header, with the fields enclosed by brackets [] replaced by your own identifying
+ * information: "Portions copyright [year] [name of copyright owner]".
+ *
+ * Copyright 2016 ForgeRock AS.
+ *
+ * Portions Copyright 2014 Nathaniel McCallum, Red Hat
+ */
 
-#import "TokenCell.h"
+#import "FRAOathMechanismCell.h"
 
-@implementation TokenCell
-{
+@implementation FRAOathMechanismCell {
     NSTimer* timer;
 }
 
-- (id)initWithCoder:(NSCoder *)aDecoder
-{
+- (id)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
-    if (self == nil)
+    if (self == nil) {
         return nil;
-
+    }
     self.layer.cornerRadius = 2.0f;
     return self;
 }
 
-- (id)initWithFrame:(CGRect)frame
-{
+- (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
-    if (self == nil)
+    if (self == nil) {
         return nil;
-
+    }
     self.layer.cornerRadius = 2.0f;
     return self;
 }
 
-- (BOOL)bind:(Token*)token
-{
+- (BOOL)bind:(FRAOathMechanism*)mechanism {
     self.state = nil;
 
-    if (token == nil)
+    if (mechanism == nil) {
         return NO;
-
-    unichar tmp[token.digits];
-    for (NSUInteger i = 0; i < sizeof(tmp) / sizeof(unichar); i++)
+    }
+    unichar tmp[mechanism.digits];
+    for (NSUInteger i = 0; i < sizeof(tmp) / sizeof(unichar); i++) {
         tmp[i] = [self.placeholder.text characterAtIndex:0];
+    }
 
-    self.image.url = token.image;
+    self.image.url = mechanism.owner.image;
+    self.mechanismUid = mechanism.uid;
     self.placeholder.text = [NSString stringWithCharacters:tmp length:sizeof(tmp) / sizeof(unichar)];
-    self.outer.hidden = ![token.type isEqualToString:@"totp"];
-    self.issuer.text = token.issuer;
-    self.label.text = token.label;
+    self.outer.hidden = ![mechanism.type isEqualToString:@"totp"];
+    self.issuer.text = mechanism.owner.issuer;
+    self.label.text = mechanism.owner.accountName;
     self.code.text = @"";
 
     return YES;
 }
 
-- (void)timerCallback:(NSTimer*)timer
-{
+- (void)timerCallback:(NSTimer*)timer {
     NSString* str = self.state.currentCode;
     if (str == nil) {
         self.state = nil;
@@ -79,10 +74,10 @@
     self.code.text = str;
 }
 
-- (void)setState:(TokenCode *)state
-{
-    if (_state == state)
+- (void)setState:(FRAOathCode *)state {
+    if (_state == state) {
         return;
+    }
 
     if (state == nil) {
         [UIView animateWithDuration:0.5f animations:^{
@@ -118,4 +113,5 @@
 
     _state = state;
 }
+
 @end

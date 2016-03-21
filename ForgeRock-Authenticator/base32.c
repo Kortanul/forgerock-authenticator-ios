@@ -1,23 +1,19 @@
 /*
- Base32 implementation
-
- Copyright 2010 Google Inc.
- Author: Markus Gutschke
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- 
- Portions copyright 2015 ForgeRock AS.
- 
+ * The contents of this file are subject to the terms of the Common Development and
+ * Distribution License (the License). You may not use this file except in compliance with the
+ * License.
+ *
+ * You can obtain a copy of the License at legal/CDDLv1.0.txt. See the License for the
+ * specific language governing permission and limitations under the License.
+ *
+ * When distributing Covered Software, include this CDDL Header Notice in each file and include
+ * the License file at legal/CDDLv1.0.txt. If applicable, add the following below the CDDL
+ * Header, with the fields enclosed by brackets [] replaced by your own identifying
+ * information: "Portions copyright [year] [name of copyright owner]".
+ *
+ * Copyright 2015 ForgeRock AS.
+ *
+ * Portions Copyright 2010 Markus Gutschke, Google Inc.
  */
 
 /*************************************************************************
@@ -55,34 +51,35 @@
  * Return:
  *   A count of length of the decoded string
  *************************************************************************/
-int
-base32_decode(const char *encoded, uint8_t *result, int bufSize)
-{
+int base32_decode(const char *encoded, uint8_t *result, int bufSize) {
     int buffer = 0;
     int bitsLeft = 0;
     int count = 0;
 
     for (; count < bufSize && *encoded; ++encoded) {
         char ch = *encoded;
-        if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n' || ch == '-' || ch == '=')
+        if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n' || ch == '-' || ch == '=') {
             continue;
+        }
         buffer <<= 5;
         
         // Deal with commonly mistyped characters
-        if (ch == '0')
+        if (ch == '0') {
             ch = 'O';
-        else if (ch == '1')
+        } else if (ch == '1') {
             ch = 'L';
-        else if (ch == '8')
+        } else if (ch == '8') {
             ch = 'B';
+        }
         
         // Look up one base32 digit
-        if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z'))
+        if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z')) {
             ch = (ch & 0x1F) - 1;
-        else if (ch >= '2' && ch <= '7')
+        } else if (ch >= '2' && ch <= '7') {
             ch -= '2' - 26;
-        else
+        } else {
             return -1;
+        }
         
         buffer |= ch;
         bitsLeft += 5;
@@ -92,8 +89,9 @@ base32_decode(const char *encoded, uint8_t *result, int bufSize)
         }
     }
 
-    if (count < bufSize)
+    if (count < bufSize) {
         result[count] = '\000';
+    }
 
     return count;
 }
@@ -114,20 +112,18 @@ base32_decode(const char *encoded, uint8_t *result, int bufSize)
  *   A count of length of the encoded string
  *
  *********************************************************************************/
-int
-base32_encode(const uint8_t *data, int length, char *result, int bufSize)
-{
+int base32_encode(const uint8_t *data, int length, char *result, int bufSize) {
     int count = 0;
     int quantum = 8;
 
-    if (length < 0 || length > (1 << 28))
+    if (length < 0 || length > (1 << 28)) {
         return -1;
+    }
 
     if (length > 0) {
         int buffer = data[0];
         int next = 1;
         int bitsLeft = 8;
-
 
         while (count < bufSize && (bitsLeft > 0 || next < length)) {
             if (bitsLeft < 5) {

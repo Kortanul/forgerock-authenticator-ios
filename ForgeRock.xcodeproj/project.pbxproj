@@ -7,17 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E1281A321AF908EF00C22E2B /* Tokentest.m in Sources */ = {isa = PBXBuildFile; fileRef = E1281A311AF908EF00C22E2B /* Tokentest.m */; };
+		44695F5A1C9F6DD900680799 /* FRAIdentity.m in Sources */ = {isa = PBXBuildFile; fileRef = 44695F591C9F6DD900680799 /* FRAIdentity.m */; };
+		44695F5B1C9F6DD900680799 /* FRAIdentity.m in Sources */ = {isa = PBXBuildFile; fileRef = 44695F591C9F6DD900680799 /* FRAIdentity.m */; };
+		44695F5D1C9F70C100680799 /* FRAIdentityTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 44695F5C1C9F70C100680799 /* FRAIdentityTests.m */; };
+		44695F621CA0ADAB00680799 /* FRAOathMechanism.m in Sources */ = {isa = PBXBuildFile; fileRef = 44695F611CA0ADAB00680799 /* FRAOathMechanism.m */; };
+		44695F631CA0ADAB00680799 /* FRAOathMechanism.m in Sources */ = {isa = PBXBuildFile; fileRef = 44695F611CA0ADAB00680799 /* FRAOathMechanism.m */; };
+		44695F661CA0AE4300680799 /* FRAOathCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 44695F651CA0AE4300680799 /* FRAOathCode.m */; };
+		44695F671CA0AE4300680799 /* FRAOathCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 44695F651CA0AE4300680799 /* FRAOathCode.m */; };
+		44695F691CA0B1F600680799 /* FRAOathMechanismTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 44695F681CA0B1F600680799 /* FRAOathMechanismTests.m */; };
+		44695F7A1CA0BA0600680799 /* FRAIdentityDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 44695F791CA0BA0600680799 /* FRAIdentityDatabase.m */; };
+		44695F7D1CA170B000680799 /* FRAIdentityDatabaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 44695F7C1CA170B000680799 /* FRAIdentityDatabaseTests.m */; };
 		E16458491AEE8E8D00D1740F /* base32.c in Sources */ = {isa = PBXBuildFile; fileRef = F15300401801B9DF00A0E179 /* base32.c */; };
 		E164F3C61ADE9CA800A440B3 /* forgerock-logo-text.png in Resources */ = {isa = PBXBuildFile; fileRef = E164F3C51ADE9CA800A440B3 /* forgerock-logo-text.png */; };
 		E164F3C81ADE9CAF00A440B3 /* forgerock-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = E164F3C71ADE9CAF00A440B3 /* forgerock-logo.png */; };
 		E1C725FA1AEE7D0300388026 /* base32test.m in Sources */ = {isa = PBXBuildFile; fileRef = E1C725F91AEE7D0300388026 /* base32test.m */; };
-		F100667B18EF1E4900F9EF2C /* TokenCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F100667A18EF1E4900F9EF2C /* TokenCell.m */; };
+		F100667B18EF1E4900F9EF2C /* FRAOathMechanismCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F100667A18EF1E4900F9EF2C /* FRAOathMechanismCell.m */; };
 		F1030ED21818322000E478F7 /* CircleProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = F1030ED11818322000E478F7 /* CircleProgressView.m */; };
 		F109DBEA18412A2300548A3E /* QRCodeScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F109DBE918412A2300548A3E /* QRCodeScanViewController.m */; };
-		F109DBEF1841562600548A3E /* TokenStore.m in Sources */ = {isa = PBXBuildFile; fileRef = F109DBEE1841562600548A3E /* TokenStore.m */; };
 		F15300431801BB8800A0E179 /* base32.c in Sources */ = {isa = PBXBuildFile; fileRef = F15300401801B9DF00A0E179 /* base32.c */; };
-		F15300461801BCD900A0E179 /* Token.m in Sources */ = {isa = PBXBuildFile; fileRef = F15300451801BCD900A0E179 /* Token.m */; };
 		F1673F1A18EC51C900ECD2DB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F1673F1918EC51C900ECD2DB /* Main.storyboard */; };
 		F17A860117EC12670098E7F3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F17A860017EC12670098E7F3 /* Foundation.framework */; };
 		F17A860317EC12670098E7F3 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F17A860217EC12670098E7F3 /* CoreGraphics.framework */; };
@@ -34,7 +41,6 @@
 		F18E16FC18F47D3E00722FE7 /* BlockActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = F18E16FB18F47D3E00722FE7 /* BlockActionSheet.m */; };
 		F1AD9C6E191052B10023501C /* URLImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = F1AD9C6D191052B10023501C /* URLImageView.m */; };
 		F1AD9C70191053780023501C /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1AD9C6F191053780023501C /* AssetsLibrary.framework */; };
-		F1E7BF8918E9C85400C2DC82 /* TokenCode.m in Sources */ = {isa = PBXBuildFile; fileRef = F1E7BF8818E9C85400C2DC82 /* TokenCode.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,24 +54,31 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		E1281A311AF908EF00C22E2B /* Tokentest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Tokentest.m; path = "unit-tests/Tokentest.m"; sourceTree = "<group>"; };
+		44695F581C9F6DD900680799 /* FRAIdentity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAIdentity.h; sourceTree = "<group>"; };
+		44695F591C9F6DD900680799 /* FRAIdentity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAIdentity.m; sourceTree = "<group>"; };
+		44695F5C1C9F70C100680799 /* FRAIdentityTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FRAIdentityTests.m; path = "unit-tests/FRAIdentityTests.m"; sourceTree = "<group>"; };
+		44695F601CA0ADAB00680799 /* FRAOathMechanism.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAOathMechanism.h; sourceTree = "<group>"; };
+		44695F611CA0ADAB00680799 /* FRAOathMechanism.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAOathMechanism.m; sourceTree = "<group>"; };
+		44695F641CA0AE4300680799 /* FRAOathCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAOathCode.h; sourceTree = "<group>"; };
+		44695F651CA0AE4300680799 /* FRAOathCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAOathCode.m; sourceTree = "<group>"; };
+		44695F681CA0B1F600680799 /* FRAOathMechanismTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAOathMechanismTests.m; sourceTree = "<group>"; };
+		44695F781CA0BA0600680799 /* FRAIdentityDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAIdentityDatabase.h; sourceTree = "<group>"; };
+		44695F791CA0BA0600680799 /* FRAIdentityDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAIdentityDatabase.m; sourceTree = "<group>"; };
+		44695F7C1CA170B000680799 /* FRAIdentityDatabaseTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAIdentityDatabaseTests.m; sourceTree = "<group>"; };
+		44695F811CA17DD300680799 /* FRAMechanism.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAMechanism.h; sourceTree = "<group>"; };
 		E164F3C51ADE9CA800A440B3 /* forgerock-logo-text.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forgerock-logo-text.png"; sourceTree = "<group>"; };
 		E164F3C71ADE9CAF00A440B3 /* forgerock-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forgerock-logo.png"; sourceTree = "<group>"; };
 		E1C725F91AEE7D0300388026 /* base32test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = base32test.m; path = "unit-tests/base32test.m"; sourceTree = "<group>"; };
 		E1C725FD1AEE820500388026 /* ForgeRockTests-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "ForgeRockTests-Info.plist"; path = "unit-tests/ForgeRockTests-Info.plist"; sourceTree = "<group>"; };
 		E1C7260E1AEE83B500388026 /* ForgeRockTests-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "ForgeRockTests-Prefix.pch"; path = "unit-tests/ForgeRockTests-Prefix.pch"; sourceTree = "<group>"; };
-		F100667918EF1E4900F9EF2C /* TokenCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TokenCell.h; sourceTree = "<group>"; };
-		F100667A18EF1E4900F9EF2C /* TokenCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TokenCell.m; sourceTree = "<group>"; };
+		F100667918EF1E4900F9EF2C /* FRAOathMechanismCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAOathMechanismCell.h; sourceTree = "<group>"; };
+		F100667A18EF1E4900F9EF2C /* FRAOathMechanismCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAOathMechanismCell.m; sourceTree = "<group>"; };
 		F1030ED01818322000E478F7 /* CircleProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CircleProgressView.h; sourceTree = "<group>"; };
 		F1030ED11818322000E478F7 /* CircleProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CircleProgressView.m; sourceTree = "<group>"; };
 		F109DBE818412A2300548A3E /* QRCodeScanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QRCodeScanViewController.h; sourceTree = "<group>"; };
 		F109DBE918412A2300548A3E /* QRCodeScanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QRCodeScanViewController.m; sourceTree = "<group>"; };
-		F109DBED1841562600548A3E /* TokenStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TokenStore.h; sourceTree = "<group>"; };
-		F109DBEE1841562600548A3E /* TokenStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TokenStore.m; sourceTree = "<group>"; };
 		F15300401801B9DF00A0E179 /* base32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base32.c; sourceTree = "<group>"; };
 		F15300421801BA1D00A0E179 /* base32.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = base32.h; sourceTree = "<group>"; };
-		F15300441801BCD900A0E179 /* Token.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Token.h; sourceTree = "<group>"; };
-		F15300451801BCD900A0E179 /* Token.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Token.m; sourceTree = "<group>"; };
 		F1673F1918EC51C900ECD2DB /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		F17A85FD17EC12670098E7F3 /* ForgeRock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ForgeRock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F17A860017EC12670098E7F3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -88,8 +101,6 @@
 		F1AD9C6C191052B10023501C /* URLImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = URLImageView.h; sourceTree = "<group>"; };
 		F1AD9C6D191052B10023501C /* URLImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = URLImageView.m; sourceTree = "<group>"; };
 		F1AD9C6F191053780023501C /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
-		F1E7BF8718E9C85400C2DC82 /* TokenCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TokenCode.h; sourceTree = "<group>"; };
-		F1E7BF8818E9C85400C2DC82 /* TokenCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TokenCode.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,12 +128,86 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4459044C1CA2A83000DA3979 /* OATH */ = {
+			isa = PBXGroup;
+			children = (
+				44695F681CA0B1F600680799 /* FRAOathMechanismTests.m */,
+			);
+			name = OATH;
+			sourceTree = "<group>";
+		};
+		4459044D1CA2A84A00DA3979 /* OATH */ = {
+			isa = PBXGroup;
+			children = (
+				F100667918EF1E4900F9EF2C /* FRAOathMechanismCell.h */,
+				F100667A18EF1E4900F9EF2C /* FRAOathMechanismCell.m */,
+				44695F601CA0ADAB00680799 /* FRAOathMechanism.h */,
+				44695F611CA0ADAB00680799 /* FRAOathMechanism.m */,
+				44695F641CA0AE4300680799 /* FRAOathCode.h */,
+				44695F651CA0AE4300680799 /* FRAOathCode.m */,
+			);
+			name = OATH;
+			sourceTree = "<group>";
+		};
+		44695F561C9F5ADB00680799 /* Identity */ = {
+			isa = PBXGroup;
+			children = (
+				44695F581C9F6DD900680799 /* FRAIdentity.h */,
+				44695F591C9F6DD900680799 /* FRAIdentity.m */,
+			);
+			name = Identity;
+			sourceTree = "<group>";
+		};
+		44695F5E1CA0AC5F00680799 /* Mechanisms */ = {
+			isa = PBXGroup;
+			children = (
+				4459044D1CA2A84A00DA3979 /* OATH */,
+				44695F811CA17DD300680799 /* FRAMechanism.h */,
+			);
+			name = Mechanisms;
+			sourceTree = "<group>";
+		};
+		44695F6A1CA0B37100680799 /* Identity */ = {
+			isa = PBXGroup;
+			children = (
+				44695F5C1C9F70C100680799 /* FRAIdentityTests.m */,
+			);
+			name = Identity;
+			sourceTree = "<group>";
+		};
+		44695F6B1CA0B37F00680799 /* Mechanisms */ = {
+			isa = PBXGroup;
+			children = (
+				4459044C1CA2A83000DA3979 /* OATH */,
+			);
+			name = Mechanisms;
+			sourceTree = "<group>";
+		};
+		44695F771CA0B9E800680799 /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				44695F781CA0BA0600680799 /* FRAIdentityDatabase.h */,
+				44695F791CA0BA0600680799 /* FRAIdentityDatabase.m */,
+			);
+			name = Storage;
+			sourceTree = "<group>";
+		};
+		44695F7B1CA1709B00680799 /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				44695F7C1CA170B000680799 /* FRAIdentityDatabaseTests.m */,
+			);
+			name = Storage;
+			sourceTree = "<group>";
+		};
 		E1C725F81AEE7CBB00388026 /* Unit Tests */ = {
 			isa = PBXGroup;
 			children = (
+				44695F7B1CA1709B00680799 /* Storage */,
+				44695F6B1CA0B37F00680799 /* Mechanisms */,
+				44695F6A1CA0B37100680799 /* Identity */,
 				E1C7260C1AEE833400388026 /* Supporting Files */,
 				E1C725F91AEE7D0300388026 /* base32test.m */,
-				E1281A311AF908EF00C22E2B /* Tokentest.m */,
 			);
 			name = "Unit Tests";
 			sourceTree = "<group>";
@@ -170,6 +255,9 @@
 		F17A860617EC12670098E7F3 /* Authenticator */ = {
 			isa = PBXGroup;
 			children = (
+				44695F771CA0B9E800680799 /* Storage */,
+				44695F5E1CA0AC5F00680799 /* Mechanisms */,
+				44695F561C9F5ADB00680799 /* Identity */,
 				E164F3C71ADE9CAF00A440B3 /* forgerock-logo.png */,
 				E164F3C51ADE9CA800A440B3 /* forgerock-logo-text.png */,
 				F18E16F118F2603800722FE7 /* qrcode.png */,
@@ -182,18 +270,10 @@
 				F18E16F718F3D1F100722FE7 /* CollectionViewController.m */,
 				F1030ED01818322000E478F7 /* CircleProgressView.h */,
 				F1030ED11818322000E478F7 /* CircleProgressView.m */,
-				F100667918EF1E4900F9EF2C /* TokenCell.h */,
-				F100667A18EF1E4900F9EF2C /* TokenCell.m */,
 				F109DBE818412A2300548A3E /* QRCodeScanViewController.h */,
 				F109DBE918412A2300548A3E /* QRCodeScanViewController.m */,
 				F1AD9C6C191052B10023501C /* URLImageView.h */,
 				F1AD9C6D191052B10023501C /* URLImageView.m */,
-				F15300441801BCD900A0E179 /* Token.h */,
-				F15300451801BCD900A0E179 /* Token.m */,
-				F1E7BF8718E9C85400C2DC82 /* TokenCode.h */,
-				F1E7BF8818E9C85400C2DC82 /* TokenCode.m */,
-				F109DBED1841562600548A3E /* TokenStore.h */,
-				F109DBEE1841562600548A3E /* TokenStore.m */,
 				F15300421801BA1D00A0E179 /* base32.h */,
 				F15300401801B9DF00A0E179 /* base32.c */,
 				F17A861B17EC12670098E7F3 /* Images.xcassets */,
@@ -313,18 +393,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F1E7BF8918E9C85400C2DC82 /* TokenCode.m in Sources */,
-				F109DBEF1841562600548A3E /* TokenStore.m in Sources */,
 				F18E16FC18F47D3E00722FE7 /* BlockActionSheet.m in Sources */,
 				F18E16F818F3D1F100722FE7 /* CollectionViewController.m in Sources */,
-				F15300461801BCD900A0E179 /* Token.m in Sources */,
+				44695F621CA0ADAB00680799 /* FRAOathMechanism.m in Sources */,
 				F15300431801BB8800A0E179 /* base32.c in Sources */,
-				F100667B18EF1E4900F9EF2C /* TokenCell.m in Sources */,
+				F100667B18EF1E4900F9EF2C /* FRAOathMechanismCell.m in Sources */,
+				44695F661CA0AE4300680799 /* FRAOathCode.m in Sources */,
 				F1AD9C6E191052B10023501C /* URLImageView.m in Sources */,
 				F17A861117EC12670098E7F3 /* AppDelegate.m in Sources */,
 				F1030ED21818322000E478F7 /* CircleProgressView.m in Sources */,
+				44695F7A1CA0BA0600680799 /* FRAIdentityDatabase.m in Sources */,
 				F17A860D17EC12670098E7F3 /* main.m in Sources */,
 				F109DBEA18412A2300548A3E /* QRCodeScanViewController.m in Sources */,
+				44695F5A1C9F6DD900680799 /* FRAIdentity.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -332,9 +413,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E1281A321AF908EF00C22E2B /* Tokentest.m in Sources */,
+				44695F631CA0ADAB00680799 /* FRAOathMechanism.m in Sources */,
+				44695F5D1C9F70C100680799 /* FRAIdentityTests.m in Sources */,
 				E16458491AEE8E8D00D1740F /* base32.c in Sources */,
+				44695F7D1CA170B000680799 /* FRAIdentityDatabaseTests.m in Sources */,
+				44695F671CA0AE4300680799 /* FRAOathCode.m in Sources */,
 				E1C725FA1AEE7D0300388026 /* base32test.m in Sources */,
+				44695F5B1C9F6DD900680799 /* FRAIdentity.m in Sources */,
+				44695F691CA0B1F600680799 /* FRAOathMechanismTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

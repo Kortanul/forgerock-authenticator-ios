@@ -12,12 +12,28 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2016 ForgeRock AS.
- *
- * Portions Copyright 2013 Nathaniel McCallum, Red Hat
  */
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+#import <Foundation/Foundation.h>
+@class FRAIdentity;
 
-@property (strong, nonatomic) UIWindow *window;
+/*!
+ * A mechanism used for authentication.
+ * Encapsulates the related settings, as well as an owning Identity
+ */
+@protocol FRAMechanism <NSObject>
+
+/*!
+ * The storage ID of this OATH mechanism.
+ */
+@property (nonatomic) NSInteger uid;
+/*!
+ * The version number of this OATH mechanism.
+ */
+@property (nonatomic, readonly) NSInteger version;
+/*!
+ * The identity to which this OATH mechanism is registered.
+ */
+@property (nonatomic, readonly) FRAIdentity* owner;
 
 @end

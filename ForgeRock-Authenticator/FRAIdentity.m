@@ -12,12 +12,23 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2016 ForgeRock AS.
- *
- * Portions Copyright 2013 Nathaniel McCallum, Red Hat
  */
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+#import "FRAIdentity.h"
 
-@property (strong, nonatomic) UIWindow *window;
+@implementation FRAIdentity
+
+- (id)initWithAccountName:(NSString*)accountName issuer:(NSString*)issuer image:(NSURL*)image {
+    if (self = [super init]) {
+        _accountName = accountName;
+        _issuer = issuer;
+        _image = image;
+    }
+    return self;
+}
+
++ (FRAIdentity*)identityWithAccountName:(NSString*)accountName issuer:(NSString*)issuer image:(NSURL*)image {
+    return [[FRAIdentity alloc] initWithAccountName:accountName issuer:issuer image:image];
+}
 
 @end
