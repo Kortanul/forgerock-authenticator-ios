@@ -64,7 +64,7 @@
  * @param url is the entire URL to parse.
  * @return instantiated instance or nil if a problem occurred.
  */
-- (id)initWithURL:(NSURL*)url;
+- (instancetype)initWithURL:(NSURL*)url;
 /*!
  * Initializer which parses an OATH URL String to extract all configuration detail.
  *
@@ -79,6 +79,6 @@
  * @param url is the entire URL to parse.
  * @return instantiated instance or nil if a problem occurred.
  */
-- (id)initWithString:(NSString*)string;
+- (instancetype)initWithString:(NSString*)string;
 
 @end

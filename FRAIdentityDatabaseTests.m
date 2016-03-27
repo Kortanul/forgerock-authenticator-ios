@@ -32,7 +32,7 @@ FRAOathMechanism* mechanism;
 - (void)setUp {
     [super setUp];
     database = [[FRAIdentityDatabase alloc] init];
-    identity = [FRAIdentity identityWithAccountName:@"demo" issuer:@"Forgerock" image:[NSURL URLWithString:@"https://forgerock.org/ico/favicon-32x32.png"]];
+    identity = [FRAIdentity identityWithAccountName:@"demo" issuedBy:@"Forgerock" withImage:[NSURL URLWithString:@"https://forgerock.org/ico/favicon-32x32.png"]];
     mechanism = [[FRAOathMechanism alloc] initWithString:@"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0"];
 }
 

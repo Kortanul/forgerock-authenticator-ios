@@ -14,21 +14,30 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import "FRAIdentity.h"
+#import <UIKit/UIKit.h>
 
-@implementation FRAIdentity
+/*!
+ * Custom UITableViewCell for Notifications tab UITableView.
+ *
+ * This class exists to allow easy access to the cell's UI elements.
+ */
+@interface FRANotificationTableViewCell : UITableViewCell
 
-- (instancetype)initWithAccountName:(NSString*)accountName issuedBy:(NSString*)issuer withImage:(NSURL*)image {
-    if (self = [super init]) {
-        _accountName = accountName;
-        _issuer = issuer;
-        _image = image;
-    }
-    return self;
-}
-
-+ (instancetype)identityWithAccountName:(NSString*)accountName issuedBy:(NSString*)issuer withImage:(NSURL*)image {
-    return [[FRAIdentity alloc] initWithAccountName:accountName issuedBy:issuer withImage:image];
-}
+/*!
+ * The UIImageView in which the notification issuer's icon will be displayed.
+ */
+@property (weak, nonatomic) IBOutlet UIImageView *image;
+/*!
+ * The UILabel in which the issuer's name will be displayed.
+ */
+@property (weak, nonatomic) IBOutlet UILabel *issuer;
+/*!
+ * The UILabel in which the notification summary will be displayed.
+ */
+@property (weak, nonatomic) IBOutlet UILabel *shortDescription;
+/*!
+ * The UILabel in which the notification time will be displayed.
+ */
+@property (weak, nonatomic) IBOutlet UILabel *time;
 
 @end

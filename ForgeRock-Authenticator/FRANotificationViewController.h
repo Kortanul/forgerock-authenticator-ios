@@ -14,21 +14,26 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import "FRAIdentity.h"
+#import <UIKit/UIKit.h>
 
-@implementation FRAIdentity
+/*!
+ * Controller for Notification view.
+ */
+@interface FRANotificationViewController : UIViewController
 
-- (instancetype)initWithAccountName:(NSString*)accountName issuedBy:(NSString*)issuer withImage:(NSURL*)image {
-    if (self = [super init]) {
-        _accountName = accountName;
-        _issuer = issuer;
-        _image = image;
-    }
-    return self;
-}
+/*!
+ * The UISlider used to authorize the requested action.
+ */
+@property (weak, nonatomic) IBOutlet UISlider *authorizeSlider;
 
-+ (instancetype)identityWithAccountName:(NSString*)accountName issuedBy:(NSString*)issuer withImage:(NSURL*)image {
-    return [[FRAIdentity alloc] initWithAccountName:accountName issuedBy:issuer withImage:image];
-}
+/*!
+ * The callback used to permit the requested authorization requested.
+ */
+- (IBAction)authorize:(id)sender;
+
+/*!
+ * The callback used to deny the requested authorization requested.
+ */
+- (IBAction)dismiss:(id)sender;
 
 @end

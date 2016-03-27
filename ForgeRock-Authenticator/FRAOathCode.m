@@ -35,7 +35,7 @@ static uint64_t currentTimeInMilli() {
     uint64_t endTime;
 }
 
-- (id)initWithCode:(NSString*)code startTime:(time_t)start endTime:(time_t)end {
+- (instancetype)initWithCode:(NSString*)code startTime:(time_t)start endTime:(time_t)end {
     codeText = code;
     startTime = start * 1000;
     endTime = end * 1000;
@@ -43,7 +43,7 @@ static uint64_t currentTimeInMilli() {
     return self;
 }
 
-- (id)initWithCode:(NSString*)code startTime:(time_t)start endTime:(time_t)end nextTokenCode:(FRAOathCode*)next {
+- (instancetype)initWithCode:(NSString*)code startTime:(time_t)start endTime:(time_t)end nextTokenCode:(FRAOathCode*)next {
     self = [self initWithCode:code startTime:start endTime:end];
     nextCode = next;
     return self;

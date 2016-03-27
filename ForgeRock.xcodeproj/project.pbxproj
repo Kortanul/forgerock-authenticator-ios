@@ -17,6 +17,10 @@
 		44695F691CA0B1F600680799 /* FRAOathMechanismTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 44695F681CA0B1F600680799 /* FRAOathMechanismTests.m */; };
 		44695F7A1CA0BA0600680799 /* FRAIdentityDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 44695F791CA0BA0600680799 /* FRAIdentityDatabase.m */; };
 		44695F7D1CA170B000680799 /* FRAIdentityDatabaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 44695F7C1CA170B000680799 /* FRAIdentityDatabaseTests.m */; };
+		449FD43C1CAAC9FC00A9BF99 /* FRAAccountsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 449FD43B1CAAC9FC00A9BF99 /* FRAAccountsTableViewController.m */; };
+		44B744571CAAA82300A83AF1 /* FRANotificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44B744561CAAA82300A83AF1 /* FRANotificationViewController.m */; };
+		44BC41821CA97DD6000931F3 /* FRANotificationsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44BC41811CA97DD6000931F3 /* FRANotificationsTableViewController.m */; };
+		44BC41851CA9DC12000931F3 /* FRANotificationTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 44BC41841CA9DC12000931F3 /* FRANotificationTableViewCell.m */; };
 		E16458491AEE8E8D00D1740F /* base32.c in Sources */ = {isa = PBXBuildFile; fileRef = F15300401801B9DF00A0E179 /* base32.c */; };
 		E164F3C61ADE9CA800A440B3 /* forgerock-logo-text.png in Resources */ = {isa = PBXBuildFile; fileRef = E164F3C51ADE9CA800A440B3 /* forgerock-logo-text.png */; };
 		E164F3C81ADE9CAF00A440B3 /* forgerock-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = E164F3C71ADE9CAF00A440B3 /* forgerock-logo.png */; };
@@ -66,6 +70,14 @@
 		44695F791CA0BA0600680799 /* FRAIdentityDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAIdentityDatabase.m; sourceTree = "<group>"; };
 		44695F7C1CA170B000680799 /* FRAIdentityDatabaseTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAIdentityDatabaseTests.m; sourceTree = "<group>"; };
 		44695F811CA17DD300680799 /* FRAMechanism.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAMechanism.h; sourceTree = "<group>"; };
+		449FD43A1CAAC9FC00A9BF99 /* FRAAccountsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAAccountsTableViewController.h; sourceTree = "<group>"; };
+		449FD43B1CAAC9FC00A9BF99 /* FRAAccountsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAAccountsTableViewController.m; sourceTree = "<group>"; };
+		44B744551CAAA82300A83AF1 /* FRANotificationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRANotificationViewController.h; sourceTree = "<group>"; };
+		44B744561CAAA82300A83AF1 /* FRANotificationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRANotificationViewController.m; sourceTree = "<group>"; };
+		44BC41801CA97DD6000931F3 /* FRANotificationsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRANotificationsTableViewController.h; sourceTree = "<group>"; };
+		44BC41811CA97DD6000931F3 /* FRANotificationsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRANotificationsTableViewController.m; sourceTree = "<group>"; };
+		44BC41831CA9DC12000931F3 /* FRANotificationTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRANotificationTableViewCell.h; sourceTree = "<group>"; };
+		44BC41841CA9DC12000931F3 /* FRANotificationTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRANotificationTableViewCell.m; sourceTree = "<group>"; };
 		E164F3C51ADE9CA800A440B3 /* forgerock-logo-text.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forgerock-logo-text.png"; sourceTree = "<group>"; };
 		E164F3C71ADE9CAF00A440B3 /* forgerock-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forgerock-logo.png"; sourceTree = "<group>"; };
 		E1C725F91AEE7D0300388026 /* base32test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = base32test.m; path = "unit-tests/base32test.m"; sourceTree = "<group>"; };
@@ -200,6 +212,28 @@
 			name = Storage;
 			sourceTree = "<group>";
 		};
+		449FD4391CAAC74200A9BF99 /* Accounts */ = {
+			isa = PBXGroup;
+			children = (
+				449FD43A1CAAC9FC00A9BF99 /* FRAAccountsTableViewController.h */,
+				449FD43B1CAAC9FC00A9BF99 /* FRAAccountsTableViewController.m */,
+			);
+			name = Accounts;
+			sourceTree = "<group>";
+		};
+		44BC417F1CA97D8A000931F3 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				44BC41801CA97DD6000931F3 /* FRANotificationsTableViewController.h */,
+				44BC41811CA97DD6000931F3 /* FRANotificationsTableViewController.m */,
+				44BC41831CA9DC12000931F3 /* FRANotificationTableViewCell.h */,
+				44BC41841CA9DC12000931F3 /* FRANotificationTableViewCell.m */,
+				44B744551CAAA82300A83AF1 /* FRANotificationViewController.h */,
+				44B744561CAAA82300A83AF1 /* FRANotificationViewController.m */,
+			);
+			name = Notifications;
+			sourceTree = "<group>";
+		};
 		E1C725F81AEE7CBB00388026 /* Unit Tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -255,6 +289,8 @@
 		F17A860617EC12670098E7F3 /* Authenticator */ = {
 			isa = PBXGroup;
 			children = (
+				449FD4391CAAC74200A9BF99 /* Accounts */,
+				44BC417F1CA97D8A000931F3 /* Notifications */,
 				44695F771CA0B9E800680799 /* Storage */,
 				44695F5E1CA0AC5F00680799 /* Mechanisms */,
 				44695F561C9F5ADB00680799 /* Identity */,
@@ -338,7 +374,7 @@
 		F17A85F517EC12670098E7F3 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = ForgeRock;
 				TargetAttributes = {
 					F17A862017EC12670098E7F3 = {
@@ -393,6 +429,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				44BC41821CA97DD6000931F3 /* FRANotificationsTableViewController.m in Sources */,
+				44BC41851CA9DC12000931F3 /* FRANotificationTableViewCell.m in Sources */,
 				F18E16FC18F47D3E00722FE7 /* BlockActionSheet.m in Sources */,
 				F18E16F818F3D1F100722FE7 /* CollectionViewController.m in Sources */,
 				44695F621CA0ADAB00680799 /* FRAOathMechanism.m in Sources */,
@@ -400,10 +438,12 @@
 				F100667B18EF1E4900F9EF2C /* FRAOathMechanismCell.m in Sources */,
 				44695F661CA0AE4300680799 /* FRAOathCode.m in Sources */,
 				F1AD9C6E191052B10023501C /* URLImageView.m in Sources */,
+				44B744571CAAA82300A83AF1 /* FRANotificationViewController.m in Sources */,
 				F17A861117EC12670098E7F3 /* AppDelegate.m in Sources */,
 				F1030ED21818322000E478F7 /* CircleProgressView.m in Sources */,
 				44695F7A1CA0BA0600680799 /* FRAIdentityDatabase.m in Sources */,
 				F17A860D17EC12670098E7F3 /* main.m in Sources */,
+				449FD43C1CAAC9FC00A9BF99 /* FRAAccountsTableViewController.m in Sources */,
 				F109DBEA18412A2300548A3E /* QRCodeScanViewController.m in Sources */,
 				44695F5A1C9F6DD900680799 /* FRAIdentity.m in Sources */,
 			);
@@ -464,6 +504,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -527,6 +568,7 @@
 				GCC_PREFIX_HEADER = "ForgeRock-Authenticator/ForgeRock-Prefix.pch";
 				INFOPLIST_FILE = "ForgeRock-Authenticator/ForgeRock-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.forgerock.authenticator;
 				PRODUCT_NAME = ForgeRock;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
@@ -542,6 +584,7 @@
 				GCC_PREFIX_HEADER = "ForgeRock-Authenticator/ForgeRock-Prefix.pch";
 				INFOPLIST_FILE = "ForgeRock-Authenticator/ForgeRock-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.forgerock.authenticator;
 				PRODUCT_NAME = ForgeRock;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
@@ -552,11 +595,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/ForgeRock.app/ForgeRock";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "unit-tests/ForgeRockTests-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -575,11 +614,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/ForgeRock.app/ForgeRock";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "unit-tests/ForgeRockTests-Prefix.pch";
 				INFOPLIST_FILE = "unit-tests/ForgeRockTests-Info.plist";

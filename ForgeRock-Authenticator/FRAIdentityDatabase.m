@@ -36,7 +36,7 @@
 
 static FRAIdentityDatabase* singleton = nil;
 
-+ (FRAIdentityDatabase*)singleton {
++ (instancetype)singleton {
     @synchronized(self) {
         if (singleton == nil) {
             singleton = [[FRAIdentityDatabase alloc] init];
@@ -49,7 +49,7 @@ static FRAIdentityDatabase* singleton = nil;
     return singleton;
 }
 
-- (id)init {
+- (instancetype)init {
     if (self = [super init]) {
         identitiesList = [[NSMutableArray alloc] init];
         mechanismsList = [[NSMutableArray alloc] init];

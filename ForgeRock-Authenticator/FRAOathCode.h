@@ -32,7 +32,7 @@
  * @param endTime the end-time for this one-time-password code.
  * @return instantiated instance or nil if a problem occurred.
  */
-- (id)initWithCode:(NSString*)code startTime:(time_t)start endTime:(time_t)end;
+- (instancetype)initWithCode:(NSString*)code startTime:(time_t)start endTime:(time_t)end;
 
 /*!
  * Initializer for Time-based One-Time-Password.
@@ -43,7 +43,7 @@
  * @param nextTokenCode the TOTP code for the next time period.
  * @return instantiated instance or nil if a problem occurred.
  */
-- (id)initWithCode:(NSString*)code startTime:(time_t)start endTime:(time_t)end nextTokenCode:(FRAOathCode*)next;
+- (instancetype)initWithCode:(NSString*)code startTime:(time_t)start endTime:(time_t)end nextTokenCode:(FRAOathCode*)next;
 
 /*!
  * The current code. If the current code is an elapsed TOTP, then the next code is returned.

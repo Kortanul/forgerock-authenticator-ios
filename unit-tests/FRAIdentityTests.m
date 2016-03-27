@@ -38,7 +38,7 @@
     NSURL* image = [NSURL URLWithString:@"https://forgerock.org/ico/favicon-32x32.png"];
     
     // When
-    FRAIdentity* identity = [FRAIdentity identityWithAccountName:accountName issuer:issuer image:image];
+    FRAIdentity* identity = [FRAIdentity identityWithAccountName:accountName issuedBy:issuer withImage:image];
     
     // Then
     XCTAssertEqualObjects(identity.issuer, issuer);

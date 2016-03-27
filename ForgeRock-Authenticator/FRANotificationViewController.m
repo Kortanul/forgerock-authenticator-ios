@@ -14,21 +14,18 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import "FRAIdentity.h"
+#import "FRANotificationViewController.h"
 
-@implementation FRAIdentity
+@implementation FRANotificationViewController
 
-- (instancetype)initWithAccountName:(NSString*)accountName issuedBy:(NSString*)issuer withImage:(NSURL*)image {
-    if (self = [super init]) {
-        _accountName = accountName;
-        _issuer = issuer;
-        _image = image;
-    }
-    return self;
+- (IBAction)authorize:(id)sender {
+    NSLog(@"Permit requested action");
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-+ (instancetype)identityWithAccountName:(NSString*)accountName issuedBy:(NSString*)issuer withImage:(NSURL*)image {
-    return [[FRAIdentity alloc] initWithAccountName:accountName issuedBy:issuer withImage:image];
+- (IBAction)dismiss:(id)sender {
+    NSLog(@"Deny requested action");
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

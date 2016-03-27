@@ -171,7 +171,7 @@ static NSString* getHOTP(CCHmacAlgorithm algo, uint8_t digits, NSData* key, uint
     uint32_t period;
 }
 
-- (id)initWithURL:(NSURL*)url {
+- (instancetype)initWithURL:(NSURL*)url {
     if (!(self = [super init])) {
         return nil;
     }
@@ -250,12 +250,12 @@ static NSString* getHOTP(CCHmacAlgorithm algo, uint8_t digits, NSData* key, uint
     NSURL* _image = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"forgerock-logo" ofType:@"png"]];
     
     // Set owner
-    _owner = [FRAIdentity identityWithAccountName:_label issuer:_issuer image:_image];
+    _owner = [FRAIdentity identityWithAccountName:_label issuedBy:_issuer withImage:_image];
     
     return self;
 }
 
-- (id)initWithString:(NSString*)string {
+- (instancetype)initWithString:(NSString*)string {
     return [self initWithURL:[[NSURL alloc] initWithString:string]];
 }
 

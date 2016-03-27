@@ -42,11 +42,11 @@
 /*!
  * Creates a new identity object with the provided property values.
  */
-- (FRAIdentity*)initWithAccountName:(NSString*)accountName issuer:(NSString*)issuer image:(NSURL*)image;
+- (instancetype)initWithAccountName:(NSString*)accountName issuedBy:(NSString*)issuer withImage:(NSURL*)image;
 
 /*!
  * Creates a new identity object with the provided property values.
  */
-+ (FRAIdentity*)identityWithAccountName:(NSString*)accountName issuer:(NSString*)issuer image:(NSURL*)image;
++ (instancetype)identityWithAccountName:(NSString*)accountName issuedBy:(NSString*)issuer withImage:(NSURL*)image;
 
 @end

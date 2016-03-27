@@ -14,21 +14,11 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import "FRAIdentity.h"
+#import <UIKit/UIKit.h>
 
-@implementation FRAIdentity
-
-- (instancetype)initWithAccountName:(NSString*)accountName issuedBy:(NSString*)issuer withImage:(NSURL*)image {
-    if (self = [super init]) {
-        _accountName = accountName;
-        _issuer = issuer;
-        _image = image;
-    }
-    return self;
-}
-
-+ (instancetype)identityWithAccountName:(NSString*)accountName issuedBy:(NSString*)issuer withImage:(NSURL*)image {
-    return [[FRAIdentity alloc] initWithAccountName:accountName issuedBy:issuer withImage:image];
-}
+/*!
+ * Controller for Accounts tab's table-view.
+ */
+@interface FRAAccountsTableViewController : UITableViewController
 
 @end

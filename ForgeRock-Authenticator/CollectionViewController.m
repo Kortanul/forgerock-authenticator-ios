@@ -29,9 +29,9 @@
 
 @property (nonatomic, strong) UIPopoverController* popover;
 
-- (FRAOathMechanism *)mechanismForTokenCell:(FRAOathMechanismCell*)cell indexPath:(NSIndexPath *)indexPath;
-- (void)generateTokenForTokenCell:(FRAOathMechanismCell *)cell mechanism:(FRAOathMechanism *)mechanism;
-- (void)showEditActionSheetForTokenCell:(FRAOathMechanismCell *)cell indexPath:(NSIndexPath *)indexPath mechanism:(FRAOathMechanism *)mechanism;
+- (FRAOathMechanism *)mechanismForTokenAtCell:(FRAOathMechanismCell*)cell withIndexPath:(NSIndexPath *)indexPath;
+- (void)generateCodeForTokenAtCell:(FRAOathMechanismCell *)cell usingMechanism:(FRAOathMechanism *)mechanism;
+- (void)showEditActionSheetForTokenAtCell:(FRAOathMechanismCell *)cell withIndexPath:(NSIndexPath *)indexPath usingMechanism:(FRAOathMechanism *)mechanism;
 
 @end
 
@@ -104,25 +104,26 @@
 
     // Get the current cell and mechanism
     FRAOathMechanismCell* cell = (FRAOathMechanismCell*)[collectionView cellForItemAtIndexPath:indexPath];
-    FRAOathMechanism* mechanism = [self mechanismForTokenCell:cell indexPath:indexPath];
+    FRAOathMechanism* mechanism = [self mechanismForTokenAtCell:cell withIndexPath:indexPath];
     
     if (self.navigationItem.leftBarButtonItem.style == UIBarButtonItemStylePlain) {
         // If we are not in edit mode, generate the token.
-        [self generateTokenForTokenCell:cell mechanism:mechanism];
+        [self generateCodeForTokenAtCell:cell usingMechanism:mechanism];
     } else {
         // If we are in edit mode, show the action sheet for deletion.
-        [self showEditActionSheetForTokenCell:cell indexPath:indexPath mechanism:mechanism];
+        [self showEditActionSheetForTokenAtCell:cell withIndexPath:indexPath usingMechanism:mechanism];
     }
 }
-    
-- (FRAOathMechanism *)mechanismForTokenCell:(FRAOathMechanismCell*)cell indexPath:(NSIndexPath *)indexPath {
+
+- (FRAOathMechanism *)mechanismForTokenAtCell:(FRAOathMechanismCell*)cell withIndexPath:(NSIndexPath *)indexPath {
     if (cell == nil) {
         return nil;
     }
     return [database mechanismWithId:cell.mechanismUid];
 }
 
-- (void)generateTokenForTokenCell:(FRAOathMechanismCell *)cell mechanism:(FRAOathMechanism *)mechanism {
+
+- (void)generateCodeForTokenAtCell:(FRAOathMechanismCell *)cell usingMechanism:(FRAOathMechanism *)mechanism {
     // Get the code and save the mechanism state.
     FRAOathCode* oathCode = mechanism.code;
     [database updateMechanism:mechanism];
@@ -137,7 +138,7 @@
     }
 }
 
-- (void)showEditActionSheetForTokenCell:(FRAOathMechanismCell *)cell indexPath:(NSIndexPath *)indexPath mechanism:(FRAOathMechanism *)mechanism {
+- (void)showEditActionSheetForTokenAtCell:(FRAOathMechanismCell *)cell withIndexPath:(NSIndexPath *)indexPath usingMechanism:(FRAOathMechanism *)mechanism {
     // Create the action sheet.
     BlockActionSheet* as = [[BlockActionSheet alloc] init];
     
