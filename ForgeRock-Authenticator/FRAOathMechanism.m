@@ -252,6 +252,9 @@ static NSString* getHOTP(CCHmacAlgorithm algo, uint8_t digits, NSData* key, uint
     // Set owner
     _owner = [FRAIdentity identityWithAccountName:_label issuedBy:_issuer withImage:_image];
     
+    // Set uid
+    _uid = -1;
+    
     return self;
 }
 

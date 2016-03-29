@@ -22,10 +22,6 @@
 @interface CollectionViewController : UICollectionViewController
 
 /*!
- * Responds to user clicking QR 'scan' icon.
- */
-- (IBAction)scanClicked:(id)sender;
-/*!
  * Responds to user clicking 'edit' icon.
  */
 - (IBAction)editClicked:(id)sender;

@@ -29,7 +29,7 @@
 /*!
  * The storage ID of the OATH mechanism shown by this cell.
  */
-@property (nonatomic) NSInteger mechanismUid;
+@property (nonatomic) NSInteger mechanismId;
 /*!
  * Value object encapsulating state relating to an OATH code.
  */

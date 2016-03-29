@@ -32,8 +32,8 @@ FRAOathMechanism* mechanism;
 - (void)setUp {
     [super setUp];
     database = [[FRAIdentityDatabase alloc] init];
-    identity = [FRAIdentity identityWithAccountName:@"demo" issuedBy:@"Forgerock" withImage:[NSURL URLWithString:@"https://forgerock.org/ico/favicon-32x32.png"]];
     mechanism = [[FRAOathMechanism alloc] initWithString:@"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0"];
+    identity = mechanism.owner;
 }
 
 - (void)tearDown {
@@ -51,6 +51,19 @@ FRAOathMechanism* mechanism;
     XCTAssertEqualObjects([database identities], @[identity]);
 }
 
+- (void)testCanFindIdentityById {
+    // Given
+    XCTAssertEqualObjects([database identities], @[]);
+    [database addMechanism:mechanism];
+    XCTAssertEqual(identity.uid, 0);
+    
+    // When
+    FRAIdentity* foundIdentity = [database identityWithId:identity.uid];
+    
+    // Then
+    XCTAssertEqual(identity, foundIdentity);
+}
+
 - (void)testCanFindIdentityByIssuerAndLabel {
     // Given
     [database addIdentity:identity];
@@ -60,6 +73,20 @@ FRAOathMechanism* mechanism;
     
     // Then
     XCTAssertTrue(identity == result);
+}
+
+- (void)testCanRemoveIdentity {
+    // Given
+    [database addMechanism:mechanism];
+    
+    // When
+    [database removeIdentityWithId:identity.uid];
+    
+    // Then
+    NSArray* foundMechanisms = [database mechanismsWithOwner:identity];
+    XCTAssertEqualObjects(foundMechanisms, @[]);
+    NSArray* foundIdentities = [database identities];
+    XCTAssertEqualObjects(foundIdentities, @[]);
 }
 
 - (void)testCanFindMechanismByOwner {
@@ -74,14 +101,14 @@ FRAOathMechanism* mechanism;
     XCTAssertEqualObjects(foundMechanisms, @[mechanism]);
 }
 
-- (void)testCanFindMechanismByRowId {
+- (void)testCanFindMechanismById {
     // Given
     XCTAssertEqualObjects([database mechanismsWithOwner:identity], @[]);
     [database addMechanism:mechanism];
-    XCTAssertEqual(mechanism.uid, 1);
+    XCTAssertEqual(mechanism.uid, 0);
     
     // When
-    FRAOathMechanism* foundMechanism = [database mechanismWithId:1];
+    FRAOathMechanism* foundMechanism = [database mechanismWithId:mechanism.uid];
     
     // Then
     XCTAssertEqual(mechanism, foundMechanism);
@@ -109,7 +136,7 @@ FRAOathMechanism* mechanism;
     
     // When
     [database updateMechanism:mechanismCopy];
-    FRAOathMechanism* foundMechanism = [database mechanismWithId:1];
+    FRAOathMechanism* foundMechanism = [database mechanismWithId:mechanism.uid];
     
     // Then
     XCTAssertNotEqual(mechanism, foundMechanism);

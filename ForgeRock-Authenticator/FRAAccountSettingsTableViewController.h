@@ -14,22 +14,19 @@
  * Copyright 2016 ForgeRock AS.
  */
 
+#import <UIKit/UIKit.h>
 #import "FRAIdentity.h"
 
-@implementation FRAIdentity
+/*!
+ * Controller for Account Settings table-view.
+ */
+@interface FRAAccountSettingsTableViewController : UITableViewController
 
-- (instancetype)initWithAccountName:(NSString*)accountName issuedBy:(NSString*)issuer withImage:(NSURL*)image {
-    if (self = [super init]) {
-        _uid = -1;
-        _accountName = accountName;
-        _issuer = issuer;
-        _image = image;
-    }
-    return self;
-}
+/*!
+ * The identity displayed by this view controller.
+ */
+@property (nonatomic) FRAIdentity* identity;
 
-+ (instancetype)identityWithAccountName:(NSString*)accountName issuedBy:(NSString*)issuer withImage:(NSURL*)image {
-    return [[FRAIdentity alloc] initWithAccountName:accountName issuedBy:issuer withImage:image];
-}
+- (IBAction)deleteAccountPressed:(id)sender;
 
 @end

@@ -53,6 +53,13 @@
 - (NSArray*)identities;
 
 /*!
+ * Gets the identity identified uniquely by the provided ID.
+ * @param uid The storage id of the identity to get.
+ * @return The identity with the specified storage ID.
+ */
+- (FRAIdentity*)identityWithId:(NSInteger)uid;
+
+/*!
  * Gets the mechanism identified uniquely by the provided ID.
  * @param uid The storage id of the mechanism to get.
  * @return The mechanism with the specified storage ID.
@@ -79,6 +86,12 @@
  * @param id The identity to add.
  */
 - (void)addIdentity:(FRAIdentity*)identity;
+
+/*!
+ * Delete the identity uniquely identified by the specified storage ID.
+ * @param uid The storage ID of the identity to delete.
+ */
+- (void)removeIdentityWithId:(NSInteger)uid;
 
 /*!
  * Add the mechanism to the database. If the owning identity is not yet stored, store that as well.

@@ -12,25 +12,18 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2016 ForgeRock AS.
- *
- * Portions Copyright 2013 Nathaniel McCallum, Red Hat
  */
 
-@import AVFoundation;
-#import <UIKit/UIKit.h>
+#import "FRAAccountTableViewCell.h"
 
-/*!
- * MVC Controller for QR Scan View used for registering authentication mechanisms and account details.
- */
-@interface QRCodeScanViewController : UIViewController <AVCaptureMetadataOutputObjectsDelegate>
+@implementation FRAAccountTableViewCell
 
-/*!
- * Popover controller.
- */
-@property (weak, nonatomic) UIPopoverController *popover;
-/*!
- * AVCaptureSession for capturing camera input.
- */
-@property (strong) AVCaptureSession *session;
+- (void)updateForModelObject:(FRAIdentity*)identity {
+    _identityId = identity.uid;
+    //  _image = ... // TODO: Use URLImageView
+    _issuer.text = identity.issuer;
+    _accountName.text = identity.accountName;
+    [self layoutIfNeeded];
+}
 
 @end

@@ -14,22 +14,34 @@
  * Copyright 2016 ForgeRock AS.
  */
 
+#import <UIKit/UIKit.h>
 #import "FRAIdentity.h"
 
-@implementation FRAIdentity
+/*!
+ * Custom UITableViewCell for Accounts tab UITableView.
+ */
+@interface FRAAccountTableViewCell : UITableViewCell
 
-- (instancetype)initWithAccountName:(NSString*)accountName issuedBy:(NSString*)issuer withImage:(NSURL*)image {
-    if (self = [super init]) {
-        _uid = -1;
-        _accountName = accountName;
-        _issuer = issuer;
-        _image = image;
-    }
-    return self;
-}
+/*!
+ * The storage ID of the identity shown by this cell.
+ */
+@property (nonatomic) NSInteger identityId;
+/*!
+ * The UIImageView in which the issuer's icon will be displayed.
+ */
+@property (weak, nonatomic) IBOutlet UIImageView *image;
+/*!
+ * The UILabel in which the issuer's name will be displayed.
+ */
+@property (weak, nonatomic) IBOutlet UILabel *issuer;
+/*!
+ * The UILabel in which the accoutn name will be displayed.
+ */
+@property (weak, nonatomic) IBOutlet UILabel *accountName;
 
-+ (instancetype)identityWithAccountName:(NSString*)accountName issuedBy:(NSString*)issuer withImage:(NSURL*)image {
-    return [[FRAIdentity alloc] initWithAccountName:accountName issuedBy:issuer withImage:image];
-}
+/*!
+ * Updates UI items to display attributes of the provided model.
+ */
+- (void)updateForModelObject:(FRAIdentity*)identity;
 
 @end

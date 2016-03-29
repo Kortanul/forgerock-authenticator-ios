@@ -52,7 +52,7 @@
     }
 
     self.image.url = mechanism.owner.image;
-    self.mechanismUid = mechanism.uid;
+    self.mechanismId = mechanism.uid;
     self.placeholder.text = [NSString stringWithCharacters:tmp length:sizeof(tmp) / sizeof(unichar)];
     self.outer.hidden = ![mechanism.type isEqualToString:@"totp"];
     self.issuer.text = mechanism.owner.issuer;

@@ -14,22 +14,20 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import "FRAIdentity.h"
+#import <UIKit/UIKit.h>
 
-@implementation FRAIdentity
+/*!
+ * Custom UITableViewCell for Account Setting UITableView.
+ */
+@interface FRAAccountSettingTableViewCell : UITableViewCell
 
-- (instancetype)initWithAccountName:(NSString*)accountName issuedBy:(NSString*)issuer withImage:(NSURL*)image {
-    if (self = [super init]) {
-        _uid = -1;
-        _accountName = accountName;
-        _issuer = issuer;
-        _image = image;
-    }
-    return self;
-}
-
-+ (instancetype)identityWithAccountName:(NSString*)accountName issuedBy:(NSString*)issuer withImage:(NSURL*)image {
-    return [[FRAIdentity alloc] initWithAccountName:accountName issuedBy:issuer withImage:image];
-}
+/*!
+ * The storage ID of the mechanism shown by this cell.
+ */
+@property (nonatomic) NSInteger mechanismId;
+/*!
+ * The UILabel in which the account mechanism's name will be displayed.
+ */
+@property (weak, nonatomic) IBOutlet UILabel *title;
 
 @end

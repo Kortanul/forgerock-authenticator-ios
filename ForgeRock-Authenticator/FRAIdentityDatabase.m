@@ -30,7 +30,8 @@
     NSMutableArray* identitiesList;
     NSMutableArray* mechanismsList;
     NSMutableArray* listeners;
-    NSInteger nextRowid;
+    NSInteger nextIdentityId;
+    NSInteger nextMechanismId;
 
 }
 
@@ -54,7 +55,8 @@ static FRAIdentityDatabase* singleton = nil;
         identitiesList = [[NSMutableArray alloc] init];
         mechanismsList = [[NSMutableArray alloc] init];
         listeners = [[NSMutableArray alloc] init];
-        nextRowid = 1; // Start at 1 rather than 0 so that it's easy to see if a mechanism has already been stored (temp hack)
+        nextIdentityId = 0;
+        nextMechanismId = 0;
     }
     return self;
 }
@@ -82,6 +84,15 @@ static FRAIdentityDatabase* singleton = nil;
     return results;
 }
 
+- (FRAIdentity*)identityWithId:(NSInteger)uid {
+    for (FRAIdentity* identity in identitiesList) {
+        if (identity.uid == uid) {
+            return identity;
+        }
+    }
+    return nil;
+}
+
 - (FRAIdentity*)identityWithIssuer:(NSString*)issuer accountName:(NSString*)accountName {
     for (FRAIdentity* identity in identitiesList) {
         if ([identity.issuer isEqualToString:issuer] && [identity.accountName isEqualToString:accountName]) {
@@ -97,8 +108,22 @@ static FRAIdentityDatabase* singleton = nil;
         return;
     }
     [identitiesList addObject:identity];
+    if (identity.uid == -1) {
+        identity.uid = nextIdentityId;
+        nextIdentityId++;
+    }
     [self onDatabaseChange];
 }
+
+- (void)removeIdentityWithId:(NSInteger)uid {
+    FRAIdentity* identity = [self identityWithId:uid];
+    if (identity) {
+        NSArray* mechanisms = [self mechanismsWithOwner:identity];
+        [mechanismsList removeObjectsInArray:mechanisms];
+        [identitiesList removeObject:identity];
+    }
+}
+
 
 - (BOOL)isIdentityStored:(FRAIdentity*)identity {
     FRAIdentity* existing = [self identityWithIssuer:identity.issuer accountName:identity.accountName];
@@ -115,9 +140,9 @@ static FRAIdentityDatabase* singleton = nil;
     }
     // TODO: Check for duplicate mechanism
     [mechanismsList addObject:mechanism];
-    if (!mechanism.uid) {
-        mechanism.uid = nextRowid;
-        nextRowid++;
+    if (mechanism.uid == -1) {
+        mechanism.uid = nextMechanismId;
+        nextMechanismId++;
     }
     [self onDatabaseChange];
 }

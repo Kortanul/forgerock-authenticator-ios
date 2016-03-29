@@ -12,24 +12,25 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2016 ForgeRock AS.
+ *
+ * Portions Copyright 2013 Nathaniel McCallum, Red Hat
  */
 
-#import "FRAIdentity.h"
+@import AVFoundation;
+#import <UIKit/UIKit.h>
 
-@implementation FRAIdentity
+/*!
+ * MVC Controller for QR Scan View used for registering authentication mechanisms and account details.
+ */
+@interface FRAQRScanViewController : UIViewController <AVCaptureMetadataOutputObjectsDelegate>
 
-- (instancetype)initWithAccountName:(NSString*)accountName issuedBy:(NSString*)issuer withImage:(NSURL*)image {
-    if (self = [super init]) {
-        _uid = -1;
-        _accountName = accountName;
-        _issuer = issuer;
-        _image = image;
-    }
-    return self;
-}
-
-+ (instancetype)identityWithAccountName:(NSString*)accountName issuedBy:(NSString*)issuer withImage:(NSURL*)image {
-    return [[FRAIdentity alloc] initWithAccountName:accountName issuedBy:issuer withImage:image];
-}
+/*!
+ * Popover controller.
+ */
+@property (weak, nonatomic) UIPopoverController *popover;
+/*!
+ * AVCaptureSession for capturing camera input.
+ */
+@property (strong) AVCaptureSession *session;
 
 @end

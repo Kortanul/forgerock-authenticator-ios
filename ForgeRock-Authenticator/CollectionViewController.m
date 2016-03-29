@@ -18,7 +18,7 @@
 
 #import "CollectionViewController.h"
 
-#import "QRCodeScanViewController.h"
+#import "FRAQRScanViewController.h"
 
 #import "BlockActionSheet.h"
 #import "FRAOathMechanismCell.h"
@@ -29,7 +29,7 @@
 
 @property (nonatomic, strong) UIPopoverController* popover;
 
-- (FRAOathMechanism *)mechanismForTokenAtCell:(FRAOathMechanismCell*)cell withIndexPath:(NSIndexPath *)indexPath;
+- (FRAOathMechanism *)mechanismForTokenAtCell:(FRAOathMechanismCell*)cell;
 - (void)generateCodeForTokenAtCell:(FRAOathMechanismCell *)cell usingMechanism:(FRAOathMechanism *)mechanism;
 - (void)showEditActionSheetForTokenAtCell:(FRAOathMechanismCell *)cell withIndexPath:(NSIndexPath *)indexPath usingMechanism:(FRAOathMechanism *)mechanism;
 
@@ -104,9 +104,9 @@
 
     // Get the current cell and mechanism
     FRAOathMechanismCell* cell = (FRAOathMechanismCell*)[collectionView cellForItemAtIndexPath:indexPath];
-    FRAOathMechanism* mechanism = [self mechanismForTokenAtCell:cell withIndexPath:indexPath];
+    FRAOathMechanism* mechanism = [self mechanismForTokenAtCell:cell];
     
-    if (self.navigationItem.leftBarButtonItem.style == UIBarButtonItemStylePlain) {
+    if (self.navigationItem.rightBarButtonItem.style == UIBarButtonItemStylePlain) {
         // If we are not in edit mode, generate the token.
         [self generateCodeForTokenAtCell:cell usingMechanism:mechanism];
     } else {
@@ -115,13 +115,12 @@
     }
 }
 
-- (FRAOathMechanism *)mechanismForTokenAtCell:(FRAOathMechanismCell*)cell withIndexPath:(NSIndexPath *)indexPath {
+- (FRAOathMechanism *)mechanismForTokenAtCell:(FRAOathMechanismCell*)cell {
     if (cell == nil) {
         return nil;
     }
-    return [database mechanismWithId:cell.mechanismUid];
+    return [database mechanismWithId:cell.mechanismId];
 }
-
 
 - (void)generateCodeForTokenAtCell:(FRAOathMechanismCell *)cell usingMechanism:(FRAOathMechanism *)mechanism {
     // Get the code and save the mechanism state.
@@ -178,19 +177,10 @@
     };
 }
 
-- (IBAction)scanClicked:(id)sender {
-    [self performSegueWithIdentifier:@"scanToken" sender:self];
-}
-
 - (IBAction)editClicked:(id)sender {
     UIBarButtonItem* edit = sender;
     [self.collectionView reloadData];
 
-    // Enable/disable the add/scan buttons.
-    for (UIBarButtonItem* i in self.navigationItem.rightBarButtonItems) {
-        [i setEnabled:edit.style != UIBarButtonItemStylePlain];
-    }
-    
     switch (edit.style) {
         case UIBarButtonItemStylePlain:
             edit.title = NSLocalizedString(@"Done", nil);
@@ -219,11 +209,6 @@
     self.collectionView.allowsSelection = YES;
     self.collectionView.allowsMultipleSelection = NO;
     self.collectionView.delegate = self;
-
-    // Setup buttons.
-    id icon = [UIImage imageNamed:@"qrcode.png"];
-    id scan = [[UIBarButtonItem alloc] initWithImage:icon style:UIBarButtonItemStylePlain target:self action:@selector(scanClicked:)];
-    self.navigationItem.rightBarButtonItems = @[scan];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

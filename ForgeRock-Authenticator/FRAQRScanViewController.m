@@ -16,14 +16,14 @@
  * Portions Copyright 2013 Nathaniel McCallum, Red Hat
  */
 
-#import "QRCodeScanViewController.h"
+#import "FRAQRScanViewController.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAOathMechanism.h"
 
-@interface QRCodeScanViewController ()
+@interface FRAQRScanViewController ()
 @end
 
-@implementation QRCodeScanViewController
+@implementation FRAQRScanViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -44,6 +44,10 @@
     [self.view.layer addSublayer:preview];
 
     [self.session startRunning];
+}
+
+-(BOOL)hidesBottomBarWhenPushed {
+    return YES;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
