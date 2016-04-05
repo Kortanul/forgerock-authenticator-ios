@@ -12,27 +12,14 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2016 ForgeRock AS.
- *
- * Portions Copyright 2014 Nathaniel McCallum, Red Hat
  */
 
-#import "BlockActionSheet.h"
+#import "FRAAccountTokenTableViewCell.h"
 
-@interface BlockActionSheet () <UIActionSheetDelegate>
+@implementation FRAAccountTokenTableViewCell
 
-@end
-
-@implementation BlockActionSheet
-
-- (void)setCallback:(void (^)(NSInteger))callback {
-    _callback = callback;
-    if (self.delegate == nil) {
-        self.delegate = self;
-    }
-}
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    self.callback(self.numberOfButtons - 1 - buttonIndex);
+- (IBAction)generateNextCode:(id)sender {
+    [self.delegate generateNextCode];
 }
 
 @end

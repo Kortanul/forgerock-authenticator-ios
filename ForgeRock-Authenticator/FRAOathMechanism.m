@@ -262,23 +262,22 @@ static NSString* getHOTP(CCHmacAlgorithm algo, uint8_t digits, NSData* key, uint
     return [self initWithURL:[[NSURL alloc] initWithString:string]];
 }
 
-- (FRAOathCode*)code {
+- (void)generateNextCode {
     time_t now = time(NULL);
     if (now == (time_t) -1) {
         now = 0;
     }
     if ([_type isEqualToString:@"hotp"]) {
         NSString* code = getHOTP(algo, _digits, key, counter++);
-        return [[FRAOathCode alloc] initWithCode:code startTime:now endTime:now + period];
+        uint64_t startTime = now;
+        uint64_t endTime = startTime + period;
+        _code = [[FRAOathCode alloc] initWithValue:code startTime:startTime endTime:endTime];
+    } if ([_type isEqualToString:@"totp"]) {
+        NSString* code = getHOTP(algo, _digits, key, now / period);
+        uint64_t startTime = now / period * period;
+        uint64_t endTime = startTime + period;
+        _code = [[FRAOathCode alloc] initWithValue:code startTime:startTime endTime:endTime];
     }
-    
-    FRAOathCode* next = [[FRAOathCode alloc] initWithCode:getHOTP(algo, _digits, key, now / period + 1)
-                                                  startTime:now / period * period + period
-                                                    endTime:now / period * period + period + period];
-    return [[FRAOathCode alloc] initWithCode:getHOTP(algo, _digits, key, now / period)
-                                    startTime:now / period * period
-                                      endTime:now / period * period + period
-                             nextTokenCode:next];
 }
 
 @end

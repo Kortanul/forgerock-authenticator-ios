@@ -29,42 +29,19 @@ static uint64_t currentTimeInMilli() {
 }
 
 @implementation FRAOathCode {
-    FRAOathCode* nextCode;
     NSString* codeText;
     uint64_t startTime;
     uint64_t endTime;
 }
 
-- (instancetype)initWithCode:(NSString*)code startTime:(time_t)start endTime:(time_t)end {
-    codeText = code;
+- (instancetype)initWithValue:(NSString*)value startTime:(uint64_t)start endTime:(uint64_t)end {
+    _value = value;
     startTime = start * 1000;
     endTime = end * 1000;
-    nextCode = nil;
     return self;
 }
 
-- (instancetype)initWithCode:(NSString*)code startTime:(time_t)start endTime:(time_t)end nextTokenCode:(FRAOathCode*)next {
-    self = [self initWithCode:code startTime:start endTime:end];
-    nextCode = next;
-    return self;
-}
-
-- (NSString*)currentCode {
-    uint64_t now = currentTimeInMilli();
-    
-    if (now < startTime) {
-        return nil;
-    }
-    if (now < endTime) {
-        return codeText;
-    }
-    if (nextCode != nil) {
-        return [nextCode currentCode];
-    }
-    return nil;
-}
-
-- (float)currentProgress {
+- (float)progress {
     uint64_t now = currentTimeInMilli();
     
     if (now < startTime) {
@@ -72,37 +49,9 @@ static uint64_t currentTimeInMilli() {
     }
     if (now < endTime) {
         float totalTime = (float) (endTime - startTime);
-        return 1.0 - (now - startTime) / totalTime;
+        return (now - startTime) / totalTime;
     }
-    if (nextCode != nil) {
-        return [nextCode currentProgress];
-    }
-    return 0.0;
-}
-
-- (float)totalProgress {
-    uint64_t now = currentTimeInMilli();
-    FRAOathCode* last = self;
-    
-    if (now < startTime) {
-        return 0.0;
-    }
-    // Find the last token code.
-    while (last->nextCode != nil) {
-        last = last->nextCode;
-    }
-    if (now < last->endTime) {
-        float totalTime = (float) (last->endTime - startTime);
-        return 1.0 - (now - startTime) / totalTime;
-    }
-    return 0.0;
-}
-
-- (NSUInteger)totalCodes {
-    if (nextCode == nil) {
-        return 1;
-    }
-    return nextCode.totalCodes + 1;
+    return 1.0;
 }
 
 @end

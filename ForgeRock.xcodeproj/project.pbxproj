@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4445075E1CB520D8003EE400 /* FRATokenCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4445075D1CB520D8003EE400 /* FRATokenCodeViewController.m */; };
+		444507611CB551E9003EE400 /* FRAAccountTokenTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 444507601CB551E9003EE400 /* FRAAccountTokenTableViewCell.m */; };
 		445948EE1CAEB832008FB2F6 /* FRAAccountTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 445948ED1CAEB832008FB2F6 /* FRAAccountTableViewController.m */; };
 		44695F5A1C9F6DD900680799 /* FRAIdentity.m in Sources */ = {isa = PBXBuildFile; fileRef = 44695F591C9F6DD900680799 /* FRAIdentity.m */; };
 		44695F5B1C9F6DD900680799 /* FRAIdentity.m in Sources */ = {isa = PBXBuildFile; fileRef = 44695F591C9F6DD900680799 /* FRAIdentity.m */; };
@@ -20,6 +22,8 @@
 		44695F7D1CA170B000680799 /* FRAIdentityDatabaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 44695F7C1CA170B000680799 /* FRAIdentityDatabaseTests.m */; };
 		4476C5AD1CB296260039CE7F /* FRAAccountSettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4476C5AC1CB296260039CE7F /* FRAAccountSettingsTableViewController.m */; };
 		4476C5B01CB299920039CE7F /* FRAAccountSettingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4476C5AF1CB299920039CE7F /* FRAAccountSettingTableViewCell.m */; };
+		4476C5B41CB3ABE70039CE7F /* FRATokensTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4476C5B31CB3ABE70039CE7F /* FRATokensTableViewController.m */; };
+		4476C5B71CB3B0030039CE7F /* FRATokensTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4476C5B61CB3B0030039CE7F /* FRATokensTableViewCell.m */; };
 		449FD43C1CAAC9FC00A9BF99 /* FRAAccountsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 449FD43B1CAAC9FC00A9BF99 /* FRAAccountsTableViewController.m */; };
 		449FD43F1CAD7D7400A9BF99 /* FRAAccountTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 449FD43E1CAD7D7400A9BF99 /* FRAAccountTableViewCell.m */; };
 		44B744571CAAA82300A83AF1 /* FRANotificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44B744561CAAA82300A83AF1 /* FRANotificationViewController.m */; };
@@ -29,8 +33,7 @@
 		E164F3C61ADE9CA800A440B3 /* forgerock-logo-text.png in Resources */ = {isa = PBXBuildFile; fileRef = E164F3C51ADE9CA800A440B3 /* forgerock-logo-text.png */; };
 		E164F3C81ADE9CAF00A440B3 /* forgerock-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = E164F3C71ADE9CAF00A440B3 /* forgerock-logo.png */; };
 		E1C725FA1AEE7D0300388026 /* base32test.m in Sources */ = {isa = PBXBuildFile; fileRef = E1C725F91AEE7D0300388026 /* base32test.m */; };
-		F100667B18EF1E4900F9EF2C /* FRAOathMechanismCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F100667A18EF1E4900F9EF2C /* FRAOathMechanismCell.m */; };
-		F1030ED21818322000E478F7 /* CircleProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = F1030ED11818322000E478F7 /* CircleProgressView.m */; };
+		F1030ED21818322000E478F7 /* FRACircleProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = F1030ED11818322000E478F7 /* FRACircleProgressView.m */; };
 		F109DBEA18412A2300548A3E /* FRAQRScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F109DBE918412A2300548A3E /* FRAQRScanViewController.m */; };
 		F15300431801BB8800A0E179 /* base32.c in Sources */ = {isa = PBXBuildFile; fileRef = F15300401801B9DF00A0E179 /* base32.c */; };
 		F1673F1A18EC51C900ECD2DB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F1673F1918EC51C900ECD2DB /* Main.storyboard */; };
@@ -44,9 +47,6 @@
 		F17A862317EC12670098E7F3 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F17A862217EC12670098E7F3 /* XCTest.framework */; };
 		F17A862417EC12670098E7F3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F17A860017EC12670098E7F3 /* Foundation.framework */; };
 		F17A862517EC12670098E7F3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F17A860417EC12670098E7F3 /* UIKit.framework */; };
-		F18E16F218F2603800722FE7 /* qrcode.png in Resources */ = {isa = PBXBuildFile; fileRef = F18E16F118F2603800722FE7 /* qrcode.png */; };
-		F18E16F818F3D1F100722FE7 /* CollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F18E16F718F3D1F100722FE7 /* CollectionViewController.m */; };
-		F18E16FC18F47D3E00722FE7 /* BlockActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = F18E16FB18F47D3E00722FE7 /* BlockActionSheet.m */; };
 		F1AD9C6E191052B10023501C /* URLImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = F1AD9C6D191052B10023501C /* URLImageView.m */; };
 		F1AD9C70191053780023501C /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1AD9C6F191053780023501C /* AssetsLibrary.framework */; };
 /* End PBXBuildFile section */
@@ -62,6 +62,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4445075C1CB520D8003EE400 /* FRATokenCodeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRATokenCodeViewController.h; sourceTree = "<group>"; };
+		4445075D1CB520D8003EE400 /* FRATokenCodeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRATokenCodeViewController.m; sourceTree = "<group>"; };
+		4445075F1CB551E9003EE400 /* FRAAccountTokenTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAAccountTokenTableViewCell.h; sourceTree = "<group>"; };
+		444507601CB551E9003EE400 /* FRAAccountTokenTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAAccountTokenTableViewCell.m; sourceTree = "<group>"; };
 		445948EC1CAEB832008FB2F6 /* FRAAccountTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAAccountTableViewController.h; sourceTree = "<group>"; };
 		445948ED1CAEB832008FB2F6 /* FRAAccountTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAAccountTableViewController.m; sourceTree = "<group>"; };
 		44695F581C9F6DD900680799 /* FRAIdentity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAIdentity.h; sourceTree = "<group>"; };
@@ -80,6 +84,10 @@
 		4476C5AC1CB296260039CE7F /* FRAAccountSettingsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAAccountSettingsTableViewController.m; sourceTree = "<group>"; };
 		4476C5AE1CB299920039CE7F /* FRAAccountSettingTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAAccountSettingTableViewCell.h; sourceTree = "<group>"; };
 		4476C5AF1CB299920039CE7F /* FRAAccountSettingTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAAccountSettingTableViewCell.m; sourceTree = "<group>"; };
+		4476C5B21CB3ABE70039CE7F /* FRATokensTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRATokensTableViewController.h; sourceTree = "<group>"; };
+		4476C5B31CB3ABE70039CE7F /* FRATokensTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRATokensTableViewController.m; sourceTree = "<group>"; };
+		4476C5B51CB3B0030039CE7F /* FRATokensTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRATokensTableViewCell.h; sourceTree = "<group>"; };
+		4476C5B61CB3B0030039CE7F /* FRATokensTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRATokensTableViewCell.m; sourceTree = "<group>"; };
 		449FD43A1CAAC9FC00A9BF99 /* FRAAccountsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAAccountsTableViewController.h; sourceTree = "<group>"; };
 		449FD43B1CAAC9FC00A9BF99 /* FRAAccountsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAAccountsTableViewController.m; sourceTree = "<group>"; };
 		449FD43D1CAD7D7400A9BF99 /* FRAAccountTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAAccountTableViewCell.h; sourceTree = "<group>"; };
@@ -95,10 +103,8 @@
 		E1C725F91AEE7D0300388026 /* base32test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = base32test.m; path = "unit-tests/base32test.m"; sourceTree = "<group>"; };
 		E1C725FD1AEE820500388026 /* ForgeRockTests-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "ForgeRockTests-Info.plist"; path = "unit-tests/ForgeRockTests-Info.plist"; sourceTree = "<group>"; };
 		E1C7260E1AEE83B500388026 /* ForgeRockTests-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "ForgeRockTests-Prefix.pch"; path = "unit-tests/ForgeRockTests-Prefix.pch"; sourceTree = "<group>"; };
-		F100667918EF1E4900F9EF2C /* FRAOathMechanismCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAOathMechanismCell.h; sourceTree = "<group>"; };
-		F100667A18EF1E4900F9EF2C /* FRAOathMechanismCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAOathMechanismCell.m; sourceTree = "<group>"; };
-		F1030ED01818322000E478F7 /* CircleProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CircleProgressView.h; sourceTree = "<group>"; };
-		F1030ED11818322000E478F7 /* CircleProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CircleProgressView.m; sourceTree = "<group>"; };
+		F1030ED01818322000E478F7 /* FRACircleProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRACircleProgressView.h; sourceTree = "<group>"; };
+		F1030ED11818322000E478F7 /* FRACircleProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRACircleProgressView.m; sourceTree = "<group>"; };
 		F109DBE818412A2300548A3E /* FRAQRScanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAQRScanViewController.h; sourceTree = "<group>"; };
 		F109DBE918412A2300548A3E /* FRAQRScanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAQRScanViewController.m; sourceTree = "<group>"; };
 		F15300401801B9DF00A0E179 /* base32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base32.c; sourceTree = "<group>"; };
@@ -117,11 +123,6 @@
 		F17A861B17EC12670098E7F3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		F17A862117EC12670098E7F3 /* ForgeRockTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ForgeRockTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F17A862217EC12670098E7F3 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		F18E16F118F2603800722FE7 /* qrcode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = qrcode.png; sourceTree = "<group>"; };
-		F18E16F618F3D1F100722FE7 /* CollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollectionViewController.h; sourceTree = "<group>"; };
-		F18E16F718F3D1F100722FE7 /* CollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CollectionViewController.m; sourceTree = "<group>"; };
-		F18E16FA18F47D3E00722FE7 /* BlockActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlockActionSheet.h; sourceTree = "<group>"; };
-		F18E16FB18F47D3E00722FE7 /* BlockActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlockActionSheet.m; sourceTree = "<group>"; };
 		F1AD9C6C191052B10023501C /* URLImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = URLImageView.h; sourceTree = "<group>"; };
 		F1AD9C6D191052B10023501C /* URLImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = URLImageView.m; sourceTree = "<group>"; };
 		F1AD9C6F191053780023501C /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
@@ -163,8 +164,6 @@
 		4459044D1CA2A84A00DA3979 /* OATH */ = {
 			isa = PBXGroup;
 			children = (
-				F100667918EF1E4900F9EF2C /* FRAOathMechanismCell.h */,
-				F100667A18EF1E4900F9EF2C /* FRAOathMechanismCell.m */,
 				44695F601CA0ADAB00680799 /* FRAOathMechanism.h */,
 				44695F611CA0ADAB00680799 /* FRAOathMechanism.m */,
 				44695F641CA0AE4300680799 /* FRAOathCode.h */,
@@ -224,6 +223,21 @@
 			name = Storage;
 			sourceTree = "<group>";
 		};
+		4476C5B11CB3ABC70039CE7F /* Tokens */ = {
+			isa = PBXGroup;
+			children = (
+				4476C5B21CB3ABE70039CE7F /* FRATokensTableViewController.h */,
+				4476C5B31CB3ABE70039CE7F /* FRATokensTableViewController.m */,
+				4476C5B51CB3B0030039CE7F /* FRATokensTableViewCell.h */,
+				4476C5B61CB3B0030039CE7F /* FRATokensTableViewCell.m */,
+				F1030ED01818322000E478F7 /* FRACircleProgressView.h */,
+				F1030ED11818322000E478F7 /* FRACircleProgressView.m */,
+				4445075C1CB520D8003EE400 /* FRATokenCodeViewController.h */,
+				4445075D1CB520D8003EE400 /* FRATokenCodeViewController.m */,
+			);
+			name = Tokens;
+			sourceTree = "<group>";
+		};
 		449FD4391CAAC74200A9BF99 /* Accounts */ = {
 			isa = PBXGroup;
 			children = (
@@ -239,6 +253,8 @@
 				4476C5AC1CB296260039CE7F /* FRAAccountSettingsTableViewController.m */,
 				4476C5AE1CB299920039CE7F /* FRAAccountSettingTableViewCell.h */,
 				4476C5AF1CB299920039CE7F /* FRAAccountSettingTableViewCell.m */,
+				4445075F1CB551E9003EE400 /* FRAAccountTokenTableViewCell.h */,
+				444507601CB551E9003EE400 /* FRAAccountTokenTableViewCell.m */,
 			);
 			name = Accounts;
 			sourceTree = "<group>";
@@ -311,6 +327,7 @@
 		F17A860617EC12670098E7F3 /* Authenticator */ = {
 			isa = PBXGroup;
 			children = (
+				4476C5B11CB3ABC70039CE7F /* Tokens */,
 				449FD4391CAAC74200A9BF99 /* Accounts */,
 				44BC417F1CA97D8A000931F3 /* Notifications */,
 				44695F771CA0B9E800680799 /* Storage */,
@@ -318,16 +335,9 @@
 				44695F561C9F5ADB00680799 /* Identity */,
 				E164F3C71ADE9CAF00A440B3 /* forgerock-logo.png */,
 				E164F3C51ADE9CA800A440B3 /* forgerock-logo-text.png */,
-				F18E16F118F2603800722FE7 /* qrcode.png */,
 				F1673F1918EC51C900ECD2DB /* Main.storyboard */,
 				F17A860F17EC12670098E7F3 /* AppDelegate.h */,
 				F17A861017EC12670098E7F3 /* AppDelegate.m */,
-				F18E16FA18F47D3E00722FE7 /* BlockActionSheet.h */,
-				F18E16FB18F47D3E00722FE7 /* BlockActionSheet.m */,
-				F18E16F618F3D1F100722FE7 /* CollectionViewController.h */,
-				F18E16F718F3D1F100722FE7 /* CollectionViewController.m */,
-				F1030ED01818322000E478F7 /* CircleProgressView.h */,
-				F1030ED11818322000E478F7 /* CircleProgressView.m */,
 				F1AD9C6C191052B10023501C /* URLImageView.h */,
 				F1AD9C6D191052B10023501C /* URLImageView.m */,
 				F15300421801BA1D00A0E179 /* base32.h */,
@@ -426,7 +436,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F18E16F218F2603800722FE7 /* qrcode.png in Resources */,
 				F17A861C17EC12670098E7F3 /* Images.xcassets in Resources */,
 				E164F3C61ADE9CA800A440B3 /* forgerock-logo-text.png in Resources */,
 				E164F3C81ADE9CAF00A440B3 /* forgerock-logo.png in Resources */,
@@ -450,18 +459,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				44BC41821CA97DD6000931F3 /* FRANotificationsTableViewController.m in Sources */,
+				4476C5B41CB3ABE70039CE7F /* FRATokensTableViewController.m in Sources */,
+				4445075E1CB520D8003EE400 /* FRATokenCodeViewController.m in Sources */,
 				44BC41851CA9DC12000931F3 /* FRANotificationTableViewCell.m in Sources */,
-				F18E16FC18F47D3E00722FE7 /* BlockActionSheet.m in Sources */,
-				F18E16F818F3D1F100722FE7 /* CollectionViewController.m in Sources */,
+				4476C5B71CB3B0030039CE7F /* FRATokensTableViewCell.m in Sources */,
 				44695F621CA0ADAB00680799 /* FRAOathMechanism.m in Sources */,
 				F15300431801BB8800A0E179 /* base32.c in Sources */,
-				F100667B18EF1E4900F9EF2C /* FRAOathMechanismCell.m in Sources */,
 				44695F661CA0AE4300680799 /* FRAOathCode.m in Sources */,
 				4476C5B01CB299920039CE7F /* FRAAccountSettingTableViewCell.m in Sources */,
 				F1AD9C6E191052B10023501C /* URLImageView.m in Sources */,
 				44B744571CAAA82300A83AF1 /* FRANotificationViewController.m in Sources */,
 				F17A861117EC12670098E7F3 /* AppDelegate.m in Sources */,
-				F1030ED21818322000E478F7 /* CircleProgressView.m in Sources */,
+				F1030ED21818322000E478F7 /* FRACircleProgressView.m in Sources */,
 				44695F7A1CA0BA0600680799 /* FRAIdentityDatabase.m in Sources */,
 				F17A860D17EC12670098E7F3 /* main.m in Sources */,
 				449FD43C1CAAC9FC00A9BF99 /* FRAAccountsTableViewController.m in Sources */,
@@ -470,6 +479,7 @@
 				44695F5A1C9F6DD900680799 /* FRAIdentity.m in Sources */,
 				449FD43F1CAD7D7400A9BF99 /* FRAAccountTableViewCell.m in Sources */,
 				445948EE1CAEB832008FB2F6 /* FRAAccountTableViewController.m in Sources */,
+				444507611CB551E9003EE400 /* FRAAccountTokenTableViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

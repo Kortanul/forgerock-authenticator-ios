@@ -38,9 +38,10 @@
     
     // When
     FRAOathMechanism* mechanism = [[FRAOathMechanism alloc] initWithString:qrString];
+    [mechanism generateNextCode];
     
     // Then
-    NSString* code = [[mechanism code] currentCode]; // Testing parsing by testing generated code.
+    NSString* code = mechanism.code.value; // Testing parsing by testing generated code.
     XCTAssert(strcmp([code UTF8String], "352916") == 0, @"Secret Key parsing failed");
 }
 
@@ -50,9 +51,10 @@
     
     // When
     FRAOathMechanism* mechanism = [[FRAOathMechanism alloc] initWithString:qrString];
+    [mechanism generateNextCode];
     
     // Then
-    NSString* code = [[mechanism code] currentCode]; // Testing parsing by testing generated code.
+    NSString* code = mechanism.code.value; // Testing parsing by testing generated code.
     XCTAssert(strcmp([code UTF8String], "545550") == 0, @"Secret Key parsing failed");
 }
 

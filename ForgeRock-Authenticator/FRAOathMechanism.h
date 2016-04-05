@@ -80,5 +80,9 @@
  * @return instantiated instance or nil if a problem occurred.
  */
 - (instancetype)initWithString:(NSString*)string;
+/*!
+ * Generates the next code for this OATH mechanism.
+ */
+- (void)generateNextCode;
 
 @end

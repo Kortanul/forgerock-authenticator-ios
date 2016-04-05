@@ -18,12 +18,14 @@
 #import "FRAIdentityDatabase.h"
 #import "FRAOathMechanism.h"
 #import "FRAAccountSettingsTableViewController.h"
+#import "FRAAccountTokenTableViewCell.h"
+#import "FRATokenCodeViewController.h"
 
-@interface FRAAccountTableViewController ()
-
-- (BOOL)hasRegisteredOathMechanism;
-
-@end
+//@interface FRAAccountTableViewController ()
+//
+//- (BOOL)hasRegisteredOathMechanism;
+//
+//@end
 
 @implementation FRAAccountTableViewController {
     FRAIdentityDatabase* database;
@@ -64,16 +66,35 @@
     }
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
-    if (indexPath.section == 0 && indexPath.row == 0) {
-        // prevent "selection" of account header row
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    } else if (indexPath.section == 1 && indexPath.row == 0) {
-        // prevent "selection" of grey spacer row
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+- (void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
+    if ([self hasTokenMechanismAtIndexPath:indexPath]) {
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        FRAAccountTokenTableViewCell* cell = (FRAAccountTokenTableViewCell*) [super tableView:tableView cellForRowAtIndexPath:indexPath];
+        [cell.delegate didTouchUpInside];
     }
-    return cell;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if ([self hasTokenMechanismAtIndexPath:indexPath]) {
+        FRAAccountTokenTableViewCell* cell = (FRAAccountTokenTableViewCell*) [super tableView:tableView cellForRowAtIndexPath:indexPath];
+        cell.mechanism = [self oathMechanism];
+        cell.delegate = [FRATokenCodeViewController controllerForView:cell withMechanism:cell.mechanism];
+        return cell;
+    } else {
+        UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
+        if (indexPath.section == 0 && indexPath.row == 0) {
+            // prevent "selection" of account header row
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        } else if (indexPath.section == 1 && indexPath.row == 0) {
+            // prevent "selection" of grey spacer row
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        }
+        return cell;
+    }
+}
+
+- (BOOL)hasTokenMechanismAtIndexPath:(NSIndexPath*)indexPath {
+    return indexPath.section == 0 && indexPath.row == 1;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -95,5 +116,14 @@
     return NO;
 }
 
+- (FRAOathMechanism*)oathMechanism {
+    NSArray* mechanisms = [database mechanismsWithOwner:_identity];
+    for (NSObject* mechanism in mechanisms) {
+        if ([mechanism isKindOfClass:[FRAOathMechanism class]]) {
+            return (FRAOathMechanism*) mechanism;
+        }
+    }
+    return nil;
+}
 
 @end

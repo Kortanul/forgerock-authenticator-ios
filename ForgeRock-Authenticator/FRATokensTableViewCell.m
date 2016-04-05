@@ -12,18 +12,21 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2016 ForgeRock AS.
- *
- * Portions Copyright 2014 Nathaniel McCallum, Red Hat
  */
 
-/*!
- * A UIActionSheet that accepts an Objective-C block callback for dealing with the selected action.
- */
-@interface BlockActionSheet : UIActionSheet
+#import "FRATokensTableViewCell.h"
 
-/*!
- * Objective-C block callback for dealing with the selected action.
- */
-@property (nonatomic, copy) void (^callback)(NSInteger offset);
+@implementation FRATokensTableViewCell
+
+- (void)setMechanism:(FRAOathMechanism *)mechanism {
+    _mechanism = mechanism;
+    _issuer.text = mechanism.owner.issuer;
+    _accountName.text = mechanism.owner.accountName;
+}
+
+- (IBAction)generateNextCode:(id)sender {
+    [self.delegate generateNextCode];
+}
 
 @end
+

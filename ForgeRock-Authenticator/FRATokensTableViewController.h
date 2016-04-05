@@ -12,30 +12,14 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2016 ForgeRock AS.
- *
- * Portions Copyright 2013 Nathaniel McCallum, Red Hat
  */
 
-/*!
- * MVC View for elapsed time as a doughnut or filled circle.
- */
-@interface CircleProgressView : UIView
+#import <UIKit/UIKit.h>
+#import "FRATokensTableViewCell.h"
 
 /*!
- * Flag for controlling whether the elapsed time is drawn as a doughnut or filled circle.
+ * Controller for Tokens tab's table-view.
  */
-@property (nonatomic) BOOL hollow;
-/*!
- * Flag for controlling whether the elapsed time is grows clockwise or counter-clockwise.
- */
-@property (nonatomic) BOOL clockwise;
-/*!
- * Normalized value for adjusting color based on progress.
- */
-@property (nonatomic) float threshold;
-/*!
- * Normalized value for progress.
- */
-@property (nonatomic) float progress;
+@interface FRATokensTableViewController : UITableViewController
 
 @end

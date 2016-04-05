@@ -13,17 +13,21 @@
  *
  * Copyright 2016 ForgeRock AS.
  *
- * Portions Copyright 2014 Nathaniel McCallum, Red Hat
+ * Portions Copyright 2013 Nathaniel McCallum, Red Hat
  */
 
 /*!
- * MVC Controller for One-Time Password collection view.
+ * MVC View for elapsed time as a doughnut or filled circle.
  */
-@interface CollectionViewController : UICollectionViewController
+@interface FRACircleProgressView : UIView
 
 /*!
- * Responds to user clicking 'edit' icon.
+ * Color used to indicate elapsed time.
  */
-- (IBAction)editClicked:(id)sender;
+@property (nonatomic) UIColor* progressColor;
+/*!
+ * Normalized value for progress.
+ */
+@property (nonatomic) float progress;
 
 @end

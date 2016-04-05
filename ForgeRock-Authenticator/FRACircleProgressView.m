@@ -16,18 +16,15 @@
  * Portions Copyright 2013 Nathaniel McCallum, Red Hat
  */
 
-#import "CircleProgressView.h"
+#import "FRACircleProgressView.h"
 
-@implementation CircleProgressView
+@implementation FRACircleProgressView
 
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self == nil) {
         return nil;
     }
-    self.hollow = false;
-    self.clockwise = true;
-    self.threshold = 0;
     self.progress = 0.0;
     self.backgroundColor = [UIColor clearColor];
     return self;
@@ -38,27 +35,9 @@
     if (self == nil) {
         return nil;
     }
-    self.hollow = false;
-    self.clockwise = true;
-    self.threshold = 0;
     self.progress = 0.0;
     self.backgroundColor = [UIColor clearColor];
     return self;
-}
-
-- (void)setHollow:(BOOL)hollow {
-    _hollow = hollow;
-    [self setNeedsDisplay];
-}
-
-- (void)setClockwise:(BOOL)clockwise {
-    _clockwise = clockwise;
-    [self setNeedsDisplay];
-}
-
-- (void)setThreshold:(float)threshold {
-    _threshold = threshold;
-    [self setNeedsDisplay];
 }
 
 - (void)setProgress:(float)progress {
@@ -67,30 +46,24 @@
 }
 
 - (void)drawRect:(CGRect)xxx {
-    CGFloat progress = self.clockwise ? self.progress : (1.0f - self.progress);
+    CGFloat progress = self.progress;
     CGPoint center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
     CGFloat radius = MAX(MIN(self.bounds.size.height / 2.0, self.bounds.size.width / 2.0) - 4, 1);
     CGFloat radians = MAX(MIN(progress * 2 * M_PI, 2 * M_PI), 0);
 
-    UIColor* color = [UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0];
-    if (self.threshold < 0 && self.progress < fabsf(self.threshold)) {
-        color = [UIColor colorWithRed:1.0 green:self.progress * (1 / fabsf(self.threshold)) blue:0.0 alpha:1.0];
-    } else if (self.threshold > 0 && self.progress > self.threshold) {
-        color = [UIColor colorWithRed:1.0 green:(1 - self.progress) * (1 / (1 - self.threshold)) blue:0.0 alpha:1.0];
-    }
+    UIColor* lightGrey = [UIColor colorWithRed:238.0/255.0 green:238.0/255.0 blue:238.0/255.0 alpha:1.0];
     
-    UIBezierPath* path = [UIBezierPath bezierPathWithArcCenter:center radius:radius
-                             startAngle:-M_PI_2 endAngle:radians-M_PI_2 clockwise:self.clockwise];
-    if (self.hollow) {
-        [color setStroke];
-        [path setLineWidth:3.0];
-        [path stroke];
-    } else {
-        [color setFill];
-        [path addLineToPoint:center];
-        [path addClip];
-        UIRectFill(self.bounds);
-    }
+    // draw progress in sea green or dashboard red
+    UIBezierPath* progressPath = [UIBezierPath bezierPathWithArcCenter:center radius:radius startAngle:-M_PI_2 endAngle:radians-M_PI_2 clockwise:YES];
+    [self.progressColor setStroke];
+    [progressPath setLineWidth:4.0];
+    [progressPath stroke];
+    
+    // draw remainder of circle in light grey
+    UIBezierPath* fullCirclePath = [UIBezierPath bezierPathWithArcCenter:center radius:radius startAngle:radians-M_PI_2 endAngle:(2 * M_PI) - M_PI_2 clockwise:YES];
+    [lightGrey setStroke];
+    [fullCirclePath setLineWidth:4.0];
+    [fullCirclePath stroke];
 }
 
 @end
