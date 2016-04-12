@@ -15,40 +15,47 @@
  */
 
 #import <OCMock/OCMock.h>
-#import <UIKit/UIKit.h>
+
 #import <XCTest/XCTest.h>
 
 #import "FRAIdentityDatabase.h"
 #import "FRAIdentityDatabaseSQLiteOperations.h"
 #import "FRAIdentityModel.h"
-#import "FRAOathMechanism.h"
 #import "FRAOathCode.h"
-#import "FRAMechanismFactory.h"
+#import "FRAOathMechanism.h"
+#import "FRAOathMechanismFactory.h"
+#import "FRAFMDatabaseConnectionHelper.h"
+#import "FRAUriMechanismReader.h"
 
 @interface FRAOathMechanismTests : XCTestCase
 
 @end
 
 @implementation FRAOathMechanismTests {
-
-    FRAMechanismFactory* factory;
-    FRAIdentityDatabaseSQLiteOperations *mockSqlOperations;
+    id mockSqlOperations;
+    id mockSqlDatabase;
+    id databaseObserverMock;
+    FRAUriMechanismReader* factory;
     FRAIdentityDatabase *database;
     FRAIdentityModel *identityModel;
-    id databaseObserverMock;
-
 }
 
 - (void)setUp {
     [super setUp];
     mockSqlOperations = OCMClassMock([FRAIdentityDatabaseSQLiteOperations class]);
+    mockSqlDatabase = OCMClassMock([FRAFMDatabaseConnectionHelper class]);
     database = [[FRAIdentityDatabase alloc] initWithSqlOperations:mockSqlOperations];
-    identityModel = [[FRAIdentityModel alloc] initWithDatabase:database];
-    factory = [[FRAMechanismFactory alloc] initWithDatabase:database identityModel:identityModel];
+    identityModel = [[FRAIdentityModel alloc] initWithDatabase:database sqlDatabase:mockSqlDatabase];
     databaseObserverMock = OCMObserverMock();
+    
+    // Factory used for parsing OATH URLs
+    factory = [[FRAUriMechanismReader alloc] initWithDatabase:database identityModel:identityModel];
+    [factory addMechanismFactory:[[FRAOathMechanismFactory alloc] init]];
 }
 
 - (void)tearDown {
+    [mockSqlOperations stopMocking];
+    [mockSqlDatabase stopMocking];
     [super tearDown];
 }
 
@@ -58,11 +65,11 @@
     FRAOathMechanism* mechanism = (FRAOathMechanism*)[factory parseFromString:qrString];
     
     // When
-    [mechanism generateNextCode];
+    [mechanism generateNextCodeWithError:nil];
+    NSString* result = [[mechanism code] value];
     
     // Then
-    NSString* code = [[mechanism code] value];
-    XCTAssert(strcmp([code UTF8String], "352916") == 0, @"Incorrect next hash");
+    XCTAssertEqualObjects(result, @"352916", @"Incorrect next hash");
 }
 
 - (void)testGenerateDifferentCodeSequence {
@@ -71,36 +78,39 @@
     FRAOathMechanism* mechanism = (FRAOathMechanism*)[factory parseFromString:qrString];
     
     // When
-    [mechanism generateNextCode];
+    [mechanism generateNextCodeWithError:nil];
+    NSString* result = [[mechanism code] value];
     
     // Then
-    NSString* code = [[mechanism code] value];
-    XCTAssert(strcmp([code UTF8String], "545550") == 0, @"Incorrect next hash");
+    XCTAssertEqualObjects(result, @"545550", @"Incorrect next hash");
 }
 
 - (void)testSavedHotpOathMechanismAutomaticallySavesItselfToDatabaseWhenIncrementingCounter {
     // Given
     NSString* qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0";
     FRAOathMechanism* mechanism = (FRAOathMechanism*)[factory parseFromString:qrString];
-    [database insertMechanism:mechanism];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertMechanism:mechanism error:nil]).andReturn(YES);
+    [database insertMechanism:mechanism error:nil];
     
     // When
-    [mechanism generateNextCode];
+    [mechanism generateNextCodeWithError:nil];
     
     // Then
-    OCMVerify([mockSqlOperations updateMechanism:mechanism]);
+    OCMVerify([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations updateMechanism:mechanism error:nil]);
 }
 
 - (void)testBroadcastsOneChangeNotificationWhenHotpOathMechanismUpdateIsAutomaticallySavedToDatabase {
     // Given
     NSString* qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0";
     FRAOathMechanism* mechanism = (FRAOathMechanism*)[factory parseFromString:qrString];
-    [database insertMechanism:mechanism];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertMechanism:mechanism error:nil]).andReturn(YES);
+    [database insertMechanism:mechanism error:nil];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations updateMechanism:mechanism error:nil]).andReturn(YES);
     [[NSNotificationCenter defaultCenter] addMockObserver:databaseObserverMock name:FRAIdentityDatabaseChangedNotification object:database];
     [[databaseObserverMock expect] notificationWithName:FRAIdentityDatabaseChangedNotification object:database userInfo:[OCMArg any]];
     
     // When
-    [mechanism generateNextCode];
+    [mechanism generateNextCodeWithError:nil];
     
     // Then
     OCMVerifyAll(databaseObserverMock);

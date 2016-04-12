@@ -14,7 +14,7 @@
  * Copyright 2015 ForgeRock AS.
  */
 
-#import <UIKit/UIKit.h>
+
 #import <XCTest/XCTest.h>
 #import "base32.h"
 

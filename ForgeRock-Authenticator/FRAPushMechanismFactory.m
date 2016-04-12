@@ -14,7 +14,7 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import <Foundation/Foundation.h>
+
 
 #import "FRAPushMechanismFactory.h"
 #import "FRAMechanismFactory.h"
@@ -68,26 +68,31 @@ NSString *const ISSUER_QR_KEY = @"issuer";
     
     NSDictionary * query = [self readQRCode:uri];
     
-    NSString* secret = [query objectForKey:SECRET_QR_KEY];
-    NSString* regEndpoint = [FRAQRUtils decodeURL:[query objectForKey:REGISTRATION_ENDPOINT_URL_QR_KEY]];
-    NSString* authEndpoint = [FRAQRUtils decodeURL:[query objectForKey:AUTHENTICATION_ENDPOINT_URL_QR_KEY]];
-    NSString* messageId = [query objectForKey:MESSAGE_ID_QR_KEY];
-    NSString* backgroundColour = [query objectForKey:BACKGROUND_COLOUR_QR_KEY];
-    NSString* challange = [query objectForKey:REGISTRATION_CHALLANGE_QR_KEY];
-    NSString* image = [FRAQRUtils decodeURL:[query objectForKey:IMAGE_QR_KEY]];
-    NSString* issuer = [query objectForKey:ISSUER_QR_KEY];
-    NSString* _label = [query objectForKey:@"_label"];
+    NSString *secret = [query objectForKey:SECRET_QR_KEY];
+    NSString *regEndpoint = [FRAQRUtils decodeURL:[query objectForKey:REGISTRATION_ENDPOINT_URL_QR_KEY]];
+    NSString *authEndpoint = [FRAQRUtils decodeURL:[query objectForKey:AUTHENTICATION_ENDPOINT_URL_QR_KEY]];
+    NSString *messageId = [query objectForKey:MESSAGE_ID_QR_KEY];
+    NSString *backgroundColor = [query objectForKey:BACKGROUND_COLOUR_QR_KEY];
+    NSString *challange = [query objectForKey:REGISTRATION_CHALLANGE_QR_KEY];
+    NSString *image = [FRAQRUtils decodeURL:[query objectForKey:IMAGE_QR_KEY]];
+    NSString *issuer = [query objectForKey:ISSUER_QR_KEY];
+    NSString *_label = [query objectForKey:@"_label"];
     
     if (nil == secret || nil == regEndpoint || nil == authEndpoint || nil == messageId || nil == challange || nil == issuer) {
         return nil; // TODO: throw a sensible exception/Error
     }
     
-    FRAPushMechanism* mechanism = [FRAPushMechanism pushMechanismWithDatabase:database authEndpoint:authEndpoint secret:secret image:image bgColour:backgroundColour issuer:issuer];
+    FRAPushMechanism* mechanism = [FRAPushMechanism pushMechanismWithDatabase:database authEndpoint:authEndpoint secret:secret];
     
-    FRAIdentity *identity = [self getIdentity:uri database:database lable:_label issuer:issuer imagePath:image];
+    FRAIdentity *identity = [self getIdentity:uri database:database label:_label issuer:issuer imagePath:image backgroundColor:backgroundColor];
     FRAIdentity *search = [model identityWithIssuer:[identity issuer] accountName:[identity accountName]];
     if (search == nil) {
-        [model addIdentity:identity];
+        // TODO: Error Handling
+        @autoreleasepool {
+            NSError* error;
+            [model addIdentity:identity error:&error];
+        }
+
     } else {
         identity = search;
         if ([self checkForDuplicate]) {
@@ -96,7 +101,11 @@ NSString *const ISSUER_QR_KEY = @"issuer";
         }
     }
     
-    [identity addMechanism:mechanism];
+    // TODO: Error Handling
+    @autoreleasepool {
+        NSError* error;
+        [identity addMechanism:mechanism error:&error];
+    }
     
     [self registerMechanismWithEndpoint:regEndpoint secret:secret challange:challange messageId:messageId mechanismUid:mechanism.uid username:_label identity:identity mechanism:mechanism];
 
@@ -167,12 +176,12 @@ NSString *const ISSUER_QR_KEY = @"issuer";
  * Resolves the Identity from the URL that has been provided.
  * @return an initialised but not persisted Identity.
  */
-- (FRAIdentity *)getIdentity:(NSURL*)url database:(FRAIdentityDatabase *)database lable:(NSString *)label issuer:(NSString *)issuer imagePath:(NSString *)imagePath{
+- (FRAIdentity *)getIdentity:(NSURL*)url database:(FRAIdentityDatabase *)database label:(NSString *)label issuer:(NSString *)issuer imagePath:(NSString *)imagePath backgroundColor:(NSString*) backgroundColor {
     
     // TODO: Get image from uri and save it as a resource
     NSURL* _image = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"forgerock-logo" ofType:@"png"]];
     
-    return [FRAIdentity identityWithDatabase:database accountName:label issuer:issuer image:_image];
+    return [FRAIdentity identityWithDatabase:database accountName:label issuer:issuer image:_image backgroundColor:backgroundColor];
 }
 
 - (BOOL) supports:(NSURL *)uri {
@@ -201,7 +210,12 @@ NSString *const ISSUER_QR_KEY = @"issuer";
                    handler:^(NSInteger statusCode, NSError *error) {
                        if (200 != statusCode) {
                            // TODO: inform user about failure
-                           [identity removeMechanism:mechanism];
+                           // TODO: Handle Error
+                           @autoreleasepool {
+                               NSError* error;
+                               [identity removeMechanism:mechanism error:&error];
+                           }
+
                        }
                   }];
     

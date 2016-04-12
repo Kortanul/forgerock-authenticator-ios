@@ -14,7 +14,7 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import <Foundation/Foundation.h>
+
 
 #import "FRAModelObject.h"
 
@@ -41,6 +41,11 @@
 @property (copy, nonatomic, readonly) NSURL *image;
 
 /*!
+ * Text representation of the background colour to be used by the user interface for this Identity.
+ */
+@property (copy, nonatomic, readonly) NSString *backgroundColor;
+
+/*!
  * The Mechanisms assigned to the Identity. Maybe empty.
  */
 @property (getter=mechanisms, nonatomic, readonly) NSArray<FRAMechanism *> *mechanisms;
@@ -56,12 +61,12 @@
 /*!
  * Creates a new identity object with the provided property values.
  */
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database accountName:(NSString *)accountName issuer:(NSString *)issuer image:(NSURL *)image;
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database accountName:(NSString *)accountName issuer:(NSString *)issuer image:(NSURL *)image backgroundColor:(NSString *)color;
 
 /*!
  * Creates a new identity object with the provided property values.
  */
-+ (instancetype)identityWithDatabase:(FRAIdentityDatabase *)database accountName:(NSString *)accountName issuer:(NSString *)issuer image:(NSURL *)image;
++ (instancetype)identityWithDatabase:(FRAIdentityDatabase *)database accountName:(NSString *)accountName issuer:(NSString *)issuer image:(NSURL *)image backgroundColor:(NSString *)color;
 
 #pragma mark -
 #pragma mark Mechanism Functions
@@ -79,15 +84,17 @@
  * this call.
  *
  * @param mechanism The new mechanism to add to this identity.
+ * @return BOOL False if there was an error with the operation, in which case check the error parameter for details.
  */
-- (void)addMechanism:(FRAMechanism *)mechanism;
+- (BOOL)addMechanism:(FRAMechanism *)mechanism error:(NSError *__autoreleasing *)error;
 
 /*!
  * Removes the Mechanism, only if it was assigned to this Identity.
  *
  * @param mechanism The mechanism to remove from the identity.
+ * @return BOOL False if there was an error with the operation, in which case check the error parameter for details.
  */
-- (void)removeMechanism:(FRAMechanism *)mechanism;
+- (BOOL)removeMechanism:(FRAMechanism *)mechanism error:(NSError *__autoreleasing *)error;
 
 #pragma mark -
 #pragma mark Notification Functions

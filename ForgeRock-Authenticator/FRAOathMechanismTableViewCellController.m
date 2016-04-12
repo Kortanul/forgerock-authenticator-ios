@@ -87,7 +87,11 @@
 
 - (void)timerCallback:(NSTimer*)timer {
     if ((!self.mechanism.code) || [self.mechanism.code hasExpired]) {
-        [self.mechanism generateNextCode];
+        // TODO: Handle error
+        @autoreleasepool {
+            NSError* error;
+            [self.mechanism generateNextCodeWithError:&error];
+        }
     }
     [self reloadData];
 }
@@ -127,7 +131,11 @@
 
 - (void)generateNextCode {
     if (!self.isEditing) {
-        [self.mechanism generateNextCode];
+        // TODO: Handle error
+        @autoreleasepool {
+            NSError* error;
+            [self.mechanism generateNextCodeWithError:&error];
+        }
     }
 }
 

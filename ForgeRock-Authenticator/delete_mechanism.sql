@@ -1,0 +1,1 @@
+DELETE FROM mechanism WHERE (idIssuer = ?) AND (idAccountName = ?) AND (type = ?);

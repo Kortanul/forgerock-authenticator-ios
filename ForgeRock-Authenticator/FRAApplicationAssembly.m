@@ -17,16 +17,19 @@
 #import "FRAAccountsTableViewController.h"
 #import "FRAAccountTableViewController.h"
 #import "FRAApplicationAssembly.h"
+#import "FRADatabaseConfiguration.h"
+#import "FRAFMDatabaseFactory.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAIdentityDatabaseSQLiteOperations.h"
 #import "FRAIdentityModel.h"
-#import "FRAUriMechanismReader.h"
+#import "FRAMessageUtils.h"
 #import "FRANotificationGateway.h"
 #import "FRANotificationHandler.h"
-#import "FRAQRScanViewController.h"
-#import "FRAMessageUtils.h"
 #import "FRAOathMechanismFactory.h"
 #import "FRAPushMechanismFactory.h"
+#import "FRAQRScanViewController.h"
+#import "FRAFMDatabaseConnectionHelper.h"
+#import "FRAUriMechanismReader.h"
 
 @implementation FRAApplicationAssembly
 
@@ -51,16 +54,20 @@
     }];
 }
 
-- (FRAIdentityDatabase *)identityDatabaseSQLiteOperations {
+- (FRAIdentityDatabaseSQLiteOperations *)identityDatabaseSQLiteOperations {
     return [TyphoonDefinition withClass:[FRAIdentityDatabaseSQLiteOperations class] configuration:^(TyphoonDefinition *definition) {
-        definition.scope = TyphoonScopeSingleton;
+        [definition useInitializer:@selector(initWithDatabase:) parameters:^(TyphoonMethod *initializer) {
+            [initializer injectParameterWith:[self databaseConnectionHelper]];
+        }];
+
     }];
 }
 
 - (FRAIdentityModel *)identityModel {
     return [TyphoonDefinition withClass:[FRAIdentityModel class] configuration:^(TyphoonDefinition *definition) {
-        [definition useInitializer:@selector(initWithDatabase:) parameters:^(TyphoonMethod *initializer) {
+        [definition useInitializer:@selector(initWithDatabase:sqlDatabase:) parameters:^(TyphoonMethod *initializer) {
             [initializer injectParameterWith:[self identityDatabase]];
+            [initializer injectParameterWith:[self databaseConnectionHelper]];
         }];
         definition.scope = TyphoonScopeSingleton;
     }];
@@ -125,6 +132,16 @@
 
 - (FRAMessageUtils *)messageUtils {
     return [TyphoonDefinition withClass:[FRAMessageUtils class] configuration:^(TyphoonDefinition *definition) {
+        definition.scope = TyphoonScopeSingleton;
+    }];
+}
+
+- (FRAFMDatabaseConnectionHelper *)databaseConnectionHelper {
+    return [TyphoonDefinition withClass:[FRAFMDatabaseConnectionHelper class] configuration:^(TyphoonDefinition *definition) {
+        [definition useInitializer:@selector(initWithConfiguration:databaseFactory:) parameters:^(TyphoonMethod *initializer) {
+            [initializer injectParameterWith:[[FRADatabaseConfiguration alloc] init]];
+            [initializer injectParameterWith:[[FRAFMDatabaseFactory alloc] init]];
+        }];
         definition.scope = TyphoonScopeSingleton;
     }];
 }

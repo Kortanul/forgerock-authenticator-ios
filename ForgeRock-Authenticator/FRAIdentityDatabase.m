@@ -14,6 +14,9 @@
  * Copyright 2016 ForgeRock AS.
  */
 
+#import "FMDatabase.h"
+#import "FRADatabaseConfiguration.h"
+#import "FRAError.h"
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAIdentityDatabaseSQLiteOperations.h"
@@ -23,7 +26,6 @@
 #import "FRANotification.h"
 #import "FRAOathMechanism.h"
 #import "FRAPushMechanism.h"
-
 
 NSString * const FRAIdentityDatabaseChangedNotification = @"FRAIdentityDatabaseChangedNotification";
 NSString * const FRAIdentityDatabaseChangedNotificationAddedItems = @"added";
@@ -45,7 +47,6 @@ NSInteger const FRANotStored = -1;
     NSInteger nextIdentityId;
     NSInteger nextMechanismId;
     NSInteger nextNotificationId;
-
 }
 
 #pragma mark -
@@ -64,163 +65,223 @@ NSInteger const FRANotStored = -1;
 #pragma mark -
 #pragma mark Identity Functions
 
-- (void)insertIdentity:(FRAIdentity *)identity {
+- (BOOL)insertIdentity:(FRAIdentity *)identity error:(NSError *__autoreleasing *)error {
     NSMutableDictionary *stateChanges = [self dictionaryForStateChanges];
-    [self doInsertIdentity:identity andCollectStateChanges:stateChanges];
+    if (![self doInsertIdentity:identity andCollectStateChanges:stateChanges withError:error]) {
+        return NO;
+    }
     [self postDatabaseChangeNotificationForStateChanges:stateChanges];
+    return YES;
 }
 
-- (void)doInsertIdentity:(FRAIdentity *)identity andCollectStateChanges:(NSMutableDictionary *)stateChanges {
+- (BOOL)doInsertIdentity:(FRAIdentity *)identity andCollectStateChanges:(NSMutableDictionary *)stateChanges withError:(NSError *__autoreleasing *)error {
     if ([identity isStored]) {
-        // TODO: Throw exception as programmer error has occured?
-        return;
+        NSString *reason = [[NSString alloc] initWithFormat:@"Identity %@/%@ was already persisted", identity.issuer, identity.accountName];
+        [FRAError createError:error withReason:reason];
+        return NO;
     }
     for (FRAMechanism *mechanism in [identity mechanisms]) {
-        [self doInsertMechanism:mechanism andCollectStateChanges:stateChanges];
+        if (![self doInsertMechanism:mechanism andCollectStateChanges:stateChanges withError:error]) {
+            return NO;
+        }
     }
-    [self.sqlOperations insertIdentity:identity];
+    if (![self.sqlOperations insertIdentity:identity error:error]) {
+        return NO;
+    }
     identity.uid = nextIdentityId;
     nextIdentityId++;
     [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationAddedItems] addObject:identity];
+    return YES;
 }
 
-- (void)deleteIdentity:(FRAIdentity *)identity {
+- (BOOL)deleteIdentity:(FRAIdentity *)identity error:(NSError *__autoreleasing *)error {
     NSMutableDictionary *stateChanges = [self dictionaryForStateChanges];
-    [self doDeleteIdentity:identity andCollectStateChanges:stateChanges];
+    if (![self doDeleteIdentity:identity andCollectStateChanges:stateChanges withError:error]) {
+        return NO;
+    }
     [self postDatabaseChangeNotificationForStateChanges:stateChanges];
+    return YES;
 }
 
-- (void)doDeleteIdentity:(FRAIdentity *)identity andCollectStateChanges:(NSMutableDictionary *)stateChanges {
+- (BOOL)doDeleteIdentity:(FRAIdentity *)identity andCollectStateChanges:(NSMutableDictionary *)stateChanges withError:(NSError *__autoreleasing *)error {
     if (![identity isStored]) {
-        // TODO: Throw exception as programmer error has occured?
-        return;
+        NSString *reason = [[NSString alloc] initWithFormat:@"Identity %@/%@ was not already persisted", identity.issuer, identity.accountName];
+        [FRAError createError:error withReason:reason];
+        return NO;
     }
     for (FRAMechanism *mechanism in [identity mechanisms]) {
-        [self doDeleteMechanism:mechanism andCollectStateChanges:stateChanges];
+        if (![self doDeleteMechanism:mechanism andCollectStateChanges:stateChanges withError:error]) {
+            return NO;
+        }
     }
-    [self.sqlOperations deleteIdentity:identity];
+    if (![self.sqlOperations deleteIdentity:identity error:error]) {
+        return NO;
+    }
     identity.uid = FRANotStored;
     [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationRemovedItems] addObject:identity];
+    return YES;
 }
 
 #pragma mark -
 #pragma mark Mechanism Functions
 
-- (void)insertMechanism:(FRAMechanism *)mechanism {
+- (BOOL)insertMechanism:(FRAMechanism *)mechanism error:(NSError *__autoreleasing *)error {
     NSMutableDictionary *stateChanges = [self dictionaryForStateChanges];
-    [self doInsertMechanism:mechanism andCollectStateChanges:stateChanges];
+    if (![self doInsertMechanism:mechanism andCollectStateChanges:stateChanges withError:error]) {
+        return NO;
+    }
     [self postDatabaseChangeNotificationForStateChanges:stateChanges];
+    return YES;
 }
 
-- (void)doInsertMechanism:(FRAMechanism *)mechanism andCollectStateChanges:(NSMutableDictionary *)stateChanges {
+- (BOOL)doInsertMechanism:(FRAMechanism *)mechanism andCollectStateChanges:(NSMutableDictionary *)stateChanges withError:(NSError *__autoreleasing *)error {
     if ([mechanism isStored]) {
-        // TODO: Throw exception as programmer error has occured?
-        return;
+        [FRAError createError:error withReason:@"Mechanism was already persisted"];
+        return NO;
     }
     for (FRANotification *notification in [mechanism notifications]) {
-        [self doInsertNotification:notification andCollectStateChanges:stateChanges];
+        if (![self doInsertNotification:notification andCollectStateChanges:stateChanges withError:error]) {
+            return NO;
+        }
     }
-    [self.sqlOperations insertMechanism:mechanism];
+    if (![self.sqlOperations insertMechanism:mechanism error:error]) {
+        return NO;
+    }
     mechanism.uid = nextMechanismId;
     nextMechanismId++;
     [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationAddedItems] addObject:mechanism];
+    return YES;
 }
 
-- (void)deleteMechanism:(FRAMechanism *)mechanism {
+- (BOOL)deleteMechanism:(FRAMechanism *)mechanism error:(NSError *__autoreleasing *)error {
     NSMutableDictionary *stateChanges = [self dictionaryForStateChanges];
-    [self doDeleteMechanism:mechanism andCollectStateChanges:stateChanges];
+    if (![self doDeleteMechanism:mechanism andCollectStateChanges:stateChanges withError:error]) {
+        return NO;
+    }
     [self postDatabaseChangeNotificationForStateChanges:stateChanges];
+    return YES;
 }
 
-- (void)doDeleteMechanism:(FRAMechanism *)mechanism andCollectStateChanges:(NSMutableDictionary *)stateChanges {
+- (BOOL)doDeleteMechanism:(FRAMechanism *)mechanism andCollectStateChanges:(NSMutableDictionary *)stateChanges withError:(NSError *__autoreleasing *)error {
     if (![mechanism isStored]) {
-        // TODO: Throw exception as programmer error has occured?
-        return;
+        [FRAError createError:error withReason:@"Mechanism was not already persisted"];
+        return NO;
     }
     for (FRANotification *notification in [mechanism notifications]) {
-        [self doDeleteNotification:notification andCollectStateChanges:stateChanges];
+        if (![self doDeleteNotification:notification andCollectStateChanges:stateChanges withError:error]) {
+            return NO;
+        }
     }
-    [self.sqlOperations deleteMechanism:mechanism];
+    if (![self.sqlOperations deleteMechanism:mechanism error:error]) {
+        return NO;
+    }
     mechanism.uid = FRANotStored;
     [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationRemovedItems] addObject:mechanism];
+    return YES;
 }
 
-- (void)updateMechanism:(FRAMechanism *)mechanism {
+- (BOOL)updateMechanism:(FRAMechanism *)mechanism error:(NSError *__autoreleasing *)error {
     NSMutableDictionary *stateChanges = [self dictionaryForStateChanges];
-    [self doUpdateMechanism:mechanism andCollectStateChanges:stateChanges];
+    if (![self doUpdateMechanism:mechanism andCollectStateChanges:stateChanges withError:error]) {
+        return NO;
+    }
     [self postDatabaseChangeNotificationForStateChanges:stateChanges];
+    return YES;
 }
 
-- (void)doUpdateMechanism:(FRAMechanism *)mechanism andCollectStateChanges:(NSMutableDictionary *)stateChanges {
+- (BOOL)doUpdateMechanism:(FRAMechanism *)mechanism andCollectStateChanges:(NSMutableDictionary *)stateChanges withError:(NSError *__autoreleasing *)error {
     if (![mechanism isStored]) {
-        // TODO: Throw exception as programmer error has occured?
-        return;
+        [FRAError createError:error withReason:@"Mechanism was not already persisted"];
+        return NO;
     }
     if ([mechanism isKindOfClass:[FRAOathMechanism class]]) {
         FRAOathMechanism *oathMechanism = (FRAOathMechanism *)mechanism;
-        // TODO: Update mechanism in SQLite DB
-        [self.sqlOperations updateMechanism:oathMechanism];
+        if (![self.sqlOperations updateMechanism:oathMechanism error:error]) {
+            return NO;
+        }
         [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationUpdatedItems] addObject:mechanism];
     } else if ([mechanism isKindOfClass:[FRAPushMechanism class]]) {
         FRAPushMechanism *pushMechanism = (FRAPushMechanism *)mechanism;
-        // TODO: Update mechanism in SQLite DB
-        [self.sqlOperations updateMechanism:pushMechanism];
+        if (![self.sqlOperations updateMechanism:pushMechanism error:error]) {
+            return NO;
+        }
         [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationUpdatedItems] addObject:mechanism];
     } else {
-        // TODO: Throw exception as programmer error has occured?
-        return;
+        @throw [FRAError createIllegalStateException:@"Unknown Mechanism"];
     }
+    return YES;
 }
 
 #pragma mark -
 #pragma mark Notification Functions
 
-- (void)insertNotification:(FRANotification *)notification {
+- (BOOL)insertNotification:(FRANotification *)notification error:(NSError *__autoreleasing *)error {
     NSMutableDictionary *stateChanges = [self dictionaryForStateChanges];
-    [self doInsertNotification:notification andCollectStateChanges:stateChanges];
+    if (![self doInsertNotification:notification andCollectStateChanges:stateChanges withError:error]) {
+        return NO;
+    }
     [self postDatabaseChangeNotificationForStateChanges:stateChanges];
+    return YES;
 }
 
-- (void)doInsertNotification:(FRANotification *)notification andCollectStateChanges:(NSMutableDictionary *)stateChanges {
+- (BOOL)doInsertNotification:(FRANotification *)notification andCollectStateChanges:(NSMutableDictionary *)stateChanges withError:(NSError *__autoreleasing *)error {
     if ([notification isStored]) {
-        // TODO: Throw exception as programmer error has occured?
-        return;
+        NSString *reason = [[NSString alloc] initWithFormat:@"Notification %@ was already persisted", notification.messageId];
+        [FRAError createError:error withReason:reason];
+        return NO;
     }
-    [self.sqlOperations insertNotification:notification];
+    if (![self.sqlOperations insertNotification:notification error:error]) {
+        return NO;
+    }
     notification.uid = nextNotificationId;
     nextNotificationId++;
     [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationAddedItems] addObject:notification];
+    return YES;
 }
 
-- (void)deleteNotification:(FRANotification *)notification {
+- (BOOL)deleteNotification:(FRANotification *)notification error:(NSError *__autoreleasing *)error {
     NSMutableDictionary *stateChanges = [self dictionaryForStateChanges];
-    [self doDeleteNotification:notification andCollectStateChanges:stateChanges];
+    if (![self doDeleteNotification:notification andCollectStateChanges:stateChanges withError:error]) {
+        return NO;
+    }
     [self postDatabaseChangeNotificationForStateChanges:stateChanges];
+    return YES;
 }
 
-- (void)doDeleteNotification:(FRANotification *)notification andCollectStateChanges:(NSMutableDictionary *)stateChanges {
+- (BOOL)doDeleteNotification:(FRANotification *)notification andCollectStateChanges:(NSMutableDictionary *)stateChanges withError:(NSError *__autoreleasing *)error {
     if (![notification isStored]) {
-        // TODO: Throw exception as programmer error has occured?
-        return;
+        NSString* reason = [[NSString alloc] initWithFormat:@"Notification %@ was not already persisted", notification.messageId];
+        [FRAError createError:error withReason:reason];
+        return NO;
     }
-    [self.sqlOperations deleteNotification:notification];
+    if (![self.sqlOperations deleteNotification:notification error:error]) {
+        return NO;
+    }
     notification.uid = FRANotStored;
     [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationRemovedItems] addObject:notification];
+    return YES;
 }
 
-- (void)updateNotification:(FRANotification *)notification {
+- (BOOL)updateNotification:(FRANotification *)notification error:(NSError *__autoreleasing *)error {
     NSMutableDictionary *stateChanges = [self dictionaryForStateChanges];
-    [self doUpdateNotification:notification andCollectStateChanges:stateChanges];
+    if (![self doUpdateNotification:notification andCollectStateChanges:stateChanges withError:error]) {
+        return NO;
+    }
     [self postDatabaseChangeNotificationForStateChanges:stateChanges];
+    return YES;
 }
 
-- (void)doUpdateNotification:(FRANotification *)notification andCollectStateChanges:(NSMutableDictionary *)stateChanges {
+- (BOOL)doUpdateNotification:(FRANotification *)notification andCollectStateChanges:(NSMutableDictionary *)stateChanges withError:(NSError *__autoreleasing *)error {
     if (![notification isStored]) {
-        // TODO: Throw exception as programmer error has occured?
-        return;
+        NSString *reason = [[NSString alloc] initWithFormat:@"Notification %@ was not already persisted", notification.messageId];
+        [FRAError createError:error withReason:reason];
+        return NO;
     }
-    [self.sqlOperations updateNotification:notification];
+    if (![self.sqlOperations updateNotification:notification error:error]) {
+        return NO;
+    }
     [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationUpdatedItems] addObject:notification];
+    return YES;
 }
 
 #pragma mark -

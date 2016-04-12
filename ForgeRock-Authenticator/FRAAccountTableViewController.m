@@ -209,11 +209,22 @@ static const NSInteger PUSH_MECHANISM_ROW_INDEX = 2;
         // If this is the only mechanism registered to the identity, then remove the identity itself
         // (after navigating back to the accounts screen so that it's removal can be animated)
         [self.navigationController popViewControllerAnimated:YES];
-        [self.identityModel removeIdentity:parent];
+        
+        // TODO: Handle error?
+        @autoreleasepool {
+            NSError* error;
+            [self.identityModel removeIdentity:parent error:&error];
+        }
+
     } else {
         // If the parent identity has other mechanisms registered to it, then just remove this mechanism
         // and leave the UI updates to be triggered in response to the database change event handler
-        [mechanism.parent removeMechanism:mechanism];
+        
+        // TODO: Handle error?
+        @autoreleasepool {
+            NSError* error;
+            [mechanism.parent removeMechanism:mechanism error:&error];
+        }
     }
 }
 

@@ -24,69 +24,80 @@
 #import "FRAMechanism.h"
 #import "FRANotification.h"
 #import "FRAPushMechanism.h"
+#import "FRASqlDatabase.h"
 
 @interface FRAIdentityModelTests : XCTestCase
 
 @end
 
 @implementation FRAIdentityModelTests {
-
-    FRAIdentityDatabaseSQLiteOperations *mockSqlOperations;
+    id mockSqlOperations;
+    id mockSqlDatabase;
+    id databaseObserverMock;
     FRAIdentityDatabase *database;
     FRAIdentityModel *identityModel;
     FRAIdentity *aliceIdentity;
     FRAIdentity *bobIdentity;
-    id databaseObserverMock;
-
 }
 
 - (void)setUp {
     [super setUp];
     mockSqlOperations = OCMClassMock([FRAIdentityDatabaseSQLiteOperations class]);
+    mockSqlDatabase = OCMClassMock([FRASqlDatabase class]);
     database = [[FRAIdentityDatabase alloc] initWithSqlOperations:mockSqlOperations];
-    identityModel = [[FRAIdentityModel alloc] initWithDatabase:database];
-    aliceIdentity = [FRAIdentity identityWithDatabase:database accountName:@"alice" issuer:@"Forgerock" image:nil];
-    bobIdentity = [FRAIdentity identityWithDatabase:database accountName:@"bob" issuer:@"Forgerock" image:nil];
+    identityModel = [[FRAIdentityModel alloc] initWithDatabase:database andSqlDatabase:mockSqlDatabase];
+    aliceIdentity = [FRAIdentity identityWithDatabase:database accountName:@"alice" issuer:@"Forgerock" image:nil backgroundColor:nil];
+    bobIdentity = [FRAIdentity identityWithDatabase:database accountName:@"bob" issuer:@"Forgerock" image:nil backgroundColor:nil];
     databaseObserverMock = OCMObserverMock();
 }
 
 - (void)tearDown {
+    [mockSqlOperations stopMocking];
+    [mockSqlDatabase stopMocking];
     [super tearDown];
 }
 
 - (void)testCanSaveNewIdentityToDatabase {
     // Given
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertIdentity:aliceIdentity withError:nil]).andReturn(YES);
     XCTAssertEqualObjects([identityModel identities], @[]);
     
     // When
-    [identityModel addIdentity:aliceIdentity];
+    BOOL aliceAdded = [identityModel addIdentity:aliceIdentity withError:nil];
     
     // Then
+    XCTAssertTrue(aliceAdded);
     XCTAssertTrue([aliceIdentity isStored]);
     XCTAssertTrue([[identityModel identities] containsObject:aliceIdentity]);
-    OCMVerify([mockSqlOperations insertIdentity:aliceIdentity]);
+    OCMVerify([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertIdentity:aliceIdentity withError:nil]);
 }
 
 - (void)testBroadcastsOneChangeNotificationWhenIdentityIsSavedToDatabase {
     // Given
     [[NSNotificationCenter defaultCenter] addMockObserver:databaseObserverMock name:FRAIdentityDatabaseChangedNotification object:database];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertIdentity:aliceIdentity withError:nil]).andReturn(YES);
     [[databaseObserverMock expect] notificationWithName:FRAIdentityDatabaseChangedNotification object:database userInfo:[OCMArg any]];
     
     // When
-    [identityModel addIdentity:aliceIdentity];
+    BOOL aliceAdded = [identityModel addIdentity:aliceIdentity withError:nil];
     
     // Then
+    XCTAssertTrue(aliceAdded);
     OCMVerifyAll(databaseObserverMock);
 }
 
 - (void)testSavedIdentitiesAreGivenUniqueStorageIds {
     // Given
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertIdentity:aliceIdentity withError:nil]).andReturn(YES);
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertIdentity:bobIdentity withError:nil]).andReturn(YES);
     
     // When
-    [identityModel addIdentity:aliceIdentity];
-    [identityModel addIdentity:bobIdentity];
+    BOOL aliceAdded = [identityModel addIdentity:aliceIdentity withError:nil];
+    BOOL bobAdded = [identityModel addIdentity:bobIdentity withError:nil];
     
     // Then
+    XCTAssertTrue(aliceAdded);
+    XCTAssertTrue(bobAdded);
     XCTAssertTrue([aliceIdentity isStored]);
     XCTAssertTrue([bobIdentity isStored]);
     XCTAssertNotEqual(aliceIdentity.uid, bobIdentity.uid);
@@ -94,7 +105,8 @@
 
 - (void)testCanFindIdentityById {
     // Given
-    [identityModel addIdentity:aliceIdentity];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertIdentity:aliceIdentity withError:nil]).andReturn(YES);
+    [identityModel addIdentity:aliceIdentity withError:nil];
     
     // When
     FRAIdentity* foundIdentity = [identityModel identityWithId:aliceIdentity.uid];
@@ -105,7 +117,8 @@
 
 - (void)testCanFindIdentityByIssuerAndLabel {
     // Given
-    [identityModel addIdentity:aliceIdentity];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertIdentity:aliceIdentity withError:nil]).andReturn(YES);
+    [identityModel addIdentity:aliceIdentity withError:nil];
     
     // When
     FRAIdentity* foundIdentity = [identityModel identityWithIssuer:aliceIdentity.issuer accountName:aliceIdentity.accountName];
@@ -116,64 +129,80 @@
 
 - (void)testCanRemoveIdentityFromDatabase {
     // Given
-    [identityModel addIdentity:aliceIdentity];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertIdentity:aliceIdentity withError:nil]).andReturn(YES);
+    [identityModel addIdentity:aliceIdentity withError:nil];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations deleteIdentity:aliceIdentity withError:nil]).andReturn(YES);
     
     // When
-    [identityModel removeIdentity:aliceIdentity];
+    BOOL aliceRemoved = [identityModel removeIdentity:aliceIdentity withError:nil];
     
     // Then
+    XCTAssertTrue(aliceRemoved);
     XCTAssertFalse([aliceIdentity isStored]);
     XCTAssertFalse([[identityModel identities] containsObject:aliceIdentity]);
 }
 
 - (void)testBroadcastsOneChangeNotificationWhenIdentityIsRemovedFromDatabase {
     // Given
-    [identityModel addIdentity:aliceIdentity];
     [[NSNotificationCenter defaultCenter] addMockObserver:databaseObserverMock name:FRAIdentityDatabaseChangedNotification object:database];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertIdentity:aliceIdentity withError:nil]).andReturn(YES);
     [[databaseObserverMock expect] notificationWithName:FRAIdentityDatabaseChangedNotification object:database userInfo:[OCMArg any]];
+    [identityModel addIdentity:aliceIdentity withError:nil];
+    [[databaseObserverMock expect] notificationWithName:FRAIdentityDatabaseChangedNotification object:database userInfo:[OCMArg any]];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations deleteIdentity:aliceIdentity withError:nil]).andReturn(YES);
     
     // When
-    [identityModel removeIdentity:aliceIdentity];
+    BOOL aliceRemoved = [identityModel removeIdentity:aliceIdentity withError:nil];
     
     // Then
+    XCTAssertTrue(aliceRemoved);
     OCMVerifyAll(databaseObserverMock);
 }
 
 - (void)testCanSaveMechanismsOfNewIdentityToDatabase {
     // Given
     FRAPushMechanism *mechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
-    [aliceIdentity addMechanism:mechanism];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertMechanism:mechanism withError:nil]).andReturn(YES);
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertIdentity:aliceIdentity withError:nil]).andReturn(YES);
+    [aliceIdentity addMechanism:mechanism withError:nil];
     XCTAssertFalse([mechanism isStored]);
     
     // When
-    [identityModel addIdentity:aliceIdentity];
+    BOOL aliceAdded = [identityModel addIdentity:aliceIdentity withError:nil];
     
     // Then
+    XCTAssertTrue(aliceAdded);
     XCTAssertTrue([mechanism isStored]);
     XCTAssertTrue([aliceIdentity isStored]);
-    OCMVerify([mockSqlOperations insertIdentity:aliceIdentity]);
-    OCMVerify([mockSqlOperations insertMechanism:mechanism]);
+    OCMVerify([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertIdentity:aliceIdentity withError:nil]);
+    OCMVerify([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertMechanism:mechanism withError:nil]);
 }
 
 - (void)testBroadcastsOneChangeNotificationWhenIdentityObjectGraphIsSavedToDatabase {
     // Given
     FRAPushMechanism *mechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
-    [aliceIdentity addMechanism:mechanism];
+    [aliceIdentity addMechanism:mechanism withError:nil];
     NSTimeInterval timeToLive = 120.0;
-    FRANotification *notification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challenge:@"challenge" timeReceived:[NSDate date] timeToLive:timeToLive];
-    [mechanism addNotification:notification];
+    FRANotification *notification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challenge:[@"challange" dataUsingEncoding:NSUTF8StringEncoding] timeReceived:[NSDate date] timeToLive:timeToLive];
+
+    [mechanism addNotification:notification withError:nil];
+
     [[NSNotificationCenter defaultCenter] addMockObserver:databaseObserverMock name:FRAIdentityDatabaseChangedNotification object:database];
     NSDictionary *expectedChanges = @{
             @"added" : [NSSet setWithObjects:notification, mechanism, aliceIdentity, nil],
             @"removed" : [NSSet set],
             @"updated" : [NSSet set]
     };
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertNotification:notification withError:nil]).andReturn(YES);
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertMechanism:mechanism withError:nil]).andReturn(YES);
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertIdentity:aliceIdentity withError:nil]).andReturn(YES);
     [[databaseObserverMock expect] notificationWithName:FRAIdentityDatabaseChangedNotification object:database userInfo:expectedChanges];
     
     // When
-    [identityModel addIdentity:aliceIdentity];
+    BOOL aliceAdded = [identityModel addIdentity:aliceIdentity withError:nil];
     
     // Then
+    XCTAssertTrue(aliceAdded);
     XCTAssertTrue([notification isStored]);
     XCTAssertTrue([mechanism isStored]);
     XCTAssertTrue([aliceIdentity isStored]);
@@ -183,23 +212,34 @@
 - (void)testBroadcastsOneChangeNotificationWhenIdentityObjectGraphIsRemovedFromDatabase {
     // Given
     FRAPushMechanism *mechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
-    [aliceIdentity addMechanism:mechanism];
+    [aliceIdentity addMechanism:mechanism withError:nil];
     NSTimeInterval timeToLive = 120.0;
-    FRANotification *notification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challenge:@"challenge" timeReceived:[NSDate date] timeToLive:timeToLive];
-    [mechanism addNotification:notification];
-    [identityModel addIdentity:aliceIdentity];
+    FRANotification *notification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challenge:[@"challange" dataUsingEncoding:NSUTF8StringEncoding] timeReceived:[NSDate date] timeToLive:timeToLive];
+    [mechanism addNotification:notification withError:nil];
+
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertIdentity:aliceIdentity withError:nil]).andReturn(YES);
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertNotification:notification withError:nil]).andReturn(YES);
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertMechanism:mechanism withError:nil]).andReturn(YES);
+
     [[NSNotificationCenter defaultCenter] addMockObserver:databaseObserverMock name:FRAIdentityDatabaseChangedNotification object:database];
+    [[databaseObserverMock expect] notificationWithName:FRAIdentityDatabaseChangedNotification object:database userInfo:[OCMArg any]];
+    [identityModel addIdentity:aliceIdentity withError:nil];
+    
     NSDictionary *expectedChanges = @{
             @"added" : [NSSet set],
             @"removed" : [NSSet setWithObjects:notification, mechanism, aliceIdentity, nil],
             @"updated" : [NSSet set]
     };
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations deleteIdentity:aliceIdentity withError:nil]).andReturn(YES);
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations deleteNotification:notification withError:nil]).andReturn(YES);
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations deleteMechanism:mechanism withError:nil]).andReturn(YES);
     [[databaseObserverMock expect] notificationWithName:FRAIdentityDatabaseChangedNotification object:database userInfo:expectedChanges];
     
     // When
-    [identityModel removeIdentity:aliceIdentity];
+    BOOL aliceRemoved = [identityModel removeIdentity:aliceIdentity withError:nil];
     
     // Then
+    XCTAssertTrue(aliceRemoved);
     XCTAssertFalse([notification isStored]);
     XCTAssertFalse([mechanism isStored]);
     XCTAssertFalse([aliceIdentity isStored]);
@@ -208,9 +248,11 @@
 
 - (void)testCanFindMechanismById {
     // Given
-    [identityModel addIdentity:aliceIdentity];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertIdentity:aliceIdentity withError:nil]).andReturn(YES);
+    [identityModel addIdentity:aliceIdentity withError:nil];
     FRAPushMechanism *mechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
-    [aliceIdentity addMechanism:mechanism];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertMechanism:mechanism withError:nil]).andReturn(YES);
+    [aliceIdentity addMechanism:mechanism withError:nil];
     XCTAssertEqual(mechanism.uid, 0);
     
     // When

@@ -25,6 +25,7 @@
 #import "FRANotificationHandler.h"
 #import "FRAOathMechanism.h"
 #import "FRAPushMechanism.h"
+#import "FRAFMDatabaseConnectionHelper.h"
 
 @interface FRANotificationHandlerTest : XCTestCase
 
@@ -41,6 +42,7 @@ static NSString *const TEST_USERNAME = @"Alice";
     FRAPushMechanism *pushMechanism;
     FRAOathMechanism *oathMechanism;
     UIApplication *mockApplication;
+    FRASqlDatabase* mockSqlDatabase;
 }
 
 - (void)setUp {
@@ -48,19 +50,20 @@ static NSString *const TEST_USERNAME = @"Alice";
     
     mockApplication = OCMClassMock([UIApplication class]);
     database = [[FRAIdentityDatabase alloc] init];
+    mockSqlDatabase = OCMClassMock([FRAFMDatabaseConnectionHelper class]);
     
     // create object model
-    identityModel = [[FRAIdentityModel alloc] initWithDatabase:database];
-    identity = [FRAIdentity identityWithDatabase:database accountName:TEST_USERNAME issuer:@"ForgeRock" image:nil];
+    identityModel = [[FRAIdentityModel alloc] initWithDatabase:database sqlDatabase:mockSqlDatabase];
+    identity = [FRAIdentity identityWithDatabase:database accountName:TEST_USERNAME issuer:@"ForgeRock" image:nil backgroundColor:nil];
     pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
     oathMechanism = [[FRAOathMechanism alloc] initWithDatabase:database];
-    [identityModel addIdentity:identity];
-    [identity addMechanism:pushMechanism];
-    [identity addMechanism:oathMechanism];
+    [identityModel addIdentity:identity error:nil];
+    [identity addMechanism:pushMechanism error:nil];
+    [identity addMechanism:oathMechanism error:nil];
     
     // persist to object model database
-    [database insertIdentity:identity];
-    
+    [database insertIdentity:identity error:nil];
+
     handler = [[FRANotificationHandler alloc] initWithDatabase:database identityModel:identityModel];
 }
 
@@ -114,7 +117,7 @@ static NSString *const TEST_USERNAME = @"Alice";
     
     // Then
     XCTAssertEqual([oathMechanism notifications].count, 0, @"Only Push-Mechanism notifications should be handled");
-    XCTAssertEqual([pushMechanism notifications].count, 0, @"Only Push-Mechanism notifications should be handled");
+    XCTAssertEqual([pushMechanism notifications].count, 1, @"Only Push-Mechanism notifications should be handled");
 }
 
 @end

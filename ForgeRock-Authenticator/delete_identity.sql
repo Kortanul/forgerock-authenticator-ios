@@ -1,0 +1,1 @@
+DELETE FROM identity WHERE (issuer = ?) AND (accountName = ?);

@@ -17,7 +17,7 @@
  */
 
 @import AVFoundation;
-#import <UIKit/UIKit.h>
+
 @class FRAUriMechanismReader;
 
 /*! The storyboard identifier assigned to this view controller. */

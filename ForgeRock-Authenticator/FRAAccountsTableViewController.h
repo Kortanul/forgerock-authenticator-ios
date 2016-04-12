@@ -14,7 +14,7 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import <UIKit/UIKit.h>
+
 
 @class FRAIdentityModel;
 

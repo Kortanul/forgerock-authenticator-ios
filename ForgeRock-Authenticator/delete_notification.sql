@@ -1,0 +1,1 @@
+DELETE FROM notification WHERE (mechanismUID = ?) AND (timeReceived = ?);

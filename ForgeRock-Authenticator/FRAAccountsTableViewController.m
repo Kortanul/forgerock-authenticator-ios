@@ -126,7 +126,11 @@ NSString * const FRAAccountsTableViewControllerScanQrCodeSegue = @"scanQrCodeSeg
         alertView.callback = ^(NSInteger offset) {
             const NSInteger deleteButton = 0;
             if (offset == deleteButton) {
-                [self.identityModel removeIdentity:identity];
+                // TODO: Handle Error?
+                @autoreleasepool {
+                    NSError* error;
+                    [self.identityModel removeIdentity:identity error:&error];
+                }
             }
             [self setEditing:NO animated:YES];
         };

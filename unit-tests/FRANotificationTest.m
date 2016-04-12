@@ -14,7 +14,7 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import <Foundation/Foundation.h>
+
 #import <OCMock/OCMock.h>
 #import <XCTest/XCTest.h>
 
@@ -27,12 +27,10 @@
 @end
 
 @implementation FRANotificationTest {
-
-    FRAIdentityDatabaseSQLiteOperations *mockSqlOperations;
+    id mockSqlOperations;
+    id databaseObserverMock;
     FRAIdentityDatabase *database;
     FRANotification* notification;
-    id databaseObserverMock;
-
 }
 
 - (void)setUp {
@@ -40,11 +38,12 @@
     mockSqlOperations = OCMClassMock([FRAIdentityDatabaseSQLiteOperations class]);
     database = [[FRAIdentityDatabase alloc] initWithSqlOperations:mockSqlOperations];
     NSTimeInterval timeToLive = 120.0;
-    notification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challenge:@"challenge" timeReceived:[NSDate date] timeToLive:timeToLive];
+    notification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challenge:[@"challange" dataUsingEncoding:NSUTF8StringEncoding] timeReceived:[NSDate date] timeToLive:timeToLive];
     databaseObserverMock = OCMObserverMock();
 }
 
 - (void)tearDown {
+    [mockSqlOperations stopMocking];
     [super tearDown];
 }
 
@@ -64,7 +63,7 @@
     // Given
     NSDate *timeReceived = [NSDate date];
     NSTimeInterval timeToLive = 120.0;
-    FRANotification *expiringNotification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challenge:@"challenge" timeReceived:timeReceived timeToLive:timeToLive];
+    FRANotification *expiringNotification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challenge:[@"challenge" dataUsingEncoding:NSUTF8StringEncoding] timeReceived:timeReceived timeToLive:timeToLive];
     // When
     
     // Then
@@ -75,7 +74,7 @@
     // Given
     
     // When
-    [notification approve];
+    [notification approveWithError:nil];
     
     // Then
     XCTAssertEqual([notification isPending], NO);
@@ -87,7 +86,7 @@
     // Given
     
     // When
-    [notification deny];
+    [notification denyWithError:nil];
     
     // Then
     XCTAssertEqual([notification isPending], NO);
@@ -97,42 +96,49 @@
 
 - (void)testSavedNotificationAutomaticallySavesItselfToDatabaseWhenApproved {
     // Given
-    [database insertNotification:notification];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertNotification:notification error:nil]).andReturn(YES);
+    [database insertNotification:notification error:nil];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations updateNotification:notification error:nil]).andReturn(YES);
     
     // When
-    [notification approve];
+    BOOL notificationApproved = [notification approveWithError:nil];
     
     // Then
-    OCMVerify([mockSqlOperations updateNotification:notification]);
+    XCTAssertTrue(notificationApproved);
 }
 
 - (void)testSavedNotificationAutomaticallySavesItselfToDatabaseWhenDenied {
     // Given
-    [database insertNotification:notification];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertNotification:notification error:nil]).andReturn(YES);
+    [database insertNotification:notification error:nil];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations updateNotification:notification error:nil]).andReturn(YES);
     
     // When
-    [notification deny];
+    BOOL notificationDenied = [notification denyWithError:nil];
     
     // Then
-    OCMVerify([mockSqlOperations updateNotification:notification]);
+    XCTAssertTrue(notificationDenied);
 }
 
 - (void)testBroadcastsOneChangeNotificationWhenNotificationUpdateIsAutomaticallySavedToDatabase {
     // Given
-    [database insertNotification:notification];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertNotification:notification error:nil]).andReturn(YES);
+    [database insertNotification:notification error:nil];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations updateNotification:notification error:nil]).andReturn(YES);
     [[NSNotificationCenter defaultCenter] addMockObserver:databaseObserverMock name:FRAIdentityDatabaseChangedNotification object:database];
     [[databaseObserverMock expect] notificationWithName:FRAIdentityDatabaseChangedNotification object:database userInfo:[OCMArg any]];
     
     // When
-    [notification approve];
+    BOOL notificationApproved = [notification approveWithError:nil];
     
     // Then
+    XCTAssertTrue(notificationApproved);
     OCMVerifyAll(databaseObserverMock);
 }
 
 - (void)testIsExpiredReturnsYesIfNotificationHasExpired {
     // Given
-    FRANotification *expiredNotification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challenge:@"challenge" timeReceived:[NSDate date] timeToLive:-10.0];
+    FRANotification *expiredNotification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challenge:[@"challenge" dataUsingEncoding:NSUTF8StringEncoding] timeReceived:[NSDate date] timeToLive:-10.0];
     
     // When
     
@@ -145,7 +151,7 @@
 
 - (void)testIsExpiredReturnsNoIfNotificationHasNotExpired {
     // Given
-    FRANotification *expiredNotification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challenge:@"challenge" timeReceived:[NSDate date] timeToLive:120.0];
+    FRANotification *expiredNotification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challenge:[@"challenge" dataUsingEncoding:NSUTF8StringEncoding] timeReceived:[NSDate date] timeToLive:120.0];
     
     // When
     

@@ -16,7 +16,7 @@
  * Portions Copyright 2014 Nathaniel McCallum, Red Hat
  */
 
-#import <Foundation/Foundation.h>
+
 #import <sys/time.h>
 
 /*!

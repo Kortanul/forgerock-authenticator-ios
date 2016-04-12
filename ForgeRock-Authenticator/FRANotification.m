@@ -14,7 +14,7 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import <Foundation/Foundation.h>
+
 
 #import "FRAIdentityDatabase.h"
 #import "FRAModelObjectProtected.h"
@@ -37,7 +37,7 @@ static double const TWO_DAYS_IN_SECONDS = 172800.0;
 static double const ONE_WEEK_IN_SECONDS = 604800.0;
 static NSString * const STRING_DATE_FORMAT = @"dd/MM/yyyy";
 
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive {
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSData *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive {
     self = [super initWithDatabase:database];
     if (self) {
         pending = YES;
@@ -55,7 +55,7 @@ static NSString * const STRING_DATE_FORMAT = @"dd/MM/yyyy";
     return self;
 }
 
-+ (instancetype)notificationWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive {
++ (instancetype)notificationWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSData *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive {
     return [[FRANotification alloc] initWithDatabase:database messageId:messageId challenge:challenge timeReceived:timeReceived timeToLive:timeToLive];
 }
 
@@ -65,7 +65,7 @@ static NSString * const STRING_DATE_FORMAT = @"dd/MM/yyyy";
         return @"less than a minute ago";
     } else if (age < ONE_HOUR_IN_SECONDS) {
         // TODO: Handle "1 minutes ago" as a special case
-        return [NSString stringWithFormat:@"%ld minutes ago", (long)(age / ONE_MINUTE_IN_SECONDS)];
+        return [NSString stringWithFormat:@"%ld minutes ago", (long)((age/ONE_MINUTE_IN_SECONDS)+0.5)];
     } else if (age < ONE_DAY_IN_SECONDS) {
         // TODO: Handle "1 hours ago" as a special case
         return [NSString stringWithFormat:@"%ld hours ago", (long)(age / ONE_HOUR_IN_SECONDS)];
@@ -81,21 +81,27 @@ static NSString * const STRING_DATE_FORMAT = @"dd/MM/yyyy";
     }
 }
 
-- (void)approve {
+- (BOOL)approveWithError:(NSError *__autoreleasing*)error {
     _approved = YES;
     pending = NO;
     if ([self isStored]) {
-        [self.database updateNotification:self];
+        if (![self.database updateNotification:self error:error]) {
+            return NO;
+        }
     }
+    return YES;
 }
 
-- (void)deny {
+- (BOOL)denyWithError:(NSError *__autoreleasing*)error {
     _approved = NO;
     pending = NO;
     _denied = YES;
     if ([self isStored]) {
-        [self.database updateNotification:self];
+        if (![self.database updateNotification:self error:error]) {
+            return NO;
+        }
     }
+    return YES;
 }
 
 - (BOOL)isPending {

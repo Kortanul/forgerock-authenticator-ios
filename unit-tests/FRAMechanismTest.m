@@ -27,12 +27,10 @@
 @end
 
 @implementation FRAMechanismTest {
-
-    FRAIdentityDatabaseSQLiteOperations *mockSqlOperations;
+    id mockSqlOperations;
+    id databaseObserverMock;
     FRAIdentityDatabase *database;
     FRAMechanism *mechanism;
-    id databaseObserverMock;
-
 }
 
 - (void)setUp {
@@ -44,6 +42,7 @@
 }
 
 - (void)tearDown {
+    [mockSqlOperations stopMocking];
     [super tearDown];
 }
 
@@ -52,87 +51,105 @@
     FRANotification *notification = [self dummyNotification];
     
     // When
-    [mechanism addNotification:notification];
+    BOOL notificationAdded = [mechanism addNotification:notification error:nil];
     
     // Then
+    XCTAssertTrue(notificationAdded);
     XCTAssertEqual(notification.parent, mechanism);
     XCTAssertTrue([[mechanism notifications] containsObject:notification]);
 }
 
 - (void)testSavedMechanismAutomaticallySavesAddedNotificationToDatabase {
     // Given
-    [database insertMechanism:mechanism];
     FRANotification *notification = [self dummyNotification];
-    
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertMechanism:mechanism error:nil]).andReturn(YES);
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertNotification:notification error:nil]).andReturn(YES);
+    XCTAssertTrue([database insertMechanism:mechanism error:nil]);
+
     // When
-    [mechanism addNotification:notification];
+    BOOL notificationAdded = [mechanism addNotification:notification error:nil];
     
     // Then
+    XCTAssertTrue(notificationAdded);
     XCTAssertTrue([notification isStored]);
-    OCMVerify([mockSqlOperations insertNotification:notification]);
 }
 
 - (void)testBroadcastsOneChangeNotificationWhenNotificationIsAutomaticallySavedToDatabase {
     // Given
-    [database insertMechanism:mechanism];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertMechanism:mechanism error:nil]).andReturn(YES);
+    [database insertMechanism:mechanism error:nil];
     FRANotification *notification = [self dummyNotification];
     [[NSNotificationCenter defaultCenter] addMockObserver:databaseObserverMock name:FRAIdentityDatabaseChangedNotification object:database];
     [[databaseObserverMock expect] notificationWithName:FRAIdentityDatabaseChangedNotification object:database userInfo:[OCMArg any]];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertNotification:notification error:nil]).andReturn(YES);
     
     // When
-    [mechanism addNotification:notification];
+    BOOL notificationAdded = [mechanism addNotification:notification error:nil];
     
     // Then
+    XCTAssertTrue(notificationAdded);
     OCMVerifyAll(databaseObserverMock);
 }
 
 - (void)testCanRemoveNotificationFromMechanism {
     // Given
     FRANotification *notification = [self dummyNotification];
-    [mechanism addNotification:notification];
+
+    [mechanism addNotification:notification error:nil];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations deleteNotification:notification error:nil]).andReturn(YES);
     
     // When
-    [mechanism removeNotification:notification];
+    BOOL notificationRemoved = [mechanism removeNotification:notification error:nil];
     
     // Then
+    XCTAssertTrue(notificationRemoved);
     XCTAssertEqual(notification.parent, nil);
     XCTAssertFalse([[mechanism notifications] containsObject:notification]);
 }
 
 - (void)testSavedMechanismAutomaticallyRemovesNotificationFromDatabase {
     // Given
-    [database insertMechanism:mechanism];
     FRANotification *notification = [self dummyNotification];
-    [mechanism addNotification:notification];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertMechanism:mechanism error:nil]).andReturn(YES);
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertNotification:notification error:nil]).andReturn(YES);
+    XCTAssertTrue([database insertMechanism:mechanism error:nil]);
+
+    XCTAssertTrue([mechanism addNotification:notification error:nil]);
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations deleteNotification:notification error:nil]).andReturn(YES);
     
     // When
-    [mechanism removeNotification:notification];
+    BOOL notificationRemoved = [mechanism removeNotification:notification error:nil];
     
     // Then
+    XCTAssertTrue(notificationRemoved);
     XCTAssertFalse([notification isStored]);
-    OCMVerify([mockSqlOperations deleteNotification:notification]);
 }
 
 - (void)testBroadcastsOneChangeNotificationWhenMechanismIsAutomaticallyRemovedFromDatabase {
     // Given
-    [database insertMechanism:mechanism];
     FRANotification *notification = [self dummyNotification];
-    [mechanism addNotification:notification];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertMechanism:mechanism error:nil]).andReturn(YES);
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertNotification:notification error:nil]).andReturn(YES);
+    [database insertMechanism:mechanism error:nil];
+
+    [mechanism addNotification:notification error:nil];
     [[NSNotificationCenter defaultCenter] addMockObserver:databaseObserverMock name:FRAIdentityDatabaseChangedNotification object:database];
     [[databaseObserverMock expect] notificationWithName:FRAIdentityDatabaseChangedNotification object:database userInfo:[OCMArg any]];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations deleteNotification:notification error:nil]).andReturn(YES);
     
     // When
-    [mechanism removeNotification:notification];
+    BOOL notificationRemoved = [mechanism removeNotification:notification error:nil];
     
     // Then
+    XCTAssertTrue(notificationRemoved);
     OCMVerifyAll(databaseObserverMock);
 }
 
 - (void)testCanLocateChildNotificationByMessageId {
     // Given
-    [mechanism addNotification:[self dummyNotificationWithMessageId:@"ID-1"]];
-    [mechanism addNotification:[self dummyNotificationWithMessageId:@"ID-2"]];
-    [mechanism addNotification:[self dummyNotificationWithMessageId:@"ID-3"]];
+    [mechanism addNotification:[self dummyNotificationWithMessageId:@"ID-1"] error:nil];
+    [mechanism addNotification:[self dummyNotificationWithMessageId:@"ID-2"] error:nil];
+    [mechanism addNotification:[self dummyNotificationWithMessageId:@"ID-3"] error:nil];
 
     // When
 
@@ -150,9 +167,10 @@
 - (FRANotification *)dummyNotificationWithMessageId:(NSString *)messageId {
     return [[FRANotification alloc] initWithDatabase:database
                                            messageId:messageId
-                                           challenge:@"Challange"
+                                           challenge:[@"Challange" dataUsingEncoding:NSUTF8StringEncoding]
                                         timeReceived:[NSDate date]
                                           timeToLive:120.0];
+
 }
 
 @end

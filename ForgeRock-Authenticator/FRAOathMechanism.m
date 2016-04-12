@@ -16,79 +16,62 @@
  * Portions Copyright 2014 Nathaniel McCallum, Red Hat
  */
 
+#import "FRAHMACAlgorithm.h"
 #import "FRAIdentityDatabase.h"
-#import "FRAOathMechanism.h"
-#import "FRAOathCode.h"
 #import "FRAModelObjectProtected.h"
+#import "FRAOathCode.h"
+#import "FRAOathMechanism.h"
 
 #include <CommonCrypto/CommonHMAC.h>
 #include <sys/time.h>
 #include "base32.h"
 
-@implementation FRAOathMechanism {
-    CCHmacAlgorithm algo;
-    NSData*   key;
-    uint64_t counter;
-    uint32_t period;
-}
+
+@implementation FRAOathMechanism
 
 #pragma mark -
 #pragma mark Lifecyle
 
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database type:(NSString *)type usingSecretKey:(NSData *)secretKey andHMACAlgorithm:(CCHmacAlgorithm)algorithm withKeyLength:(NSUInteger)digits andEitherPeriod:(NSUInteger)timePeriod orCounter:(NSUInteger)hmacCounter {
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database type:(NSString *)type usingSecretKey:(NSData *)secretKey andHMACAlgorithm:(CCHmacAlgorithm)algorithm withKeyLength:(NSUInteger)digits andEitherPeriod:(NSUInteger)timePeriod orCounter:(u_int64_t)hmacCounter {
 
     self = [super initWithDatabase:database];
     if (self) {
         _type = type;
-        key = secretKey;
-        algo = algorithm;
+        _secretKey = secretKey;
+        _algorithm = algorithm;
         _digits = digits;
-        period = timePeriod;
-        counter = hmacCounter;
+        _period = timePeriod;
+        _counter = hmacCounter;
         _version = 1;
     }
     return self;
 }
 
-+ (instancetype)oathMechanismWithDatabase:(FRAIdentityDatabase *)database type:(NSString *)type usingSecretKey:(NSData *)secretKey andHMACAlgorithm:(CCHmacAlgorithm)algorithm withKeyLength:(NSUInteger)digits andEitherPeriod:(NSUInteger)period orCounter:(NSUInteger)counter {
++ (instancetype)oathMechanismWithDatabase:(FRAIdentityDatabase *)database type:(NSString *)type usingSecretKey:(NSData *)secretKey andHMACAlgorithm:(CCHmacAlgorithm)algorithm withKeyLength:(NSUInteger)digits andEitherPeriod:(NSUInteger)period orCounter:(u_int64_t)counter {
     return [[FRAOathMechanism alloc] initWithDatabase:database type:type usingSecretKey:secretKey andHMACAlgorithm:algorithm withKeyLength:digits andEitherPeriod:period orCounter:counter];
 }
 
-- (void)generateNextCode {
+- (void)generateNextCodeWithError:(NSError *__autoreleasing*)error {
     time_t now = time(NULL);
     if (now == (time_t) -1) {
         now = 0;
     }
     if ([_type isEqualToString:@"hotp"]) {
-        NSString* code = getHOTP(algo, _digits, key, counter++);
+        NSString* code = getHOTP(_algorithm, _digits, _secretKey, _counter++);
         uint64_t startTime = now;
-        uint64_t endTime = startTime + period;
+        uint64_t endTime = startTime + _period;
         _code = [[FRAOathCode alloc] initWithValue:code startTime:startTime endTime:endTime];
-        [self.database updateMechanism:self];
+        [self.database updateMechanism:self error:error];
     } if ([_type isEqualToString:@"totp"]) {
-        NSString* code = getHOTP(algo, _digits, key, now / period);
-        uint64_t startTime = now / period * period;
-        uint64_t endTime = startTime + period;
+        NSString* code = getHOTP(_algorithm, _digits, _secretKey, now / _period);
+        uint64_t startTime = now / _period * _period;
+        uint64_t endTime = startTime + _period;
         _code = [[FRAOathCode alloc] initWithValue:code startTime:startTime endTime:endTime];
     }
 }
 
 #pragma mark --
 #pragma mark FRAOathMechanism (static private)
-
-static inline size_t getDigestLength(CCHmacAlgorithm algo) {
-    switch (algo) {
-        case kCCHmacAlgMD5:
-            return CC_MD5_DIGEST_LENGTH;
-        case kCCHmacAlgSHA256:
-            return CC_SHA256_DIGEST_LENGTH;
-        case kCCHmacAlgSHA512:
-            return CC_SHA512_DIGEST_LENGTH;
-        case kCCHmacAlgSHA1:
-        default:
-            return CC_SHA1_DIGEST_LENGTH;
-    }
-}
 
 static NSString* getHOTP(CCHmacAlgorithm algo, uint8_t digits, NSData* key, uint64_t counter) {
 #ifdef __LITTLE_ENDIAN__
@@ -102,7 +85,8 @@ static NSString* getHOTP(CCHmacAlgorithm algo, uint8_t digits, NSData* key, uint
         div *= 10;
     }
     // Create the HMAC
-    uint8_t digest[getDigestLength(algo)];
+    int length = [FRAHMACAlgorithm getDigestLength:algo];
+    uint8_t digest[length];
     CCHmac(algo, [key bytes], [key length], &counter, sizeof(counter), digest);
     
     // Truncate

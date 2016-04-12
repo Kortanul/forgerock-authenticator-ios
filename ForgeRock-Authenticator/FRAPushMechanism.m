@@ -22,34 +22,40 @@
 #pragma mark Lifecyle
 
 
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)a secret:s image:(NSString *)image bgColour:(NSString *)b issuer:(NSString *)issuer{
-    self = [super initWithDatabase:database];
-    if (self) {
-        _version = 1;
-        _authEndpoint = a;
-        _secret = s;
-        _image = image;
-        _bgColour = b;
-        _issuer = issuer;
-    }
-    return self;
-}
-
+// Testing only?
 - (instancetype)initWithDatabase:(FRAIdentityDatabase *)database {
-    
+    return [self initWithDatabase:database authEndpoint:nil secret:nil version:1];
+}
+
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)authEndPoint secret:(NSString *)secret {
+    return [self initWithDatabase:database authEndpoint:authEndPoint secret:secret version:1];
+}
+
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)authEndPoint secret:(NSString *)secret version:(NSInteger)version {
     self = [super initWithDatabase:database];
     if (self) {
-        _version = 1;
+        _version = version;
+        _authEndpoint = authEndPoint;
+        _secret = secret;
+        _type = @"push";
+        _mechanismUID = [NSUUID UUID].UUIDString;
     }
     return self;
 }
 
+
+// Testing only?
 + (instancetype)pushMechanismWithDatabase:(FRAIdentityDatabase *)database {
     return [[FRAPushMechanism alloc] initWithDatabase:database];
 }
 
-+ (instancetype)pushMechanismWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)a secret:s image:(NSString *)image bgColour:(NSString *)b issuer:(NSString *)issuer {
-    return [[FRAPushMechanism alloc] initWithDatabase:database authEndpoint:a secret:s image:image bgColour:b issuer:issuer];
+
++ (instancetype)pushMechanismWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)authEndPoint secret:(NSString *)secret version:(NSInteger)version {
+    return [[FRAPushMechanism alloc] initWithDatabase:database authEndpoint:authEndPoint secret:secret version:version];
+}
+
++ (instancetype)pushMechanismWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)authEndPoint secret:(NSString *)secret {
+    return [[FRAPushMechanism alloc] initWithDatabase:database authEndpoint:authEndPoint secret:secret];
 }
 
 @end

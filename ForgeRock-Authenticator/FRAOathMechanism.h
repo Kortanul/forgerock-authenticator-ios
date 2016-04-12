@@ -42,6 +42,26 @@
  */
 @property (nonatomic, readonly) FRAOathCode* code;
 
+/*!
+ * The secret key bytes used by the Oath Mechanism.
+ */
+@property (nonatomic, readonly) NSData* secretKey;
+
+/*!
+ * The algorithm used for generating the next hash code.
+ */
+@property (nonatomic, readonly) CCHmacAlgorithm algorithm;
+
+/*!
+ * The time period to be used when generating the next code in TOTP mode.
+ */
+@property (nonatomic, readonly) u_int32_t period;
+
+/*!
+ * The HMAC counter which is is used to generate the next hash code in HOTP mode.
+ */
+@property (nonatomic, readonly) u_int64_t counter;
+
 #pragma mark -
 #pragma mark Lifecyle
 
@@ -59,7 +79,7 @@
  *
  * @return The initialized mechanism or nil if initialization failed.
  */
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database type:(NSString *)type usingSecretKey:(NSData *)secretKey andHMACAlgorithm:(CCHmacAlgorithm)algorithm withKeyLength:(NSUInteger)digits andEitherPeriod:(NSUInteger)period orCounter:(NSUInteger)counter;
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database type:(NSString *)type usingSecretKey:(NSData *)secretKey andHMACAlgorithm:(CCHmacAlgorithm)algorithm withKeyLength:(NSUInteger)digits andEitherPeriod:(NSUInteger)period orCounter:(u_int64_t)counter;
 
 /*!
  * Allocate and initialize an OATH Mechanism with all required field to describe either
@@ -75,11 +95,11 @@
  *
  * @return The initialized mechanism or nil if initialization failed.
  */
-+ (instancetype)oathMechanismWithDatabase:(FRAIdentityDatabase *)database type:(NSString *)type usingSecretKey:(NSData *)secretKey andHMACAlgorithm:(CCHmacAlgorithm)algorithm withKeyLength:(NSUInteger)digits andEitherPeriod:(NSUInteger)period orCounter:(NSUInteger)counter;
++ (instancetype)oathMechanismWithDatabase:(FRAIdentityDatabase *)database type:(NSString *)type usingSecretKey:(NSData *)secretKey andHMACAlgorithm:(CCHmacAlgorithm)algorithm withKeyLength:(NSUInteger)digits andEitherPeriod:(NSUInteger)period orCounter:(u_int64_t)counter;
 
 /*!
  * Generates the next code for this OATH mechanism.
  */
-- (void)generateNextCode;
+- (void)generateNextCodeWithError:(NSError *__autoreleasing*)error;
 
 @end

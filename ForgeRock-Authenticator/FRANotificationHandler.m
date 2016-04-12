@@ -97,7 +97,11 @@ static NSString const *MECHANISM_UID_KEY = @"mechanismUID";
                                                    challenge:[messageData objectForKey:CHALLENGE_KEY]
                                                 timeReceived:[NSDate date]
                                                   timeToLive:timeToLive];
-    [mechanism addNotification:notification];
+    // TODO: Handle Error
+    @autoreleasepool {
+        NSError* error;
+        [mechanism addNotification:notification error:&error];
+    }
     return notification;
 }
 

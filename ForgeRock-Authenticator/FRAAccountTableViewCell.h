@@ -14,7 +14,7 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import <UIKit/UIKit.h>
+
 #import "FRAIdentity.h"
 #import "M13BadgeView.h"
 

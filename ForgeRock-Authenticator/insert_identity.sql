@@ -1,0 +1,1 @@
+INSERT OR REPLACE INTO identity (issuer, accountName, image, imageURL, bgColor) VALUES (?, ?, ?, ?, ?);

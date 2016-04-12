@@ -27,11 +27,25 @@
  */
 @property (nonatomic, readonly) NSInteger version;
 
-@property (nonatomic, readonly) NSString* secret;
-@property (nonatomic, readonly) NSString* authEndpoint;
-@property (nonatomic, readonly) NSString* issuer;
-@property (nonatomic, readonly) NSString* image;
-@property (nonatomic, readonly) NSString* bgColour;
+/*!
+ * Secret key for Push Notifications
+ */
+@property (nonatomic, readonly) NSString *secret;
+
+/*!
+ * Authentication Endpoint to contact for Push Notifications
+ */
+@property (nonatomic, readonly) NSString *authEndpoint;
+
+/*!
+ * The type of this mechanism. E.g. push
+ */
+@property (nonatomic, readonly) NSString* type;
+
+/*!
+ * The Device ID that this device is registered under.
+ */
+@property (nonatomic, readonly) NSString* mechanismUID;
 
 #pragma mark -
 #pragma mark Lifecyle
@@ -46,18 +60,15 @@
 - (instancetype)initWithDatabase:(FRAIdentityDatabase *)database;
 
 /*!
- * Init Push Mechanism
+ * Create an instance of PushMechanism
  *
- * @param database the database to store this object it
- * @param authEndpoint the authentirsation enpoint uri to use when authenticating using this mechanism
- * @param secret the secret key for the authentication exchange
- * @param image the image ti display for this mechanism
- * @param bgColour the backjground colour for displaying this mechanism
- * @param issuer the issuer name to display for this mechanism
+ * @param database Required to allow mechnaism to persist changes
+ * @param authEndPoint The authentication endpoint URI used for signalling to the server
+ * @param secret Shared secret key required for authentication
  *
  * @return The initialized mechanism or nil if initialization failed.
  */
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)a secret:s image:(NSString *)image bgColour:(NSString *)b issuer:(NSString *)issuer;
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)authEndPoint secret:(NSString *)secret;
 
 /*!
  * Allocate and init Push Mechanism.
@@ -75,6 +86,15 @@
  *
  * @return The initialized mechanism or nil if initialization failed.
  */
-+ (instancetype)pushMechanismWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)a secret:s image:(NSString *)image bgColour:(NSString *)b issuer:(NSString *)issuer;
++ (instancetype)pushMechanismWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)authEndPoint secret:(NSString *)secret;
+
+/*!
+ * Allocate and init Push Mechanism with version information included.
+ *
+ * @param database The database to which this mechanism can be persisted.
+ *
+ * @return The initialized mechanism or nil if initialization failed.
+ */
++ (instancetype)pushMechanismWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)authEndPoint secret:(NSString *)secret version:(NSInteger)version;
 
 @end

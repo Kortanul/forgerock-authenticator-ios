@@ -14,7 +14,7 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import <Foundation/Foundation.h>
+
 
 #import "FRAPushMechanism.h"
 @class FRAPushMechanismTableViewCell;

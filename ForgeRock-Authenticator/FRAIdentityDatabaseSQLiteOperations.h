@@ -14,11 +14,12 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import <Foundation/Foundation.h>
+
 @class FRAIdentity;
 @class FRAIdentityModel;
 @class FRAMechanism;
 @class FRANotification;
+@class FRASqlDatabase;
 
 /*!
  * Delegate for FRAIdentityDatabase SQL operations.
@@ -28,19 +29,24 @@
 @interface FRAIdentityDatabaseSQLiteOperations : NSObject
 
 #pragma mark -
+#pragma Life cycle Functions
+
+- (instancetype)initWithDatabase:(FRASqlDatabase *)database;
+
+#pragma mark -
 #pragma mark Identity Functions
 
 /*!
  * Save the identity to the database.
  * @param identity The identity to save.
  */
-- (void)insertIdentity:(FRAIdentity *)identity;
+- (BOOL)insertIdentity:(FRAIdentity *)identity error:(NSError *__autoreleasing *)error;
 
 /*!
  * Remove the identity from the database.
  * @param identity The identity to remove.
  */
-- (void)deleteIdentity:(FRAIdentity *)identity;
+- (BOOL)deleteIdentity:(FRAIdentity *)identity error:(NSError *__autoreleasing *)error;
 
 #pragma mark -
 #pragma mark Mechanism Functions
@@ -49,19 +55,19 @@
  * Save a new mechanism to the database.
  * @param mechanism The mechanism to save.
  */
-- (void)insertMechanism:(FRAMechanism *)mechanism;
+- (BOOL)insertMechanism:(FRAMechanism *)mechanism error:(NSError *__autoreleasing *)error;
 
 /*!
  * Remove the mechanism from the database.
  * @param mechanism The mechanism to remove.
  */
-- (void)deleteMechanism:(FRAMechanism *)mechanism;
+- (BOOL)deleteMechanism:(FRAMechanism *)mechanism error:(NSError *__autoreleasing *)error;
 
 /*!
  * Save changes to an existing mechanism to the database.
  * @param mechanism The mechanism to save.
  */
-- (void)updateMechanism:(FRAMechanism *)mechanism;
+- (BOOL)updateMechanism:(FRAMechanism *)mechanism error:(NSError *__autoreleasing *)error;
 
 #pragma mark -
 #pragma mark Notification Functions
@@ -70,18 +76,18 @@
  * Save a new notification to the database.
  * @param notification The notification to save.
  */
-- (void)insertNotification:(FRANotification *)notification;
+- (BOOL)insertNotification:(FRANotification *)notification error:(NSError *__autoreleasing *)error;
 
 /*!
  * Remove the notification from the database.
  * @param notification The notification to remove.
  */
-- (void)deleteNotification:(FRANotification *)notification;
+- (BOOL)deleteNotification:(FRANotification *)notification error:(NSError *__autoreleasing *)error;
 
 /*!
  * Save changes to an existing notification to the database.
  * @param notification The notification to save.
  */
-- (void)updateNotification:(FRANotification *)notification;
+- (BOOL)updateNotification:(FRANotification *)notification error:(NSError *__autoreleasing *)error;
 
 @end

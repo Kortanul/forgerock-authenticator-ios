@@ -31,10 +31,8 @@
 @end
 
 @implementation FRAAccountsTableViewControllerTests {
-
     FRAAccountsTableViewController *accountsController;
-    FRAIdentityModel *mockIdentityModel;
-
+    id mockIdentityModel;
 }
 
 - (void)setUp {
@@ -59,6 +57,7 @@
 }
 
 - (void)tearDown {
+    [mockIdentityModel stopMocking];
     [super tearDown];
 }
 
@@ -77,9 +76,9 @@
 
 - (void)testHasOneCellPerDatabaseIdentitySortedByIssuerThenAccountName {
     // Given
-    FRAIdentity *firstIdentity = [FRAIdentity identityWithDatabase:nil accountName:@"Alice" issuer:@"Issuer_1" image:nil];
-    FRAIdentity *secondIdentity = [FRAIdentity identityWithDatabase:nil accountName:@"Bob" issuer:@"Issuer_1" image:nil];
-    FRAIdentity *thirdIdentity = [FRAIdentity identityWithDatabase:nil accountName:@"Alice" issuer:@"Issuer_2" image:nil];
+    FRAIdentity *firstIdentity = [FRAIdentity identityWithDatabase:nil accountName:@"Alice" issuer:@"Issuer_1" image:nil backgroundColor:nil];
+    FRAIdentity *secondIdentity = [FRAIdentity identityWithDatabase:nil accountName:@"Bob" issuer:@"Issuer_1" image:nil backgroundColor:nil];
+    FRAIdentity *thirdIdentity = [FRAIdentity identityWithDatabase:nil accountName:@"Alice" issuer:@"Issuer_2" image:nil backgroundColor:nil];
     NSArray *identities = @[secondIdentity, thirdIdentity, firstIdentity]; // NB. Identities aren't sorted
     OCMStub([mockIdentityModel identities]).andReturn(identities);
     
@@ -97,10 +96,10 @@
 
 - (void)testShowsNotificationIconWithBadgeForPushMechanism {
     // Given
-    FRAIdentity *identity = [FRAIdentity identityWithDatabase:nil accountName:@"Alice" issuer:@"Issuer" image:nil];
+    FRAIdentity *identity = [FRAIdentity identityWithDatabase:nil accountName:@"Alice" issuer:@"Issuer" image:nil backgroundColor:nil];
     FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:nil];
-    [pushMechanism addNotification:[[FRANotification alloc] initWithDatabase:nil messageId:nil challenge:nil timeReceived:nil timeToLive:120.0]];
-    [pushMechanism addNotification:[[FRANotification alloc] initWithDatabase:nil messageId:nil challenge:nil timeReceived:nil timeToLive:120.0]];
+    [pushMechanism addNotification:[[FRANotification alloc] initWithDatabase:nil messageId:nil challenge:nil timeReceived:nil timeToLive:120.0] withError:nil];
+    [pushMechanism addNotification:[[FRANotification alloc] initWithDatabase:nil messageId:nil challenge:nil timeReceived:nil timeToLive:120.0] withError:nil];
     [identity addMechanism:pushMechanism];
     XCTAssertNotNil([identity mechanismOfClass:[FRAPushMechanism class]]);
     NSArray* identities = @[identity];

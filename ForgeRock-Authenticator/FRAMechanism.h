@@ -14,7 +14,7 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import <Foundation/Foundation.h>
+
 
 #import "FRAModelObject.h"
 
@@ -60,16 +60,20 @@
  * the owning Mechanism using this method.
  *
  * @param notification The notification to add to this Mechanism.
+ * @param error If there was an error, this value will be populated.
+ * @return BOOL NO if there was an error adding the Notification, in which case the error value will be populated.
  */
-- (void)addNotification:(FRANotification *)notification;
+- (BOOL)addNotification:(FRANotification *)notification error:(NSError *__autoreleasing*)error;
 
 /*!
- * Once a Notficiation has been marked as deleted, it will be removed from 
+ * Once a Notification has been marked as deleted, it will be removed from 
  * the Mechanism by this method.
  *
  * @param notification The notification to remove from the Mechanism.
+ * @param error If there was an error, this value will be populated.
+ * @return BOOL NO if there was an error adding the Notification, in which case the error value will be populated.
  */
-- (void)removeNotification:(FRANotification *)notification;
+- (BOOL)removeNotification:(FRANotification *)notification error:(NSError *__autoreleasing*)error;
 
 /*!
  * Count of notifications that have not yet been dealt with.

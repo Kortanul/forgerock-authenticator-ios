@@ -14,7 +14,7 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import <Foundation/Foundation.h>
+
 
 #import "FRAModelObject.h"
 
@@ -78,7 +78,7 @@
 /*!
  * The push challenge.
  */
-@property (nonatomic, readonly) NSString *challenge;
+@property (nonatomic, readonly) NSData* challenge;
 
 /*!
  * The time to live of the push login window.
@@ -88,12 +88,12 @@
 /*!
  * Constructor for creating a Notification.
  */
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive;
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSData *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive;
 
 /*!
  * Static factory for creating a Notification.
  */
-+ (instancetype)notificationWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive;
++ (instancetype)notificationWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSData *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval) timeToLive;
 
 - (instancetype) __unavailable initWithDatabase:(FRAIdentityDatabase *)database;
 
@@ -108,8 +108,8 @@
  * else if (timeReceived < 24 hours ago)
  *     return "n hours ago";
  * else if (timeReceived < 1 day ago)
- *     return "Yesterday";3
- * else if (timeReceived < 7 day ago)
+ *     return "Yesterday";
+ * else if (timeReceived < 7 days ago)
  *     return "n days ago";
  * else
  *     return timeReceived using date format "dd/MM/yyyy";
@@ -119,14 +119,20 @@
 /*!
  * Mark the notification as accepted to indicate the user accepts this
  * Notification.
+ *
+ * @param error If there was an error, this value will be populated.
+ * @return BOOL NO if there was an error approving the Notification, in which case the error value will be populated.
  */
-- (void)approve;
+- (BOOL)approveWithError:(NSError *__autoreleasing*)error;
 
 /*!
  * Mark the notification as denied to indicate the user has denied the
  * Notification.
+ *
+ * @param error If there was an error, this value will be populated.
+ * @return BOOL NO if there was an error denying the Notification, in which case the error value will be populated.
  */
-- (void)deny;
+- (BOOL)denyWithError:(NSError *__autoreleasing*)error;
 
 
 @end

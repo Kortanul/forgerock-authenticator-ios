@@ -16,7 +16,7 @@
  * Portions copyright 2015 Google Inc.
  */
 
-#import <Foundation/Foundation.h>
+
 #import <Google/CloudMessaging.h>
 #import "FRANotificationHandler.h"
 

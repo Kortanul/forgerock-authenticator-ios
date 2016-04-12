@@ -16,7 +16,7 @@
  * Portions Copyright 2014 Nathaniel McCallum, Red Hat
  */
 
-#import <UIKit/UIKit.h>
+
 
 /*!
  * Subclass of UIAlertView that accepts a block for handling button clicks rather than requiring a UIAlertViewDelegate.

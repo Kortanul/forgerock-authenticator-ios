@@ -14,7 +14,7 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import <UIKit/UIKit.h>
+
 
 /*! The storyboard identifier assigned to this view controller. */
 extern NSString * const FRANotificationsTableViewControllerStoryboardIdentifer;

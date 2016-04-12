@@ -28,18 +28,19 @@
 #pragma mark -
 #pragma mark Lifecyle
 
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database accountName:(NSString *)accountName issuer:(NSString *)issuer image:(NSURL *)image {
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database accountName:(NSString *)accountName issuer:(NSString *)issuer image:(NSURL *)image backgroundColor:(NSString *) color {
     if (self = [super initWithDatabase:database]) {
         _accountName = accountName;
         _issuer = issuer;
         _image = image;
         mechanismList = [[NSMutableArray alloc] init];
+        _backgroundColor = color;
     }
     return self;
 }
 
-+ (instancetype)identityWithDatabase:(FRAIdentityDatabase *)database accountName:(NSString *)accountName issuer:(NSString *)issuer image:(NSURL *)image {
-    return [[FRAIdentity alloc] initWithDatabase:database accountName:accountName issuer:issuer image:image];
++ (instancetype)identityWithDatabase:(FRAIdentityDatabase *)database accountName:(NSString *)accountName issuer:(NSString *)issuer image:(NSURL *)image backgroundColor:(NSString *)color {
+    return [[FRAIdentity alloc] initWithDatabase:database accountName:accountName issuer:issuer image:image backgroundColor:color];
 }
 
 #pragma mark -
@@ -58,20 +59,24 @@
     return nil;
 }
 
-- (void)addMechanism:(FRAMechanism *)mechanism {
+- (BOOL)addMechanism:(FRAMechanism *)mechanism error:(NSError *__autoreleasing *)error {
     [mechanism setParent:self];
     [mechanismList addObject:mechanism];
+    BOOL result = YES;
     if ([self isStored]) {
-        [self.database insertMechanism:mechanism];
+        result = [self.database insertMechanism:mechanism error:error];
     }
+    return result;
 }
 
-- (void)removeMechanism:(FRAMechanism *)mechanism {
+- (BOOL)removeMechanism:(FRAMechanism *)mechanism error:(NSError *__autoreleasing *)error {
     [mechanismList removeObject:mechanism];
     [mechanism setParent:nil];
+    BOOL result = YES;
     if ([self isStored]) {
-        [self.database deleteMechanism:mechanism];
+        result = [self.database deleteMechanism:mechanism error:error];
     }
+    return result;
 }
 
 #pragma mark -

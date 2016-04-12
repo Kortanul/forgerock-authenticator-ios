@@ -65,12 +65,18 @@ NSString * const FRANotificationViewControllerStoryboardIdentifer = @"Notificati
 - (void)approveNotification {
     [_authorizeSlider setThumbImage:[UIImage imageNamed:@"OnSwitchIcon"] forState:UIControlStateNormal];
     _authorizeSlider.userInteractionEnabled = NO;
-    [self.notification approve];
+    @autoreleasepool {
+        NSError* error;
+        [self.notification approveWithError:&error];
+    }
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)dismissNotification {
-    [self.notification deny];
+    @autoreleasepool {
+        NSError* error;
+        [self.notification denyWithError:&error];
+    }
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 @end

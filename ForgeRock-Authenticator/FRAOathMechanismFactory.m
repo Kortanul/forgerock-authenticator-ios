@@ -14,7 +14,7 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import <Foundation/Foundation.h>
+
 
 #import "FRAOathMechanismFactory.h"
 #import "FRAMechanismFactory.h"
@@ -53,8 +53,9 @@
     NSString* issuer = [query objectForKey:@"_issuer"];
     NSString* label = [query objectForKey:@"_label"];
     NSString* c = [query objectForKey:@"counter"];
+    NSString* bgColor = [query objectForKey:@"b"];
     if(nil == key || nil == issuer || nil == label) {
-        return nil; // TODO: Error handeling integration
+        return nil; // TODO: Error handling integration
     }
     
     // TODO: handle Errors or nil values for mechanism and identity
@@ -65,10 +66,13 @@
                                            periodString:p
                                                    type:_type
                                           counterString:c];
-    FRAIdentity *identity = [self getIdentity:uri database:database image:image issuer:issuer label:label];
+    FRAIdentity *identity = [self getIdentity:uri database:database image:image issuer:issuer label:label backgroundColor:bgColor];
     FRAIdentity *search = [model identityWithIssuer:[identity issuer] accountName:[identity accountName]];
     if (search == nil) {
-        [model addIdentity:identity];
+        @autoreleasepool {
+            NSError* error;
+            [model addIdentity:identity error:&error];
+        }
     } else {
         identity = search;
         if ([self checkForDuplicate:identity mechanism:mechanism]) {
@@ -77,7 +81,10 @@
         }
     }
     
-    [identity addMechanism:mechanism];
+    @autoreleasepool {
+        NSError* error;
+        [identity addMechanism:mechanism error:&error];
+    }
     
     return mechanism;
 }
@@ -181,12 +188,12 @@
  * Resolves the Identity from the URL that has been provided.
  * @return an initialised but not persisted Identity.
  */
-- (FRAIdentity *)getIdentity:(NSURL*)uri database:(FRAIdentityDatabase *)database image:(NSString *)image issuer:(NSString *)issuer label:(NSString *)label{
+- (FRAIdentity *)getIdentity:(NSURL*)uri database:(FRAIdentityDatabase *)database image:(NSString *)image issuer:(NSString *)issuer label:(NSString *)label backgroundColor:(NSString*)bgColor{
     // Get image
     // TODO: get real image from url
     NSURL* _image = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"forgerock-logo" ofType:@"png"]];
     
-    return [FRAIdentity identityWithDatabase:database accountName:label issuer:issuer image:_image];
+    return [FRAIdentity identityWithDatabase:database accountName:label issuer:issuer image:_image backgroundColor:bgColor];
 }
 
 - (bool) supports:(NSURL *)uri {

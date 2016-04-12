@@ -14,7 +14,7 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import <Foundation/Foundation.h>
+
 #import <XCTest/XCTest.h>
 #import "FRAIdentity.h"
 #import "FRAMechanismFactory.h"
@@ -36,7 +36,7 @@
 - (void)setUp {
     [super setUp];
     FRAIdentityDatabase * db = [[FRAIdentityDatabase alloc] init];
-    FRAIdentityModel * im = [[FRAIdentityModel alloc] initWithDatabase:db];
+    FRAIdentityModel * im = [[FRAIdentityModel alloc] initWithDatabase:db sqlDatabase:nil];
     factory = [[FRAUriMechanismReader alloc] initWithDatabase:db identityModel:im];
     FRAOathMechanismFactory * oathFactory = [[FRAOathMechanismFactory alloc] init];
     [factory addMechanismFactory:oathFactory];

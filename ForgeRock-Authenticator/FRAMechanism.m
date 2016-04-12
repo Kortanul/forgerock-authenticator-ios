@@ -14,7 +14,7 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import <Foundation/Foundation.h>
+
 
 #import "FRAIdentityDatabase.h"
 #import "FRAMechanism.h"
@@ -55,20 +55,22 @@
     return count;
 }
 
-- (void)addNotification:(FRANotification *)notification {
+- (BOOL)addNotification:(FRANotification*)notification error:(NSError *__autoreleasing*)error {
     [notification setParent:self];
     [notificationList addObject:notification];
     if ([self isStored]) {
-        [self.database insertNotification:notification];
+        return [self.database insertNotification:notification error:error];
     }
+    return YES;
 }
 
-- (void)removeNotification:(FRANotification *)notification {
+- (BOOL)removeNotification:(FRANotification*)notification error:(NSError *__autoreleasing*)error {
     [notificationList removeObject:notification];
     [notification setParent:nil];
     if ([self isStored]) {
-        [self.database deleteNotification:notification];
+        return [self.database deleteNotification:notification error:error];
     }
+    return YES;
 }
 
 - (FRANotification *)notificationWithMessageId:(NSString *)messageId {

@@ -14,12 +14,13 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import <Foundation/Foundation.h>
+
 
 @class FRAIdentity;
 @class FRAIdentityDatabase;
 @class FRAMechanism;
 @class FRANotification;
+@class FRASqlDatabase;
 
 /*!
  * Root of the Authenticator data model containing a listing of identities and methods for querying them.
@@ -29,16 +30,10 @@
 #pragma mark -
 #pragma mark Lifecycle
 
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database;
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database sqlDatabase:(FRASqlDatabase*) sql;
 
 #pragma mark -
 #pragma mark Identity Functions
-
-/*!
- * Add the identity to the database.
- * @param identity The identity to add.
- */
-- (void)addIdentity:(FRAIdentity *)identity;
 
 /*!
  * Gets all of the identities which are stored.
@@ -62,10 +57,16 @@
 - (FRAIdentity *)identityWithIssuer:(NSString *)issuer accountName:(NSString *)accountName;
 
 /*!
+ * Add the identity to the database.
+ * @param identity The identity to add.
+ */
+- (BOOL)addIdentity:(FRAIdentity *)identity error:(NSError *__autoreleasing *)error;
+
+/*!
  * Remove the provided Identity from the model.
  * @param identity The identity to remove.
  */
-- (void)removeIdentity:(FRAIdentity *)identity;
+- (BOOL)removeIdentity:(FRAIdentity *)identity error:(NSError *__autoreleasing *)error;
 
 #pragma mark -
 #pragma mark Mechanism Functions

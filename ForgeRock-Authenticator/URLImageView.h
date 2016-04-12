@@ -16,7 +16,7 @@
  * Portions Copyright 2014 Nathaniel McCallum, Red Hat
  */
 
-#import <UIKit/UIKit.h>
+
 
 /*!
  * Image view capable of loading its content from a provided URL.

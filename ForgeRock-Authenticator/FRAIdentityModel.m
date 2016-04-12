@@ -14,11 +14,13 @@
  * Copyright 2016 ForgeRock AS.
  */
 
+#import "FRAFMDatabaseConnectionHelper.h"
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
+#import "FRAIdentityDatabaseSQLiteOperations.h"
 #import "FRAIdentityModel.h"
 #import "FRAMechanism.h"
-
+#import "FRAModelsFromDatabase.h"
 
 /*!
  * Private interface.
@@ -35,29 +37,26 @@
 
 @implementation FRAIdentityModel {
     
-    NSMutableArray *identitiesList;
+    NSMutableArray<FRAIdentity*> *identitiesList;
 
 }
 
 #pragma mark -
 #pragma mark Lifecyle
 
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database {
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database sqlDatabase:(FRASqlDatabase *) sql {
     if (self = [super init]) {
         _database = database;
-        // TODO: Read identities, mechanisms and notifications from database
-        identitiesList = [[NSMutableArray alloc] init];
+        @autoreleasepool {
+            NSError *error;
+            identitiesList = [[NSMutableArray alloc] initWithArray:[FRAModelsFromDatabase getAllIdentitiesFrom:sql including:database catchingErrorsWith:&error]];
+        }
     }
     return self;
 }
 
 #pragma mark -
 #pragma mark Identity Functions
-
-- (void)addIdentity:(FRAIdentity *)identity {
-    [identitiesList addObject:identity];
-    [self.database insertIdentity:identity];
-}
 
 - (NSArray *)identities {
     return [[NSArray alloc] initWithArray:identitiesList];
@@ -81,9 +80,14 @@
     return nil;
 }
 
-- (void)removeIdentity:(FRAIdentity *)identity {
+- (BOOL)addIdentity:(FRAIdentity *)identity error:(NSError *__autoreleasing *)error {
+    [identitiesList addObject:identity];
+    return [self.database insertIdentity:identity error:error];
+}
+
+- (BOOL)removeIdentity:(FRAIdentity *)identity error:(NSError *__autoreleasing *)error {
     [identitiesList removeObject:identity];
-    [self.database deleteIdentity:identity];
+    return [self.database deleteIdentity:identity error:error];
 }
 
 #pragma mark -

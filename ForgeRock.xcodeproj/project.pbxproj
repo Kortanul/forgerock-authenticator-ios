@@ -7,18 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00DE0DCF00074922CDD80446 /* libPods-ForgeRock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96EC0F2175B236161D1A1C9E /* libPods-ForgeRock.a */; };
-		04DA35AE1CE9C2EF00C99062 /* FRANotificationUISlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 04DA35AD1CE9C2EF00C99062 /* FRANotificationUISlider.m */; };
+		0467E0C81CE5E4D600A422D5 /* FRADatabaseConfigurationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0467E0C61CE5E4D200A422D5 /* FRADatabaseConfigurationTest.m */; };
+		0467E0CB1CE60C7C00A422D5 /* FRAErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0467E0C91CE60C7800A422D5 /* FRAErrorTest.m */; };
 		0484ED531CE2059D00DB537A /* FRAMessageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 0484ED521CE2059D00DB537A /* FRAMessageUtils.m */; };
+		04C223C81CECD5E4001F8BD3 /* FRASqlDatabaseFactoryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 04C223C61CECD09F001F8BD3 /* FRASqlDatabaseFactoryTest.m */; };
+		04CE43901CEF19BC0067BAFF /* FRAModelsFromDatabaseTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CE438E1CEF193C0067BAFF /* FRAModelsFromDatabaseTest.m */; };
 		04D3D2601CE4CE9100D77EF6 /* FRAMockURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D3D25E1CE4CE9100D77EF6 /* FRAMockURLProtocol.m */; };
 		04D3D2611CE4D00400D77EF6 /* FRAMessageUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D3D25C1CE4CE9100D77EF6 /* FRAMessageUtilsTests.m */; };
+		04DA35AE1CE9C2EF00C99062 /* FRANotificationUISlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 04DA35AD1CE9C2EF00C99062 /* FRANotificationUISlider.m */; };
 		2D60B6961CEF456B00F0CA2B /* FRAQRUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D60B6951CEF456B00F0CA2B /* FRAQRUtils.m */; };
 		2D977EAB1CD8BEBA000A7F29 /* FRANotificationHandlerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D977EAA1CD8BEBA000A7F29 /* FRANotificationHandlerTest.m */; };
 		2D977EAF1CDCE3A6000A7F29 /* FRAOathMechanismFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D977EAE1CDCE3A6000A7F29 /* FRAOathMechanismFactory.m */; };
 		2D977EB21CE0C31E000A7F29 /* FRAPushMechanismFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D977EB11CE0C31E000A7F29 /* FRAPushMechanismFactory.m */; };
 		443686801CDB95370056D4E3 /* FRAPushMechanismTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4436867F1CDB95370056D4E3 /* FRAPushMechanismTableViewCell.m */; };
 		443686831CDB961D0056D4E3 /* FRAPushMechanismTableViewCellController.m in Sources */ = {isa = PBXBuildFile; fileRef = 443686821CDB961D0056D4E3 /* FRAPushMechanismTableViewCellController.m */; };
-		443686851CDCC2F40056D4E3 /* unit-tests in Sources */ = {isa = PBXBuildFile; fileRef = 443686841CDCC2F40056D4E3 /* unit-tests */; };
 		44379CF41CC6664B00D7EAE9 /* FRABlockActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 44379CF31CC6664B00D7EAE9 /* FRABlockActionSheet.m */; };
 		44379CF71CC66C0300D7EAE9 /* FRABlockAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44379CF61CC66C0300D7EAE9 /* FRABlockAlertView.m */; };
 		443F203E1CCC28A400B91C2B /* FRAApplicationAssembly.m in Sources */ = {isa = PBXBuildFile; fileRef = 443F203D1CCC28A400B91C2B /* FRAApplicationAssembly.m */; };
@@ -27,7 +29,6 @@
 		445948EE1CAEB832008FB2F6 /* FRAAccountTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 445948ED1CAEB832008FB2F6 /* FRAAccountTableViewController.m */; };
 		4467225B1CD4038B00E80799 /* FRANotificationGatewayTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4467225A1CD4038B00E80799 /* FRANotificationGatewayTests.m */; };
 		44695F5A1C9F6DD900680799 /* FRAIdentity.m in Sources */ = {isa = PBXBuildFile; fileRef = 44695F591C9F6DD900680799 /* FRAIdentity.m */; };
-		44695F5B1C9F6DD900680799 /* FRAIdentity.m in Sources */ = {isa = PBXBuildFile; fileRef = 44695F591C9F6DD900680799 /* FRAIdentity.m */; };
 		44695F5D1C9F70C100680799 /* FRAIdentityTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 44695F5C1C9F70C100680799 /* FRAIdentityTests.m */; };
 		44695F621CA0ADAB00680799 /* FRAOathMechanism.m in Sources */ = {isa = PBXBuildFile; fileRef = 44695F611CA0ADAB00680799 /* FRAOathMechanism.m */; };
 		44695F631CA0ADAB00680799 /* FRAOathMechanism.m in Sources */ = {isa = PBXBuildFile; fileRef = 44695F611CA0ADAB00680799 /* FRAOathMechanism.m */; };
@@ -51,13 +52,33 @@
 		E12246171CD0FD0600F52C98 /* FRANotificationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E12246151CD0FC8300F52C98 /* FRANotificationTest.m */; };
 		E12246191CD1009F00F52C98 /* FRAMechanismFactoryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E12246181CD1009F00F52C98 /* FRAMechanismFactoryTest.m */; };
 		E122461B1CD10EEB00F52C98 /* FRAMechanismTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E122461A1CD10EEB00F52C98 /* FRAMechanismTest.m */; };
+		E13281C71CDCA8D80069924A /* read_all.sql in Resources */ = {isa = PBXBuildFile; fileRef = E13281C61CDCA8D80069924A /* read_all.sql */; };
+		E13281C91CDCE4800069924A /* FRAError.m in Sources */ = {isa = PBXBuildFile; fileRef = E13281C81CDCE4800069924A /* FRAError.m */; };
+		E14CA6681CE22A2F00C09C68 /* FRAModelsFromDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = E14CA6671CE22A2F00C09C68 /* FRAModelsFromDatabase.m */; };
+		E14CA66B1CE2403B00C09C68 /* FRAHMACAlgorithm.m in Sources */ = {isa = PBXBuildFile; fileRef = E14CA66A1CE2403B00C09C68 /* FRAHMACAlgorithm.m */; };
+		E14CA66E1CE31D7E00C09C68 /* FRASerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = E14CA66D1CE31D7E00C09C68 /* FRASerialization.m */; };
+		E155C8BA1CDB8495008853E4 /* delete_mechanism.sql in Resources */ = {isa = PBXBuildFile; fileRef = E155C8B91CDB8495008853E4 /* delete_mechanism.sql */; };
+		E155C8BC1CDB9609008853E4 /* delete_notification.sql in Resources */ = {isa = PBXBuildFile; fileRef = E155C8BB1CDB9609008853E4 /* delete_notification.sql */; };
 		E16458491AEE8E8D00D1740F /* base32.c in Sources */ = {isa = PBXBuildFile; fileRef = F15300401801B9DF00A0E179 /* base32.c */; };
 		E164F3C61ADE9CA800A440B3 /* forgerock-logo-text.png in Resources */ = {isa = PBXBuildFile; fileRef = E164F3C51ADE9CA800A440B3 /* forgerock-logo-text.png */; };
 		E164F3C81ADE9CAF00A440B3 /* forgerock-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = E164F3C71ADE9CAF00A440B3 /* forgerock-logo.png */; };
+		E166B22C1CDA4EF900DFB029 /* insert_identity.sql in Resources */ = {isa = PBXBuildFile; fileRef = E166B22B1CDA4EF900DFB029 /* insert_identity.sql */; };
+		E166B22E1CDA50E300DFB029 /* insert_mechanism.sql in Resources */ = {isa = PBXBuildFile; fileRef = E166B22D1CDA50E300DFB029 /* insert_mechanism.sql */; };
+		E166B2301CDA50ED00DFB029 /* insert_notification.sql in Resources */ = {isa = PBXBuildFile; fileRef = E166B22F1CDA50ED00DFB029 /* insert_notification.sql */; };
+		E166B2321CDB601200DFB029 /* delete_identity.sql in Resources */ = {isa = PBXBuildFile; fileRef = E166B2311CDB601200DFB029 /* delete_identity.sql */; };
 		E173594A1CCA2EDB00828709 /* FRAMechanism.m in Sources */ = {isa = PBXBuildFile; fileRef = E17359491CCA2EDB00828709 /* FRAMechanism.m */; };
+		E178664D1CEB4C9300DC8443 /* FRASqlStorageConstantsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E178664C1CEB4C9300DC8443 /* FRASqlStorageConstantsTest.m */; };
+		E18125021CF5B2A000EF0F29 /* FRAOathMechanismTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E18125011CF5B2A000EF0F29 /* FRAOathMechanismTests.m */; };
+		E187E1AC1CBD4DD400F9427D /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E187E1AB1CBD4DD400F9427D /* libsqlite3.0.tbd */; };
+		E1A8B8AA1CD8E1F20029B89B /* FRAFMDatabaseFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = E1A8B8A91CD8E1F20029B89B /* FRAFMDatabaseFactory.m */; };
+		E1A92B651CBE637200D7BB04 /* schema.sql in Resources */ = {isa = PBXBuildFile; fileRef = E1A92B641CBE637200D7BB04 /* schema.sql */; };
+		E1A92B671CBE639800D7BB04 /* FRAFMDatabaseConnectionHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E1A92B661CBE639800D7BB04 /* FRAFMDatabaseConnectionHelper.m */; };
 		E1A92B6A1CBFC7F300D7BB04 /* FRANotification.m in Sources */ = {isa = PBXBuildFile; fileRef = E1A92B691CBFC7F300D7BB04 /* FRANotification.m */; };
-		E1A92B711CC12F4F00D7BB04 /* FRAUriMechanismReader.m in Sources */ = {isa = PBXBuildFile; fileRef = E1A92B701CC12F4F00D7BB04 /* FRAUriMechanismReader.m */; };
 		E1C725FA1AEE7D0300388026 /* base32test.m in Sources */ = {isa = PBXBuildFile; fileRef = E1C725F91AEE7D0300388026 /* base32test.m */; };
+		E1E53F791CD373E600A0F2ED /* FRADatabaseConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = E1E53F781CD373E600A0F2ED /* FRADatabaseConfiguration.m */; };
+		E1E53F7D1CD3918A00A0F2ED /* init_check.sql in Resources */ = {isa = PBXBuildFile; fileRef = E1E53F7C1CD3918A00A0F2ED /* init_check.sql */; };
+		E1E53F801CD3A07700A0F2ED /* FRAFMDatabaseConnectionHelperTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E1E53F7F1CD3A07700A0F2ED /* FRAFMDatabaseConnectionHelperTest.m */; };
+		E1EC51641CF4926E0054077D /* FRAUriMechanismReader.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EC51631CF4926E0054077D /* FRAUriMechanismReader.m */; };
 		F1030ED21818322000E478F7 /* FRACircleProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = F1030ED11818322000E478F7 /* FRACircleProgressView.m */; };
 		F109DBEA18412A2300548A3E /* FRAQRScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F109DBE918412A2300548A3E /* FRAQRScanViewController.m */; };
 		F15300431801BB8800A0E179 /* base32.c in Sources */ = {isa = PBXBuildFile; fileRef = F15300401801B9DF00A0E179 /* base32.c */; };
@@ -87,102 +108,128 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		04DA35AC1CE9C2EF00C99062 /* FRANotificationUISlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRANotificationUISlider.h; sourceTree = "<group>"; };
-		04DA35AD1CE9C2EF00C99062 /* FRANotificationUISlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRANotificationUISlider.m; sourceTree = "<group>"; };
 		00D810F5F8DD38D1A0B8D06B /* libPods-ForgeRockTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ForgeRockTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		0467E0C61CE5E4D200A422D5 /* FRADatabaseConfigurationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = FRADatabaseConfigurationTest.m; path = "unit-tests/FRADatabaseConfigurationTest.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		0467E0C91CE60C7800A422D5 /* FRAErrorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = FRAErrorTest.m; path = "unit-tests/FRAErrorTest.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		0484ED511CE2030C00DB537A /* FRAMessageUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRAMessageUtils.h; sourceTree = "<group>"; };
 		0484ED521CE2059D00DB537A /* FRAMessageUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAMessageUtils.m; sourceTree = "<group>"; };
+		04C223C61CECD09F001F8BD3 /* FRASqlDatabaseFactoryTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = FRASqlDatabaseFactoryTest.m; path = "unit-tests/FRASqlDatabaseFactoryTest.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		04CE438E1CEF193C0067BAFF /* FRAModelsFromDatabaseTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = FRAModelsFromDatabaseTest.m; path = "unit-tests/FRAModelsFromDatabaseTest.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		04D3D25C1CE4CE9100D77EF6 /* FRAMessageUtilsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FRAMessageUtilsTests.m; path = "unit-tests/FRAMessageUtilsTests.m"; sourceTree = "<group>"; };
 		04D3D25D1CE4CE9100D77EF6 /* FRAMockURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FRAMockURLProtocol.h; path = "unit-tests/FRAMockURLProtocol.h"; sourceTree = "<group>"; };
 		04D3D25E1CE4CE9100D77EF6 /* FRAMockURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FRAMockURLProtocol.m; path = "unit-tests/FRAMockURLProtocol.m"; sourceTree = "<group>"; };
+		04DA35AC1CE9C2EF00C99062 /* FRANotificationUISlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRANotificationUISlider.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		04DA35AD1CE9C2EF00C99062 /* FRANotificationUISlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRANotificationUISlider.m; sourceTree = "<group>"; };
 		2D60B6941CEF439B00F0CA2B /* FRAQRUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAQRUtils.h; sourceTree = "<group>"; };
-		2D60B6951CEF456B00F0CA2B /* FRAQRUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAQRUtils.m; sourceTree = "<group>"; };
-		2D977EAA1CD8BEBA000A7F29 /* FRANotificationHandlerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FRANotificationHandlerTest.m; path = "unit-tests/FRANotificationHandlerTest.m"; sourceTree = "<group>"; };
-		2D977EAC1CDCD47C000A7F29 /* FRAMechanismFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRAMechanismFactory.h; sourceTree = "<group>"; };
+		2D60B6951CEF456B00F0CA2B /* FRAQRUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRAQRUtils.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		2D977EAA1CD8BEBA000A7F29 /* FRANotificationHandlerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = FRANotificationHandlerTest.m; path = "unit-tests/FRANotificationHandlerTest.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		2D977EAD1CDCE376000A7F29 /* FRAOathMechanismFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRAOathMechanismFactory.h; sourceTree = "<group>"; };
-		2D977EAE1CDCE3A6000A7F29 /* FRAOathMechanismFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAOathMechanismFactory.m; sourceTree = "<group>"; };
+		2D977EAE1CDCE3A6000A7F29 /* FRAOathMechanismFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRAOathMechanismFactory.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		2D977EB01CE0C2D4000A7F29 /* FRAPushMechanismFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAPushMechanismFactory.h; sourceTree = "<group>"; };
-		2D977EB11CE0C31E000A7F29 /* FRAPushMechanismFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAPushMechanismFactory.m; sourceTree = "<group>"; };
-		4436867C1CDB74900056D4E3 /* unit-tests */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = folder; path = "unit-tests"; sourceTree = "<group>"; };
-		4436867E1CDB95370056D4E3 /* FRAPushMechanismTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAPushMechanismTableViewCell.h; sourceTree = "<group>"; };
+		2D977EB11CE0C31E000A7F29 /* FRAPushMechanismFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRAPushMechanismFactory.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		4436867E1CDB95370056D4E3 /* FRAPushMechanismTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAPushMechanismTableViewCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4436867F1CDB95370056D4E3 /* FRAPushMechanismTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAPushMechanismTableViewCell.m; sourceTree = "<group>"; };
-		443686811CDB961D0056D4E3 /* FRAPushMechanismTableViewCellController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAPushMechanismTableViewCellController.h; sourceTree = "<group>"; };
+		443686811CDB961D0056D4E3 /* FRAPushMechanismTableViewCellController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAPushMechanismTableViewCellController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		443686821CDB961D0056D4E3 /* FRAPushMechanismTableViewCellController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAPushMechanismTableViewCellController.m; sourceTree = "<group>"; };
-		443686841CDCC2F40056D4E3 /* unit-tests */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = folder; path = "unit-tests"; sourceTree = "<group>"; };
 		44379CF21CC6664B00D7EAE9 /* FRABlockActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRABlockActionSheet.h; sourceTree = "<group>"; };
 		44379CF31CC6664B00D7EAE9 /* FRABlockActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRABlockActionSheet.m; sourceTree = "<group>"; };
-		44379CF51CC66C0300D7EAE9 /* FRABlockAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRABlockAlertView.h; sourceTree = "<group>"; };
+		44379CF51CC66C0300D7EAE9 /* FRABlockAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRABlockAlertView.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		44379CF61CC66C0300D7EAE9 /* FRABlockAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRABlockAlertView.m; sourceTree = "<group>"; };
-		443F203C1CCC28A400B91C2B /* FRAApplicationAssembly.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAApplicationAssembly.h; sourceTree = "<group>"; };
-		443F203D1CCC28A400B91C2B /* FRAApplicationAssembly.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAApplicationAssembly.m; sourceTree = "<group>"; };
-		4445075C1CB520D8003EE400 /* FRAOathMechanismTableViewCellController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAOathMechanismTableViewCellController.h; sourceTree = "<group>"; };
+		443F203C1CCC28A400B91C2B /* FRAApplicationAssembly.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAApplicationAssembly.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		443F203D1CCC28A400B91C2B /* FRAApplicationAssembly.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRAApplicationAssembly.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		4445075C1CB520D8003EE400 /* FRAOathMechanismTableViewCellController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAOathMechanismTableViewCellController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4445075D1CB520D8003EE400 /* FRAOathMechanismTableViewCellController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAOathMechanismTableViewCellController.m; sourceTree = "<group>"; };
-		4445075F1CB551E9003EE400 /* FRAOathMechanismTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAOathMechanismTableViewCell.h; sourceTree = "<group>"; };
+		4445075F1CB551E9003EE400 /* FRAOathMechanismTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAOathMechanismTableViewCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		444507601CB551E9003EE400 /* FRAOathMechanismTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAOathMechanismTableViewCell.m; sourceTree = "<group>"; };
-		445948EC1CAEB832008FB2F6 /* FRAAccountTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAAccountTableViewController.h; sourceTree = "<group>"; };
-		445948ED1CAEB832008FB2F6 /* FRAAccountTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAAccountTableViewController.m; sourceTree = "<group>"; };
-		4467225A1CD4038B00E80799 /* FRANotificationGatewayTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FRANotificationGatewayTests.m; path = "unit-tests/FRANotificationGatewayTests.m"; sourceTree = "<group>"; };
-		44695F581C9F6DD900680799 /* FRAIdentity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAIdentity.h; sourceTree = "<group>"; };
-		44695F591C9F6DD900680799 /* FRAIdentity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAIdentity.m; sourceTree = "<group>"; };
-		44695F5C1C9F70C100680799 /* FRAIdentityTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FRAIdentityTests.m; path = "unit-tests/FRAIdentityTests.m"; sourceTree = "<group>"; };
+		445948EC1CAEB832008FB2F6 /* FRAAccountTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAAccountTableViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		445948ED1CAEB832008FB2F6 /* FRAAccountTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRAAccountTableViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		4467225A1CD4038B00E80799 /* FRANotificationGatewayTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = FRANotificationGatewayTests.m; path = "unit-tests/FRANotificationGatewayTests.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		44695F581C9F6DD900680799 /* FRAIdentity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAIdentity.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		44695F591C9F6DD900680799 /* FRAIdentity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRAIdentity.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		44695F5C1C9F70C100680799 /* FRAIdentityTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = FRAIdentityTests.m; path = "unit-tests/FRAIdentityTests.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		44695F601CA0ADAB00680799 /* FRAOathMechanism.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAOathMechanism.h; sourceTree = "<group>"; };
-		44695F611CA0ADAB00680799 /* FRAOathMechanism.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAOathMechanism.m; sourceTree = "<group>"; };
-		44695F641CA0AE4300680799 /* FRAOathCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAOathCode.h; sourceTree = "<group>"; };
+		44695F611CA0ADAB00680799 /* FRAOathMechanism.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRAOathMechanism.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		44695F641CA0AE4300680799 /* FRAOathCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAOathCode.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		44695F651CA0AE4300680799 /* FRAOathCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAOathCode.m; sourceTree = "<group>"; };
-		44695F681CA0B1F600680799 /* unit-tests */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = folder; path = "unit-tests"; sourceTree = "<group>"; };
-		44695F781CA0BA0600680799 /* FRAIdentityDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAIdentityDatabase.h; sourceTree = "<group>"; };
-		44695F791CA0BA0600680799 /* FRAIdentityDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAIdentityDatabase.m; sourceTree = "<group>"; };
-		44695F811CA17DD300680799 /* FRAMechanism.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAMechanism.h; sourceTree = "<group>"; };
-		448EAF2B1CCD639F00FEF058 /* unit-tests */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = folder; path = "unit-tests"; sourceTree = "<group>"; };
-		449FD43A1CAAC9FC00A9BF99 /* FRAAccountsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAAccountsTableViewController.h; sourceTree = "<group>"; };
-		449FD43B1CAAC9FC00A9BF99 /* FRAAccountsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAAccountsTableViewController.m; sourceTree = "<group>"; };
-		449FD43D1CAD7D7400A9BF99 /* FRAAccountTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAAccountTableViewCell.h; sourceTree = "<group>"; };
-		449FD43E1CAD7D7400A9BF99 /* FRAAccountTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAAccountTableViewCell.m; sourceTree = "<group>"; };
-		44B744551CAAA82300A83AF1 /* FRANotificationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRANotificationViewController.h; sourceTree = "<group>"; };
+		44695F781CA0BA0600680799 /* FRAIdentityDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAIdentityDatabase.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		44695F791CA0BA0600680799 /* FRAIdentityDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRAIdentityDatabase.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		44695F811CA17DD300680799 /* FRAMechanism.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAMechanism.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		449FD43A1CAAC9FC00A9BF99 /* FRAAccountsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAAccountsTableViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		449FD43B1CAAC9FC00A9BF99 /* FRAAccountsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRAAccountsTableViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		449FD43D1CAD7D7400A9BF99 /* FRAAccountTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAAccountTableViewCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		449FD43E1CAD7D7400A9BF99 /* FRAAccountTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRAAccountTableViewCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		44B744551CAAA82300A83AF1 /* FRANotificationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRANotificationViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		44B744561CAAA82300A83AF1 /* FRANotificationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRANotificationViewController.m; sourceTree = "<group>"; };
-		44BC41801CA97DD6000931F3 /* FRANotificationsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRANotificationsTableViewController.h; sourceTree = "<group>"; };
+		44BC41801CA97DD6000931F3 /* FRANotificationsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRANotificationsTableViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		44BC41811CA97DD6000931F3 /* FRANotificationsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRANotificationsTableViewController.m; sourceTree = "<group>"; };
-		44BC41831CA9DC12000931F3 /* FRANotificationTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRANotificationTableViewCell.h; sourceTree = "<group>"; };
+		44BC41831CA9DC12000931F3 /* FRANotificationTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRANotificationTableViewCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		44BC41841CA9DC12000931F3 /* FRANotificationTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRANotificationTableViewCell.m; sourceTree = "<group>"; };
-		44C206851CD944ED00DC4D3B /* FRAIdentityModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAIdentityModel.h; sourceTree = "<group>"; };
-		44C206861CD944ED00DC4D3B /* FRAIdentityModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAIdentityModel.m; sourceTree = "<group>"; };
-		44C206881CD972E500DC4D3B /* FRAIdentityDatabaseSQLiteOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAIdentityDatabaseSQLiteOperations.h; sourceTree = "<group>"; };
-		44C206891CD972E500DC4D3B /* FRAIdentityDatabaseSQLiteOperations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAIdentityDatabaseSQLiteOperations.m; sourceTree = "<group>"; };
-		44C2068B1CD9E4E200DC4D3B /* unit-tests */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = folder; path = "unit-tests"; sourceTree = "<group>"; };
-		44C2068D1CDB391500DC4D3B /* FRAModelObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAModelObject.h; sourceTree = "<group>"; };
+		44C206851CD944ED00DC4D3B /* FRAIdentityModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAIdentityModel.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		44C206861CD944ED00DC4D3B /* FRAIdentityModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRAIdentityModel.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		44C206881CD972E500DC4D3B /* FRAIdentityDatabaseSQLiteOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAIdentityDatabaseSQLiteOperations.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		44C206891CD972E500DC4D3B /* FRAIdentityDatabaseSQLiteOperations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRAIdentityDatabaseSQLiteOperations.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		44C2068D1CDB391500DC4D3B /* FRAModelObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAModelObject.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		44C2068E1CDB391500DC4D3B /* FRAModelObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAModelObject.m; sourceTree = "<group>"; };
 		44C206901CDB69A000DC4D3B /* FRAModelObjectProtected.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRAModelObjectProtected.h; sourceTree = "<group>"; };
-		44CF2D881CD1553200666258 /* FRANotificationGateway.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRANotificationGateway.h; sourceTree = "<group>"; };
-		44CF2D891CD1553200666258 /* FRANotificationGateway.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRANotificationGateway.m; sourceTree = "<group>"; };
+		44CF2D881CD1553200666258 /* FRANotificationGateway.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRANotificationGateway.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		44CF2D891CD1553200666258 /* FRANotificationGateway.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRANotificationGateway.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		44CF2D8C1CD1610400666258 /* FRAPushMechanism.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAPushMechanism.h; sourceTree = "<group>"; };
 		44CF2D8D1CD1610400666258 /* FRAPushMechanism.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAPushMechanism.m; sourceTree = "<group>"; };
-		44CF2D8F1CD21C1B00666258 /* FRANotificationHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRANotificationHandler.h; sourceTree = "<group>"; };
-		44CF2D901CD21C1B00666258 /* FRANotificationHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRANotificationHandler.m; sourceTree = "<group>"; };
+		44CF2D8F1CD21C1B00666258 /* FRANotificationHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRANotificationHandler.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		44CF2D901CD21C1B00666258 /* FRANotificationHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRANotificationHandler.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		44E212B11CD0E79F00269DE9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		96FCE7C37A708C5D914322B1 /* libPods-ForgeRock.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ForgeRock.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BF38B774E86C6CD26C305FE /* Pods-ForgeRockTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgeRockTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-ForgeRockTests/Pods-ForgeRockTests.release.xcconfig"; sourceTree = "<group>"; };
 		9C6114B55D3356F2F9573691 /* Pods-ForgeRock.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgeRock.release.xcconfig"; path = "Pods/Target Support Files/Pods-ForgeRock/Pods-ForgeRock.release.xcconfig"; sourceTree = "<group>"; };
 		AE5AF79E2C305DD029C90FB1 /* Pods-ForgeRock.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgeRock.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ForgeRock/Pods-ForgeRock.debug.xcconfig"; sourceTree = "<group>"; };
 		D44FA6E5B0EE20491800704A /* Pods-ForgeRockTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgeRockTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ForgeRockTests/Pods-ForgeRockTests.debug.xcconfig"; sourceTree = "<group>"; };
-		E12246151CD0FC8300F52C98 /* FRANotificationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FRANotificationTest.m; path = "unit-tests/FRANotificationTest.m"; sourceTree = "<group>"; };
-		E12246181CD1009F00F52C98 /* FRAMechanismFactoryTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FRAMechanismFactoryTest.m; path = "unit-tests/FRAMechanismFactoryTest.m"; sourceTree = "<group>"; };
-		E122461A1CD10EEB00F52C98 /* FRAMechanismTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FRAMechanismTest.m; path = "unit-tests/FRAMechanismTest.m"; sourceTree = "<group>"; };
+		E12246151CD0FC8300F52C98 /* FRANotificationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = FRANotificationTest.m; path = "unit-tests/FRANotificationTest.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		E12246181CD1009F00F52C98 /* FRAMechanismFactoryTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = FRAMechanismFactoryTest.m; path = "unit-tests/FRAMechanismFactoryTest.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		E122461A1CD10EEB00F52C98 /* FRAMechanismTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = FRAMechanismTest.m; path = "unit-tests/FRAMechanismTest.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		E13281C61CDCA8D80069924A /* read_all.sql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = read_all.sql; sourceTree = "<group>"; };
+		E13281C81CDCE4800069924A /* FRAError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRAError.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		E13281CA1CDCE4C40069924A /* FRAError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAError.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		E14CA6661CE2295B00C09C68 /* FRAModelsFromDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAModelsFromDatabase.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		E14CA6671CE22A2F00C09C68 /* FRAModelsFromDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRAModelsFromDatabase.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		E14CA6691CE23FB700C09C68 /* FRAHMACAlgorithm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAHMACAlgorithm.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		E14CA66A1CE2403B00C09C68 /* FRAHMACAlgorithm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRAHMACAlgorithm.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		E14CA66C1CE31D3800C09C68 /* FRASerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRASerialization.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		E14CA66D1CE31D7E00C09C68 /* FRASerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRASerialization.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		E155C8B91CDB8495008853E4 /* delete_mechanism.sql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = delete_mechanism.sql; sourceTree = "<group>"; };
+		E155C8BB1CDB9609008853E4 /* delete_notification.sql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = delete_notification.sql; sourceTree = "<group>"; };
 		E164F3C51ADE9CA800A440B3 /* forgerock-logo-text.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forgerock-logo-text.png"; sourceTree = "<group>"; };
 		E164F3C71ADE9CAF00A440B3 /* forgerock-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forgerock-logo.png"; sourceTree = "<group>"; };
-		E17359491CCA2EDB00828709 /* FRAMechanism.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAMechanism.m; sourceTree = "<group>"; };
-		E1A92B691CBFC7F300D7BB04 /* FRANotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRANotification.m; sourceTree = "<group>"; };
-		E1A92B6B1CBFC7FD00D7BB04 /* FRANotification.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRANotification.h; sourceTree = "<group>"; };
-		E1A92B6F1CC12F3B00D7BB04 /* FRAUriMechanismReader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRAUriMechanismReader.h; sourceTree = "<group>"; };
-		E1A92B701CC12F4F00D7BB04 /* FRAUriMechanismReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAUriMechanismReader.m; sourceTree = "<group>"; };
-		E1C725F91AEE7D0300388026 /* base32test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = base32test.m; path = "unit-tests/base32test.m"; sourceTree = "<group>"; };
+		E166B22B1CDA4EF900DFB029 /* insert_identity.sql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = insert_identity.sql; sourceTree = "<group>"; };
+		E166B22D1CDA50E300DFB029 /* insert_mechanism.sql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = insert_mechanism.sql; sourceTree = "<group>"; };
+		E166B22F1CDA50ED00DFB029 /* insert_notification.sql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = insert_notification.sql; sourceTree = "<group>"; };
+		E166B2311CDB601200DFB029 /* delete_identity.sql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = delete_identity.sql; sourceTree = "<group>"; };
+		E17359491CCA2EDB00828709 /* FRAMechanism.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRAMechanism.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		E178664C1CEB4C9300DC8443 /* FRASqlStorageConstantsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = FRASqlStorageConstantsTest.m; path = "unit-tests/FRASqlStorageConstantsTest.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		E18125011CF5B2A000EF0F29 /* FRAOathMechanismTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = FRAOathMechanismTests.m; path = "unit-tests/FRAOathMechanismTests.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		E187E1AB1CBD4DD400F9427D /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
+		E1A8B8A91CD8E1F20029B89B /* FRAFMDatabaseFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRAFMDatabaseFactory.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		E1A8B8AB1CD8E21E0029B89B /* FRAFMDatabaseFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAFMDatabaseFactory.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		E1A92B641CBE637200D7BB04 /* schema.sql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = schema.sql; sourceTree = "<group>"; };
+		E1A92B661CBE639800D7BB04 /* FRAFMDatabaseConnectionHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRAFMDatabaseConnectionHelper.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		E1A92B681CBE63AD00D7BB04 /* FRAFMDatabaseConnectionHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAFMDatabaseConnectionHelper.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		E1A92B691CBFC7F300D7BB04 /* FRANotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRANotification.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		E1A92B6B1CBFC7FD00D7BB04 /* FRANotification.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRANotification.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		E1A92B6F1CC12F3B00D7BB04 /* FRAMechanismFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRAMechanismFactory.h; sourceTree = "<group>"; };
+		E1C725F91AEE7D0300388026 /* base32test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = base32test.m; path = "unit-tests/base32test.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		E1C725FD1AEE820500388026 /* ForgeRockTests-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "ForgeRockTests-Info.plist"; path = "unit-tests/ForgeRockTests-Info.plist"; sourceTree = "<group>"; };
-		E1C7260E1AEE83B500388026 /* ForgeRockTests-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "ForgeRockTests-Prefix.pch"; path = "unit-tests/ForgeRockTests-Prefix.pch"; sourceTree = "<group>"; };
+		E1C7260E1AEE83B500388026 /* ForgeRockTests-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = "ForgeRockTests-Prefix.pch"; path = "unit-tests/ForgeRockTests-Prefix.pch"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		E1E53F781CD373E600A0F2ED /* FRADatabaseConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRADatabaseConfiguration.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		E1E53F7A1CD373FE00A0F2ED /* FRADatabaseConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRADatabaseConfiguration.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		E1E53F7C1CD3918A00A0F2ED /* init_check.sql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = init_check.sql; sourceTree = "<group>"; };
+		E1E53F7F1CD3A07700A0F2ED /* FRAFMDatabaseConnectionHelperTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = FRAFMDatabaseConnectionHelperTest.m; path = "unit-tests/FRAFMDatabaseConnectionHelperTest.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		E1EC51621CF4926E0054077D /* FRAUriMechanismReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAUriMechanismReader.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		E1EC51631CF4926E0054077D /* FRAUriMechanismReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRAUriMechanismReader.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		F1030ED01818322000E478F7 /* FRACircleProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRACircleProgressView.h; sourceTree = "<group>"; };
 		F1030ED11818322000E478F7 /* FRACircleProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRACircleProgressView.m; sourceTree = "<group>"; };
-		F109DBE818412A2300548A3E /* FRAQRScanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAQRScanViewController.h; sourceTree = "<group>"; };
+		F109DBE818412A2300548A3E /* FRAQRScanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAQRScanViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		F109DBE918412A2300548A3E /* FRAQRScanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAQRScanViewController.m; sourceTree = "<group>"; };
-		F15300401801B9DF00A0E179 /* base32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base32.c; sourceTree = "<group>"; };
-		F15300421801BA1D00A0E179 /* base32.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = base32.h; sourceTree = "<group>"; };
+		F15300401801B9DF00A0E179 /* base32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; lineEnding = 0; path = base32.c; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.c; };
+		F15300421801BA1D00A0E179 /* base32.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = base32.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		F1673F1918EC51C900ECD2DB /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		F17A85FD17EC12670098E7F3 /* ForgeRock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ForgeRock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F17A860017EC12670098E7F3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -190,14 +237,14 @@
 		F17A860417EC12670098E7F3 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		F17A860817EC12670098E7F3 /* ForgeRock-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ForgeRock-Info.plist"; sourceTree = "<group>"; };
 		F17A860A17EC12670098E7F3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		F17A860C17EC12670098E7F3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		F17A860E17EC12670098E7F3 /* ForgeRock-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ForgeRock-Prefix.pch"; sourceTree = "<group>"; };
-		F17A860F17EC12670098E7F3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		F17A861017EC12670098E7F3 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		F17A860C17EC12670098E7F3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = main.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		F17A860E17EC12670098E7F3 /* ForgeRock-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = "ForgeRock-Prefix.pch"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		F17A860F17EC12670098E7F3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = AppDelegate.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		F17A861017EC12670098E7F3 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		F17A861B17EC12670098E7F3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		F17A862117EC12670098E7F3 /* ForgeRockTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ForgeRockTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F17A862217EC12670098E7F3 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		F1AD9C6C191052B10023501C /* URLImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = URLImageView.h; sourceTree = "<group>"; };
+		F1AD9C6C191052B10023501C /* URLImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = URLImageView.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		F1AD9C6D191052B10023501C /* URLImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = URLImageView.m; sourceTree = "<group>"; };
 		F1AD9C6F191053780023501C /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -207,6 +254,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E187E1AC1CBD4DD400F9427D /* libsqlite3.0.tbd in Frameworks */,
 				F1AD9C70191053780023501C /* AssetsLibrary.framework in Frameworks */,
 				F17A860317EC12670098E7F3 /* CoreGraphics.framework in Frameworks */,
 				F17A860517EC12670098E7F3 /* UIKit.framework in Frameworks */,
@@ -262,7 +310,7 @@
 		4459044C1CA2A83000DA3979 /* OATH */ = {
 			isa = PBXGroup;
 			children = (
-				44695F681CA0B1F600680799 /* unit-tests */,
+				E18125011CF5B2A000EF0F29 /* FRAOathMechanismTests.m */,
 			);
 			name = OATH;
 			sourceTree = "<group>";
@@ -282,6 +330,8 @@
 				44695F651CA0AE4300680799 /* FRAOathCode.m */,
 				2D977EAD1CDCE376000A7F29 /* FRAOathMechanismFactory.h */,
 				2D977EAE1CDCE3A6000A7F29 /* FRAOathMechanismFactory.m */,
+				E14CA6691CE23FB700C09C68 /* FRAHMACAlgorithm.h */,
+				E14CA66A1CE2403B00C09C68 /* FRAHMACAlgorithm.m */,
 			);
 			name = OATH;
 			sourceTree = "<group>";
@@ -304,9 +354,9 @@
 				4459044D1CA2A84A00DA3979 /* OATH */,
 				44695F811CA17DD300680799 /* FRAMechanism.h */,
 				E17359491CCA2EDB00828709 /* FRAMechanism.m */,
-				E1A92B6F1CC12F3B00D7BB04 /* FRAUriMechanismReader.h */,
-				E1A92B701CC12F4F00D7BB04 /* FRAUriMechanismReader.m */,
-				2D977EAC1CDCD47C000A7F29 /* FRAMechanismFactory.h */,
+				E1A92B6F1CC12F3B00D7BB04 /* FRAMechanismFactory.h */,
+				E1EC51621CF4926E0054077D /* FRAUriMechanismReader.h */,
+				E1EC51631CF4926E0054077D /* FRAUriMechanismReader.m */,
 			);
 			name = Mechanisms;
 			sourceTree = "<group>";
@@ -315,7 +365,6 @@
 			isa = PBXGroup;
 			children = (
 				44695F5C1C9F70C100680799 /* FRAIdentityTests.m */,
-				44C2068B1CD9E4E200DC4D3B /* unit-tests */,
 			);
 			name = Identity;
 			sourceTree = "<group>";
@@ -333,6 +382,7 @@
 		44695F771CA0B9E800680799 /* Storage */ = {
 			isa = PBXGroup;
 			children = (
+				E1E53F741CD36E2200A0F2ED /* SQL */,
 				44695F781CA0BA0600680799 /* FRAIdentityDatabase.h */,
 				44695F791CA0BA0600680799 /* FRAIdentityDatabase.m */,
 				44C206881CD972E500DC4D3B /* FRAIdentityDatabaseSQLiteOperations.h */,
@@ -347,6 +397,7 @@
 		44695F7B1CA1709B00680799 /* Storage */ = {
 			isa = PBXGroup;
 			children = (
+				E1E53F7E1CD3A03E00A0F2ED /* SQL */,
 			);
 			name = Storage;
 			sourceTree = "<group>";
@@ -354,8 +405,6 @@
 		448EAF2A1CCD636E00FEF058 /* Accounts */ = {
 			isa = PBXGroup;
 			children = (
-				448EAF2B1CCD639F00FEF058 /* unit-tests */,
-				4436867C1CDB74900056D4E3 /* unit-tests */,
 			);
 			name = Accounts;
 			sourceTree = "<group>";
@@ -428,7 +477,6 @@
 				E12246151CD0FC8300F52C98 /* FRANotificationTest.m */,
 				4467225A1CD4038B00E80799 /* FRANotificationGatewayTests.m */,
 				2D977EAA1CD8BEBA000A7F29 /* FRANotificationHandlerTest.m */,
-				443686841CDCC2F40056D4E3 /* unit-tests */,
 			);
 			name = Notifications;
 			sourceTree = "<group>";
@@ -437,6 +485,7 @@
 			isa = PBXGroup;
 			children = (
 				0484ED541CE20BDD00DB537A /* Utils */,
+				0467E0C91CE60C7800A422D5 /* FRAErrorTest.m */,
 				448EAF2A1CCD636E00FEF058 /* Accounts */,
 				E12246141CD0FBEE00F52C98 /* Notifications */,
 				44695F7B1CA1709B00680799 /* Storage */,
@@ -455,6 +504,52 @@
 				E1C725FD1AEE820500388026 /* ForgeRockTests-Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		E1E53F741CD36E2200A0F2ED /* SQL */ = {
+			isa = PBXGroup;
+			children = (
+				E1E53F7B1CD3916E00A0F2ED /* schema */,
+				E1A92B681CBE63AD00D7BB04 /* FRAFMDatabaseConnectionHelper.h */,
+				E1A92B661CBE639800D7BB04 /* FRAFMDatabaseConnectionHelper.m */,
+				E1A8B8AB1CD8E21E0029B89B /* FRAFMDatabaseFactory.h */,
+				E1A8B8A91CD8E1F20029B89B /* FRAFMDatabaseFactory.m */,
+				E1E53F7A1CD373FE00A0F2ED /* FRADatabaseConfiguration.h */,
+				E1E53F781CD373E600A0F2ED /* FRADatabaseConfiguration.m */,
+				E14CA6661CE2295B00C09C68 /* FRAModelsFromDatabase.h */,
+				E14CA6671CE22A2F00C09C68 /* FRAModelsFromDatabase.m */,
+				E14CA66C1CE31D3800C09C68 /* FRASerialization.h */,
+				E14CA66D1CE31D7E00C09C68 /* FRASerialization.m */,
+			);
+			name = SQL;
+			sourceTree = "<group>";
+		};
+		E1E53F7B1CD3916E00A0F2ED /* schema */ = {
+			isa = PBXGroup;
+			children = (
+				E1E53F7C1CD3918A00A0F2ED /* init_check.sql */,
+				E1A92B641CBE637200D7BB04 /* schema.sql */,
+				E166B22B1CDA4EF900DFB029 /* insert_identity.sql */,
+				E166B22D1CDA50E300DFB029 /* insert_mechanism.sql */,
+				E166B22F1CDA50ED00DFB029 /* insert_notification.sql */,
+				E166B2311CDB601200DFB029 /* delete_identity.sql */,
+				E155C8B91CDB8495008853E4 /* delete_mechanism.sql */,
+				E155C8BB1CDB9609008853E4 /* delete_notification.sql */,
+				E13281C61CDCA8D80069924A /* read_all.sql */,
+			);
+			name = schema;
+			sourceTree = "<group>";
+		};
+		E1E53F7E1CD3A03E00A0F2ED /* SQL */ = {
+			isa = PBXGroup;
+			children = (
+				04CE438E1CEF193C0067BAFF /* FRAModelsFromDatabaseTest.m */,
+				04C223C61CECD09F001F8BD3 /* FRASqlDatabaseFactoryTest.m */,
+				0467E0C61CE5E4D200A422D5 /* FRADatabaseConfigurationTest.m */,
+				E1E53F7F1CD3A07700A0F2ED /* FRAFMDatabaseConnectionHelperTest.m */,
+				E178664C1CEB4C9300DC8443 /* FRASqlStorageConstantsTest.m */,
+			);
+			name = SQL;
 			sourceTree = "<group>";
 		};
 		F17A85F417EC12670098E7F3 = {
@@ -481,6 +576,7 @@
 		F17A85FF17EC12670098E7F3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E187E1AB1CBD4DD400F9427D /* libsqlite3.0.tbd */,
 				F1AD9C6F191053780023501C /* AssetsLibrary.framework */,
 				F17A860017EC12670098E7F3 /* Foundation.framework */,
 				F17A860217EC12670098E7F3 /* CoreGraphics.framework */,
@@ -517,6 +613,8 @@
 				44379CF31CC6664B00D7EAE9 /* FRABlockActionSheet.m */,
 				44379CF51CC66C0300D7EAE9 /* FRABlockAlertView.h */,
 				44379CF61CC66C0300D7EAE9 /* FRABlockAlertView.m */,
+				E13281CA1CDCE4C40069924A /* FRAError.h */,
+				E13281C81CDCE4800069924A /* FRAError.m */,
 			);
 			name = Authenticator;
 			path = "ForgeRock-Authenticator";
@@ -627,10 +725,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				F17A861C17EC12670098E7F3 /* Images.xcassets in Resources */,
+				E1E53F7D1CD3918A00A0F2ED /* init_check.sql in Resources */,
+				E166B2301CDA50ED00DFB029 /* insert_notification.sql in Resources */,
 				E164F3C61ADE9CA800A440B3 /* forgerock-logo-text.png in Resources */,
+				E13281C71CDCA8D80069924A /* read_all.sql in Resources */,
 				E164F3C81ADE9CAF00A440B3 /* forgerock-logo.png in Resources */,
+				E1A92B651CBE637200D7BB04 /* schema.sql in Resources */,
 				F1673F1A18EC51C900ECD2DB /* Main.storyboard in Resources */,
+				E166B22C1CDA4EF900DFB029 /* insert_identity.sql in Resources */,
+				E155C8BA1CDB8495008853E4 /* delete_mechanism.sql in Resources */,
 				F17A860B17EC12670098E7F3 /* InfoPlist.strings in Resources */,
+				E166B2321CDB601200DFB029 /* delete_identity.sql in Resources */,
+				E166B22E1CDA50E300DFB029 /* insert_mechanism.sql in Resources */,
+				E155C8BC1CDB9609008853E4 /* delete_notification.sql in Resources */,
 				44E212B21CD0E79F00269DE9 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -742,11 +849,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1A8B8AA1CD8E1F20029B89B /* FRAFMDatabaseFactory.m in Sources */,
 				44BC41821CA97DD6000931F3 /* FRANotificationsTableViewController.m in Sources */,
 				4445075E1CB520D8003EE400 /* FRAOathMechanismTableViewCellController.m in Sources */,
 				44C2068F1CDB391500DC4D3B /* FRAModelObject.m in Sources */,
 				44BC41851CA9DC12000931F3 /* FRANotificationTableViewCell.m in Sources */,
 				44695F621CA0ADAB00680799 /* FRAOathMechanism.m in Sources */,
+				E14CA66E1CE31D7E00C09C68 /* FRASerialization.m in Sources */,
+				E14CA6681CE22A2F00C09C68 /* FRAModelsFromDatabase.m in Sources */,
 				44CF2D8A1CD1553200666258 /* FRANotificationGateway.m in Sources */,
 				04DA35AE1CE9C2EF00C99062 /* FRANotificationUISlider.m in Sources */,
 				F15300431801BB8800A0E179 /* base32.c in Sources */,
@@ -757,14 +867,18 @@
 				44B744571CAAA82300A83AF1 /* FRANotificationViewController.m in Sources */,
 				F17A861117EC12670098E7F3 /* AppDelegate.m in Sources */,
 				44379CF71CC66C0300D7EAE9 /* FRABlockAlertView.m in Sources */,
+				E1A92B671CBE639800D7BB04 /* FRAFMDatabaseConnectionHelper.m in Sources */,
+				E1EC51641CF4926E0054077D /* FRAUriMechanismReader.m in Sources */,
 				F1030ED21818322000E478F7 /* FRACircleProgressView.m in Sources */,
 				44CF2D911CD21C1B00666258 /* FRANotificationHandler.m in Sources */,
 				443F203E1CCC28A400B91C2B /* FRAApplicationAssembly.m in Sources */,
 				04D3D2601CE4CE9100D77EF6 /* FRAMockURLProtocol.m in Sources */,
 				44695F7A1CA0BA0600680799 /* FRAIdentityDatabase.m in Sources */,
-				E1A92B711CC12F4F00D7BB04 /* FRAUriMechanismReader.m in Sources */,
 				2D60B6961CEF456B00F0CA2B /* FRAQRUtils.m in Sources */,
+				E13281C91CDCE4800069924A /* FRAError.m in Sources */,
+				E14CA66B1CE2403B00C09C68 /* FRAHMACAlgorithm.m in Sources */,
 				F17A860D17EC12670098E7F3 /* main.m in Sources */,
+				E1E53F791CD373E600A0F2ED /* FRADatabaseConfiguration.m in Sources */,
 				44379CF41CC6664B00D7EAE9 /* FRABlockActionSheet.m in Sources */,
 				449FD43C1CAAC9FC00A9BF99 /* FRAAccountsTableViewController.m in Sources */,
 				44CF2D8E1CD1610400666258 /* FRAPushMechanism.m in Sources */,
@@ -787,7 +901,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				443686851CDCC2F40056D4E3 /* unit-tests in Sources */,
+				04CE43901CEF19BC0067BAFF /* FRAModelsFromDatabaseTest.m in Sources */,
 				44695F631CA0ADAB00680799 /* FRAOathMechanism.m in Sources */,
 				04D3D2611CE4D00400D77EF6 /* FRAMessageUtilsTests.m in Sources */,
 				E12246191CD1009F00F52C98 /* FRAMechanismFactoryTest.m in Sources */,
@@ -795,11 +909,16 @@
 				4467225B1CD4038B00E80799 /* FRANotificationGatewayTests.m in Sources */,
 				E122461B1CD10EEB00F52C98 /* FRAMechanismTest.m in Sources */,
 				E16458491AEE8E8D00D1740F /* base32.c in Sources */,
+				04C223C81CECD5E4001F8BD3 /* FRASqlDatabaseFactoryTest.m in Sources */,
+				0467E0CB1CE60C7C00A422D5 /* FRAErrorTest.m in Sources */,
 				E12246171CD0FD0600F52C98 /* FRANotificationTest.m in Sources */,
+				E18125021CF5B2A000EF0F29 /* FRAOathMechanismTests.m in Sources */,
 				44695F671CA0AE4300680799 /* FRAOathCode.m in Sources */,
 				2D977EAB1CD8BEBA000A7F29 /* FRANotificationHandlerTest.m in Sources */,
 				E1C725FA1AEE7D0300388026 /* base32test.m in Sources */,
-				44695F5B1C9F6DD900680799 /* FRAIdentity.m in Sources */,
+				E178664D1CEB4C9300DC8443 /* FRASqlStorageConstantsTest.m in Sources */,
+				E1E53F801CD3A07700A0F2ED /* FRAFMDatabaseConnectionHelperTest.m in Sources */,
+				0467E0C81CE5E4D600A422D5 /* FRADatabaseConfigurationTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

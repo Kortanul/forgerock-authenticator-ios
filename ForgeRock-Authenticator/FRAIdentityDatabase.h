@@ -14,7 +14,7 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import <Foundation/Foundation.h>
+
 @class FRAIdentity;
 @class FRAIdentityDatabase;
 @class FRAIdentityDatabaseSQLiteOperations;
@@ -61,14 +61,16 @@ extern NSInteger const FRANotStored;
 /*!
  * Save the identity to the database.
  * @param identity The identity to save.
+ * @return NO if there was an error whilst processing. YES if the operation completed successfully.
  */
-- (void)insertIdentity:(FRAIdentity *)identity;
+- (BOOL)insertIdentity:(FRAIdentity *)identity error:(NSError *__autoreleasing *)error;
 
 /*!
  * Remove the identity from the database.
  * @param identity The identity to remove.
+ * @return NO if there was an error whilst processing. YES if the operation completed successfully.
  */
-- (void)deleteIdentity:(FRAIdentity *)identity;
+- (BOOL)deleteIdentity:(FRAIdentity *)identity error:(NSError *__autoreleasing *)error;
 
 #pragma mark -
 #pragma mark Mechanism Functions
@@ -76,20 +78,23 @@ extern NSInteger const FRANotStored;
 /*!
  * Save a new mechanism to the database.
  * @param mechanism The mechanism to save.
+ * @return NO if there was an error whilst processing. YES if the operation completed successfully.
  */
-- (void)insertMechanism:(FRAMechanism *)mechanism;
+- (BOOL)insertMechanism:(FRAMechanism *)mechanism error:(NSError *__autoreleasing *)error;
 
 /*!
  * Remove the mechanism from the database.
  * @param mechanism The mechanism to remove.
+ * @return NO if there was an error whilst processing. YES if the operation completed successfully.
  */
-- (void)deleteMechanism:(FRAMechanism *)mechanism;
+- (BOOL)deleteMechanism:(FRAMechanism *)mechanism error:(NSError *__autoreleasing *)error;
 
 /*!
  * Save changes to an existing mechanism to the database.
  * @param mechanism The mechanism to save.
+ * @return NO if there was an error whilst processing. YES if the operation completed successfully.
  */
-- (void)updateMechanism:(FRAMechanism *)mechanism;
+- (BOOL)updateMechanism:(FRAMechanism *)mechanism error:(NSError *__autoreleasing *)error;
 
 #pragma mark -
 #pragma mark Notification Functions
@@ -97,19 +102,22 @@ extern NSInteger const FRANotStored;
 /*!
  * Save a new notification to the database.
  * @param notification The notification to save.
+ * @return NO if there was an error whilst processing. YES if the operation completed successfully.
  */
-- (void)insertNotification:(FRANotification *)notification;
+- (BOOL)insertNotification:(FRANotification *)notification error:(NSError *__autoreleasing *)error;
 
 /*!
  * Remove the notification from the database.
  * @param notification The notification to remove.
+ * @return NO if there was an error whilst processing. YES if the operation completed successfully.
  */
-- (void)deleteNotification:(FRANotification *)notification;
+- (BOOL)deleteNotification:(FRANotification *)notification error:(NSError *__autoreleasing *)error;
 
 /*!
  * Save changes to an existing notification to the database.
  * @param notification The notification to save.
+ * @return NO if there was an error whilst processing. YES if the operation completed successfully.
  */
-- (void)updateNotification:(FRANotification *)notification;
+- (BOOL)updateNotification:(FRANotification *)notification error:(NSError *__autoreleasing *)error;
 
 @end

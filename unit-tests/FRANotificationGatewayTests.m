@@ -15,7 +15,7 @@
  */
 
 #import <OCMock/OCMock.h>
-#import <UIKit/UIKit.h>
+
 #import <XCTest/XCTest.h>
 
 #import "FRANotificationGateway.h"
@@ -26,11 +26,9 @@
 @end
 
 @implementation FRANotificationGatewayTests {
-
+    id mockNotificationHandler;
+    id mockApplication;
     FRANotificationGateway *notificationGateway;
-    FRANotificationHandler *mockNotificationHandler;
-    UIApplication *mockApplication;
-
 }
 
 - (void)setUp {
@@ -41,6 +39,8 @@
 }
 
 - (void)tearDown {
+    [mockNotificationHandler stopMocking];
+    [mockApplication stopMocking];
     [super tearDown];
 }
 

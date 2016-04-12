@@ -16,7 +16,7 @@
  * Portions Copyright 2013 Nathaniel McCallum, Red Hat
  */
 
-#import <UIKit/UIKit.h>
+
 #import "AppDelegate.h"
 
 int main(int argc, char * argv[]) {

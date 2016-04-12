@@ -14,7 +14,7 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import <UIKit/UIKit.h>
+
 
 #import "FRAPushMechanism.h"
 #import "FRAPushMechanismTableViewCellController.h"

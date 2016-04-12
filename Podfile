@@ -25,6 +25,7 @@ target 'ForgeRock' do
     pod 'Google/CloudMessaging'
     pod 'AFNetworking', '~> 3.0'
     pod 'JWT'
+    pod 'FMDB', '~> 2.6'
 end
 
 target 'ForgeRockTests' do

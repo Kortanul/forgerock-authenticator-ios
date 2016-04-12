@@ -16,8 +16,6 @@
  * Portions Copyright 2014 Nathaniel McCallum, Red Hat
  */
 
-#import <Foundation/Foundation.h>
-
 /*!
  * Subclass of UIActionSheet that accepts a block for handling button clicks rather than requiring a UIActionSheetDelegate.
  *
