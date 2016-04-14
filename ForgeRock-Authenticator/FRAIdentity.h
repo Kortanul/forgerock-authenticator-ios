@@ -15,6 +15,7 @@
  */
 
 #import <Foundation/Foundation.h>
+@class FRAMechanism;
 
 /*!
  * Identity is responsible for modelling the information that makes up part of a user's identity in
@@ -40,6 +41,11 @@
 @property (copy, nonatomic, readonly) NSURL* image;
 
 /*!
+ * The Mechanisms assigned to the Identity. Maybe empty.
+ */
+@property (getter=mechanisms, nonatomic, readonly) NSArray<FRAMechanism*>* mechanisms;
+
+/*!
  * Creates a new identity object with the provided property values.
  */
 - (instancetype)initWithAccountName:(NSString*)accountName issuedBy:(NSString*)issuer withImage:(NSURL*)image;
@@ -48,5 +54,21 @@
  * Creates a new identity object with the provided property values.
  */
 + (instancetype)identityWithAccountName:(NSString*)accountName issuedBy:(NSString*)issuer withImage:(NSURL*)image;
+
+/*!
+ * When a new Mechanism is created, it will assigned to the Identity via
+ * this call.
+ *
+ * @param A new Mechanism to add to this Identity.
+ */
+- (void) addMechanism:(FRAMechanism*) mechansim;
+
+/*!
+ * Removes the Mechanism, only if it was assigned to this Identity.
+ *
+ * @param A Mechanism to remove from the Identity.
+ */
+- (void) removeMechanism:(FRAMechanism*) mechansim;
+
 
 @end

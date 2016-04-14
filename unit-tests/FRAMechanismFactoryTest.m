@@ -11,22 +11,24 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2015-2016 ForgeRock AS.
+ * Copyright 2016 ForgeRock AS.
  */
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 #import <XCTest/XCTest.h>
-#import "FRAOathMechanism.h"
-#import "FRAOathCode.h"
+#import "FRAIdentity.h"
 #import "FRAMechanismFactory.h"
+#import "FRAOathCode.h"
+#import "FRAOathMechanism.h"
 
-@interface FRAOathMechanismTests : XCTestCase
+@interface FRAMechanismFactoryTest : XCTestCase
 
 @end
 
-@implementation FRAOathMechanismTests {
+@implementation FRAMechanismFactoryTest {
     FRAMechanismFactory* factory;
 }
+
 
 - (void)setUp {
     [super setUp];
@@ -37,30 +39,50 @@
     [super tearDown];
 }
 
-- (void)testShouldGenerateNextCodeSequence {
+- (void)testParseOATHType {
     // Given
     NSString* qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0";
-    FRAOathMechanism* mechanism = (FRAOathMechanism*)[factory parseFromString:qrString];
     
     // When
-    [mechanism generateNextCode];
+    FRAOathMechanism* mechanism = (FRAOathMechanism*)[factory parseFromString:qrString];
     
     // Then
-    NSString* code = [[mechanism code] value];
-    XCTAssert(strcmp([code UTF8String], "352916") == 0, @"Incorrect next hash");
+    XCTAssert(strcmp([[mechanism type] UTF8String], "hotp") == 0);
 }
 
-- (void)testGenerateDifferentCodeSequence {
+- (void)testParseOATHDefaultDigits {
     // Given
-    NSString* qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOI======&issuer=Forgerock&counter=0";
-    FRAOathMechanism* mechanism = (FRAOathMechanism*)[factory parseFromString:qrString];
+    NSString* qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0";
     
     // When
-    [mechanism generateNextCode];
+    FRAOathMechanism* mechanism = (FRAOathMechanism*)[factory parseFromString:qrString];
     
     // Then
-    NSString* code = [[mechanism code] value];
-    XCTAssert(strcmp([code UTF8String], "545550") == 0, @"Incorrect next hash");
+    XCTAssertEqual([mechanism digits], 6);
+}
+
+- (void)testParseOATHDigits {
+    // Given
+    NSString* qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0&digits=8";
+    
+    // When
+    FRAOathMechanism* mechanism = (FRAOathMechanism*)[factory parseFromString:qrString];
+    
+    // Then
+    XCTAssertEqual([mechanism digits], 8);
+}
+
+- (void)testParseParentIdentityIssuerAndAccount {
+    // Given
+    NSString* qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0";
+    
+    // When
+    FRAMechanism* mechanism = [factory parseFromString:qrString];
+    
+    // Then
+    FRAIdentity* identity = [mechanism parent];
+    XCTAssert(strcmp([[identity issuer] UTF8String], "Forgerock") == 0);
+    XCTAssert(strcmp([[identity accountName] UTF8String], "demo") == 0);
 }
 
 @end

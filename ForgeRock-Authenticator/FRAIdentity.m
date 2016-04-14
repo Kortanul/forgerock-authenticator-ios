@@ -15,8 +15,11 @@
  */
 
 #import "FRAIdentity.h"
+#import "FRAMechanism.h"
 
-@implementation FRAIdentity
+@implementation FRAIdentity {
+    NSMutableArray* mechanismList;
+}
 
 - (instancetype)initWithAccountName:(NSString*)accountName issuedBy:(NSString*)issuer withImage:(NSURL*)image {
     if (self = [super init]) {
@@ -24,12 +27,27 @@
         _accountName = accountName;
         _issuer = issuer;
         _image = image;
+        mechanismList = [[NSMutableArray alloc] init];
     }
     return self;
 }
 
 + (instancetype)identityWithAccountName:(NSString*)accountName issuedBy:(NSString*)issuer withImage:(NSURL*)image {
     return [[FRAIdentity alloc] initWithAccountName:accountName issuedBy:issuer withImage:image];
+}
+
+- (NSArray*) mechanisms {
+    return [[NSArray alloc] initWithArray:mechanismList];
+}
+
+- (void) addMechanism:(FRAMechanism *)mechansim {
+    [mechansim setParent:self];
+    [mechanismList addObject:mechansim];
+}
+
+- (void) removeMechanism:(FRAMechanism *)mechansim {
+    [mechanismList removeObject:mechansim];
+    [mechansim setParent:nil];
 }
 
 @end

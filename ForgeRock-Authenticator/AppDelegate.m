@@ -19,6 +19,7 @@
 #import "AppDelegate.h"
 #import "FRAApplicationAssembly.h"
 #import "FRAIdentityDatabase.h"
+#import "FRAMechanismFactory.h"
 #import "FRAOathMechanism.h"
 
 @implementation AppDelegate
@@ -33,7 +34,8 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     // Create mechanism from URL
-    FRAOathMechanism* mechanism = [[FRAOathMechanism alloc] initWithURL:url];
+    FRAMechanismFactory* factory = [self mechanismFactory];
+    FRAMechanism* mechanism = [factory parseFromURL:url];
     if (mechanism == nil) {
         return NO;
     }
@@ -53,6 +55,11 @@
 - (FRAIdentityDatabase*)identityDatabase {
     FRAApplicationAssembly* assembly = (FRAApplicationAssembly*) [TyphoonComponentFactory defaultFactory];
     return [assembly identityDatabase];
+}
+
+- (FRAMechanismFactory*)mechanismFactory {
+    FRAApplicationAssembly* assembly = (FRAApplicationAssembly*) [TyphoonComponentFactory defaultFactory];
+    return [assembly mechanismFactory];
 }
 
 @end

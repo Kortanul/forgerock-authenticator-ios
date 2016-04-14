@@ -16,15 +16,20 @@
 
 #import <XCTest/XCTest.h>
 #import "FRAIdentity.h"
+#import "FRAMechanism.h"
 
 @interface FRAIdentityTests : XCTestCase
 
 @end
 
-@implementation FRAIdentityTests
+@implementation FRAIdentityTests {
+    FRAIdentity* identity;
+}
 
 - (void)setUp {
     [super setUp];
+    identity = [[FRAIdentity alloc] initWithAccountName:@"badger" issuedBy:@"forrest"
+                                              withImage:[[NSURL alloc] initWithString:@"http://animalia-life.com/data_images/badger/badger1.jpg"]];
 }
 
 - (void)tearDown {
@@ -38,12 +43,35 @@
     NSURL* image = [NSURL URLWithString:@"https://forgerock.org/ico/favicon-32x32.png"];
     
     // When
-    FRAIdentity* identity = [FRAIdentity identityWithAccountName:accountName issuedBy:issuer withImage:image];
+    FRAIdentity* test = [FRAIdentity identityWithAccountName:accountName issuedBy:issuer withImage:image];
     
     // Then
-    XCTAssertEqualObjects(identity.issuer, issuer);
-    XCTAssertEqualObjects(identity.accountName, accountName);
-    XCTAssertEqualObjects(identity.image.absoluteString, image.description);
+    XCTAssertEqualObjects([test issuer], issuer);
+    XCTAssertEqualObjects([test accountName], accountName);
+    XCTAssertEqualObjects([[test image] absoluteString], [image description]);
+}
+
+- (void) testCanAddMechanism {
+    // Given
+    FRAMechanism* mechansim = [[FRAMechanism alloc] init];
+    
+    // When
+    [identity addMechanism:mechansim];
+    
+    // Then
+    XCTAssertEqual([[identity mechanisms]count], 1);
+}
+
+- (void) testCanRemoveMechanism {
+    // Given
+    FRAMechanism* mechansim = [[FRAMechanism alloc] init];
+    [identity addMechanism:mechansim];
+    
+    // When
+    [identity removeMechanism:mechansim];
+    
+    // Then
+    XCTAssertEqual([[identity mechanisms]count], 0);
 }
 
 @end

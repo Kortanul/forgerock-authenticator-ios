@@ -17,6 +17,9 @@
 #import "FRAOathMechanismTableViewController.h"
 #import "FRABlockActionSheet.h"
 #import "FRAOathMechanismTableViewCell.h"
+#import "FRAIdentityDatabase.h"
+#import "FRAOathMechanism.h"
+#import "FRAOathCode.h"
 
 @implementation FRAOathMechanismTableViewController {
     NSTimer* timer;

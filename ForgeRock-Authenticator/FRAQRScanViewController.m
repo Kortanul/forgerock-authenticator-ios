@@ -17,7 +17,10 @@
  */
 
 #import "FRAQRScanViewController.h"
-#import "FRAOathMechanism.h"
+#import "FRAIdentityDatabase.h"
+#import "FRAMechanism.h"
+#import "FRAMechanismFactory.h"
+#import "FRAIdentity.h"
 
 @implementation FRAQRScanViewController
 
@@ -73,8 +76,17 @@
             }
             NSLog(@"Read QR URL: %@", qrcode);
 
-            FRAOathMechanism* mechanism = [[FRAOathMechanism alloc] initWithString:qrcode];
+            FRAMechanism* mechanism = [_mechanismFactory parseFromString:qrcode];
+            
             if (mechanism != nil) {
+                NSString* issuer = [[mechanism parent] issuer];
+                NSString* accountName = [[mechanism parent] accountName];
+
+                FRAIdentity* identity = [_database identityWithIssuer:issuer accountName:accountName];
+                // Identity may not exist yet.
+                if (identity == nil) {
+                    [_database addIdentity:[mechanism parent]];
+                }
                 [_database addMechanism:mechanism];
             }
             [self.session stopRunning];

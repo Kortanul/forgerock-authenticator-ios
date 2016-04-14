@@ -134,7 +134,7 @@
             alertView.callback = ^(NSInteger offset) {
                 if (offset == 0) {
                     // Remove the mechanism
-                    [_database removeMechanismWithId:mechanism.uid];
+                    [_database removeMechanism:mechanism];
                     // Remove the mechanism cell from the UI
                     [self.tableView beginUpdates];
                     _tokenTableViewCell.hidden = YES;
@@ -174,7 +174,7 @@
 }
 
 - (FRAOathMechanism*)oathMechanism {
-    NSArray* mechanisms = [_database mechanismsWithOwner:_identity];
+    NSArray* mechanisms = [_identity mechanisms];
     for (NSObject* mechanism in mechanisms) {
         if ([mechanism isKindOfClass:[FRAOathMechanism class]]) {
             return (FRAOathMechanism*) mechanism;

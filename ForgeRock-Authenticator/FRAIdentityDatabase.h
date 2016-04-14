@@ -16,8 +16,9 @@
 
 #import <Foundation/Foundation.h>
 @class FRAIdentity;
+@class FRAMechanism;
+@class FRANotification;
 @class FRAOathMechanism;
-
 
 /*!
  * Listens to a database for the data to change.
@@ -33,8 +34,11 @@
 
 
 /*!
- * Data Access Object which can store and load both Identities and Mechanisms.
- * Encapsulates the specific storage mechanism.
+ * Data Access Object which encapsulates the underlying storage
+ * mechanism and provides a simplified interface to the caller.
+ * 
+ * Responsible for manipulating Identity, Mechanism and Notification
+ * objects in the database.
  */
 @interface FRAIdentityDatabase : NSObject
 
@@ -59,13 +63,6 @@
 - (FRAOathMechanism*)mechanismWithId:(NSInteger)uid;
 
 /*!
- * Get the mechanisms associated with an owning identity.
- * @param owner The account to which the returned mechanisms were registered.
- * @return The mechanisms registered to the specified identity.
- */
-- (NSArray*)mechanismsWithOwner:(FRAIdentity*)owner;
-
-/*!
  * Gets the identity uniquely identified by the specified issuer and accountName.
  * @param issuer The issuer of the identity.
  * @param accountName The name of the identity.
@@ -86,22 +83,32 @@
 - (void)removeIdentityWithId:(NSInteger)uid;
 
 /*!
+ * Remove the provided Identity from the model.
+ */
+- (void)removeIdentity:(FRAIdentity*) identity;
+
+/*!
  * Add the mechanism to the database. If the owning identity is not yet stored, store that as well.
  * @param mechanism The mechanism to store.
  */
-- (void)addMechanism:(FRAOathMechanism*)mechanism;
+- (void)addMechanism:(FRAMechanism*)mechanism;
 
 /*!
  * Update the mechanism in the database. Does not create it if it does not exist.
  * @param mechanism The mechanism to update.
  */
-- (void)updateMechanism:(FRAOathMechanism*)mechanism;
+- (void)updateMechanism:(FRAMechanism*)mechanism;
 
 /*!
- * Delete the mechanism uniquely identified by the specified storage ID.
- * @param uid The storage ID of the mechanism to delete.
+ * Remove the mechanism in the database.
+ * @param mechanism The mechanism to update.
  */
-- (void)removeMechanismWithId:(NSInteger)uid;
+- (void)removeMechanism:(FRAMechanism*)mechanism;
+
+/*!
+ * Remove the notification from the database.
+ */
+- (void) removeNotification:(FRANotification*) notification;
 
 /*!
  * Add a listener to this connection.

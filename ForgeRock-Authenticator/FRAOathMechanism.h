@@ -16,27 +16,19 @@
  * Portions Copyright 2014 Nathaniel McCallum, Red Hat
  */
 
-#include "FRAIdentity.h"
-#include "FRAMechanism.h"
-#include "FRAOathCode.h"
+@class FRAIdentity;
+@class FRAOathCode;
+#import "FRAMechanism.h"
+#include <CommonCrypto/CommonHMAC.h>
 
 /*!
  * An OATH authentication mechanism capable of generating HMAC- and Time-based One-Time Passwords.
  */
-@interface FRAOathMechanism : NSObject <FRAMechanism>
-
-/*!
- * The storage ID of this OATH mechanism.
- */
-@property (nonatomic) NSInteger uid;
+@interface FRAOathMechanism : FRAMechanism
 /*!
  * The version number of this OATH mechanism.
  */
 @property (nonatomic, readonly) NSInteger version;
-/*!
- * The identity to which this OATH mechanism is registered.
- */
-@property (nonatomic, readonly) FRAIdentity* owner;
 /*!
  * The type of this OATH mechanism (totp or hotp).
  */
@@ -51,35 +43,17 @@
 @property (nonatomic, readonly) FRAOathCode* code;
 
 /*!
- * Initializer which parses an OATH URL to extract all configuration detail.
- *
- * Extracted parameters include:
- * - Token type (HOTP, TOTP)
- * - Issuer
- * - Account Name
- * - Secret Key
- * - Algorithm (SHA1, MD5 etc)
- * - Counter
- *
- * @param url is the entire URL to parse.
- * @return instantiated instance or nil if a problem occurred.
+ * Initialise an OATH Mechanism with all required field to describe either
+ * a HOTP or a TOTP mechanism.
+ * @param Type either "hotp" or "totp".
+ * @param Secret key bytes used to generate HMAC.
+ * @param The HMAC algorithm to use. Currently only MD5, SHA256, SHA512 and SHA1 are supported.
+ * @param The length of the key.
+ * @param TOTP based refresh period.
+ * @param HOTP hash counter.
  */
-- (instancetype)initWithURL:(NSURL*)url;
-/*!
- * Initializer which parses an OATH URL String to extract all configuration detail.
- *
- * Extracted parameters include:
- * - Token type (HOTP, TOTP)
- * - Issuer
- * - Account Name
- * - Secret Key
- * - Algorithm (SHA1, MD5 etc)
- * - Counter
- *
- * @param url is the entire URL to parse.
- * @return instantiated instance or nil if a problem occurred.
- */
-- (instancetype)initWithString:(NSString*)string;
+- (instancetype) initWithType:(NSString*)type usingSecretKey:(NSData*)secretKey andHMACAlgorithm:(CCHmacAlgorithm)algorithm withKeyLength:(NSUInteger)digits andEitherPeriod:(NSUInteger)period orCounter:(NSUInteger)counter;
+
 /*!
  * Generates the next code for this OATH mechanism.
  */

@@ -14,23 +14,37 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import <Typhoon/Typhoon.h>
+#import <Foundation/Foundation.h>
+#import "FRAMechanism.h"
+#import "FRANotification.h"
 
-@class FRAAccountsTableViewController;
-@class FRAAccountTableViewController;
-@class FRAIdentityDatabase;
-@class FRAMechanismFactory;
-@class FRAQRScanViewController;
 
-/*!
- * Typhoon dependency injection configuration.
- */
-@interface FRAApplicationAssembly : TyphoonAssembly
+@implementation FRAMechanism {
+    NSMutableArray* notificationList;
+}
 
-- (FRAIdentityDatabase *)identityDatabase;
-- (FRAAccountsTableViewController *)accountsTableViewController;
-- (FRAAccountTableViewController *)accountTableViewController;
-- (FRAMechanismFactory *)mechanismFactory;
-- (FRAQRScanViewController *)qrScanViewController;
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _uid = -1;
+        _parent = nil;
+        notificationList = [[NSMutableArray alloc]init];
+    }
+    return self;
+}
+
+- (NSArray*) notifications {
+    return [[NSArray alloc] initWithArray:notificationList];
+}
+
+- (void) addNotification:(FRANotification*) notification {
+    [notification setParent:self];
+    [notificationList addObject:notification];
+}
+
+- (void) removeNotification:(FRANotification*) notification {
+    [notificationList removeObject:notification];
+    [notification setParent:nil];
+}
 
 @end

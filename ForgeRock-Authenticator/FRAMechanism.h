@@ -16,24 +16,43 @@
 
 #import <Foundation/Foundation.h>
 @class FRAIdentity;
+@class FRANotification;
 
 /*!
- * A mechanism used for authentication.
- * Encapsulates the related settings, as well as an owning Identity
+ * A mechanism used for authentication within the Authenticator Application.
+ *
+ * Encapsulates the related settings, as well as an owning Identity.
  */
-@protocol FRAMechanism <NSObject>
+@interface FRAMechanism : NSObject
 
 /*!
- * The storage ID of this OATH mechanism.
+ * The storage ID of this mechanism.
  */
 @property (nonatomic) NSInteger uid;
 /*!
- * The version number of this OATH mechanism.
+ * The parent Identity object which this mechanism belongs to.
  */
-@property (nonatomic, readonly) NSInteger version;
+@property (nonatomic) FRAIdentity* parent;
+
 /*!
- * The identity to which this OATH mechanism is registered.
+ * A list of the current Notficiations that are assigned to this Mechanism.
  */
-@property (nonatomic, readonly) FRAIdentity* owner;
+@property (getter=notifications, nonatomic, readonly) NSArray<FRANotification*>* notifications;
+
+/*!
+ * When a new notification is received by the App, it will be appended to
+ * the owning Mechanism using this method.
+ *
+ * @param A notification to add to this Mechanism.
+ */
+- (void) addNotification:(FRANotification*) notification;
+
+/*!
+ * Once a Notficiation has been marked as deleted, it will be removed from 
+ * the Mechanism by this method.
+ *
+ * @param The noficiation to remove from the Mechanism.
+ */
+- (void) removeNotification:(FRANotification*) notification;
 
 @end

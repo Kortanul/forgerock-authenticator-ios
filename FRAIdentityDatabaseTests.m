@@ -17,6 +17,7 @@
 #import <XCTest/XCTest.h>
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
+#import "FRAMechanismFactory.h"
 #import "FRAOathMechanism.h"
 
 @interface FRAIdentityDatabaseTests : XCTestCase
@@ -28,12 +29,14 @@
 FRAIdentityDatabase* database;
 FRAIdentity* identity;
 FRAOathMechanism* mechanism;
+FRAMechanismFactory* factory;
 
 - (void)setUp {
     [super setUp];
     database = [[FRAIdentityDatabase alloc] init];
-    mechanism = [[FRAOathMechanism alloc] initWithString:@"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0"];
-    identity = mechanism.owner;
+    factory = [[FRAMechanismFactory alloc]init];
+    mechanism = (FRAOathMechanism*)[factory parseFromString:@"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0"];
+    identity = [mechanism parent];
 }
 
 - (void)tearDown {
@@ -83,32 +86,16 @@ FRAOathMechanism* mechanism;
     [database removeIdentityWithId:identity.uid];
     
     // Then
-    NSArray* foundMechanisms = [database mechanismsWithOwner:identity];
-    XCTAssertEqualObjects(foundMechanisms, @[]);
     NSArray* foundIdentities = [database identities];
     XCTAssertEqualObjects(foundIdentities, @[]);
 }
 
-- (void)testCanFindMechanismByOwner {
-    // Given
-    XCTAssertEqualObjects([database mechanismsWithOwner:identity], @[]);
-    
-    // When
-    [database addMechanism:mechanism];
-    
-    // Then
-    NSArray* foundMechanisms = [database mechanismsWithOwner:identity];
-    XCTAssertEqualObjects(foundMechanisms, @[mechanism]);
-}
-
 - (void)testCanFindMechanismById {
     // Given
-    XCTAssertEqualObjects([database mechanismsWithOwner:identity], @[]);
     [database addMechanism:mechanism];
-    XCTAssertEqual(mechanism.uid, 0);
     
     // When
-    FRAOathMechanism* foundMechanism = [database mechanismWithId:mechanism.uid];
+    FRAOathMechanism* foundMechanism = [database mechanismWithId:[mechanism uid]];
     
     // Then
     XCTAssertEqual(mechanism, foundMechanism);
@@ -119,28 +106,23 @@ FRAOathMechanism* mechanism;
     [database addMechanism:mechanism];
     
     // When
-    [database removeMechanismWithId:mechanism.uid];
+    [database removeMechanism:mechanism];
     
     // Then
-    NSArray* foundMechanisms = [database mechanismsWithOwner:identity];
+    NSArray* foundMechanisms = [identity mechanisms];
     XCTAssertEqualObjects(foundMechanisms, @[]);
-    NSArray* foundIdentities = [database identities];
-    XCTAssertEqualObjects(foundIdentities, @[]);
 }
 
-- (void)testCanUpdateMechanism {
+- (void) testRemoveLastMechanismAlsoRemovesIdenitity {
     // Given
     [database addMechanism:mechanism];
-    FRAOathMechanism* mechanismCopy = [[FRAOathMechanism alloc] initWithString:@"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0"];
-    mechanismCopy.uid = mechanism.uid;
     
     // When
-    [database updateMechanism:mechanismCopy];
-    FRAOathMechanism* foundMechanism = [database mechanismWithId:mechanism.uid];
+    [database removeMechanism:mechanism];
     
     // Then
-    XCTAssertNotEqual(mechanism, foundMechanism);
-    XCTAssertEqual(mechanismCopy, foundMechanism);
+    NSArray* foundIdentities = [database identities];
+    XCTAssertEqualObjects(foundIdentities, @[]);
 }
 
 // TODO: Add tests for listener using OCMock

@@ -14,23 +14,36 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import <Typhoon/Typhoon.h>
 
-@class FRAAccountsTableViewController;
-@class FRAAccountTableViewController;
-@class FRAIdentityDatabase;
-@class FRAMechanismFactory;
-@class FRAQRScanViewController;
+#import <Foundation/Foundation.h>
+#import "FRANotification.h"
 
 /*!
- * Typhoon dependency injection configuration.
+ * All notifications are expected to be able to transition from the initial state
+ * of pending, to the final state of approved or denied.
  */
-@interface FRAApplicationAssembly : TyphoonAssembly
+@implementation FRANotification : NSObject
 
-- (FRAIdentityDatabase *)identityDatabase;
-- (FRAAccountsTableViewController *)accountsTableViewController;
-- (FRAAccountTableViewController *)accountTableViewController;
-- (FRAMechanismFactory *)mechanismFactory;
-- (FRAQRScanViewController *)qrScanViewController;
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        _pending = YES;
+        _approved = NO;
+    }
+    return self;
+}
+
+- (void) approve {
+    _approved = YES;
+    _pending = NO;
+    // TODO: And call FRAIdentityDatabase to update Notification.
+}
+
+- (void) deny {
+    _approved = NO;
+    _pending = NO;
+    // TODO: And call FRAIdentityDatabase to update Notification.
+}
 
 @end

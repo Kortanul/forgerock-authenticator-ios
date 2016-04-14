@@ -14,8 +14,9 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import "FRAIdentityDatabase.h"
 #import "FRAIdentity.h"
+#import "FRAIdentityDatabase.h"
+#import "FRAMechanismFactory.h"
 #import "FRAOathMechanism.h"
 
 @interface FRAIdentityDatabase ()
@@ -25,6 +26,10 @@
 
 @end
 
+/*!
+ * Provides methods for persisting model objects to the database layer.
+ * Understands how to talk to the underlying SQLite database.
+ */
 @implementation FRAIdentityDatabase {
 
     NSMutableArray* identitiesList;
@@ -38,7 +43,7 @@
 - (instancetype)init {
     if (self = [super init]) {
         identitiesList = [[NSMutableArray alloc] init];
-        mechanismsList = [[NSMutableArray alloc] init];
+        mechanismsList = [[NSMutableArray alloc] init]; // TODO: Might be redundant
         listeners = [[NSMutableArray alloc] init];
         nextIdentityId = 0;
         nextMechanismId = 0;
@@ -47,7 +52,7 @@
 }
 
 - (NSArray*)identities {
-    return [identitiesList copy];
+    return [[NSArray alloc] initWithArray:identitiesList];
 }
 
 - (FRAOathMechanism*)mechanismWithId:(NSInteger)uid {
@@ -57,16 +62,6 @@
         }
     }
     return nil;
-}
-
-- (NSArray*)mechanismsWithOwner:(FRAIdentity*)owner {
-    NSMutableArray* results = [[NSMutableArray alloc] init];
-    for (FRAOathMechanism* mechanism in mechanismsList) {
-        if ([mechanism.owner.issuer isEqual:owner.issuer] && [mechanism.owner.accountName isEqual:owner.accountName]) {
-            [results addObject:mechanism];
-        }
-    }
-    return results;
 }
 
 - (FRAIdentity*)identityWithId:(NSInteger)uid {
@@ -87,6 +82,18 @@
     return nil;
 }
 
+#pragma mark --
+#pragma mark Idenitity Functions
+
+- (BOOL)isIdentityStored:(FRAIdentity*)identity {
+    for (FRAIdentity* identity in identitiesList) {
+        if ([identity uid] == [identity uid]) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
 - (void)addIdentity:(FRAIdentity*)identity {
     if ([self isIdentityStored:identity]) {
         // throw exception or update error parameter?
@@ -103,27 +110,31 @@
 - (void)removeIdentityWithId:(NSInteger)uid {
     FRAIdentity* identity = [self identityWithId:uid];
     if (identity) {
-        NSArray* mechanisms = [self mechanismsWithOwner:identity];
+        NSArray* mechanisms = [identity mechanisms];
         [mechanismsList removeObjectsInArray:mechanisms];
         [identitiesList removeObject:identity];
     }
 }
 
-
-- (BOOL)isIdentityStored:(FRAIdentity*)identity {
-    FRAIdentity* existing = [self identityWithIssuer:identity.issuer accountName:identity.accountName];
-    if (existing) {
-        return YES;
-    } else {
-        return NO;
+-(void) removeIdentity:(FRAIdentity *)identity {
+    // Remove all attached Mechanisms
+    for (FRAMechanism* mechanism in [identity mechanisms]) {
+        [self removeMechanism:mechanism];
     }
+    // Remove the identity from the top level list.
+    [identitiesList removeObject:identity];
+    [self onDatabaseChange];
 }
 
-- (void)addMechanism:(FRAOathMechanism*)mechanism {
-    if (![self isIdentityStored:mechanism.owner]) {
-        [self addIdentity:mechanism.owner];
+#pragma mark --
+#pragma mark Mechanism Functions
+
+- (void)addMechanism:(FRAMechanism*)mechanism {
+    FRAIdentity* identity = [mechanism parent];
+    if (![self isIdentityStored:identity]) {
+        [self addIdentity:identity];
     }
-    // TODO: Check for duplicate mechanism
+    
     [mechanismsList addObject:mechanism];
     if (mechanism.uid == -1) {
         mechanism.uid = nextMechanismId;
@@ -132,19 +143,40 @@
     [self onDatabaseChange];
 }
 
-- (void)updateMechanism:(FRAOathMechanism*)mechanism {
-    [self removeMechanismWithId:mechanism.uid];
-    [self addMechanism:mechanism];
+- (void)updateMechanism:(FRAMechanism*)mechanism {
+    if ([mechanism isKindOfClass:[FRAOathMechanism class]]) {
+        FRAOathMechanism* oathMechanism = (FRAOathMechanism *)mechanism;
+        // TODO: database save for mechanism.
+    } // else if mechanism is type of Push Mechanism
     [self onDatabaseChange];
 }
 
-- (void)removeMechanismWithId:(NSInteger)uid {
-    FRAOathMechanism* mechanism = [self mechanismWithId:uid];
-    [mechanismsList removeObject:mechanism];
-    NSArray* siblingMechanisms = [self mechanismsWithOwner:mechanism.owner];
-    if (siblingMechanisms.count == 0) {
-        [identitiesList removeObject:mechanism.owner];
+- (void)removeMechanism:(FRAMechanism*)mechanism {
+    // Remove reference from parent Identity.
+    FRAIdentity* identity = [mechanism parent];
+    [identity removeMechanism:mechanism];
+    
+    // Remove any Notifications on the Mechanism
+    for (FRANotification* notification in [mechanism notifications]) {
+        [self removeNotification:notification];
     }
+    
+    // Automatically remove Identity if it it no longer has any mechanisms.
+    if ([[identity mechanisms] count] == 0) {
+        [self removeIdentityWithId:[identity uid]];
+    }
+    
+    // Maintain Mechanisms list
+    [mechanismsList removeObject:mechanism];
+    
+    [self onDatabaseChange];
+}
+
+#pragma mark --
+#pragma mark Notification Functions
+
+- (void) removeNotification:(FRANotification*) notification {
+    
 }
 
 - (void)addListener:(id<FRADatabaseListener>)listener {

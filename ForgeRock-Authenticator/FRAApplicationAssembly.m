@@ -18,6 +18,7 @@
 #import "FRAAccountTableViewController.h"
 #import "FRAApplicationAssembly.h"
 #import "FRAIdentityDatabase.h"
+#import "FRAMechanismFactory.h"
 #import "FRAQRScanViewController.h"
 
 @implementation FRAApplicationAssembly
@@ -36,6 +37,13 @@
 
 - (FRAQRScanViewController *)qrScanViewController {
     return [TyphoonDefinition withClass:[FRAQRScanViewController class] configuration:^(TyphoonDefinition *definition) {
+        [definition injectProperty:@selector(database) with:[self identityDatabase]];
+        [definition injectProperty:@selector(mechanismFactory) with:[self mechanismFactory]];
+    }];
+}
+
+- (FRAMechanismFactory *)mechanismFactory {
+    return [TyphoonDefinition withClass:[FRAMechanismFactory class] configuration:^(TyphoonDefinition *definition) {
         [definition injectProperty:@selector(database) with:[self identityDatabase]];
     }];
 }
