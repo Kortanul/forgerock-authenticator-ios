@@ -15,25 +15,19 @@
  */
 
 #import "FRAAccountsTableViewController.h"
-#import "FRAAccountTableViewController.h"
 #import "FRAAccountTableViewCell.h"
-#import "FRAIdentityDatabase.h"
+#import "FRAAccountTableViewController.h"
+#import "FRABlockAlertView.h"
 #import "FRAIdentity.h"
+#import "FRAIdentityDatabase.h"
 
-@interface FRAAccountsTableViewController ()
+@implementation FRAAccountsTableViewController;
 
-- (FRAIdentity *)identityForCell:(FRAAccountTableViewCell*)cell;
-
-@end
-
-
-@implementation FRAAccountsTableViewController {
-    FRAIdentityDatabase* database;
-}
+#pragma mark -
+#pragma mark UIViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    database = [FRAIdentityDatabase singleton];
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
@@ -47,10 +41,12 @@
         FRAAccountTableViewController* controller = (FRAAccountTableViewController*)segue.destinationViewController;
         NSArray* selection = [self.tableView indexPathsForSelectedRows];
         NSIndexPath* indexPath = [selection objectAtIndex:0];
-        FRAAccountTableViewCell* cell = (FRAAccountTableViewCell*)[self.tableView cellForRowAtIndexPath:indexPath];
-        controller.identity = [self identityForCell:cell];
+        controller.identity = [self identityAtIndexPath:indexPath];
     }
 }
+
+#pragma mark -
+#pragma mark UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // Present accounts as a flat list not broken down into sections
@@ -58,14 +54,13 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [database identities].count;
+    return [_database identities].count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"AccountCell";
     FRAAccountTableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    FRAIdentity* identity = (FRAIdentity*) [[database identities] objectAtIndex:indexPath.row];
-    [cell updateForModelObject:identity];
+    [cell updateForModelObject:[self identityAtIndexPath:indexPath]];
     return cell;
 }
 
@@ -73,23 +68,35 @@
     return YES;
 }
 
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+
+        FRAIdentity* identity = [self identityAtIndexPath:indexPath];
+        FRABlockAlertView* alertView = [[FRABlockAlertView alloc]
+                                        initWithTitle:@"Removing this account will NOT turn off 2-step verification"
+                                        message:[NSString stringWithFormat:@"This may prevent you from logging into your %@ account.", identity.issuer]
+                                        delegate:nil
+                                        cancelButtonTitle:@"Cancel"
+                                        otherButtonTitles:@"Delete", nil];
+        alertView.callback = ^(NSInteger offset) {
+            if (offset == 0) {
+                [_database removeIdentityWithId:identity.uid];
+                [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            }
+        };
+        [alertView show];
+    }
+}
+
+#pragma mark -
+#pragma mark UITableViewDelegate
+
 - (UITableViewCellEditingStyle)tableView:(UITableView *)aTableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
     // Only offer delete option when in edit mode (disables swipe to delete)
     if (self.tableView.editing) {
         return UITableViewCellEditingStyleDelete;
     } else {
         return UITableViewCellEditingStyleNone;
-    }
-}
-
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        FRAAccountTableViewCell* cell = (FRAAccountTableViewCell*)[tableView cellForRowAtIndexPath:indexPath];
-        FRAIdentity* identity = [self identityForCell:cell];
-        if (identity) {
-            [database removeIdentityWithId:identity.uid];
-            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-        }
     }
 }
 
@@ -103,21 +110,18 @@
     }
 }
 
--(void)viewDidLayoutSubviews {
-    // make table cell separator lines full width (normally, they leave a ~10% gap at the left edge)
-    if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
-        [self.tableView setSeparatorInset:UIEdgeInsetsZero];
-    }
-    if ([self.tableView respondsToSelector:@selector(setLayoutMargins:)]) {
-        [self.tableView setLayoutMargins:UIEdgeInsetsZero];
-    }
-}
+#pragma mark -
+#pragma mark FRAAccountsTableViewController (private)
 
-- (FRAIdentity *)identityForCell:(FRAAccountTableViewCell*)cell {
-    if (cell == nil) {
-        return nil;
-    }
-    return [database identityWithId:cell.identityId];
+- (FRAIdentity *)identityAtIndexPath:(NSIndexPath *)indexPath {
+    NSArray *sortedIdentities = [[_database identities] sortedArrayUsingComparator:^NSComparisonResult(FRAIdentity* first, FRAIdentity* second) {
+        NSComparisonResult comparisonResult = [first.issuer caseInsensitiveCompare:second.issuer];
+        if (comparisonResult == NSOrderedSame) {
+            comparisonResult = [first.accountName caseInsensitiveCompare:second.accountName];
+        }
+        return comparisonResult;
+    }];
+    return [sortedIdentities objectAtIndex:indexPath.row];
 }
 
 @end

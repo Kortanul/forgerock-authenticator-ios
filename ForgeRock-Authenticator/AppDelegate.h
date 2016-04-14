@@ -20,4 +20,6 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
+- (id)initialFactory;
+
 @end

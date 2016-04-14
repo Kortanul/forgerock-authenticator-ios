@@ -14,23 +14,26 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import "FRATokenCodeViewController.h"
-#import "FRAIdentityDatabase.h"
+#import "FRAOathMechanismTableViewController.h"
+#import "FRABlockActionSheet.h"
+#import "FRAOathMechanismTableViewCell.h"
 
-@implementation FRATokenCodeViewController {
-    FRAIdentityDatabase* database;
+@implementation FRAOathMechanismTableViewController {
     NSTimer* timer;
 }
 
-+ (instancetype)controllerForView:(id<FRATokenCodeView>)view withMechanism:(FRAOathMechanism*)mechanism {
-    return [[FRATokenCodeViewController alloc] initForView:view withMechanism:mechanism];
+#pragma mark -
+#pragma mark FRAOathMechanismTableViewController
+
++ (instancetype)controllerForView:(FRAOathMechanismTableViewCell*)view withMechanism:(FRAOathMechanism*)mechanism withDatabase:(FRAIdentityDatabase*)database {
+    return [[FRAOathMechanismTableViewController alloc] initForView:view withMechanism:mechanism withDatabase:database];
 }
 
-- (instancetype)initForView:(id<FRATokenCodeView>)view withMechanism:(FRAOathMechanism*)mechanism {
+- (instancetype)initForView:(FRAOathMechanismTableViewCell*)view withMechanism:(FRAOathMechanism*)mechanism withDatabase:(FRAIdentityDatabase*)database {
     if (self = [super init]) {
         _view = view;
         _mechanism = mechanism;
-        database = [FRAIdentityDatabase singleton];
+        _database = database;
         [self initView];
     }
     return self;
@@ -127,11 +130,22 @@
             // once the first code has been generated, the refresh button must be used
             [self generateNextCode];
         } else {
-            // otherwise, if a code has already been displayed, then copy it to the clipboard
-            NSString* codeValue = _mechanism.code.value;
-            if (codeValue != nil) {
-                [[UIPasteboard generalPasteboard] setString:codeValue];
-            }
+            // otherwise, if a code has already been displayed, then offer to copy it to the clipboard
+            FRABlockActionSheet* actionSheet = [[FRABlockActionSheet alloc]
+                                                initWithTitle:nil
+                                                delegate:nil
+                                                cancelButtonTitle:@"Cancel"
+                                                destructiveButtonTitle:nil
+                                                otherButtonTitles:@"Copy", nil];
+            actionSheet.callback = ^(NSInteger offset) {
+                if (offset == 1) {
+                    NSString* codeValue = _mechanism.code.value;
+                    if (codeValue != nil) {
+                        [[UIPasteboard generalPasteboard] setString:codeValue];
+                    }
+                }
+            };
+            [actionSheet showFromRect:self.view.frame inView:self.view animated:YES];
         }
     }
 }
@@ -139,7 +153,7 @@
 - (void)generateNextCode {
     if (!self.isEditing) {
         [_mechanism generateNextCode];
-        [database updateMechanism:_mechanism];
+        [_database updateMechanism:_mechanism];
         [self updateCodeAndProgress];
     }
 }

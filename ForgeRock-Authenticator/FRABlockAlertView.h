@@ -12,14 +12,23 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2016 ForgeRock AS.
+ *
+ * Portions Copyright 2014 Nathaniel McCallum, Red Hat
  */
 
 #import <UIKit/UIKit.h>
-#import "FRATokensTableViewCell.h"
 
 /*!
- * Controller for Tokens tab's table-view.
+ * Subclass of UIAlertView that accepts a block for handling button clicks rather than requiring a UIAlertViewDelegate.
+ *
+ * When the project's minimum supported version of iOS moves up to 8, UIAlertController can be used in favour of this class.
  */
-@interface FRATokensTableViewController : UITableViewController
+@interface FRABlockAlertView : UIAlertView
+
+/*!
+ * Block that is invoked when the UIAlertViewDelegate alertView:clickedButtonAtIndex: method is called.
+ * @param offset The index of the button that was clicked.
+ */
+@property (nonatomic, copy) void (^callback)(NSInteger offset);
 
 @end

@@ -15,13 +15,20 @@
  */
 
 #import <UIKit/UIKit.h>
+#import "M13BadgeView.h"
 #import "FRAIdentity.h"
+#import "FRAIdentityDatabase.h"
+#import "FRAOathMechanismTableViewCell.h"
 
 /*!
  * Controller for the table-view showing an individual Account.
  */
 @interface FRAAccountTableViewController : UITableViewController
 
+/*!
+ * The database. Exposed to allow (setter) dependency injection.
+ */
+@property (nonatomic, strong) FRAIdentityDatabase* database;
 /*!
  * The identity displayed by this view controller.
  */
@@ -35,12 +42,16 @@
  */
 @property (weak, nonatomic) IBOutlet UILabel *issuer;
 /*!
- * The UILabel in which the accoutn name will be displayed.
+ * The UILabel in which the account name will be displayed.
  */
 @property (weak, nonatomic) IBOutlet UILabel *accountName;
 /*!
  * The static table-view cell in which OATH tokens are presented.
  */
-@property (weak, nonatomic) IBOutlet UITableViewCell *tokenTableViewCell;
+@property (weak, nonatomic) IBOutlet FRAOathMechanismTableViewCell *tokenTableViewCell;
+/*!
+ * The M13BadgeView in which the pending notifications count is displayed.
+ */
+@property (weak, nonatomic) IBOutlet M13BadgeView *notificationsBadge;
 
 @end

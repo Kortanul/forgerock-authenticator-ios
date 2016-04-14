@@ -20,9 +20,10 @@
 # use_frameworks!
 
 target 'ForgeRock' do
-
+    pod 'M13BadgeView', '~> 1.0.4'
+    pod 'Typhoon'
 end
 
 target 'ForgeRockTests' do
-
+    pod 'OCMock'
 end

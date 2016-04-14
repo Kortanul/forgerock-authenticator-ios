@@ -17,21 +17,17 @@
 #import <UIKit/UIKit.h>
 #import "FRACircleProgressView.h"
 #import "FRAOathMechanism.h"
-#import "FRATokenCodeViewController.h"
+#import "FRAOathMechanismTableViewController.h"
 
 /*!
  * Custom UITableViewCell for Account screen token.
  */
-@interface FRAAccountTokenTableViewCell : UITableViewCell<FRATokenCodeView>
+@interface FRAOathMechanismTableViewCell : UITableViewCell
 
-/*!
- * The mechanism shown by this cell.
- */
-@property (weak, nonatomic) FRAOathMechanism* mechanism;
 /*!
  * The delegate that acts as controller for this cell's UI elements relating to the OATH code value.
  */
-@property (strong, nonatomic) FRATokenCodeViewController* delegate;
+@property (strong, nonatomic) FRAOathMechanismTableViewController* delegate;
 
 /*!
  * The UILabel in which the OTP code will be displayed.

@@ -16,16 +16,13 @@
 
 #import <UIKit/UIKit.h>
 #import "FRAIdentity.h"
+#import "M13BadgeView.h"
 
 /*!
- * Custom UITableViewCell for Accounts tab UITableView.
+ * Custom UITableViewCell for Accounts UITableView.
  */
 @interface FRAAccountTableViewCell : UITableViewCell
 
-/*!
- * The storage ID of the identity shown by this cell.
- */
-@property (nonatomic) NSInteger identityId;
 /*!
  * The UIImageView in which the issuer's icon will be displayed.
  */
@@ -38,6 +35,19 @@
  * The UILabel in which the accoutn name will be displayed.
  */
 @property (weak, nonatomic) IBOutlet UILabel *accountName;
+/*!
+ * The UIImageView in which the first registered mechanism's icon will be displayed.
+ */
+@property (weak, nonatomic) IBOutlet UIImageView *firstMechanismIcon;
+/*!
+ * The UIImageView in which the second registered mechanism's icon will be displayed.
+ */
+@property (weak, nonatomic) IBOutlet UIImageView *secondMechanismIcon;
+/*!
+ * The M13BadgeView in which the pending notifications count is displayed.
+ * This view is added as a superscript view to whichever mechanism icon is displaying the notifications icon.
+ */
+@property (nonatomic, retain) M13BadgeView *notificationsBadge;
 
 /*!
  * Updates UI items to display attributes of the provided model.

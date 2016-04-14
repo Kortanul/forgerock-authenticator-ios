@@ -15,45 +15,46 @@
  */
 
 #import "FRAAccountTableViewController.h"
+#import "FRABlockAlertView.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAOathMechanism.h"
-#import "FRAAccountSettingsTableViewController.h"
-#import "FRAAccountTokenTableViewCell.h"
-#import "FRATokenCodeViewController.h"
+#import "FRAOathMechanismTableViewCell.h"
+#import "FRAOathMechanismTableViewController.h"
 
-//@interface FRAAccountTableViewController ()
-//
-//- (BOOL)hasRegisteredOathMechanism;
-//
-//@end
+@implementation FRAAccountTableViewController
 
-@implementation FRAAccountTableViewController {
-    FRAIdentityDatabase* database;
-}
+#pragma mark -
+#pragma mark UIViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    database = [FRAIdentityDatabase singleton];
+    self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    
+    // Show issuer logo in circle
+    _image.layer.cornerRadius = _image.frame.size.width / 2;
+    _image.clipsToBounds = YES;
+    
+    // Bind identity model to UI
     //  _image = ... // TODO: Use URLImageView
     _issuer.text = _identity.issuer;
     _accountName.text = _identity.accountName;
+    
+    // Bind controller to OATH mechanism table view cell defined in storyboard - let controller bind model
+    // TODO: Update OATH controller so that it can handle nil
+    if ([self hasRegisteredOathMechanism]) {
+        _tokenTableViewCell.delegate = [FRAOathMechanismTableViewController controllerForView:_tokenTableViewCell withMechanism:[self oathMechanism] withDatabase:_database];
+    }
+
+    // TODO: Bind controller to push mechanism table view cell defined in storyboard - let controller bind model
+    // Prevent M13BadgeView from attempting to position itself, position should be set by storyboard constraints
+    self.notificationsBadge.verticalAlignment = M13BadgeViewVerticalAlignmentNone;
+    self.notificationsBadge.horizontalAlignment = M13BadgeViewHorizontalAlignmentNone;
+    self.notificationsBadge.text = @"1";
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:@"showAccountSettingsSegue"]) {
-        FRAAccountSettingsTableViewController* controller = (FRAAccountSettingsTableViewController*)segue.destinationViewController;
-        controller.identity = _identity;
-    }
-}
-
--(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    // make table cell separator lines full width (normally, they leave a ~10% gap at the left edge)
-    if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
-        [cell setSeparatorInset:UIEdgeInsetsZero];
-    }
-    if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
-        [cell setLayoutMargins:UIEdgeInsetsZero];
-    }
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.tableView reloadData];
 }
 
 -(void)viewDidLayoutSubviews {
@@ -66,58 +67,114 @@
     }
 }
 
+#pragma mark -
+#pragma mark UITableViewDelegate
+
+- (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath {
+    // only indent mechanisms when in edit mode as only mechanisms can be deleted
+    return [self hasMechanismAtIndexPath:indexPath];
+}
+
+-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    // make table cell separator lines full width (normally, they leave a ~10% gap at the left edge)
+    if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
+        [cell setSeparatorInset:UIEdgeInsetsZero];
+    }
+    if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
+        [cell setLayoutMargins:UIEdgeInsetsZero];
+    }
+}
+
 - (void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
-    if ([self hasTokenMechanismAtIndexPath:indexPath]) {
+    // TODO: Lookup FRAMechanismTableCellController for indexPath
+    //       If a mechanism controller exists, delegate to method with same signature
+    if ([self hasOathMechanismAtIndexPath:indexPath]) {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
-        FRAAccountTokenTableViewCell* cell = (FRAAccountTokenTableViewCell*) [super tableView:tableView cellForRowAtIndexPath:indexPath];
-        [cell.delegate didTouchUpInside];
+        [_tokenTableViewCell.delegate didTouchUpInside];
     }
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ([self hasTokenMechanismAtIndexPath:indexPath]) {
-        FRAAccountTokenTableViewCell* cell = (FRAAccountTokenTableViewCell*) [super tableView:tableView cellForRowAtIndexPath:indexPath];
-        cell.mechanism = [self oathMechanism];
-        cell.delegate = [FRATokenCodeViewController controllerForView:cell withMechanism:cell.mechanism];
-        return cell;
+- (UITableViewCellEditingStyle)tableView:(UITableView *)aTableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+    // Only offer delete option on mechanism rows when in edit mode (disables swipe to delete)
+    if (self.tableView.editing && [self hasMechanismAtIndexPath:indexPath]) {
+        return UITableViewCellEditingStyleDelete;
     } else {
-        UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
-        if (indexPath.section == 0 && indexPath.row == 0) {
-            // prevent "selection" of account header row
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        } else if (indexPath.section == 1 && indexPath.row == 0) {
-            // prevent "selection" of grey spacer row
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        }
-        return cell;
+        return UITableViewCellEditingStyleNone;
     }
-}
-
-- (BOOL)hasTokenMechanismAtIndexPath:(NSIndexPath*)indexPath {
-    return indexPath.section == 0 && indexPath.row == 1;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell* cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
-    if (cell == self.tokenTableViewCell && ![self hasRegisteredOathMechanism]) {
+    // TODO: Lookup FRAMechanismTableCellController for indexPath
+    //       If a mechanism controller exists but its mechanism is nil, return 0 for height
+    if ([self hasOathMechanismAtIndexPath:indexPath] && ![self hasRegisteredOathMechanism]) {
         return 0; // hide the cell if OATH mechanism not registered
     } else {
         return [super tableView:tableView heightForRowAtIndexPath:indexPath];
     }
 }
 
-- (BOOL)hasRegisteredOathMechanism {
-    NSArray* mechanisms = [database mechanismsWithOwner:_identity];
-    for (NSObject* mechanism in mechanisms) {
-        if ([mechanism isKindOfClass:[FRAOathMechanism class]]) {
-            return YES;
+#pragma mark -
+#pragma mark UITableViewDataSource
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle != UITableViewCellEditingStyleDelete) {
+        return;
+    }
+    // TODO: Lookup FRAMechanismTableCellController for indexPath
+    //       If a mechanism controller exists perform deletion logic but remain agnostic regarding specific type of mechanism
+    if ([self hasOathMechanismAtIndexPath:indexPath]) {
+        FRAOathMechanism* mechanism = _tokenTableViewCell.delegate.mechanism;
+        if (mechanism) {
+            FRABlockAlertView* alertView = [[FRABlockAlertView alloc]
+                                            initWithTitle:@"Removing this will NOT turn off 2-step verification"
+                                            message:[NSString stringWithFormat:@"This may prevent you from logging into your %@ account.", self.identity.issuer]
+                                            delegate:nil
+                                            cancelButtonTitle:@"Cancel"
+                                            otherButtonTitles:@"Delete", nil];
+            alertView.callback = ^(NSInteger offset) {
+                if (offset == 0) {
+                    // Remove the mechanism
+                    [_database removeMechanismWithId:mechanism.uid];
+                    // Remove the mechanism cell from the UI
+                    [self.tableView beginUpdates];
+                    _tokenTableViewCell.hidden = YES;
+                    [self.tableView endUpdates];
+                    [tableView reloadData];
+                    // TODO: Only set _tokenTableViewCell.delegate.mechanism = nil but keep controller (delegate)
+                    _tokenTableViewCell.delegate.view = nil;
+                    _tokenTableViewCell.delegate = nil;
+                    // Navigate back to the accounts screen if the account was deleted
+                    if (![_database identityWithId:_identity.uid]) {
+                        [self.navigationController popViewControllerAnimated:YES];
+                    }
+                }
+            };
+            [alertView show];
         }
     }
-    return NO;
+}
+
+#pragma mark -
+#pragma mark FRAAccountTableViewController (private)
+
+- (BOOL)hasOathMechanismAtIndexPath:(NSIndexPath*)indexPath {
+    return indexPath.row == 1;
+}
+
+- (BOOL)hasNotificationsMechanismAtIndexPath:(NSIndexPath*)indexPath {
+    return indexPath.row == 2;
+}
+
+- (BOOL)hasMechanismAtIndexPath:(NSIndexPath*)indexPath {
+    return [self hasOathMechanismAtIndexPath:indexPath] || [self hasNotificationsMechanismAtIndexPath:indexPath];
+}
+
+- (BOOL)hasRegisteredOathMechanism {
+    return [self oathMechanism] != nil;
 }
 
 - (FRAOathMechanism*)oathMechanism {
-    NSArray* mechanisms = [database mechanismsWithOwner:_identity];
+    NSArray* mechanisms = [_database mechanismsWithOwner:_identity];
     for (NSObject* mechanism in mechanisms) {
         if ([mechanism isKindOfClass:[FRAOathMechanism class]]) {
             return (FRAOathMechanism*) mechanism;

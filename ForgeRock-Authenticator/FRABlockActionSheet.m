@@ -12,21 +12,33 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2016 ForgeRock AS.
+ *
+ * Portions Copyright 2014 Nathaniel McCallum, Red Hat
  */
 
-#import <UIKit/UIKit.h>
-#import "FRAIdentity.h"
+#import "FRABlockActionSheet.h"
 
-/*!
- * Controller for Account Settings table-view.
- */
-@interface FRAAccountSettingsTableViewController : UITableViewController
+@interface FRABlockActionSheet () <UIActionSheetDelegate>
 
-/*!
- * The identity displayed by this view controller.
- */
-@property (nonatomic) FRAIdentity* identity;
+@end
 
-- (IBAction)deleteAccountPressed:(id)sender;
+@implementation FRABlockActionSheet
+
+#pragma mark -
+#pragma mark UIActionSheet
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    self.callback(self.numberOfButtons - 1 - buttonIndex);
+}
+
+#pragma mark -
+#pragma mark FRABlockActionSheet
+
+- (void)setCallback:(void (^)(NSInteger))callback {
+    _callback = callback;
+    if (self.delegate == nil) {
+        self.delegate = self;
+    }
+}
 
 @end

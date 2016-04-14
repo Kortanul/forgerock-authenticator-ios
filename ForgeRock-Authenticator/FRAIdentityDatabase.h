@@ -39,14 +39,6 @@
 @interface FRAIdentityDatabase : NSObject
 
 /*!
- * Accessor for singleton.
- *
- * This is a temporary solution that should be fixed when setting up the skeleton screens and segues;
- * the correct solution for making the database accessible to all objects that need it is dependency injection.
- */
-+ (instancetype)singleton;
-
-/*!
  * Gets all of the identities which are stored.
  * @return The list of identities.
  */

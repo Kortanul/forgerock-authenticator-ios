@@ -16,3 +16,4 @@ DerivedData
 *.xcuserstate
 
 ForgeRock.xcodeproj/project.xcworkspace/
+Pods/

@@ -1,0 +1,18 @@
+PODS:
+  - M13BadgeView (1.0.4)
+  - OCMock (3.3)
+  - Typhoon (3.4.5):
+    - Typhoon/no-arc (= 3.4.5)
+  - Typhoon/no-arc (3.4.5)
+
+DEPENDENCIES:
+  - M13BadgeView (~> 1.0.4)
+  - OCMock
+  - Typhoon
+
+SPEC CHECKSUMS:
+  M13BadgeView: 700dd0714fdc837c0cf1c8c004454963ec22441f
+  OCMock: d68685bde31f69cb61d518dcb39269080c78b5ed
+  Typhoon: 200100687af3233ec5ed019064df3c9ffe350475
+
+COCOAPODS: 0.39.0

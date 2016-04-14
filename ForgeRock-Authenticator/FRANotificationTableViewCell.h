@@ -28,13 +28,9 @@
  */
 @property (weak, nonatomic) IBOutlet UIImageView *image;
 /*!
- * The UILabel in which the issuer's name will be displayed.
+ * The UILabel in which the notification status will be displayed.
  */
-@property (weak, nonatomic) IBOutlet UILabel *issuer;
-/*!
- * The UILabel in which the notification summary will be displayed.
- */
-@property (weak, nonatomic) IBOutlet UILabel *shortDescription;
+@property (weak, nonatomic) IBOutlet UILabel *status;
 /*!
  * The UILabel in which the notification time will be displayed.
  */

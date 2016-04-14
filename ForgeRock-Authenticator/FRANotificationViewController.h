@@ -25,6 +25,14 @@
  * The UISlider used to authorize the requested action.
  */
 @property (weak, nonatomic) IBOutlet UISlider *authorizeSlider;
+/*!
+ * The UIButton used to deny the requested action.
+ */
+@property (weak, nonatomic) IBOutlet UIButton *denyButton;
+/*!
+ * The UIImageView in which the issuer's icon will be displayed.
+ */
+@property (weak, nonatomic) IBOutlet UIImageView *image;
 
 /*!
  * The callback used to permit the requested authorization requested.

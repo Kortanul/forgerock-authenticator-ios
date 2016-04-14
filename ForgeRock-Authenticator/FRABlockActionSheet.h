@@ -12,22 +12,23 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2016 ForgeRock AS.
+ *
+ * Portions Copyright 2014 Nathaniel McCallum, Red Hat
  */
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
 /*!
- * Custom UITableViewCell for Account Setting UITableView.
+ * Subclass of UIActionSheet that accepts a block for handling button clicks rather than requiring a UIActionSheetDelegate.
+ *
+ * When the project's minimum supported version of iOS moves up to 8, UIAlertController can be used in favour of this class.
  */
-@interface FRAAccountSettingTableViewCell : UITableViewCell
+@interface FRABlockActionSheet : UIActionSheet
 
 /*!
- * The storage ID of the mechanism shown by this cell.
+ * Block that is invoked when the UIActionSheetDelegate actionSheet:clickedButtonAtIndex: method is called.
+ * @param offset The index of the button that was clicked.
  */
-@property (nonatomic) NSInteger mechanismId;
-/*!
- * The UILabel in which the account mechanism's name will be displayed.
- */
-@property (weak, nonatomic) IBOutlet UILabel *title;
+@property (nonatomic, copy) void (^callback)(NSInteger offset);
 
 @end

@@ -16,9 +16,16 @@
 
 #import <UIKit/UIKit.h>
 
+@class FRAIdentityDatabase;
+
 /*!
- * Controller for Accounts tab's table-view.
+ * Controller for Accounts table-view.
  */
 @interface FRAAccountsTableViewController : UITableViewController
+
+/*!
+ * The database. Exposed to allow (setter) dependency injection.
+ */
+@property (nonatomic, strong) FRAIdentityDatabase* database;
 
 @end

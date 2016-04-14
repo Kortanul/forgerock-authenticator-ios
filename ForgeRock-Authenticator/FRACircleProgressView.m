@@ -20,6 +20,9 @@
 
 @implementation FRACircleProgressView
 
+#pragma mark -
+#pragma mark UIView
+
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self == nil) {
@@ -29,6 +32,9 @@
     self.backgroundColor = [UIColor clearColor];
     return self;
 }
+
+#pragma mark -
+#pragma mark NSCoding
 
 - (instancetype)initWithCoder:(NSCoder*)aDecoder {
     self = [super initWithCoder:aDecoder];
@@ -40,10 +46,8 @@
     return self;
 }
 
-- (void)setProgress:(float)progress {
-    _progress = progress;
-    [self setNeedsDisplay];
-}
+#pragma mark -
+#pragma mark UIView
 
 - (void)drawRect:(CGRect)xxx {
     CGFloat progress = self.progress;
@@ -53,7 +57,7 @@
 
     UIColor* lightGrey = [UIColor colorWithRed:238.0/255.0 green:238.0/255.0 blue:238.0/255.0 alpha:1.0];
     
-    // draw progress in sea green or dashboard red
+    // draw progress using specified progressColor
     UIBezierPath* progressPath = [UIBezierPath bezierPathWithArcCenter:center radius:radius startAngle:-M_PI_2 endAngle:radians-M_PI_2 clockwise:YES];
     [self.progressColor setStroke];
     [progressPath setLineWidth:4.0];
@@ -64,6 +68,14 @@
     [lightGrey setStroke];
     [fullCirclePath setLineWidth:4.0];
     [fullCirclePath stroke];
+}
+
+#pragma mark -
+#pragma mark FRACircleProgressView (public)
+
+- (void)setProgress:(float)progress {
+    _progress = progress;
+    [self setNeedsDisplay];
 }
 
 @end

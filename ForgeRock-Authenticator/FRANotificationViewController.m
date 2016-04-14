@@ -18,6 +18,21 @@
 
 @implementation FRANotificationViewController
 
+#pragma mark -
+#pragma mark UIViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    //  _image = ... // TODO: Use URLImageView
+    // TODO: Override thumbRectForBounds:trackRect:value: in custom UISlider subclass to increase touch area of "thumb"
+    [_authorizeSlider setThumbImage:[UIImage imageNamed:@"OffSwitchIcon"] forState:UIControlStateNormal];
+    _image.layer.cornerRadius = _image.frame.size.width / 2;
+    _image.clipsToBounds = YES;
+}
+
+#pragma mark -
+#pragma mark FRANotificationViewController
+
 - (IBAction)authorize:(id)sender {
     NSLog(@"Permit requested action");
     [self dismissViewControllerAnimated:YES completion:nil];

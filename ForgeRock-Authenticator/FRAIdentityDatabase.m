@@ -35,21 +35,6 @@
 
 }
 
-static FRAIdentityDatabase* singleton = nil;
-
-+ (instancetype)singleton {
-    @synchronized(self) {
-        if (singleton == nil) {
-            singleton = [[FRAIdentityDatabase alloc] init];
-            
-            FRAOathMechanism* mechanism = [[FRAOathMechanism alloc] initWithString:@"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0"];
-            [singleton addMechanism:mechanism];
-
-        }
-    }
-    return singleton;
-}
-
 - (instancetype)init {
     if (self = [super init]) {
         identitiesList = [[NSMutableArray alloc] init];

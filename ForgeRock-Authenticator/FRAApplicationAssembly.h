@@ -14,19 +14,21 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import "FRATokensTableViewCell.h"
+#import <Typhoon/Typhoon.h>
 
-@implementation FRATokensTableViewCell
+@class FRAAccountsTableViewController;
+@class FRAAccountTableViewController;
+@class FRAIdentityDatabase;
+@class FRAQRScanViewController;
 
-- (void)setMechanism:(FRAOathMechanism *)mechanism {
-    _mechanism = mechanism;
-    _issuer.text = mechanism.owner.issuer;
-    _accountName.text = mechanism.owner.accountName;
-}
+/*!
+ * Typhoon dependency injection configuration.
+ */
+@interface FRAApplicationAssembly : TyphoonAssembly
 
-- (IBAction)generateNextCode:(id)sender {
-    [self.delegate generateNextCode];
-}
+- (FRAIdentityDatabase *)identityDatabase;
+- (FRAAccountsTableViewController *)accountsTableViewController;
+- (FRAAccountTableViewController *)accountTableViewController;
+- (FRAQRScanViewController *)qrScanViewController;
 
 @end
-

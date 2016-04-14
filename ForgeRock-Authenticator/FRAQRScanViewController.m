@@ -17,13 +17,12 @@
  */
 
 #import "FRAQRScanViewController.h"
-#import "FRAIdentityDatabase.h"
 #import "FRAOathMechanism.h"
 
-@interface FRAQRScanViewController ()
-@end
-
 @implementation FRAQRScanViewController
+
+#pragma mark -
+#pragma mark UIViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -46,10 +45,6 @@
     [self.session startRunning];
 }
 
--(BOOL)hidesBottomBarWhenPushed {
-    return YES;
-}
-
 - (void)viewDidAppear:(BOOL)animated {
     /* NOTE: We start output processing in viewDidAppear() to avoid a
      * race condition when the QR code is scanned before the view appears. */
@@ -59,6 +54,16 @@
     [output setMetadataObjectTypes:@[AVMetadataObjectTypeQRCode]];
 }
 
+#pragma mark -
+#pragma mark UINavigationController
+
+-(BOOL)hidesBottomBarWhenPushed {
+    return YES;
+}
+
+#pragma mark -
+#pragma mark AVCaptureOutput
+
 - (void)captureOutput:(AVCaptureOutput*)captureOutput didOutputMetadataObjects:(NSArray*)metadataObjects fromConnection:(AVCaptureConnection*) connection {
     for (AVMetadataObject *metadata in metadataObjects) {
         if ([metadata.type isEqualToString:AVMetadataObjectTypeQRCode]) {
@@ -66,10 +71,11 @@
             if (qrcode == nil) {
                 continue;
             }
+            NSLog(@"Read QR URL: %@", qrcode);
 
             FRAOathMechanism* mechanism = [[FRAOathMechanism alloc] initWithString:qrcode];
             if (mechanism != nil) {
-                [[FRAIdentityDatabase singleton] addMechanism:mechanism];
+                [_database addMechanism:mechanism];
             }
             [self.session stopRunning];
             if (self.popover == nil) {

@@ -18,12 +18,17 @@
 
 @import AVFoundation;
 #import <UIKit/UIKit.h>
+#import "FRAIdentityDatabase.h"
 
 /*!
  * MVC Controller for QR Scan View used for registering authentication mechanisms and account details.
  */
 @interface FRAQRScanViewController : UIViewController <AVCaptureMetadataOutputObjectsDelegate>
 
+/*!
+ * The database. Exposed to allow (setter) dependency injection.
+ */
+@property (nonatomic, strong) FRAIdentityDatabase* database;
 /*!
  * Popover controller.
  */

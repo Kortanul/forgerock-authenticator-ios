@@ -14,8 +14,23 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import "FRAAccountSettingTableViewCell.h"
+#import "FRAOathMechanismTableViewCell.h"
 
-@implementation FRAAccountSettingTableViewCell
+@implementation FRAOathMechanismTableViewCell
+
+#pragma mark -
+#pragma mark UITableViewCell
+
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
+    [super setEditing:editing animated:animated];
+    _delegate.editing = editing;
+}
+
+#pragma mark -
+#pragma mark FRAOathMechanismTableViewCell (public)
+
+- (IBAction)generateNextCode:(id)sender {
+    [self.delegate generateNextCode];
+}
 
 @end

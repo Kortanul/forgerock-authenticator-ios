@@ -15,51 +15,20 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "FRAOathMechanism.h"
 #import "FRACircleProgressView.h"
-
-@class FRATokenCodeViewController;
-
-/*!
- * Abstraction that allows FRATokenCodeViewController to operate FRATokensTableViewCell and FRAAccountTokenTableViewCell.
- */
-@protocol FRATokenCodeView <NSObject>
+#import "FRAIdentityDatabase.h"
+#import "FRAOathMechanism.h"
+@class FRAOathMechanismTableViewCell;
 
 /*!
- * The mechanism shown by this cell.
+ * Controller for OATH code displayed in table cell on Account screen.
  */
-@property (weak, nonatomic) FRAOathMechanism* mechanism;
-/*!
- * The delegate that acts as controller for this cell's UI elements relating to the OATH code value.
- */
-@property (strong, nonatomic) FRATokenCodeViewController* delegate;
+@interface FRAOathMechanismTableViewController : NSObject
 
 /*!
- * The UILabel in which the OTP code will be displayed.
+ * The database. Exposed to allow (setter) dependency injection.
  */
-@property (weak, nonatomic) IBOutlet UILabel* code;
-/*!
- * The FRACircleProgressView in which the TOTP code's time remaining will be displayed.
- */
-@property (weak, nonatomic) IBOutlet FRACircleProgressView* totpCodeProgress;
-/*!
- * The button for generating the next HOTP code.
- */
-@property (weak, nonatomic) IBOutlet UIButton *hotpRefreshButton;
-
-/*!
- * The hotpRefreshButton touch-up inside action handler.
- */
-- (IBAction)generateNextCode:(id)sender;
-
-@end
-
-
-/*!
- * Controller for OATH code displayed in table cell of Tokens tab table view and on Account screen.
- */
-@interface FRATokenCodeViewController : NSObject
-
+@property (nonatomic, strong) FRAIdentityDatabase* database;
 /*!
  * The model.
  */
@@ -67,7 +36,7 @@
 /*!
  * The view.
  */
-@property (weak, nonatomic) id<FRATokenCodeView> view;
+@property (weak, nonatomic) FRAOathMechanismTableViewCell* view;
 /*!
  * Flag to be set by the owning UITableViewController when entering/exiting edit mode.
  */
@@ -76,11 +45,11 @@
 /*!
  * Creates a new object with the provided property values.
  */
-+ (instancetype)controllerForView:(id<FRATokenCodeView>)view withMechanism:(FRAOathMechanism*)mechanism;
++ (instancetype)controllerForView:(FRAOathMechanismTableViewCell*)view withMechanism:(FRAOathMechanism*)mechanism withDatabase:(FRAIdentityDatabase*)database;
 /*!
  * Creates a new object with the provided property values.
  */
-- (instancetype)initForView:(id<FRATokenCodeView>)view withMechanism:(FRAOathMechanism*)mechanism;
+- (instancetype)initForView:(FRAOathMechanismTableViewCell*)view withMechanism:(FRAOathMechanism*)mechanism withDatabase:(FRAIdentityDatabase*)database;
 
 /*!
  * Callback for generating first HOTP code, or copying existing HOTP or TOTP code to the clipboard.

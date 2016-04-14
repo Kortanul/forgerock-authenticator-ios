@@ -17,10 +17,12 @@
  */
 
 #import "AppDelegate.h"
+#import "FRAApplicationAssembly.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAOathMechanism.h"
 
 @implementation AppDelegate
+
 - (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     return YES;
 }
@@ -36,10 +38,21 @@
         return NO;
     }
     // Save the mechanism
-    [[FRAIdentityDatabase singleton] addMechanism:mechanism];
-
+    [[self identityDatabase] addMechanism:mechanism];
     // Reload the view
     [self.window.rootViewController loadView];
     return YES;
 }
+
+- (id)initialFactory {
+    TyphoonComponentFactory *factory = [[TyphoonBlockComponentFactory alloc] initWithAssembly:[FRAApplicationAssembly assembly]];
+    [factory makeDefault];
+    return factory;
+}
+
+- (FRAIdentityDatabase*)identityDatabase {
+    FRAApplicationAssembly* assembly = (FRAApplicationAssembly*) [TyphoonComponentFactory defaultFactory];
+    return [assembly identityDatabase];
+}
+
 @end
