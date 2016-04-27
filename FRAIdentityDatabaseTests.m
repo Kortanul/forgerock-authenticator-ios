@@ -27,16 +27,20 @@
 @implementation FRAIdentityDatabaseTests
 
 FRAIdentityDatabase* database;
-FRAIdentity* identity;
-FRAOathMechanism* mechanism;
+FRAIdentity* aliceIdentity;
+FRAOathMechanism* aliceOathMechanism;
+FRAIdentity* bobIdentity;
+FRAOathMechanism* bobOathMechanism;
 FRAMechanismFactory* factory;
 
 - (void)setUp {
     [super setUp];
     database = [[FRAIdentityDatabase alloc] init];
     factory = [[FRAMechanismFactory alloc]init];
-    mechanism = (FRAOathMechanism*)[factory parseFromString:@"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0"];
-    identity = [mechanism parent];
+    aliceOathMechanism = (FRAOathMechanism*)[factory parseFromString:@"otpauth://hotp/Forgerock:alice?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0"];
+    aliceIdentity = [aliceOathMechanism parent];
+    bobOathMechanism = (FRAOathMechanism*)[factory parseFromString:@"otpauth://hotp/Forgerock:bob?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0"];
+    bobIdentity = [bobOathMechanism parent];
 }
 
 - (void)tearDown {
@@ -48,42 +52,44 @@ FRAMechanismFactory* factory;
     XCTAssertEqualObjects([database identities], @[]);
     
     // When
-    [database addIdentity:identity];
+    [database addIdentity:aliceIdentity];
+    [database addIdentity:bobIdentity];
     
     // Then
-    XCTAssertEqualObjects([database identities], @[identity]);
+    XCTAssertTrue([[database identities] containsObject:aliceIdentity]);
+    XCTAssertTrue([[database identities] containsObject:bobIdentity]);
 }
 
 - (void)testCanFindIdentityById {
     // Given
     XCTAssertEqualObjects([database identities], @[]);
-    [database addMechanism:mechanism];
-    XCTAssertEqual(identity.uid, 0);
+    [database addMechanism:aliceOathMechanism];
+    XCTAssertEqual(aliceIdentity.uid, 0);
     
     // When
-    FRAIdentity* foundIdentity = [database identityWithId:identity.uid];
+    FRAIdentity* foundIdentity = [database identityWithId:aliceIdentity.uid];
     
     // Then
-    XCTAssertEqual(identity, foundIdentity);
+    XCTAssertEqual(aliceIdentity, foundIdentity);
 }
 
 - (void)testCanFindIdentityByIssuerAndLabel {
     // Given
-    [database addIdentity:identity];
+    [database addIdentity:aliceIdentity];
     
     // When
-    FRAIdentity* result = [database identityWithIssuer:identity.issuer accountName:identity.accountName];
+    FRAIdentity* result = [database identityWithIssuer:aliceIdentity.issuer accountName:aliceIdentity.accountName];
     
     // Then
-    XCTAssertTrue(identity == result);
+    XCTAssertTrue(aliceIdentity == result);
 }
 
 - (void)testCanRemoveIdentity {
     // Given
-    [database addMechanism:mechanism];
+    [database addMechanism:aliceOathMechanism];
     
     // When
-    [database removeIdentityWithId:identity.uid];
+    [database removeIdentityWithId:aliceIdentity.uid];
     
     // Then
     NSArray* foundIdentities = [database identities];
@@ -92,33 +98,33 @@ FRAMechanismFactory* factory;
 
 - (void)testCanFindMechanismById {
     // Given
-    [database addMechanism:mechanism];
+    [database addMechanism:aliceOathMechanism];
     
     // When
-    FRAOathMechanism* foundMechanism = [database mechanismWithId:[mechanism uid]];
+    FRAOathMechanism* foundMechanism = [database mechanismWithId:[aliceOathMechanism uid]];
     
     // Then
-    XCTAssertEqual(mechanism, foundMechanism);
+    XCTAssertEqual(aliceOathMechanism, foundMechanism);
 }
 
 - (void)testCanRemoveMechanism {
     // Given
-    [database addMechanism:mechanism];
+    [database addMechanism:aliceOathMechanism];
     
     // When
-    [database removeMechanism:mechanism];
+    [database removeMechanism:aliceOathMechanism];
     
     // Then
-    NSArray* foundMechanisms = [identity mechanisms];
+    NSArray* foundMechanisms = [aliceIdentity mechanisms];
     XCTAssertEqualObjects(foundMechanisms, @[]);
 }
 
 - (void) testRemoveLastMechanismAlsoRemovesIdenitity {
     // Given
-    [database addMechanism:mechanism];
+    [database addMechanism:aliceOathMechanism];
     
     // When
-    [database removeMechanism:mechanism];
+    [database removeMechanism:aliceOathMechanism];
     
     // Then
     NSArray* foundIdentities = [database identities];

@@ -60,15 +60,33 @@
 @property (nonatomic, readonly) NSString* data;
 
 /*!
+ * Generates description of the age of this notification as:
+ *
+ * @code
+ * if (timeReceived < 60 seconds ago)
+ *     return "n seconds ago";
+ * else if (timeReceived < 60 minutes ago)
+ *     return "n minutes ago";
+ * else if (timeReceived < 24 hours ago)
+ *     return "n hours ago";
+ * else if (timeReceived < 1 day ago)
+ *     return "Yesterday";
+ * else if (timeReceived < 7 day ago)
+ *     return "n days ago";
+ * else
+ *     return timeReceived using date format "dd/MM/yyyy";
+ */
+- (NSString *)age;
+/*!
  * Mark the notification as accepted to indicate the user accepts this
  * Notification.
  */
-- (void) approve;
+- (void)approve;
 
 /*!
  * Mark the notification as denied to indicate the user has denied the
  * Notification.
  */
-- (void) deny;
+- (void)deny;
 
 @end

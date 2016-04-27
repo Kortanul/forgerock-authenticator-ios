@@ -49,6 +49,7 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     /* NOTE: We start output processing in viewDidAppear() to avoid a
      * race condition when the QR code is scanned before the view appears. */
     AVCaptureMetadataOutput* output = [[AVCaptureMetadataOutput alloc] init];
@@ -79,8 +80,8 @@
             FRAMechanism* mechanism = [_mechanismFactory parseFromString:qrcode];
             
             if (mechanism != nil) {
-                NSString* issuer = [[mechanism parent] issuer];
-                NSString* accountName = [[mechanism parent] accountName];
+                NSString* issuer = mechanism.parent.issuer;
+                NSString* accountName = mechanism.parent.accountName;
 
                 FRAIdentity* identity = [_database identityWithIssuer:issuer accountName:accountName];
                 // Identity may not exist yet.

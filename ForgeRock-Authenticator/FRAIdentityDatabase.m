@@ -86,8 +86,8 @@
 #pragma mark Idenitity Functions
 
 - (BOOL)isIdentityStored:(FRAIdentity*)identity {
-    for (FRAIdentity* identity in identitiesList) {
-        if ([identity uid] == [identity uid]) {
+    for (FRAIdentity* storedIdentity in identitiesList) {
+        if (identity.uid == storedIdentity.uid) {
             return YES;
         }
     }

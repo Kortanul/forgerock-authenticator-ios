@@ -14,38 +14,17 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import <Foundation/Foundation.h>
-#import "FRANotification.h"
+#import "FRAPushMechanism.h"
 
-/*!
- * All notifications are expected to be able to transition from the initial state
- * of pending, to the final state of approved or denied.
- */
-@implementation FRANotification : NSObject
+@implementation FRAPushMechanism
 
 - (instancetype)init {
+
     self = [super init];
     if (self) {
-        _pending = YES;
-        _approved = NO;
+        _version = 1;
     }
     return self;
-}
-
-- (NSString *)age {
-    return @"TODO: age";
-}
-
-- (void)approve {
-    _approved = YES;
-    _pending = NO;
-    // TODO: And call FRAIdentityDatabase to update Notification.
-}
-
-- (void)deny {
-    _approved = NO;
-    _pending = NO;
-    // TODO: And call FRAIdentityDatabase to update Notification.
 }
 
 @end

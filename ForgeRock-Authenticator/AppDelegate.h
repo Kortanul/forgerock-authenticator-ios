@@ -16,10 +16,24 @@
  * Portions Copyright 2013 Nathaniel McCallum, Red Hat
  */
 
+/*!
+ * Primary delegate to which iOS application events are delegated.
+ *
+ * @see ForgeRock-Authenticator/main.m (grouped under 'Supporting Files' in Xcode)
+ */
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
+/*!
+ * The window used to present the app's visual content on the device's main screen.
+ * @see UIApplicationDelegate
+ */
 @property (strong, nonatomic) UIWindow *window;
 
+/*!
+ * Magic method for bootstrapping Typhoon dependency injection.
+ *
+ * @see https://github.com/appsquickly/Typhoon/wiki/AppDelegate-Integration
+ */
 - (id)initialFactory;
 
 @end

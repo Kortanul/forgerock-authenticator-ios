@@ -30,7 +30,7 @@
     uint32_t period;
 }
 
-- (instancetype) initWithType:(NSString*)type usingSecretKey:(NSData*)secretKey andHMACAlgorithm:(CCHmacAlgorithm)algorithm withKeyLength:(NSUInteger)digits andEitherPeriod:(NSUInteger)timePeriod orCounter:(NSUInteger)hmacCounter {
+- (instancetype)initWithType:(NSString*)type usingSecretKey:(NSData*)secretKey andHMACAlgorithm:(CCHmacAlgorithm)algorithm withKeyLength:(NSUInteger)digits andEitherPeriod:(NSUInteger)timePeriod orCounter:(NSUInteger)hmacCounter {
     
     self = [super init];
     if (self) {

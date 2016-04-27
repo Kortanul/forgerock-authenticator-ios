@@ -14,38 +14,17 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import <Foundation/Foundation.h>
-#import "FRANotification.h"
+@class FRAIdentity;
+#import "FRAMechanism.h"
 
 /*!
- * All notifications are expected to be able to transition from the initial state
- * of pending, to the final state of approved or denied.
+ * An authentication mechanism capable of authenticating by responding to a push notification.
  */
-@implementation FRANotification : NSObject
+@interface FRAPushMechanism : FRAMechanism
 
-- (instancetype)init {
-    self = [super init];
-    if (self) {
-        _pending = YES;
-        _approved = NO;
-    }
-    return self;
-}
-
-- (NSString *)age {
-    return @"TODO: age";
-}
-
-- (void)approve {
-    _approved = YES;
-    _pending = NO;
-    // TODO: And call FRAIdentityDatabase to update Notification.
-}
-
-- (void)deny {
-    _approved = NO;
-    _pending = NO;
-    // TODO: And call FRAIdentityDatabase to update Notification.
-}
+/*!
+ * The version number of this mechanism.
+ */
+@property (nonatomic, readonly) NSInteger version;
 
 @end

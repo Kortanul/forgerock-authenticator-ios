@@ -18,19 +18,62 @@
 
 #import "AppDelegate.h"
 #import "FRAApplicationAssembly.h"
+#import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAMechanismFactory.h"
+#import "FRANotificationGateway.h"
 #import "FRAOathMechanism.h"
+#import "FRAPushMechanism.h"
+
 
 @implementation AppDelegate
+
+#pragma mark -
+#pragma mark UIApplicationDelegate - application lifecycle state changes
 
 - (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     return YES;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [[self notificationGateway] application:application didFinishLaunchingWithOptions:launchOptions];
+    [self populateWithDummyData];
     return YES;
 }
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    [[self notificationGateway] applicationDidBecomeActive:application];
+}
+
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+    [[self notificationGateway] applicationDidEnterBackground:application];
+}
+
+#pragma mark -
+#pragma mark UIApplicationDelegate - handling remote notifications
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    [[self notificationGateway] application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+}
+
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+    [[self notificationGateway] application:application didFailToRegisterForRemoteNotificationsWithError:error];
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    [[self notificationGateway] application:application didReceiveRemoteNotification:userInfo];
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
+    [[self notificationGateway] application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
+}
+
+- (void)application:(UIApplication *)application handleActionWithIdentifier:(nullable NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo completionHandler:(void(^)())completionHandler {
+    [[self notificationGateway] application:application handleActionWithIdentifier:identifier forRemoteNotification:userInfo completionHandler:completionHandler];
+}
+
+#pragma mark -
+#pragma mark UIApplicationDelegate - opening a URL-specified resource
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     // Create mechanism from URL
@@ -46,6 +89,9 @@
     return YES;
 }
 
+#pragma mark -
+#pragma mark AppDelegate (private)
+
 - (id)initialFactory {
     TyphoonComponentFactory *factory = [[TyphoonBlockComponentFactory alloc] initWithAssembly:[FRAApplicationAssembly assembly]];
     [factory makeDefault];
@@ -60,6 +106,25 @@
 - (FRAMechanismFactory*)mechanismFactory {
     FRAApplicationAssembly* assembly = (FRAApplicationAssembly*) [TyphoonComponentFactory defaultFactory];
     return [assembly mechanismFactory];
+}
+
+- (FRANotificationGateway*)notificationGateway {
+    FRAApplicationAssembly* assembly = (FRAApplicationAssembly*) [TyphoonComponentFactory defaultFactory];
+    return [assembly notificationGateway];
+}
+
+- (void)populateWithDummyData {
+    FRAMechanismFactory* factory = [self mechanismFactory];
+    
+    FRAMechanism* oathMechanism = [factory parseFromURL:[NSURL URLWithString:@"otpauth://totp/Forgerock:Alice?secret=ZIFYT2GJ5UDGYCBYJ777PFBPSM======&issuer=Forgerock&digits=6&period=30"]];
+    if (oathMechanism != nil) {
+        [[self identityDatabase] addMechanism:oathMechanism];
+    }
+    
+    FRAIdentity* identity = oathMechanism.parent;
+    
+    FRAPushMechanism* pushMechanism = [[FRAPushMechanism alloc] init];
+    [identity addMechanism:pushMechanism];
 }
 
 @end

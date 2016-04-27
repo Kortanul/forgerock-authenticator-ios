@@ -22,6 +22,7 @@
 target 'ForgeRock' do
     pod 'M13BadgeView', '~> 1.0.4'
     pod 'Typhoon'
+    pod 'Google/CloudMessaging'
 end
 
 target 'ForgeRockTests' do

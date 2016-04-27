@@ -20,6 +20,8 @@
 @class FRAAccountTableViewController;
 @class FRAIdentityDatabase;
 @class FRAMechanismFactory;
+@class FRANotificationGateway;
+@class FRANotificationHandler;
 @class FRAQRScanViewController;
 
 /*!
@@ -27,10 +29,12 @@
  */
 @interface FRAApplicationAssembly : TyphoonAssembly
 
-- (FRAIdentityDatabase *)identityDatabase;
-- (FRAAccountsTableViewController *)accountsTableViewController;
 - (FRAAccountTableViewController *)accountTableViewController;
+- (FRAAccountsTableViewController *)accountsTableViewController;
+- (FRAIdentityDatabase *)identityDatabase;
 - (FRAMechanismFactory *)mechanismFactory;
+- (FRANotificationGateway *)notificationGateway;
+- (FRANotificationHandler *)notificationHandler;
 - (FRAQRScanViewController *)qrScanViewController;
 
 @end
