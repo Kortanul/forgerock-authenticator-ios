@@ -49,9 +49,4 @@
  */
 @property (nonatomic, retain) M13BadgeView *notificationsBadge;
 
-/*!
- * Updates UI items to display attributes of the provided model.
- */
-- (void)updateForModelObject:(FRAIdentity*)identity;
-
 @end

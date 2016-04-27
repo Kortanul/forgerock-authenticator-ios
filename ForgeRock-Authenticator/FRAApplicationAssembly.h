@@ -19,6 +19,7 @@
 @class FRAAccountsTableViewController;
 @class FRAAccountTableViewController;
 @class FRAIdentityDatabase;
+@class FRAIdentityModel;
 @class FRAMechanismFactory;
 @class FRANotificationGateway;
 @class FRANotificationHandler;
@@ -32,6 +33,8 @@
 - (FRAAccountTableViewController *)accountTableViewController;
 - (FRAAccountsTableViewController *)accountsTableViewController;
 - (FRAIdentityDatabase *)identityDatabase;
+- (FRAIdentityDatabase *)identityDatabaseSQLiteOperations;
+- (FRAIdentityModel *)identityModel;
 - (FRAMechanismFactory *)mechanismFactory;
 - (FRANotificationGateway *)notificationGateway;
 - (FRANotificationHandler *)notificationHandler;

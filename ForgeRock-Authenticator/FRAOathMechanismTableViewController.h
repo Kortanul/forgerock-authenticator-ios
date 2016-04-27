@@ -16,7 +16,7 @@
 
 #import <Foundation/Foundation.h>
 #import "FRACircleProgressView.h"
-#import "FRAIdentityDatabase.h"
+#import "FRAIdentityModel.h"
 #import "FRAOathMechanism.h"
 @class FRAOathMechanismTableViewCell;
 
@@ -26,9 +26,9 @@
 @interface FRAOathMechanismTableViewController : NSObject
 
 /*!
- * The database. Exposed to allow (setter) dependency injection.
+ * The identity model. Exposed to allow (setter) dependency injection.
  */
-@property (nonatomic, strong) FRAIdentityDatabase* database;
+@property (nonatomic, strong) FRAIdentityModel* identityModel;
 /*!
  * The model.
  */
@@ -45,11 +45,11 @@
 /*!
  * Creates a new object with the provided property values.
  */
-+ (instancetype)controllerForView:(FRAOathMechanismTableViewCell*)view withMechanism:(FRAOathMechanism*)mechanism withDatabase:(FRAIdentityDatabase*)database;
++ (instancetype)controllerForView:(FRAOathMechanismTableViewCell*)view withMechanism:(FRAOathMechanism*)mechanism withIdentityModel:(FRAIdentityModel*)identityModel;
 /*!
  * Creates a new object with the provided property values.
  */
-- (instancetype)initForView:(FRAOathMechanismTableViewCell*)view withMechanism:(FRAOathMechanism*)mechanism withDatabase:(FRAIdentityDatabase*)database;
+- (instancetype)initForView:(FRAOathMechanismTableViewCell*)view withMechanism:(FRAOathMechanism*)mechanism withIdentityModel:(FRAIdentityModel*)identityModel;
 
 /*!
  * Callback for generating first HOTP code, or copying existing HOTP or TOTP code to the clipboard.

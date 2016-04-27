@@ -15,7 +15,11 @@
  */
 
 #import <Foundation/Foundation.h>
+
+#import "FRAModelObject.h"
+
 @class FRAIdentity;
+@class FRAIdentityDatabase;
 @class FRANotification;
 
 /*!
@@ -23,36 +27,48 @@
  *
  * Encapsulates the related settings, as well as an owning Identity.
  */
-@interface FRAMechanism : NSObject
+@interface FRAMechanism : FRAModelObject
 
-/*!
- * The storage ID of this mechanism.
- */
-@property (nonatomic) NSInteger uid;
 /*!
  * The parent Identity object which this mechanism belongs to.
  */
-@property (nonatomic) FRAIdentity* parent;
+// NB. FRAIdentity and FRAMechanism hold a strong reference to each other - Necessary as FRAMechanismFactory
+// returns FRAMechanism which may reference a new FRAIdentity.
+@property (nonatomic) FRAIdentity *parent;
 
 /*!
  * A list of the current Notficiations that are assigned to this Mechanism.
  */
-@property (getter=notifications, nonatomic, readonly) NSArray<FRANotification*>* notifications;
+@property (getter=notifications, nonatomic, readonly) NSArray<FRANotification *> *notifications;
+
+#pragma mark -
+#pragma mark Lifecyle
+
+/*!
+ * Init method.
+ *
+ * @param database The database to which this mechanism can be persisted.
+ * @return The initialized mechanism or nil if initialization failed.
+ */
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database;
+
+#pragma mark -
+#pragma mark Notification Functions
 
 /*!
  * When a new notification is received by the App, it will be appended to
  * the owning Mechanism using this method.
  *
- * @param A notification to add to this Mechanism.
+ * @param notification The notification to add to this Mechanism.
  */
-- (void) addNotification:(FRANotification*) notification;
+- (void)addNotification:(FRANotification *)notification;
 
 /*!
  * Once a Notficiation has been marked as deleted, it will be removed from 
  * the Mechanism by this method.
  *
- * @param The noficiation to remove from the Mechanism.
+ * @param notification The notification to remove from the Mechanism.
  */
-- (void) removeNotification:(FRANotification*) notification;
+- (void)removeNotification:(FRANotification *)notification;
 
 @end

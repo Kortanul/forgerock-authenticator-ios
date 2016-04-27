@@ -24,6 +24,7 @@
 - (nullable instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
         _notificationsBadge = [[M13BadgeView alloc] initWithFrame:CGRectMake(0, 0, 24.0, 24.0)];
+        _notificationsBadge.hidesWhenZero = YES;
         // add _notificationsBadge to _firstMechanismIcon in awakeFromNib as _firstMechanismIcon isn't yet set
     }
     return self;
@@ -42,7 +43,7 @@
     // hide mechanism icons while parent table view is being edited
     float mechanismIconsAlpha = editing ? 0.0f : 1.0f;
     if (animated) {
-        [UIView animateWithDuration:0.5f animations:^{
+        [UIView animateWithDuration:0.4f animations:^{
             _firstMechanismIcon.alpha = mechanismIconsAlpha;
             _secondMechanismIcon.alpha = mechanismIconsAlpha;
         }];
@@ -50,17 +51,6 @@
         _firstMechanismIcon.alpha = mechanismIconsAlpha;
         _secondMechanismIcon.alpha = mechanismIconsAlpha;
     }
-}
-
-#pragma mark -
-#pragma mark FRAAccountTableViewCell (public)
-
-- (void)updateForModelObject:(FRAIdentity*)identity {
-    //  _image = ... // TODO: Use URLImageView
-    _issuer.text = identity.issuer;
-    _accountName.text = identity.accountName;
-    _notificationsBadge.text = @"1";
-    [self layoutIfNeeded];
 }
 
 @end

@@ -15,60 +15,78 @@
  */
 
 #import <Foundation/Foundation.h>
+
+#import "FRAModelObject.h"
+
+@class FRAIdentityDatabase;
 @class FRAMechanism;
 
 /*!
  * Identity is responsible for modelling the information that makes up part of a user's identity in
  * the context of logging into that user's account.
  */
-@interface FRAIdentity : NSObject
+@interface FRAIdentity : FRAModelObject
 
-/*!
- * The storage ID of this identity.
- */
-@property (nonatomic) NSInteger uid;
 /*!
  * Name of the Identity Provider (IdP) that issued this identity.
  */
-@property (copy, nonatomic, readonly) NSString* issuer;
+@property (copy, nonatomic, readonly) NSString *issuer;
 /*!
  * Name of this identity.
  */
-@property (copy, nonatomic, readonly) NSString* accountName;
+@property (copy, nonatomic, readonly) NSString *accountName;
 /*!
  * URL pointing to an image (such as a logo) that represents the issuer of this identity.
  */
-@property (copy, nonatomic, readonly) NSURL* image;
+@property (copy, nonatomic, readonly) NSURL *image;
 
 /*!
  * The Mechanisms assigned to the Identity. Maybe empty.
  */
-@property (getter=mechanisms, nonatomic, readonly) NSArray<FRAMechanism*>* mechanisms;
+@property (getter=mechanisms, nonatomic, readonly) NSArray<FRAMechanism *> *mechanisms;
+
+#pragma mark -
+#pragma mark Lifecycle
+
+/*!
+ * Prevent external use of super class' initWithDatabase: method.
+ */
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database __unavailable;
 
 /*!
  * Creates a new identity object with the provided property values.
  */
-- (instancetype)initWithAccountName:(NSString*)accountName issuedBy:(NSString*)issuer withImage:(NSURL*)image;
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database accountName:(NSString *)accountName issuer:(NSString *)issuer image:(NSURL *)image;
 
 /*!
  * Creates a new identity object with the provided property values.
  */
-+ (instancetype)identityWithAccountName:(NSString*)accountName issuedBy:(NSString*)issuer withImage:(NSURL*)image;
++ (instancetype)identityWithDatabase:(FRAIdentityDatabase *)database accountName:(NSString *)accountName issuer:(NSString *)issuer image:(NSURL *)image;
+
+#pragma mark -
+#pragma mark Mechanism Functions
+
+/*!
+ * Returns mechanism of the specified type if one has been registered to this identity.
+ *
+ * @param aClass The type of mechanism to look for.
+ * @return The mechanism object, or nil if no such mechanism has been registered.
+ */
+- (FRAMechanism *)mechanismOfClass:(Class)aClass;
 
 /*!
  * When a new Mechanism is created, it will assigned to the Identity via
  * this call.
  *
- * @param A new Mechanism to add to this Identity.
+ * @param mechanism The new mechanism to add to this identity.
  */
-- (void) addMechanism:(FRAMechanism*) mechansim;
+- (void)addMechanism:(FRAMechanism *)mechanism;
 
 /*!
  * Removes the Mechanism, only if it was assigned to this Identity.
  *
- * @param A Mechanism to remove from the Identity.
+ * @param mechanism The mechanism to remove from the identity.
  */
-- (void) removeMechanism:(FRAMechanism*) mechansim;
-
+- (void)removeMechanism:(FRAMechanism *)mechanism;
 
 @end

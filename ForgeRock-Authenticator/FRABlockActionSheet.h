@@ -27,7 +27,7 @@
 
 /*!
  * Block that is invoked when the UIActionSheetDelegate actionSheet:clickedButtonAtIndex: method is called.
- * @param offset The index of the button that was clicked.
+ * The offset parameter passed to the block gives the index of the button that was clicked.
  */
 @property (nonatomic, copy) void (^callback)(NSInteger offset);
 

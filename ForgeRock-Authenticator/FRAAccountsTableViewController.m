@@ -20,6 +20,9 @@
 #import "FRABlockAlertView.h"
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
+#import "FRAIdentityModel.h"
+#import "FRAOathMechanism.h"
+#import "FRAPushMechanism.h"
 
 @implementation FRAAccountsTableViewController;
 
@@ -34,6 +37,11 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.tableView reloadData];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleIdentityDatabaseChanged:) name:FRAIdentityDatabaseChangedNotification object:nil];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -54,13 +62,42 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [_database identities].count;
+    return [self.identityModel identities].count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"AccountCell";
     FRAAccountTableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    [cell updateForModelObject:[self identityAtIndexPath:indexPath]];
+    FRAIdentity *identity = [self identityAtIndexPath:indexPath];
+    //  cell.image = ... // TODO: Use UIImageView+AFNetworking category provided by AFNetworking
+    cell.issuer.text = identity.issuer;
+    cell.accountName.text = identity.accountName;
+    
+    FRAOathMechanism *oathMechanism = (FRAOathMechanism *)[identity mechanismOfClass:[FRAOathMechanism class]];
+    FRAPushMechanism *pushMechanism = (FRAPushMechanism *)[identity mechanismOfClass:[FRAPushMechanism class]];
+    
+    if (oathMechanism && pushMechanism) {
+        cell.firstMechanismIcon.image = [UIImage imageNamed:@"NotificationIcon"];
+        cell.notificationsBadge.text = [NSString stringWithFormat:@"%lu", (unsigned long)pushMechanism.notifications.count];
+        cell.secondMechanismIcon.image = [UIImage imageNamed:@"TokensIcon"];
+        cell.firstMechanismIcon.hidden = false;
+        cell.secondMechanismIcon.hidden = false;
+    } else if (pushMechanism) {
+        cell.firstMechanismIcon.image = [UIImage imageNamed:@"NotificationIcon"];
+        cell.notificationsBadge.text = [NSString stringWithFormat:@"%lu", (unsigned long)pushMechanism.notifications.count];
+        cell.firstMechanismIcon.hidden = false;
+        cell.secondMechanismIcon.hidden = true;
+    } else if (oathMechanism) {
+        cell.firstMechanismIcon.image = [UIImage imageNamed:@"TokensIcon"];
+        cell.notificationsBadge.text = @"0";
+        cell.firstMechanismIcon.hidden = false;
+        cell.secondMechanismIcon.hidden = true;
+    } else {
+        cell.notificationsBadge.text = @"0";
+        cell.firstMechanismIcon.hidden = true;
+        cell.secondMechanismIcon.hidden = true;
+    }
+    
     return cell;
 }
 
@@ -80,7 +117,7 @@
                                         otherButtonTitles:@"Delete", nil];
         alertView.callback = ^(NSInteger offset) {
             if (offset == 0) {
-                [_database removeIdentityWithId:identity.uid];
+                [self.identityModel removeIdentity:identity];
                 [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
             }
         };
@@ -114,7 +151,7 @@
 #pragma mark FRAAccountsTableViewController (private)
 
 - (FRAIdentity *)identityAtIndexPath:(NSIndexPath *)indexPath {
-    NSArray *sortedIdentities = [[_database identities] sortedArrayUsingComparator:^NSComparisonResult(FRAIdentity* first, FRAIdentity* second) {
+    NSArray *sortedIdentities = [[self.identityModel identities] sortedArrayUsingComparator:^NSComparisonResult(FRAIdentity* first, FRAIdentity* second) {
         NSComparisonResult comparisonResult = [first.issuer caseInsensitiveCompare:second.issuer];
         if (comparisonResult == NSOrderedSame) {
             comparisonResult = [first.accountName caseInsensitiveCompare:second.accountName];
@@ -122,6 +159,10 @@
         return comparisonResult;
     }];
     return [sortedIdentities objectAtIndex:indexPath.row];
+}
+
+- (void)handleIdentityDatabaseChanged:(NSNotification *)notification {
+    [self.tableView reloadData];
 }
 
 @end

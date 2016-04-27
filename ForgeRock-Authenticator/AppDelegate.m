@@ -20,7 +20,9 @@
 #import "FRAApplicationAssembly.h"
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
+#import "FRAIdentityModel.h"
 #import "FRAMechanismFactory.h"
+#import "FRANotification.h"
 #import "FRANotificationGateway.h"
 #import "FRAOathMechanism.h"
 #import "FRAPushMechanism.h"
@@ -36,40 +38,46 @@
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [[self notificationGateway] application:application didFinishLaunchingWithOptions:launchOptions];
+    [[[self assembly] notificationGateway] application:application didFinishLaunchingWithOptions:launchOptions];
     [self populateWithDummyData];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleIdentityDatabaseChanged:) name:FRAIdentityDatabaseChangedNotification object:nil];
+    [self updateNotificationsCount];
     return YES;
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    [[self notificationGateway] applicationDidBecomeActive:application];
+    [[[self assembly] notificationGateway] applicationDidBecomeActive:application];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    [[self notificationGateway] applicationDidEnterBackground:application];
+    [[[self assembly] notificationGateway] applicationDidEnterBackground:application];
+}
+
+- (void)applicationWillTerminate:(UIApplication *)application {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark -
 #pragma mark UIApplicationDelegate - handling remote notifications
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-    [[self notificationGateway] application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+    [[[self assembly] notificationGateway] application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
-    [[self notificationGateway] application:application didFailToRegisterForRemoteNotificationsWithError:error];
+    [[[self assembly] notificationGateway] application:application didFailToRegisterForRemoteNotificationsWithError:error];
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    [[self notificationGateway] application:application didReceiveRemoteNotification:userInfo];
+    [[[self assembly] notificationGateway] application:application didReceiveRemoteNotification:userInfo];
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
-    [[self notificationGateway] application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
+    [[[self assembly] notificationGateway] application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
 }
 
 - (void)application:(UIApplication *)application handleActionWithIdentifier:(nullable NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo completionHandler:(void(^)())completionHandler {
-    [[self notificationGateway] application:application handleActionWithIdentifier:identifier forRemoteNotification:userInfo completionHandler:completionHandler];
+    [[[self assembly] notificationGateway] application:application handleActionWithIdentifier:identifier forRemoteNotification:userInfo completionHandler:completionHandler];
 }
 
 #pragma mark -
@@ -77,13 +85,11 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     // Create mechanism from URL
-    FRAMechanismFactory* factory = [self mechanismFactory];
+    FRAMechanismFactory* factory = [[self assembly] mechanismFactory];
     FRAMechanism* mechanism = [factory parseFromURL:url];
     if (mechanism == nil) {
         return NO;
     }
-    // Save the mechanism
-    [[self identityDatabase] addMechanism:mechanism];
     // Reload the view
     [self.window.rootViewController loadView];
     return YES;
@@ -98,33 +104,39 @@
     return factory;
 }
 
-- (FRAIdentityDatabase*)identityDatabase {
-    FRAApplicationAssembly* assembly = (FRAApplicationAssembly*) [TyphoonComponentFactory defaultFactory];
-    return [assembly identityDatabase];
-}
-
-- (FRAMechanismFactory*)mechanismFactory {
-    FRAApplicationAssembly* assembly = (FRAApplicationAssembly*) [TyphoonComponentFactory defaultFactory];
-    return [assembly mechanismFactory];
-}
-
-- (FRANotificationGateway*)notificationGateway {
-    FRAApplicationAssembly* assembly = (FRAApplicationAssembly*) [TyphoonComponentFactory defaultFactory];
-    return [assembly notificationGateway];
+- (FRAApplicationAssembly *) assembly {
+    return (FRAApplicationAssembly*) [TyphoonComponentFactory defaultFactory];
 }
 
 - (void)populateWithDummyData {
-    FRAMechanismFactory* factory = [self mechanismFactory];
+    FRAMechanismFactory *factory = [[self assembly] mechanismFactory];
+    FRAIdentityDatabase *database = [[self assembly] identityDatabase];
     
-    FRAMechanism* oathMechanism = [factory parseFromURL:[NSURL URLWithString:@"otpauth://totp/Forgerock:Alice?secret=ZIFYT2GJ5UDGYCBYJ777PFBPSM======&issuer=Forgerock&digits=6&period=30"]];
-    if (oathMechanism != nil) {
-        [[self identityDatabase] addMechanism:oathMechanism];
+    [factory parseFromURL:[NSURL URLWithString:@"otpauth://totp/Umbrella-Corp:Alice?secret=ZIFYT2GJ5UDGYCBYJ777PFBPSM======&issuer=Umbrella-Corp&digits=6&period=30"]];
+    
+    [factory parseFromURL:[NSURL URLWithString:@"otpauth://hotp/Umbrella-Corp:Adam?secret=IJQWIZ3FOIQUEYLE&issuer=Umbrella-Corp&counter=0"]];
+    
+    FRAIdentity* bob = [FRAIdentity identityWithDatabase:database accountName:@"demo" issuer:@"Forgerock" image:nil];
+    FRAPushMechanism* pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
+    [bob addMechanism:pushMechanism];
+    [pushMechanism addNotification:[[FRANotification alloc] initWithDatabase:database]];
+    [pushMechanism addNotification:[[FRANotification alloc] initWithDatabase:database]];
+    [[[self assembly] identityModel] addIdentity:bob];
+}
+
+- (void)handleIdentityDatabaseChanged:(NSNotification *)notification {
+    NSLog(@"database changed notification received by app delegate");
+    [self updateNotificationsCount];
+}
+
+- (void)updateNotificationsCount {
+    NSInteger notificationsCount = 0;
+    for (FRAIdentity *identity in [[[self assembly] identityModel] identities]) {
+        for (FRAMechanism* mechanism in identity.mechanisms) {
+            notificationsCount += mechanism.notifications.count;
+        }
     }
-    
-    FRAIdentity* identity = oathMechanism.parent;
-    
-    FRAPushMechanism* pushMechanism = [[FRAPushMechanism alloc] init];
-    [identity addMechanism:pushMechanism];
+    [UIApplication sharedApplication].applicationIconBadgeNumber = notificationsCount;
 }
 
 @end

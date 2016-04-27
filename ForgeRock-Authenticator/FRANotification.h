@@ -15,6 +15,10 @@
  */
 
 #import <Foundation/Foundation.h>
+
+#import "FRAModelObject.h"
+
+@class FRAIdentityDatabase;
 @class FRAMechanism;
 
 /*!
@@ -24,22 +28,22 @@
  * Node: In practice this will currently just be Push Notifications, but 
  * we imagine other kinds of notifications might be useful later on.
  */
-@interface FRANotification : NSObject
+@interface FRANotification : FRAModelObject
 
 /*!
  * Each Notification must be associated with a parent Mechanism.
  */
-@property (nonatomic) FRAMechanism* parent;
+@property (nonatomic, weak) FRAMechanism *parent;
 
 /*!
  * A timestamp of when the Notification was received by the application.
  */
-@property (nonatomic, readonly) NSString* timeReceived;
+@property (nonatomic, readonly) NSString *timeReceived;
 
 /*!
  * The timestamp of when the Notification is expected to expire.
  */
-@property (nonatomic, readonly) NSString* timeExpired;
+@property (nonatomic, readonly) NSString *timeExpired;
 
 /*!
  * Indicator of whether this Notification is pending. In the pending state a
@@ -57,7 +61,29 @@
 /*!
  * JSON sctructured data which contains related information about this Notification.
  */
-@property (nonatomic, readonly) NSString* data;
+@property (nonatomic, readonly) NSString *data;
+
+#pragma mark -
+#pragma mark Lifecyle
+
+/*!
+ * Init method.
+ *
+ * @param database The database to which this mechanism can be persisted.
+ * @return The initialized mechanism or nil if initialization failed.
+ */
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database;
+
+/*!
+ * Static factory method.
+ *
+ * @param database The database to which this mechanism can be persisted.
+ * @return The initialized mechanism or nil if initialization failed.
+ */
++ (instancetype)initWithDatabase:(FRAIdentityDatabase *)database;
+
+#pragma mark -
+#pragma mark Notification Functions
 
 /*!
  * Generates description of the age of this notification as:
@@ -77,6 +103,7 @@
  *     return timeReceived using date format "dd/MM/yyyy";
  */
 - (NSString *)age;
+
 /*!
  * Mark the notification as accepted to indicate the user accepts this
  * Notification.

@@ -17,6 +17,7 @@
 #import <OCMock/OCMock.h>
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
+
 #import "FRANotificationGateway.h"
 #import "FRANotificationHandler.h"
 
@@ -24,11 +25,13 @@
 
 @end
 
-@implementation FRANotificationGatewayTests
+@implementation FRANotificationGatewayTests {
 
-FRANotificationGateway *notificationGateway;
-FRANotificationHandler *mockNotificationHandler;
-UIApplication *mockApplication;
+    FRANotificationGateway *notificationGateway;
+    FRANotificationHandler *mockNotificationHandler;
+    UIApplication *mockApplication;
+
+}
 
 - (void)setUp {
     [super setUp];

@@ -17,7 +17,7 @@
 #import "FRAOathMechanismTableViewController.h"
 #import "FRABlockActionSheet.h"
 #import "FRAOathMechanismTableViewCell.h"
-#import "FRAIdentityDatabase.h"
+#import "FRAIdentityModel.h"
 #import "FRAOathMechanism.h"
 #import "FRAOathCode.h"
 
@@ -28,15 +28,15 @@
 #pragma mark -
 #pragma mark FRAOathMechanismTableViewController
 
-+ (instancetype)controllerForView:(FRAOathMechanismTableViewCell*)view withMechanism:(FRAOathMechanism*)mechanism withDatabase:(FRAIdentityDatabase*)database {
-    return [[FRAOathMechanismTableViewController alloc] initForView:view withMechanism:mechanism withDatabase:database];
++ (instancetype)controllerForView:(FRAOathMechanismTableViewCell*)view withMechanism:(FRAOathMechanism*)mechanism withIdentityModel:(FRAIdentityModel *)identityModel {
+    return [[FRAOathMechanismTableViewController alloc] initForView:view withMechanism:mechanism withIdentityModel:identityModel];
 }
 
-- (instancetype)initForView:(FRAOathMechanismTableViewCell*)view withMechanism:(FRAOathMechanism*)mechanism withDatabase:(FRAIdentityDatabase*)database {
+- (instancetype)initForView:(FRAOathMechanismTableViewCell*)view withMechanism:(FRAOathMechanism*)mechanism withIdentityModel:(FRAIdentityModel *)identityModel {
     if (self = [super init]) {
         _view = view;
         _mechanism = mechanism;
-        _database = database;
+        _identityModel = identityModel;
         [self initView];
     }
     return self;
@@ -156,7 +156,6 @@
 - (void)generateNextCode {
     if (!self.isEditing) {
         [_mechanism generateNextCode];
-        [_database updateMechanism:_mechanism];
         [self updateCodeAndProgress];
     }
 }

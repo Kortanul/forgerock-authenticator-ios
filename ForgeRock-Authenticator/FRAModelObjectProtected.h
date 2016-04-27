@@ -12,35 +12,24 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2016 ForgeRock AS.
- *
- * Portions Copyright 2014 Nathaniel McCallum, Red Hat
  */
 
-#import <Foundation/Foundation.h>
-#import <sys/time.h>
+#import "FRAModelObject.h"
 
 /*!
- * Represents a currently active OTP code.
+ * Extension interface for FRAModelObject defining protected properties and methods that should only be accessible
+ * to subclasses and the FRAIdentityDatabase.
  */
-@interface FRAOathCode : NSObject
+@interface FRAModelObject ()
 
 /*!
- * Initializer.
- *
- * @param value The one-time-password code for current counter value.
- * @param start The start-time for this one-time-password code.
- * @param end The end-time for this one-time-password code.
- * @return instantiated instance or nil if a problem occurred.
+ * The database to which this object is persisted.
  */
-- (instancetype)initWithValue:(NSString*)value startTime:(uint64_t)start endTime:(uint64_t)end;
+@property (nonatomic, strong) FRAIdentityDatabase* database;
 
 /*!
- * The one-time-password value used for authentication.
+ * The storage ID of this object.
  */
-@property (strong, nonatomic) NSString* value;
-/*!
- * The elapsed time for the current code normalized to a value between 0.0 and 1.0.
- */
-- (float)progress;
+@property (nonatomic) NSInteger uid;
 
 @end

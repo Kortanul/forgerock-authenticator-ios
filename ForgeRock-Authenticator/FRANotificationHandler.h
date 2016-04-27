@@ -15,36 +15,46 @@
  */
 
 #import <Foundation/Foundation.h>
+
 @class FRAIdentityDatabase;
+@class FRAIdentityModel;
 
 /*!
  * Consumer for notifications received by FRANotificationGateway.
  *
  * This handler creates FRANotification objects from the data payload of a push notification and persists them to the
- * appropriate FRAPushMechanism in the FRAIdentityDatabase.
+ * appropriate FRAPushMechanism in the FRAIdentityModel.
  */
 @interface FRANotificationHandler : NSObject
+
+#pragma mark -
+#pragma mark Lifecycle
 
 /*!
  * Init method.
  *
- * @param database The identity database to which FRANotification objects will be persisted.
- * @return The notification handler or nil if initialization failed.
+ * @param database The database to which this object can be persisted.
+ * @param identityModel The identity model to which FRANotification objects will be persisted.
+ * @return The initialized notification handler or nil if initialization failed.
  */
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database;
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel;
+
 /*!
  * Static factory.
  *
- * @param database The identity database to which FRANotification objects will be persisted.
+ * @param identityModel The identity model to which FRANotification objects will be persisted.
  * @return The notification handler or nil if initialization failed.
  */
-+ (instancetype)handlerWithDatabase:(FRAIdentityDatabase *)database;
++ (instancetype)handlerWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel;
+
+#pragma mark -
+#pragma mark Remote Notifications
 
 /*!
  * Called by FRANotificationGateway when a push notification is received.
  *
  * This method attempts to build an FRANotification object from the provided userInfo and persists it to the
- * FRAIdentityDatabase under the appropriate FRAPushMechanism.
+ * FRAIdentityModel under the appropriate FRAPushMechanism.
  *
  * @param userInfo An object graph representing the push notification message received.
  */

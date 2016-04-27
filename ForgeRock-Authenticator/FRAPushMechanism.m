@@ -18,13 +18,20 @@
 
 @implementation FRAPushMechanism
 
-- (instancetype)init {
+#pragma mark -
+#pragma mark Lifecyle
 
-    self = [super init];
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database {
+    
+    self = [super initWithDatabase:database];
     if (self) {
         _version = 1;
     }
     return self;
+}
+
++ (instancetype)pushMechanismWithDatabase:(FRAIdentityDatabase *)database {
+    return [[FRAPushMechanism alloc] initWithDatabase:database];
 }
 
 @end

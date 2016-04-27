@@ -15,36 +15,50 @@
  */
 
 #import <Foundation/Foundation.h>
+
+#import "FRAIdentityDatabase.h"
 #import "FRAMechanism.h"
+#import "FRAModelObjectProtected.h"
 #import "FRANotification.h"
 
 
 @implementation FRAMechanism {
-    NSMutableArray* notificationList;
+    NSMutableArray *notificationList;
 }
 
-- (instancetype)init {
-    self = [super init];
+#pragma mark -
+#pragma mark Lifecyle
+
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database {
+    self = [super initWithDatabase:database];
     if (self) {
-        _uid = -1;
         _parent = nil;
-        notificationList = [[NSMutableArray alloc]init];
+        notificationList = [[NSMutableArray alloc] init];
     }
     return self;
 }
 
-- (NSArray*) notifications {
+#pragma mark -
+#pragma mark Notification Functions
+
+- (NSArray*)notifications {
     return [[NSArray alloc] initWithArray:notificationList];
 }
 
-- (void) addNotification:(FRANotification*) notification {
+- (void)addNotification:(FRANotification*)notification {
     [notification setParent:self];
     [notificationList addObject:notification];
+    if ([self isStored]) {
+        [self.database insertNotification:notification];
+    }
 }
 
-- (void) removeNotification:(FRANotification*) notification {
+- (void)removeNotification:(FRANotification*)notification {
     [notificationList removeObject:notification];
     [notification setParent:nil];
+    if ([self isStored]) {
+        [self.database deleteNotification:notification];
+    }
 }
 
 @end

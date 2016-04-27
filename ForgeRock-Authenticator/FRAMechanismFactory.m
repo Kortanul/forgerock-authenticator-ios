@@ -20,6 +20,7 @@
 
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
+#import "FRAIdentityModel.h"
 #import "FRAMechanism.h"
 #import "FRAMechanismFactory.h"
 #import "FRAOathMechanism.h"
@@ -28,13 +29,31 @@
 #include <CommonCrypto/CommonHMAC.h>
 #include <sys/time.h>
 
-@implementation FRAMechanismFactory
+@implementation FRAMechanismFactory {
+    
+    FRAIdentityDatabase *_database;
+    
+}
+
+#pragma mark -
+#pragma mark Lifecyle
+
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel {
+    if (self = [super init]) {
+        _database = database;
+        _identityModel = identityModel;
+    }
+    return self;
+}
+
+#pragma mark -
+#pragma mark Factory Functions
 
 /*!
  * Resolves the Identity from the URL that has been provided.
  * @return an initialised but not persisted Identity.
  */
-- (FRAIdentity*)getIdentity:(NSURL*)url {
+- (FRAIdentity *)getIdentity:(NSURL*)url {
     NSString* scheme = [url scheme];
     // TODO: Currently hardcoded to one scheme, upgrade to support multiple.
     if (scheme == nil || ![scheme isEqualToString:@"otpauth"]) {
@@ -69,10 +88,10 @@
     // Get image
     NSURL* _image = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"forgerock-logo" ofType:@"png"]];
 
-    return [[FRAIdentity alloc] initWithAccountName:_label issuedBy:_issuer withImage:_image];
+    return [FRAIdentity identityWithDatabase:_database accountName:_label issuer:_issuer image:_image];
 }
 
-- (FRAMechanism*) getMechanism:(NSURL *)url {
+- (FRAMechanism *)getMechanism:(NSURL *)url {
     NSString* scheme = [url scheme];
     if (scheme == nil || ![scheme isEqualToString:@"otpauth"]) {
         return nil;
@@ -152,16 +171,20 @@
     
     // TODO: Implicit conversion loses integer precision: 'uint64_t' (aka 'unsigned long long')
     //       to 'NSUInteger' (aka 'unsigned int')
-    return [[FRAOathMechanism alloc] initWithType:_type usingSecretKey:key andHMACAlgorithm:algo withKeyLength:_digits andEitherPeriod:period orCounter:counter];
+    return [FRAOathMechanism oathMechanismWithDatabase:_database type:_type usingSecretKey:key andHMACAlgorithm:algo withKeyLength:_digits andEitherPeriod:period orCounter:counter];
 }
 
-- (FRAMechanism*)parseFromURL:(NSURL *)url {
-    FRAMechanism* mechanism = [self getMechanism:url];
+// TODO: Adjust behaviour of this method so that it returns identity and mechanism detached
+//       from identity model and database so that there is an option to not persist the changes
+- (FRAMechanism *)parseFromURL:(NSURL *)url {
+    FRAMechanism *mechanism = [self getMechanism:url];
 
     // Find Identity in existing Identities list
-    FRAIdentity* identity = [self getIdentity:url];
-    FRAIdentity* search = [_database identityWithIssuer:[identity issuer] accountName:[identity accountName]];
-    if (search != nil) {
+    FRAIdentity *identity = [self getIdentity:url];
+    FRAIdentity *search = [_identityModel identityWithIssuer:[identity issuer] accountName:[identity accountName]];
+    if (search == nil) {
+        [_identityModel addIdentity:identity];
+    } else {
         identity = search;
     }
     
@@ -169,7 +192,7 @@
     return mechanism;
 }
 
-- (FRAMechanism*) parseFromString:(NSString *)string {
+- (FRAMechanism *)parseFromString:(NSString *)string {
     return [self parseFromURL:[[NSURL alloc]initWithString:string]];
 }
 

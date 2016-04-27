@@ -77,19 +77,7 @@
             }
             NSLog(@"Read QR URL: %@", qrcode);
 
-            FRAMechanism* mechanism = [_mechanismFactory parseFromString:qrcode];
-            
-            if (mechanism != nil) {
-                NSString* issuer = mechanism.parent.issuer;
-                NSString* accountName = mechanism.parent.accountName;
-
-                FRAIdentity* identity = [_database identityWithIssuer:issuer accountName:accountName];
-                // Identity may not exist yet.
-                if (identity == nil) {
-                    [_database addIdentity:[mechanism parent]];
-                }
-                [_database addMechanism:mechanism];
-            }
+            [self.mechanismFactory parseFromString:qrcode];
             [self.session stopRunning];
             if (self.popover == nil) {
                 [self.navigationController popViewControllerAnimated:YES];

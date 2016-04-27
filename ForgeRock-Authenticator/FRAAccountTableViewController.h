@@ -18,6 +18,7 @@
 #import "M13BadgeView.h"
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
+#import "FRAIdentityModel.h"
 #import "FRAOathMechanismTableViewCell.h"
 
 /*!
@@ -26,9 +27,9 @@
 @interface FRAAccountTableViewController : UITableViewController
 
 /*!
- * The database. Exposed to allow (setter) dependency injection.
+ * The identity model. Exposed to allow (setter) dependency injection.
  */
-@property (nonatomic, strong) FRAIdentityDatabase* database;
+@property (nonatomic, strong) FRAIdentityModel* identityModel;
 /*!
  * The identity displayed by this view controller.
  */

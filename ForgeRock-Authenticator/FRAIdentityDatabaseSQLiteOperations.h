@@ -16,44 +16,16 @@
 
 #import <Foundation/Foundation.h>
 @class FRAIdentity;
-@class FRAIdentityDatabase;
-@class FRAIdentityDatabaseSQLiteOperations;
 @class FRAIdentityModel;
 @class FRAMechanism;
 @class FRANotification;
 
-
-/*! Identifier for NSNotificationCenter event broadcast by FRAIdentityDatase when state change occurs. */
-extern NSString * const FRAIdentityDatabaseChangedNotification;
-
-/*! Key identifying added objects in FRAIdentityDatabaseChangedNotification userInfo dictionary. */
-extern NSString * const FRAIdentityDatabaseChangedNotificationAddedItems;
-
-/*! Key identifying removed objects in FRAIdentityDatabaseChangedNotification userInfo dictionary. */
-extern NSString * const FRAIdentityDatabaseChangedNotificationRemovedItems;
-
-/*! Key identifying updated objects in FRAIdentityDatabaseChangedNotification userInfo dictionary. */
-extern NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems;
-
-/*! Initial storageId value for model objects before they are persisted to the database. */
-extern NSInteger const FRANotStored;
-
-
 /*!
- * Data Access Object which encapsulates the underlying storage
- * mechanism and provides a simplified interface to the caller.
- * 
- * Responsible for manipulating Identity, Mechanism and Notification
- * objects in the database.
+ * Delegate for FRAIdentityDatabase SQL operations.
+ *
+ * Allows non-SQL operations of FRAIdentityDatabase to be unit tested.
  */
-@interface FRAIdentityDatabase : NSObject
-
-@property (strong, nonatomic, readonly) FRAIdentityDatabaseSQLiteOperations *sqlOperations;
-
-#pragma mark -
-#pragma mark Lifecycle
-
-- (instancetype)initWithSqlOperations:(FRAIdentityDatabaseSQLiteOperations *)sqlOperations;
+@interface FRAIdentityDatabaseSQLiteOperations : NSObject
 
 #pragma mark -
 #pragma mark Identity Functions

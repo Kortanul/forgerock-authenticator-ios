@@ -23,7 +23,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    //  _image = ... // TODO: Use URLImageView
+    //  _image = ... // TODO: Use UIImageView+AFNetworking category provided by AFNetworking
     // TODO: Override thumbRectForBounds:trackRect:value: in custom UISlider subclass to increase touch area of "thumb"
     [_authorizeSlider setThumbImage:[UIImage imageNamed:@"OffSwitchIcon"] forState:UIControlStateNormal];
     _image.layer.cornerRadius = _image.frame.size.width / 2;

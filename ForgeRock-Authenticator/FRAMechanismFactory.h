@@ -15,7 +15,7 @@
  */
 
 @class FRAIdentity;
-@class FRAIdentityDatabase;
+@class FRAIdentityModel;
 @class FRAMechanism;
 
 /*!
@@ -29,26 +29,40 @@
  * Push Authentication when it is supported by this Application.
  *
  * Note: Only responsible for generating the instances of Identity and
- * Mechansim. Will not be responsible for database persistence.
+ * Mechanism. Will not be responsible for database persistence.
  */
 @interface FRAMechanismFactory : NSObject
 
 /*!
- * Property exposed for setter injection via Typhoon.
+ * The identity model.
+ */ // TODO: Make identityModel a private property
+@property (nonatomic, strong, readonly) FRAIdentityModel *identityModel;
+
+#pragma mark -
+#pragma mark Lifecycle
+
+/*!
+ * Init method.
+ *
+ * @param database The database to which this object can be persisted.
+ * @return The initialized object or nil if initialization failed.
  */
-@property (nonatomic, strong) FRAIdentityDatabase* database;
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel;
+
+#pragma mark -
+#pragma mark Factory Functions
 
 /*!
  * Given a URL, convert this into a FRAMechanism, complete with associated Identity.
  *
- * @param non nil URL to parse.
+ * @param url The URL to parse, non-nil.
  * @return non nil FRAMechanism initialsed with the values present in the URL.
  */
-- (FRAMechanism*) parseFromURL: (NSURL*) url;
+- (FRAMechanism*)parseFromURL:(NSURL*)url;
 
 /*!
  * Convenience function which will call parseFromURL.
  */
-- (FRAMechanism*) parseFromString: (NSString*) string;
+- (FRAMechanism*)parseFromString:(NSString*)string;
 
 @end

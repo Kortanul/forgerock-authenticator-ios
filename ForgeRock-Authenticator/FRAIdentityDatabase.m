@@ -16,177 +16,226 @@
 
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
+#import "FRAIdentityDatabaseSQLiteOperations.h"
+#import "FRAIdentityModel.h"
 #import "FRAMechanismFactory.h"
+#import "FRAModelObjectProtected.h"
+#import "FRANotification.h"
 #import "FRAOathMechanism.h"
+#import "FRAPushMechanism.h"
 
-@interface FRAIdentityDatabase ()
 
-- (BOOL)isIdentityStored:(FRAIdentity*)identity;
-- (void)onDatabaseChange;
+NSString * const FRAIdentityDatabaseChangedNotification = @"FRAIdentityDatabaseChangedNotification";
+NSString * const FRAIdentityDatabaseChangedNotificationAddedItems = @"added";
+NSString * const FRAIdentityDatabaseChangedNotificationRemovedItems = @"removed";
+NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems = @"updated";
 
-@end
+NSInteger const FRANotStored = -1;
+
 
 /*!
- * Provides methods for persisting model objects to the database layer.
- * Understands how to talk to the underlying SQLite database.
+ * Responsible for persisting model objects to the SQLite database, managing the storage IDs for persisted objects
+ * and broadcasting FRAIdentityDatabaseChangedNotification event to the NSNotificationCenter defaultCenter so that
+ * listeners can observe when the model is updated.
+ * 
+ * Actual SQL calls are delegated to FRAIdentityDatabaseSQLiteOperations.
  */
 @implementation FRAIdentityDatabase {
 
-    NSMutableArray* identitiesList;
-    NSMutableArray* mechanismsList;
-    NSMutableArray* listeners;
     NSInteger nextIdentityId;
     NSInteger nextMechanismId;
+    NSInteger nextNotificationId;
 
 }
 
-- (instancetype)init {
+#pragma mark -
+#pragma mark Lifecyle
+
+- (instancetype)initWithSqlOperations:(FRAIdentityDatabaseSQLiteOperations *)sqlOperations {
     if (self = [super init]) {
-        identitiesList = [[NSMutableArray alloc] init];
-        mechanismsList = [[NSMutableArray alloc] init]; // TODO: Might be redundant
-        listeners = [[NSMutableArray alloc] init];
         nextIdentityId = 0;
         nextMechanismId = 0;
+        nextNotificationId = 0;
+        _sqlOperations = sqlOperations;
     }
     return self;
 }
 
-- (NSArray*)identities {
-    return [[NSArray alloc] initWithArray:identitiesList];
+#pragma mark -
+#pragma mark Identity Functions
+
+- (void)insertIdentity:(FRAIdentity *)identity {
+    NSMutableDictionary *stateChanges = [self dictionaryForStateChanges];
+    [self doInsertIdentity:identity andCollectStateChanges:stateChanges];
+    [self postDatabaseChangeNotificationForStateChanges:stateChanges];
 }
 
-- (FRAOathMechanism*)mechanismWithId:(NSInteger)uid {
-    for (FRAOathMechanism* mechanism in mechanismsList) {
-        if (mechanism.uid == uid) {
-            return mechanism;
-        }
-    }
-    return nil;
-}
-
-- (FRAIdentity*)identityWithId:(NSInteger)uid {
-    for (FRAIdentity* identity in identitiesList) {
-        if (identity.uid == uid) {
-            return identity;
-        }
-    }
-    return nil;
-}
-
-- (FRAIdentity*)identityWithIssuer:(NSString*)issuer accountName:(NSString*)accountName {
-    for (FRAIdentity* identity in identitiesList) {
-        if ([identity.issuer isEqualToString:issuer] && [identity.accountName isEqualToString:accountName]) {
-            return identity;
-        }
-    }
-    return nil;
-}
-
-#pragma mark --
-#pragma mark Idenitity Functions
-
-- (BOOL)isIdentityStored:(FRAIdentity*)identity {
-    for (FRAIdentity* storedIdentity in identitiesList) {
-        if (identity.uid == storedIdentity.uid) {
-            return YES;
-        }
-    }
-    return NO;
-}
-
-- (void)addIdentity:(FRAIdentity*)identity {
-    if ([self isIdentityStored:identity]) {
-        // throw exception or update error parameter?
+- (void)doInsertIdentity:(FRAIdentity *)identity andCollectStateChanges:(NSMutableDictionary *)stateChanges {
+    if ([identity isStored]) {
+        // TODO: Throw exception as programmer error has occured?
         return;
     }
-    [identitiesList addObject:identity];
-    if (identity.uid == -1) {
-        identity.uid = nextIdentityId;
-        nextIdentityId++;
+    for (FRAMechanism *mechanism in [identity mechanisms]) {
+        [self doInsertMechanism:mechanism andCollectStateChanges:stateChanges];
     }
-    [self onDatabaseChange];
+    [self.sqlOperations insertIdentity:identity];
+    identity.uid = nextIdentityId;
+    nextIdentityId++;
+    [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationAddedItems] addObject:identity];
 }
 
-- (void)removeIdentityWithId:(NSInteger)uid {
-    FRAIdentity* identity = [self identityWithId:uid];
-    if (identity) {
-        NSArray* mechanisms = [identity mechanisms];
-        [mechanismsList removeObjectsInArray:mechanisms];
-        [identitiesList removeObject:identity];
-    }
+- (void)deleteIdentity:(FRAIdentity *)identity {
+    NSMutableDictionary *stateChanges = [self dictionaryForStateChanges];
+    [self doDeleteIdentity:identity andCollectStateChanges:stateChanges];
+    [self postDatabaseChangeNotificationForStateChanges:stateChanges];
 }
 
--(void) removeIdentity:(FRAIdentity *)identity {
-    // Remove all attached Mechanisms
-    for (FRAMechanism* mechanism in [identity mechanisms]) {
-        [self removeMechanism:mechanism];
+- (void)doDeleteIdentity:(FRAIdentity *)identity andCollectStateChanges:(NSMutableDictionary *)stateChanges {
+    if (![identity isStored]) {
+        // TODO: Throw exception as programmer error has occured?
+        return;
     }
-    // Remove the identity from the top level list.
-    [identitiesList removeObject:identity];
-    [self onDatabaseChange];
+    for (FRAMechanism *mechanism in [identity mechanisms]) {
+        [self doDeleteMechanism:mechanism andCollectStateChanges:stateChanges];
+    }
+    [self.sqlOperations deleteIdentity:identity];
+    identity.uid = FRANotStored;
+    [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationRemovedItems] addObject:identity];
 }
 
-#pragma mark --
+#pragma mark -
 #pragma mark Mechanism Functions
 
-- (void)addMechanism:(FRAMechanism*)mechanism {
-    FRAIdentity* identity = [mechanism parent];
-    if (![self isIdentityStored:identity]) {
-        [self addIdentity:identity];
-    }
-    
-    [mechanismsList addObject:mechanism];
-    if (mechanism.uid == -1) {
-        mechanism.uid = nextMechanismId;
-        nextMechanismId++;
-    }
-    [self onDatabaseChange];
+- (void)insertMechanism:(FRAMechanism *)mechanism {
+    NSMutableDictionary *stateChanges = [self dictionaryForStateChanges];
+    [self doInsertMechanism:mechanism andCollectStateChanges:stateChanges];
+    [self postDatabaseChangeNotificationForStateChanges:stateChanges];
 }
 
-- (void)updateMechanism:(FRAMechanism*)mechanism {
+- (void)doInsertMechanism:(FRAMechanism *)mechanism andCollectStateChanges:(NSMutableDictionary *)stateChanges {
+    if ([mechanism isStored]) {
+        // TODO: Throw exception as programmer error has occured?
+        return;
+    }
+    for (FRANotification *notification in [mechanism notifications]) {
+        [self doInsertNotification:notification andCollectStateChanges:stateChanges];
+    }
+    [self.sqlOperations insertMechanism:mechanism];
+    mechanism.uid = nextMechanismId;
+    nextMechanismId++;
+    [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationAddedItems] addObject:mechanism];
+}
+
+- (void)deleteMechanism:(FRAMechanism *)mechanism {
+    NSMutableDictionary *stateChanges = [self dictionaryForStateChanges];
+    [self doDeleteMechanism:mechanism andCollectStateChanges:stateChanges];
+    [self postDatabaseChangeNotificationForStateChanges:stateChanges];
+}
+
+- (void)doDeleteMechanism:(FRAMechanism *)mechanism andCollectStateChanges:(NSMutableDictionary *)stateChanges {
+    if (![mechanism isStored]) {
+        // TODO: Throw exception as programmer error has occured?
+        return;
+    }
+    for (FRANotification *notification in [mechanism notifications]) {
+        [self doDeleteNotification:notification andCollectStateChanges:stateChanges];
+    }
+    [self.sqlOperations deleteMechanism:mechanism];
+    mechanism.uid = FRANotStored;
+    [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationRemovedItems] addObject:mechanism];
+}
+
+- (void)updateMechanism:(FRAMechanism *)mechanism {
+    NSMutableDictionary *stateChanges = [self dictionaryForStateChanges];
+    [self doUpdateMechanism:mechanism andCollectStateChanges:stateChanges];
+    [self postDatabaseChangeNotificationForStateChanges:stateChanges];
+}
+
+- (void)doUpdateMechanism:(FRAMechanism *)mechanism andCollectStateChanges:(NSMutableDictionary *)stateChanges {
+    if (![mechanism isStored]) {
+        // TODO: Throw exception as programmer error has occured?
+        return;
+    }
     if ([mechanism isKindOfClass:[FRAOathMechanism class]]) {
-        FRAOathMechanism* oathMechanism = (FRAOathMechanism *)mechanism;
-        // TODO: database save for mechanism.
-    } // else if mechanism is type of Push Mechanism
-    [self onDatabaseChange];
+        FRAOathMechanism *oathMechanism = (FRAOathMechanism *)mechanism;
+        // TODO: Update mechanism in SQLite DB
+        [self.sqlOperations updateMechanism:oathMechanism];
+        [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationUpdatedItems] addObject:mechanism];
+    } else if ([mechanism isKindOfClass:[FRAPushMechanism class]]) {
+        FRAPushMechanism *pushMechanism = (FRAPushMechanism *)mechanism;
+        // TODO: Update mechanism in SQLite DB
+        [self.sqlOperations updateMechanism:pushMechanism];
+        [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationUpdatedItems] addObject:mechanism];
+    } else {
+        // TODO: Throw exception as programmer error has occured?
+        return;
+    }
 }
 
-- (void)removeMechanism:(FRAMechanism*)mechanism {
-    // Remove reference from parent Identity.
-    FRAIdentity* identity = [mechanism parent];
-    [identity removeMechanism:mechanism];
-    
-    // Remove any Notifications on the Mechanism
-    for (FRANotification* notification in [mechanism notifications]) {
-        [self removeNotification:notification];
-    }
-    
-    // Automatically remove Identity if it it no longer has any mechanisms.
-    if ([[identity mechanisms] count] == 0) {
-        [self removeIdentityWithId:[identity uid]];
-    }
-    
-    // Maintain Mechanisms list
-    [mechanismsList removeObject:mechanism];
-    
-    [self onDatabaseChange];
-}
-
-#pragma mark --
+#pragma mark -
 #pragma mark Notification Functions
 
-- (void) removeNotification:(FRANotification*) notification {
-    
+- (void)insertNotification:(FRANotification *)notification {
+    NSMutableDictionary *stateChanges = [self dictionaryForStateChanges];
+    [self doInsertNotification:notification andCollectStateChanges:stateChanges];
+    [self postDatabaseChangeNotificationForStateChanges:stateChanges];
 }
 
-- (void)addListener:(id<FRADatabaseListener>)listener {
-    [listeners addObject:listener];
-}
-
-- (void)onDatabaseChange {
-    for (id<FRADatabaseListener> listener in listeners) {
-        [listener onUpdate];
+- (void)doInsertNotification:(FRANotification *)notification andCollectStateChanges:(NSMutableDictionary *)stateChanges {
+    if ([notification isStored]) {
+        // TODO: Throw exception as programmer error has occured?
+        return;
     }
+    [self.sqlOperations insertNotification:notification];
+    notification.uid = nextNotificationId;
+    nextNotificationId++;
+    [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationAddedItems] addObject:notification];
+}
+
+- (void)deleteNotification:(FRANotification *)notification {
+    NSMutableDictionary *stateChanges = [self dictionaryForStateChanges];
+    [self doDeleteNotification:notification andCollectStateChanges:stateChanges];
+    [self postDatabaseChangeNotificationForStateChanges:stateChanges];
+}
+
+- (void)doDeleteNotification:(FRANotification *)notification andCollectStateChanges:(NSMutableDictionary *)stateChanges {
+    if (![notification isStored]) {
+        // TODO: Throw exception as programmer error has occured?
+        return;
+    }
+    [self.sqlOperations deleteNotification:notification];
+    notification.uid = FRANotStored;
+    [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationRemovedItems] addObject:notification];
+}
+
+- (void)updateNotification:(FRANotification *)notification {
+    NSMutableDictionary *stateChanges = [self dictionaryForStateChanges];
+    [self doUpdateNotification:notification andCollectStateChanges:stateChanges];
+    [self postDatabaseChangeNotificationForStateChanges:stateChanges];
+}
+
+- (void)doUpdateNotification:(FRANotification *)notification andCollectStateChanges:(NSMutableDictionary *)stateChanges {
+    if (![notification isStored]) {
+        // TODO: Throw exception as programmer error has occured?
+        return;
+    }
+    [self.sqlOperations updateNotification:notification];
+    [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationUpdatedItems] addObject:notification];
+}
+
+#pragma mark -
+#pragma mark Listener Functions (private)
+
+- (void)postDatabaseChangeNotificationForStateChanges:(NSDictionary *)stateChanges {
+    [[NSNotificationCenter defaultCenter] postNotificationName:FRAIdentityDatabaseChangedNotification object:self userInfo:stateChanges];
+}
+
+- (NSMutableDictionary *)dictionaryForStateChanges {
+    NSMutableDictionary *stateChanges = [[NSMutableDictionary alloc] init];
+    [stateChanges setValue:[NSMutableSet set] forKey:FRAIdentityDatabaseChangedNotificationAddedItems];
+    [stateChanges setValue:[NSMutableSet set] forKey:FRAIdentityDatabaseChangedNotificationRemovedItems];
+    [stateChanges setValue:[NSMutableSet set] forKey:FRAIdentityDatabaseChangedNotificationUpdatedItems];
+    return stateChanges;
 }
 
 @end

@@ -14,8 +14,13 @@
  * Copyright 2015-2016 ForgeRock AS.
  */
 
+#import <OCMock/OCMock.h>
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
+
+#import "FRAIdentityDatabase.h"
+#import "FRAIdentityDatabaseSQLiteOperations.h"
+#import "FRAIdentityModel.h"
 #import "FRAOathMechanism.h"
 #import "FRAOathCode.h"
 #import "FRAMechanismFactory.h"
@@ -25,12 +30,22 @@
 @end
 
 @implementation FRAOathMechanismTests {
+
     FRAMechanismFactory* factory;
+    FRAIdentityDatabaseSQLiteOperations *mockSqlOperations;
+    FRAIdentityDatabase *database;
+    FRAIdentityModel *identityModel;
+    id databaseObserverMock;
+
 }
 
 - (void)setUp {
     [super setUp];
-    factory = [[FRAMechanismFactory alloc] init];
+    mockSqlOperations = OCMClassMock([FRAIdentityDatabaseSQLiteOperations class]);
+    database = [[FRAIdentityDatabase alloc] initWithSqlOperations:mockSqlOperations];
+    identityModel = [[FRAIdentityModel alloc] initWithDatabase:database];
+    factory = [[FRAMechanismFactory alloc] initWithDatabase:database identityModel:identityModel];
+    databaseObserverMock = OCMObserverMock();
 }
 
 - (void)tearDown {
@@ -61,6 +76,34 @@
     // Then
     NSString* code = [[mechanism code] value];
     XCTAssert(strcmp([code UTF8String], "545550") == 0, @"Incorrect next hash");
+}
+
+- (void)testSavedHotpOathMechanismAutomaticallySavesItselfToDatabaseWhenIncrementingCounter {
+    // Given
+    NSString* qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0";
+    FRAOathMechanism* mechanism = (FRAOathMechanism*)[factory parseFromString:qrString];
+    [database insertMechanism:mechanism];
+    
+    // When
+    [mechanism generateNextCode];
+    
+    // Then
+    OCMVerify([mockSqlOperations updateMechanism:mechanism]);
+}
+
+- (void)testBroadcastsOneChangeNotificationWhenHotpOathMechanismUpdateIsAutomaticallySavedToDatabase {
+    // Given
+    NSString* qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0";
+    FRAOathMechanism* mechanism = (FRAOathMechanism*)[factory parseFromString:qrString];
+    [database insertMechanism:mechanism];
+    [[NSNotificationCenter defaultCenter] addMockObserver:databaseObserverMock name:FRAIdentityDatabaseChangedNotification object:database];
+    [[databaseObserverMock expect] notificationWithName:FRAIdentityDatabaseChangedNotification object:database userInfo:[OCMArg any]];
+    
+    // When
+    [mechanism generateNextCode];
+    
+    // Then
+    OCMVerifyAll(databaseObserverMock);
 }
 
 @end

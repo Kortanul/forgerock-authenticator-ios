@@ -12,33 +12,53 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2016 ForgeRock AS.
- *
- * Portions Copyright 2014 Nathaniel McCallum, Red Hat
  */
 
-#import "FRABlockAlertView.h"
+#import "FRAIdentityDatabaseSQLiteOperations.h"
 
-@interface FRABlockAlertView () <UIAlertViewDelegate>
+@implementation FRAIdentityDatabaseSQLiteOperations
 
-@end
-
-@implementation FRABlockAlertView
 
 #pragma mark -
-#pragma mark UIAlertView
+#pragma mark Identity Functions
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    self.callback(self.numberOfButtons - 1 - buttonIndex);
+- (void)insertIdentity:(FRAIdentity *)identity {
+    // TODO
+}
+
+- (void)deleteIdentity:(FRAIdentity *)identity {
+    // TODO
 }
 
 #pragma mark -
-#pragma mark FRABlockAlertView
+#pragma mark Mechanism Functions
 
-- (void)setCallback:(void (^)(NSInteger))callback {
-    _callback = callback;
-    if (self.delegate == nil) {
-        self.delegate = self;
-    }
+- (void)insertMechanism:(FRAMechanism *)mechanism {
+    // TODO
 }
+
+- (void)deleteMechanism:(FRAMechanism *)mechanism {
+    // TODO
+}
+
+- (void)updateMechanism:(FRAMechanism *)mechanism {
+    // TODO
+}
+
+#pragma mark -
+#pragma mark Notification Functions
+
+- (void)insertNotification:(FRANotification *)notification {
+    // TODO
+}
+
+- (void)deleteNotification:(FRANotification *)notification {
+    // TODO
+}
+
+- (void)updateNotification:(FRANotification *)notification {
+    // TODO
+}
+
 
 @end

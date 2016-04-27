@@ -15,22 +15,36 @@
  */
 
 #import <Foundation/Foundation.h>
+
+#import "FRAIdentityDatabase.h"
+#import "FRAModelObjectProtected.h"
 #import "FRANotification.h"
 
 /*!
  * All notifications are expected to be able to transition from the initial state
  * of pending, to the final state of approved or denied.
  */
-@implementation FRANotification : NSObject
+@implementation FRANotification
 
-- (instancetype)init {
-    self = [super init];
+#pragma mark -
+#pragma mark Lifecyle
+
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database {
+    
+    self = [super initWithDatabase:database];
     if (self) {
         _pending = YES;
         _approved = NO;
     }
     return self;
 }
+
++ (instancetype)initWithDatabase:(FRAIdentityDatabase *)database {
+    return [[FRANotification alloc] initWithDatabase:database];
+}
+
+#pragma mark -
+#pragma mark Notification Functions
 
 - (NSString *)age {
     return @"TODO: age";
@@ -39,13 +53,17 @@
 - (void)approve {
     _approved = YES;
     _pending = NO;
-    // TODO: And call FRAIdentityDatabase to update Notification.
+    if ([self isStored]) {
+        [self.database updateNotification:self];
+    }
 }
 
 - (void)deny {
     _approved = NO;
     _pending = NO;
-    // TODO: And call FRAIdentityDatabase to update Notification.
+    if ([self isStored]) {
+        [self.database updateNotification:self];
+    }
 }
 
 @end

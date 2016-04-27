@@ -15,7 +15,11 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <OCMock/OCMock.h>
 #import <XCTest/XCTest.h>
+
+#import "FRAIdentityDatabase.h"
+#import "FRAIdentityDatabaseSQLiteOperations.h"
 #import "FRANotification.h"
 
 @interface FRANotificationTest : XCTestCase
@@ -23,13 +27,20 @@
 @end
 
 @implementation FRANotificationTest {
-    FRANotification* notification;
-}
 
+    FRAIdentityDatabaseSQLiteOperations *mockSqlOperations;
+    FRAIdentityDatabase *database;
+    FRANotification* notification;
+    id databaseObserverMock;
+
+}
 
 - (void)setUp {
     [super setUp];
-    notification = [[FRANotification alloc] init];
+    mockSqlOperations = OCMClassMock([FRAIdentityDatabaseSQLiteOperations class]);
+    database = [[FRAIdentityDatabase alloc] initWithSqlOperations:mockSqlOperations];
+    notification = [[FRANotification alloc] initWithDatabase:database];
+    databaseObserverMock = OCMObserverMock();
 }
 
 - (void)tearDown {
@@ -45,7 +56,6 @@
     XCTAssertEqual([notification isPending], YES);
     XCTAssertEqual([notification isApproved], NO);
 }
-
 
 - (void)testShouldApproveNotification {
     // Given
@@ -69,8 +79,40 @@
     XCTAssertEqual([notification isApproved], NO);
 }
 
+- (void)testSavedNotificationAutomaticallySavesItselfToDatabaseWhenApproved {
+    // Given
+    [database insertNotification:notification];
+    
+    // When
+    [notification approve];
+    
+    // Then
+    OCMVerify([mockSqlOperations updateNotification:notification]);
+}
 
+- (void)testSavedNotificationAutomaticallySavesItselfToDatabaseWhenDenied {
+    // Given
+    [database insertNotification:notification];
+    
+    // When
+    [notification deny];
+    
+    // Then
+    OCMVerify([mockSqlOperations updateNotification:notification]);
+}
 
+- (void)testBroadcastsOneChangeNotificationWhenNotificationUpdateIsAutomaticallySavedToDatabase {
+    // Given
+    [database insertNotification:notification];
+    [[NSNotificationCenter defaultCenter] addMockObserver:databaseObserverMock name:FRAIdentityDatabaseChangedNotification object:database];
+    [[databaseObserverMock expect] notificationWithName:FRAIdentityDatabaseChangedNotification object:database userInfo:[OCMArg any]];
+    
+    // When
+    [notification approve];
+    
+    // Then
+    OCMVerifyAll(databaseObserverMock);
+}
 
 @end
 

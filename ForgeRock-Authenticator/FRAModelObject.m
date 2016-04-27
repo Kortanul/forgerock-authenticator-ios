@@ -14,18 +14,25 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import <UIKit/UIKit.h>
+#import "FRAIdentityDatabase.h"
+#import "FRAModelObject.h"
+#import "FRAModelObjectProtected.h"
 
-@class FRAIdentityModel;
+@implementation FRAModelObject
 
-/*!
- * Controller for Accounts table-view.
- */
-@interface FRAAccountsTableViewController : UITableViewController
+#pragma mark -
+#pragma mark Lifecyle
 
-/*!
- * The identity model. Exposed to allow (setter) dependency injection.
- */
-@property (nonatomic, strong) FRAIdentityModel *identityModel;
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database {
+    if (self = [super init]) {
+        _database = database;
+        _uid = FRANotStored;
+    }
+    return self;
+}
+
+- (BOOL)isStored {
+    return self.uid != FRANotStored;
+}
 
 @end

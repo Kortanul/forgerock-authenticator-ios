@@ -18,6 +18,8 @@
 #import "FRAAccountTableViewController.h"
 #import "FRAApplicationAssembly.h"
 #import "FRAIdentityDatabase.h"
+#import "FRAIdentityDatabaseSQLiteOperations.h"
+#import "FRAIdentityModel.h"
 #import "FRAMechanismFactory.h"
 #import "FRANotificationGateway.h"
 #import "FRANotificationHandler.h"
@@ -27,25 +29,46 @@
 
 - (FRAAccountTableViewController *)accountTableViewController {
     return [TyphoonDefinition withClass:[FRAAccountTableViewController class] configuration:^(TyphoonDefinition *definition) {
-        [definition injectProperty:@selector(database) with:[self identityDatabase]];
+        [definition injectProperty:@selector(identityModel) with:[self identityModel]];
     }];
 }
 
 - (FRAAccountsTableViewController *)accountsTableViewController {
     return [TyphoonDefinition withClass:[FRAAccountsTableViewController class] configuration:^(TyphoonDefinition *definition) {
-        [definition injectProperty:@selector(database) with:[self identityDatabase]];
+        [definition injectProperty:@selector(identityModel) with:[self identityModel]];
     }];
 }
 
 - (FRAIdentityDatabase *)identityDatabase {
     return [TyphoonDefinition withClass:[FRAIdentityDatabase class] configuration:^(TyphoonDefinition *definition) {
+        [definition useInitializer:@selector(initWithSqlOperations:) parameters:^(TyphoonMethod *initializer) {
+            [initializer injectParameterWith:[self identityDatabaseSQLiteOperations]];
+        }];
+        definition.scope = TyphoonScopeSingleton;
+    }];
+}
+
+- (FRAIdentityDatabase *)identityDatabaseSQLiteOperations {
+    return [TyphoonDefinition withClass:[FRAIdentityDatabaseSQLiteOperations class] configuration:^(TyphoonDefinition *definition) {
+        definition.scope = TyphoonScopeSingleton;
+    }];
+}
+
+- (FRAIdentityModel *)identityModel {
+    return [TyphoonDefinition withClass:[FRAIdentityModel class] configuration:^(TyphoonDefinition *definition) {
+        [definition useInitializer:@selector(initWithDatabase:) parameters:^(TyphoonMethod *initializer) {
+            [initializer injectParameterWith:[self identityDatabase]];
+        }];
         definition.scope = TyphoonScopeSingleton;
     }];
 }
 
 - (FRAMechanismFactory *)mechanismFactory {
     return [TyphoonDefinition withClass:[FRAMechanismFactory class] configuration:^(TyphoonDefinition *definition) {
-        [definition injectProperty:@selector(database) with:[self identityDatabase]];
+        [definition useInitializer:@selector(initWithDatabase:identityModel:) parameters:^(TyphoonMethod *initializer) {
+            [initializer injectParameterWith:[self identityDatabase]];
+            [initializer injectParameterWith:[self identityModel]];
+        }];
     }];
 }
 
@@ -60,8 +83,9 @@
 
 - (FRANotificationHandler *)notificationHandler {
     return [TyphoonDefinition withClass:[FRANotificationHandler class] configuration:^(TyphoonDefinition *definition) {
-        [definition useInitializer:@selector(initWithDatabase:) parameters:^(TyphoonMethod *initializer) {
+        [definition useInitializer:@selector(initWithDatabase:identityModel:) parameters:^(TyphoonMethod *initializer) {
             [initializer injectParameterWith:[self identityDatabase]];
+            [initializer injectParameterWith:[self identityModel]];
         }];
         definition.scope = TyphoonScopeSingleton;
     }];
@@ -69,7 +93,6 @@
 
 - (FRAQRScanViewController *)qrScanViewController {
     return [TyphoonDefinition withClass:[FRAQRScanViewController class] configuration:^(TyphoonDefinition *definition) {
-        [definition injectProperty:@selector(database) with:[self identityDatabase]];
         [definition injectProperty:@selector(mechanismFactory) with:[self mechanismFactory]];
     }];
 }

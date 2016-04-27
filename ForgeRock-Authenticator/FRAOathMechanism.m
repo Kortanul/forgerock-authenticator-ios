@@ -16,8 +16,10 @@
  * Portions Copyright 2014 Nathaniel McCallum, Red Hat
  */
 
+#import "FRAIdentityDatabase.h"
 #import "FRAOathMechanism.h"
 #import "FRAOathCode.h"
+#import "FRAModelObjectProtected.h"
 
 #include <CommonCrypto/CommonHMAC.h>
 #include <sys/time.h>
@@ -30,9 +32,12 @@
     uint32_t period;
 }
 
-- (instancetype)initWithType:(NSString*)type usingSecretKey:(NSData*)secretKey andHMACAlgorithm:(CCHmacAlgorithm)algorithm withKeyLength:(NSUInteger)digits andEitherPeriod:(NSUInteger)timePeriod orCounter:(NSUInteger)hmacCounter {
-    
-    self = [super init];
+#pragma mark -
+#pragma mark Lifecyle
+
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database type:(NSString *)type usingSecretKey:(NSData *)secretKey andHMACAlgorithm:(CCHmacAlgorithm)algorithm withKeyLength:(NSUInteger)digits andEitherPeriod:(NSUInteger)timePeriod orCounter:(NSUInteger)hmacCounter {
+
+    self = [super initWithDatabase:database];
     if (self) {
         _type = type;
         key = secretKey;
@@ -45,6 +50,10 @@
     return self;
 }
 
++ (instancetype)oathMechanismWithDatabase:(FRAIdentityDatabase *)database type:(NSString *)type usingSecretKey:(NSData *)secretKey andHMACAlgorithm:(CCHmacAlgorithm)algorithm withKeyLength:(NSUInteger)digits andEitherPeriod:(NSUInteger)period orCounter:(NSUInteger)counter {
+    return [[FRAOathMechanism alloc] initWithDatabase:database type:type usingSecretKey:secretKey andHMACAlgorithm:algorithm withKeyLength:digits andEitherPeriod:period orCounter:counter];
+}
+
 - (void)generateNextCode {
     time_t now = time(NULL);
     if (now == (time_t) -1) {
@@ -55,6 +64,7 @@
         uint64_t startTime = now;
         uint64_t endTime = startTime + period;
         _code = [[FRAOathCode alloc] initWithValue:code startTime:startTime endTime:endTime];
+        [self.database updateMechanism:self];
     } if ([_type isEqualToString:@"totp"]) {
         NSString* code = getHOTP(algo, _digits, key, now / period);
         uint64_t startTime = now / period * period;

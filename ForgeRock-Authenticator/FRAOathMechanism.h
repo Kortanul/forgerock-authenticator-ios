@@ -42,17 +42,40 @@
  */
 @property (nonatomic, readonly) FRAOathCode* code;
 
+#pragma mark -
+#pragma mark Lifecyle
+
 /*!
- * Initialise an OATH Mechanism with all required field to describe either
+ * Initialize an OATH Mechanism with all required field to describe either
  * a HOTP or a TOTP mechanism.
- * @param Type either "hotp" or "totp".
- * @param Secret key bytes used to generate HMAC.
- * @param The HMAC algorithm to use. Currently only MD5, SHA256, SHA512 and SHA1 are supported.
- * @param The length of the key.
- * @param TOTP based refresh period.
- * @param HOTP hash counter.
+ *
+ * @param database The database to which this mechanism can be persisted.
+ * @param type The OTP type (either "hotp" or "totp").
+ * @param secretKey The secret key bytes used to generate HMAC.
+ * @param algorithm The HMAC algorithm to use. Currently only MD5, SHA256, SHA512 and SHA1 are supported.
+ * @param digits The length of the key.
+ * @param period TOTP based refresh period.
+ * @param counter HOTP hash counter.
+ *
+ * @return The initialized mechanism or nil if initialization failed.
  */
-- (instancetype) initWithType:(NSString*)type usingSecretKey:(NSData*)secretKey andHMACAlgorithm:(CCHmacAlgorithm)algorithm withKeyLength:(NSUInteger)digits andEitherPeriod:(NSUInteger)period orCounter:(NSUInteger)counter;
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database type:(NSString *)type usingSecretKey:(NSData *)secretKey andHMACAlgorithm:(CCHmacAlgorithm)algorithm withKeyLength:(NSUInteger)digits andEitherPeriod:(NSUInteger)period orCounter:(NSUInteger)counter;
+
+/*!
+ * Allocate and initialize an OATH Mechanism with all required field to describe either
+ * a HOTP or a TOTP mechanism.
+ *
+ * @param database The database to which this mechanism can be persisted.
+ * @param type The OTP type (either "hotp" or "totp").
+ * @param secretKey The secret key bytes used to generate HMAC.
+ * @param algorithm The HMAC algorithm to use. Currently only MD5, SHA256, SHA512 and SHA1 are supported.
+ * @param digits The length of the key.
+ * @param period TOTP based refresh period.
+ * @param counter HOTP hash counter.
+ *
+ * @return The initialized mechanism or nil if initialization failed.
+ */
++ (instancetype)oathMechanismWithDatabase:(FRAIdentityDatabase *)database type:(NSString *)type usingSecretKey:(NSData *)secretKey andHMACAlgorithm:(CCHmacAlgorithm)algorithm withKeyLength:(NSUInteger)digits andEitherPeriod:(NSUInteger)period orCounter:(NSUInteger)counter;
 
 /*!
  * Generates the next code for this OATH mechanism.

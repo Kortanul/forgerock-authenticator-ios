@@ -14,64 +14,146 @@
  * Copyright 2016 ForgeRock AS.
  */
 
+#import <OCMock/OCMock.h>
 #import <XCTest/XCTest.h>
+
 #import "FRAIdentity.h"
+#import "FRAIdentityDatabase.h"
+#import "FRAIdentityDatabaseSQLiteOperations.h"
 #import "FRAMechanism.h"
+#import "FRAOathMechanism.h"
+#import "FRAPushMechanism.h"
 
 @interface FRAIdentityTests : XCTestCase
 
 @end
 
 @implementation FRAIdentityTests {
+
+    FRAIdentityDatabaseSQLiteOperations *mockSqlOperations;
+    FRAIdentityDatabase *database;
     FRAIdentity* identity;
+    NSString* issuer;
+    NSString* accountName;
+    NSURL* image;
+    id databaseObserverMock;
+
 }
 
 - (void)setUp {
     [super setUp];
-    identity = [[FRAIdentity alloc] initWithAccountName:@"badger" issuedBy:@"forrest"
-                                              withImage:[[NSURL alloc] initWithString:@"http://animalia-life.com/data_images/badger/badger1.jpg"]];
+    mockSqlOperations = OCMClassMock([FRAIdentityDatabaseSQLiteOperations class]);
+    database = [[FRAIdentityDatabase alloc] initWithSqlOperations:mockSqlOperations];
+    issuer = @"ForgeRock";
+    accountName = @"joe.bloggs";
+    image = [NSURL URLWithString:@"https://forgerock.org/ico/favicon-32x32.png"];
+    identity = [FRAIdentity identityWithDatabase:database accountName:accountName issuer:issuer image:image];
+    databaseObserverMock = OCMObserverMock();
 }
 
 - (void)tearDown {
     [super tearDown];
 }
 
-- (void)testIdentityWithLabelIssuerImage {
-    // Given
-    NSString* issuer = @"ForgeRock";
-    NSString* accountName = @"joe.bloggs";
-    NSURL* image = [NSURL URLWithString:@"https://forgerock.org/ico/favicon-32x32.png"];
-    
-    // When
-    FRAIdentity* test = [FRAIdentity identityWithAccountName:accountName issuedBy:issuer withImage:image];
-    
-    // Then
-    XCTAssertEqualObjects([test issuer], issuer);
-    XCTAssertEqualObjects([test accountName], accountName);
-    XCTAssertEqualObjects([[test image] absoluteString], [image description]);
+- (void)testCanInitIdentityWithLabelIssuerImage {
+    XCTAssertEqualObjects(identity.issuer, issuer);
+    XCTAssertEqualObjects(identity.accountName, accountName);
+    XCTAssertEqualObjects([identity.image absoluteString], [image description]);
 }
 
-- (void) testCanAddMechanism {
+- (void)testCanAddMechanism {
     // Given
-    FRAMechanism* mechansim = [[FRAMechanism alloc] init];
+    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
     
     // When
-    [identity addMechanism:mechansim];
+    [identity addMechanism:pushMechanism];
     
     // Then
-    XCTAssertEqual([[identity mechanisms]count], 1);
+    XCTAssertEqual(pushMechanism.parent, identity);
+    XCTAssertTrue([[identity mechanisms] containsObject:pushMechanism]);
 }
 
-- (void) testCanRemoveMechanism {
+- (void)testSavedIdentityAutomaticallySavesAddedMechanismToDatabase {
     // Given
-    FRAMechanism* mechansim = [[FRAMechanism alloc] init];
-    [identity addMechanism:mechansim];
+    [database insertIdentity:identity];
+    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
     
     // When
-    [identity removeMechanism:mechansim];
+    [identity addMechanism:pushMechanism];
     
     // Then
-    XCTAssertEqual([[identity mechanisms]count], 0);
+    XCTAssertTrue([pushMechanism isStored]);
+    OCMVerify([mockSqlOperations insertMechanism:pushMechanism]);
+}
+
+- (void)testBroadcastsOneChangeNotificationWhenMechanismIsAutomaticallySavedToDatabase {
+    // Given
+    [database insertIdentity:identity];
+    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
+    [[NSNotificationCenter defaultCenter] addMockObserver:databaseObserverMock name:FRAIdentityDatabaseChangedNotification object:database];
+    [[databaseObserverMock expect] notificationWithName:FRAIdentityDatabaseChangedNotification object:database userInfo:[OCMArg any]];
+    
+    // When
+    [identity addMechanism:pushMechanism];
+    
+    // Then
+    OCMVerifyAll(databaseObserverMock);
+}
+
+- (void)testCanRemoveMechanism {
+    // Given
+    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
+    [identity addMechanism:pushMechanism];
+    
+    // When
+    [identity removeMechanism:pushMechanism];
+    
+    // Then
+    XCTAssertEqual(pushMechanism.parent, nil);
+    XCTAssertFalse([[identity mechanisms] containsObject:pushMechanism]);
+}
+
+- (void)testSavedIdentityAutomaticallyRemovesMechanismFromDatabase {
+    // Given
+    [database insertIdentity:identity];
+    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
+    [identity addMechanism:pushMechanism];
+    
+    // When
+    [identity removeMechanism:pushMechanism];
+    
+    // Then
+    XCTAssertFalse([pushMechanism isStored]);
+    OCMVerify([mockSqlOperations deleteMechanism:pushMechanism]);
+}
+
+- (void)testBroadcastsOneChangeNotificationWhenMechanismIsAutomaticallyRemovedFromDatabase {
+    // Given
+    [database insertIdentity:identity];
+    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
+    [identity addMechanism:pushMechanism];
+    [[NSNotificationCenter defaultCenter] addMockObserver:databaseObserverMock name:FRAIdentityDatabaseChangedNotification object:database];
+    [[databaseObserverMock expect] notificationWithName:FRAIdentityDatabaseChangedNotification object:database userInfo:[OCMArg any]];
+    
+    // When
+    [identity removeMechanism:pushMechanism];
+    
+    // Then
+    OCMVerifyAll(databaseObserverMock);
+}
+
+- (void)testCanQueryForMechanismByType {
+    // Given
+    FRAOathMechanism *oathMechanism = [[FRAOathMechanism alloc] initWithDatabase:database];
+    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
+    
+    // When
+    [identity addMechanism:oathMechanism];
+    [identity addMechanism:pushMechanism];
+    
+    // Then
+    XCTAssertEqualObjects([identity mechanismOfClass:[FRAOathMechanism class]], oathMechanism);
+    XCTAssertEqualObjects([identity mechanismOfClass:[FRAPushMechanism class]], pushMechanism);
 }
 
 @end

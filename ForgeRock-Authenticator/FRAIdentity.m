@@ -16,14 +16,20 @@
 
 #import "FRAIdentity.h"
 #import "FRAMechanism.h"
+#import "FRAModelObjectProtected.h"
+#import "FRAIdentityDatabase.h"
 
 @implementation FRAIdentity {
-    NSMutableArray* mechanismList;
+    
+    NSMutableArray *mechanismList;
+
 }
 
-- (instancetype)initWithAccountName:(NSString*)accountName issuedBy:(NSString*)issuer withImage:(NSURL*)image {
-    if (self = [super init]) {
-        _uid = -1;
+#pragma mark -
+#pragma mark Lifecyle
+
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database accountName:(NSString *)accountName issuer:(NSString *)issuer image:(NSURL *)image {
+    if (self = [super initWithDatabase:database]) {
         _accountName = accountName;
         _issuer = issuer;
         _image = image;
@@ -32,22 +38,40 @@
     return self;
 }
 
-+ (instancetype)identityWithAccountName:(NSString*)accountName issuedBy:(NSString*)issuer withImage:(NSURL*)image {
-    return [[FRAIdentity alloc] initWithAccountName:accountName issuedBy:issuer withImage:image];
++ (instancetype)identityWithDatabase:(FRAIdentityDatabase *)database accountName:(NSString *)accountName issuer:(NSString *)issuer image:(NSURL *)image {
+    return [[FRAIdentity alloc] initWithDatabase:database accountName:accountName issuer:issuer image:image];
 }
 
-- (NSArray*) mechanisms {
+#pragma mark -
+#pragma mark Mechanism Functions
+
+- (NSArray *)mechanisms {
     return [[NSArray alloc] initWithArray:mechanismList];
 }
 
-- (void) addMechanism:(FRAMechanism *)mechansim {
-    [mechansim setParent:self];
-    [mechanismList addObject:mechansim];
+- (FRAMechanism *)mechanismOfClass:(Class)aClass {
+    for (FRAMechanism *mechanism in mechanismList) {
+        if ([mechanism isKindOfClass:aClass]) {
+            return mechanism;
+        }
+    }
+    return nil;
 }
 
-- (void) removeMechanism:(FRAMechanism *)mechansim {
-    [mechanismList removeObject:mechansim];
-    [mechansim setParent:nil];
+- (void)addMechanism:(FRAMechanism *)mechanism {
+    [mechanism setParent:self];
+    [mechanismList addObject:mechanism];
+    if ([self isStored]) {
+        [self.database insertMechanism:mechanism];
+    }
+}
+
+- (void)removeMechanism:(FRAMechanism *)mechanism {
+    [mechanismList removeObject:mechanism];
+    [mechanism setParent:nil];
+    if ([self isStored]) {
+        [self.database deleteMechanism:mechanism];
+    }
 }
 
 @end

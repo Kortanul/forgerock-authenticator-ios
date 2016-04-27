@@ -59,9 +59,9 @@
     NSError* configureError;
     [[GGLContext sharedInstance] configureWithError:&configureError];
     NSAssert(!configureError, @"Error configuring Google services: %@", configureError);
-    
+
     // Register for remote notifications from APNS
-    
+
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_7_1) {
         // iOS 7.1 or earlier
         UIRemoteNotificationType allNotificationTypes = (UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge);
@@ -73,15 +73,15 @@
         [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
         [[UIApplication sharedApplication] registerForRemoteNotifications];
     }
-    
+
     // Start GCM service
-    
+
     GCMConfig *gcmConfig = [GCMConfig defaultConfig];
     [[GCMService sharedInstance] startWithConfig:gcmConfig];
-    
+
     // Initialize handler for registration token request
     // (gets used in application:didRegisterForRemoteNotificationsWithDeviceToken: and onTokenRefresh:)
-    
+
     __weak typeof(self) weakSelf = self;
     _registrationHandler = ^(NSString *registrationToken, NSError *error){
         if (registrationToken != nil) {
@@ -91,14 +91,14 @@
             NSLog(@"Registration to GCM failed with error: %@", error.localizedDescription);
         }
     };
-    
+
     return YES;
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    
+
     // App is transitioning to the foreground, so connect to the GCM cloud service
-    
+
     [[GCMService sharedInstance] connectWithHandler:^(NSError *error) {
         if (error) {
             NSLog(@"Could not connect to GCM: %@", error.localizedDescription);
@@ -109,9 +109,9 @@
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    
+
     // App is transitioning to the background, so disconnect from the GCM cloud service
-    
+
     [[GCMService sharedInstance] disconnect];
     NSLog(@"Disconnected from GCM");
 }
@@ -126,10 +126,10 @@
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     NSLog(@"Registered for remote notifications. deviceToken=%@", deviceToken);
     _deviceToken = [self stringFromDeviceToken:deviceToken];
-    
+
     // Successful registration with APNS for notifications; yeilding token: deviceToken
     // Request a GCM registration token so that notifications can be received from GCM
-    
+
     GGLInstanceIDConfig *instanceIDConfig = [GGLInstanceIDConfig defaultConfig];
     instanceIDConfig.delegate = self;
     [[GGLInstanceID sharedInstance] startWithConfig:instanceIDConfig];
@@ -137,9 +137,9 @@
                              kGGLInstanceIDRegisterAPNSOption:deviceToken, // The APNS token
                              kGGLInstanceIDAPNSServerTypeSandboxOption:@NO // YES=development, NO=production
                              };
-    
+
     [self registerGcmSenderId];
-    
+
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
@@ -186,9 +186,9 @@
 #pragma mark GGLInstanceIDDelegate
 
 - (void)onTokenRefresh {
-    
+
     // A rotation of the registration tokens is happening, so the app needs to request a new token.
-    
+
     NSLog(@"The GCM registration token needs to be changed.");
     [self registerGcmSenderId];
 }

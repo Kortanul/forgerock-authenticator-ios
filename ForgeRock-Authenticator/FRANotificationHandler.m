@@ -15,7 +15,7 @@
  */
 
 #import "FRAIdentity.h"
-#import "FRAIdentityDatabase.h"
+#import "FRAIdentityModel.h"
 #import "FRAPushMechanism.h"
 #import "FRANotification.h"
 #import "FRANotificationHandler.h"
@@ -26,47 +26,52 @@
 @interface FRANotificationHandler ()
 
 /*!
- * The database.
+ * The identity model.
  */
-@property (nonatomic, strong, readonly) FRAIdentityDatabase *database;
+@property (nonatomic, strong, readonly) FRAIdentityModel *identityModel;
 
 @end
 
 
-@implementation FRANotificationHandler
+@implementation FRANotificationHandler {
+    
+    FRAIdentityDatabase *_database;
+    
+}
 
 #pragma mark -
 #pragma mark Lifecycle
 
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database {
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel {
     self = [super init];
     if (self) {
         _database = database;
+        _identityModel = identityModel;
     }
     return self;
 }
 
-+ (instancetype)handlerWithDatabase:(FRAIdentityDatabase *)database {
-    return [[FRANotificationHandler alloc] initWithDatabase:database];
++ (instancetype)handlerWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel {
+    return [[FRANotificationHandler alloc] initWithDatabase:database identityModel:identityModel];
 }
 
 #pragma mark -
 #pragma mark Remote Notifications
 
 - (void)handleRemoteNotification:(NSDictionary *)userInfo {
-    
+
     NSLog(@"first %@", [userInfo objectForKey:@"first"]);
     NSLog(@"second %@", [userInfo objectForKey:@"second"]);
-    
+
     // TODO: Read relevant attributes from userInfo (object graph representation of JSON notification)
     //       and populate FRANotification appropriately.
-    
-    FRANotification *notification = [[FRANotification alloc] init];
-    
+
+    FRANotification *notification = [[FRANotification alloc] initWithDatabase:_database];
+
     // Until registration & mechanismIds are implemented, just add the notification to the dummy push mechanism on Alice
-    
+
     FRAPushMechanism* dummyPushMechanism = nil;
-    for (FRAIdentity* identity in [self.database identities]) {
+    for (FRAIdentity* identity in [self.identityModel identities]) {
         for (FRAMechanism* mechanism in identity.mechanisms) {
             if ([mechanism isKindOfClass:[FRAPushMechanism class]]) {
                 dummyPushMechanism = (FRAPushMechanism *) mechanism;

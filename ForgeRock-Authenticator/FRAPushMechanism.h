@@ -27,4 +27,25 @@
  */
 @property (nonatomic, readonly) NSInteger version;
 
+#pragma mark -
+#pragma mark Lifecyle
+
+/*!
+ * Init Push Mechanism.
+ *
+ * @param database The database to which this mechanism can be persisted.
+ *
+ * @return The initialized mechanism or nil if initialization failed.
+ */
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database;
+
+/*!
+ * Allocate and init Push Mechanism.
+ *
+ * @param database The database to which this mechanism can be persisted.
+ *
+ * @return The initialized mechanism or nil if initialization failed.
+ */
++ (instancetype)pushMechanismWithDatabase:(FRAIdentityDatabase *)database;
+
 @end

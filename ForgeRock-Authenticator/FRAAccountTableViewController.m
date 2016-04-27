@@ -20,6 +20,7 @@
 #import "FRAOathMechanism.h"
 #import "FRAOathMechanismTableViewCell.h"
 #import "FRAOathMechanismTableViewController.h"
+#import "FRAPushMechanism.h"
 
 @implementation FRAAccountTableViewController
 
@@ -35,26 +36,31 @@
     _image.clipsToBounds = YES;
     
     // Bind identity model to UI
-    //  _image = ... // TODO: Use URLImageView
+    //  _image = ... // TODO: Use UIImageView+AFNetworking category provided by AFNetworking
     _issuer.text = _identity.issuer;
     _accountName.text = _identity.accountName;
     
     // Bind controller to OATH mechanism table view cell defined in storyboard - let controller bind model
     // TODO: Update OATH controller so that it can handle nil
     if ([self hasRegisteredOathMechanism]) {
-        _tokenTableViewCell.delegate = [FRAOathMechanismTableViewController controllerForView:_tokenTableViewCell withMechanism:[self oathMechanism] withDatabase:_database];
+        _tokenTableViewCell.delegate = [FRAOathMechanismTableViewController controllerForView:_tokenTableViewCell withMechanism:[self oathMechanism] withIdentityModel:self.identityModel];
     }
 
     // TODO: Bind controller to push mechanism table view cell defined in storyboard - let controller bind model
     // Prevent M13BadgeView from attempting to position itself, position should be set by storyboard constraints
     self.notificationsBadge.verticalAlignment = M13BadgeViewVerticalAlignmentNone;
     self.notificationsBadge.horizontalAlignment = M13BadgeViewHorizontalAlignmentNone;
-    self.notificationsBadge.text = @"1";
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.tableView reloadData];
+    [self updateNotificationsCount];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleIdentityDatabaseChanged:) name:FRAIdentityDatabaseChangedNotification object:nil];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 -(void)viewDidLayoutSubviews {
@@ -133,8 +139,13 @@
                                             otherButtonTitles:@"Delete", nil];
             alertView.callback = ^(NSInteger offset) {
                 if (offset == 0) {
+                    
+                    // TODO: If this is the only mechanism registered to the parent identity, then
+                    //       navigate back to the accounts screen and with an instruction to remove
+                    //       the identity
+                    
                     // Remove the mechanism
-                    [_database removeMechanism:mechanism];
+                    [mechanism.parent removeMechanism:mechanism];
                     // Remove the mechanism cell from the UI
                     [self.tableView beginUpdates];
                     _tokenTableViewCell.hidden = YES;
@@ -144,7 +155,8 @@
                     _tokenTableViewCell.delegate.view = nil;
                     _tokenTableViewCell.delegate = nil;
                     // Navigate back to the accounts screen if the account was deleted
-                    if (![_database identityWithId:_identity.uid]) {
+                    
+                    if (![mechanism.parent isStored]) {
                         [self.navigationController popViewControllerAnimated:YES];
                     }
                 }
@@ -165,6 +177,12 @@
     return indexPath.row == 2;
 }
 
+- (void)updateNotificationsCount {
+    FRAPushMechanism *mechanism = [self pushMechanism];
+    NSInteger count = mechanism ? mechanism.notifications.count : 0;
+    self.notificationsBadge.text = [NSString stringWithFormat:@"%ld", (long) count];
+}
+
 - (BOOL)hasMechanismAtIndexPath:(NSIndexPath*)indexPath {
     return [self hasOathMechanismAtIndexPath:indexPath] || [self hasNotificationsMechanismAtIndexPath:indexPath];
 }
@@ -181,6 +199,21 @@
         }
     }
     return nil;
+}
+
+- (FRAPushMechanism*)pushMechanism {
+    NSArray* mechanisms = [_identity mechanisms];
+    for (NSObject* mechanism in mechanisms) {
+        if ([mechanism isKindOfClass:[FRAPushMechanism class]]) {
+            return (FRAPushMechanism*) mechanism;
+        }
+    }
+    return nil;
+}
+
+- (void)handleIdentityDatabaseChanged:(NSNotification *)notification {
+    NSLog(@"database changed notification received by account table view controller");
+    [self updateNotificationsCount];
 }
 
 @end

@@ -14,7 +14,11 @@
  * Copyright 2016 ForgeRock AS.
  */
 
+#import <OCMock/OCMock.h>
 #import <XCTest/XCTest.h>
+
+#import "FRAIdentityDatabase.h"
+#import "FRAIdentityDatabaseSQLiteOperations.h"
 #import "FRAMechanism.h"
 #import "FRANotification.h"
 
@@ -23,12 +27,20 @@
 @end
 
 @implementation FRAMechanismTest {
-    FRAMechanism* mechanism;
+
+    FRAIdentityDatabaseSQLiteOperations *mockSqlOperations;
+    FRAIdentityDatabase *database;
+    FRAMechanism *mechanism;
+    id databaseObserverMock;
+
 }
 
 - (void)setUp {
     [super setUp];
-    mechanism = [[FRAMechanism alloc] init];
+    mockSqlOperations = OCMClassMock([FRAIdentityDatabaseSQLiteOperations class]);
+    database = [[FRAIdentityDatabase alloc] initWithSqlOperations:mockSqlOperations];
+    mechanism = [[FRAMechanism alloc] initWithDatabase:database];
+    databaseObserverMock = OCMObserverMock();
 }
 
 - (void)tearDown {
@@ -37,25 +49,83 @@
 
 - (void)testCanAddNotificationToMechanism {
     // Given
-    FRANotification* notifcation = [[FRANotification alloc] init];
+    FRANotification* notification = [[FRANotification alloc] initWithDatabase:database];
     
     // When
-    [mechanism addNotification:notifcation];
+    [mechanism addNotification:notification];
     
     // Then
-    XCTAssertEqual([[mechanism notifications] count], 1);
+    XCTAssertEqual(notification.parent, mechanism);
+    XCTAssertTrue([[mechanism notifications] containsObject:notification]);
+}
+
+- (void)testSavedMechanismAutomaticallySavesAddedNotificationToDatabase {
+    // Given
+    [database insertMechanism:mechanism];
+    FRANotification* notification = [[FRANotification alloc] initWithDatabase:database];
+    
+    // When
+    [mechanism addNotification:notification];
+    
+    // Then
+    XCTAssertTrue([notification isStored]);
+    OCMVerify([mockSqlOperations insertNotification:notification]);
+}
+
+- (void)testBroadcastsOneChangeNotificationWhenNotificationIsAutomaticallySavedToDatabase {
+    // Given
+    [database insertMechanism:mechanism];
+    FRANotification* notification = [[FRANotification alloc] initWithDatabase:database];
+    [[NSNotificationCenter defaultCenter] addMockObserver:databaseObserverMock name:FRAIdentityDatabaseChangedNotification object:database];
+    [[databaseObserverMock expect] notificationWithName:FRAIdentityDatabaseChangedNotification object:database userInfo:[OCMArg any]];
+    
+    // When
+    [mechanism addNotification:notification];
+    
+    // Then
+    OCMVerifyAll(databaseObserverMock);
 }
 
 - (void)testCanRemoveNotificationFromMechanism {
     // Given
-    FRANotification* notifcation = [[FRANotification alloc] init];
-    [mechanism addNotification:notifcation];
+    FRANotification* notification = [[FRANotification alloc] initWithDatabase:database];
+    [mechanism addNotification:notification];
     
     // When
-    [mechanism removeNotification:notifcation];
+    [mechanism removeNotification:notification];
     
     // Then
-    XCTAssertEqual([[mechanism notifications] count], 0);
+    XCTAssertEqual(notification.parent, nil);
+    XCTAssertFalse([[mechanism notifications] containsObject:notification]);
+}
+
+- (void)testSavedMechanismAutomaticallyRemovesNotificationFromDatabase {
+    // Given
+    [database insertMechanism:mechanism];
+    FRANotification* notification = [[FRANotification alloc] initWithDatabase:database];
+    [mechanism addNotification:notification];
+    
+    // When
+    [mechanism removeNotification:notification];
+    
+    // Then
+    XCTAssertFalse([notification isStored]);
+    OCMVerify([mockSqlOperations deleteNotification:notification]);
+}
+
+- (void)testBroadcastsOneChangeNotificationWhenMechanismIsAutomaticallyRemovedFromDatabase {
+    // Given
+    [database insertMechanism:mechanism];
+    FRANotification* notification = [[FRANotification alloc] initWithDatabase:database];
+    [mechanism addNotification:notification];
+    [[NSNotificationCenter defaultCenter] addMockObserver:databaseObserverMock name:FRAIdentityDatabaseChangedNotification object:database];
+    [[databaseObserverMock expect] notificationWithName:FRAIdentityDatabaseChangedNotification object:database userInfo:[OCMArg any]];
+    
+    // When
+    [mechanism removeNotification:notification];
+    
+    // Then
+    OCMVerifyAll(databaseObserverMock);
 }
 
 @end

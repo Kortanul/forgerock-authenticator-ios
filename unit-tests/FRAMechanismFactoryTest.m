@@ -29,7 +29,6 @@
     FRAMechanismFactory* factory;
 }
 
-
 - (void)setUp {
     [super setUp];
     factory = [[FRAMechanismFactory alloc] init];
