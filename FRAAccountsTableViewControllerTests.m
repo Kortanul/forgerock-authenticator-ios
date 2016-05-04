@@ -99,8 +99,8 @@
     // Given
     FRAIdentity *identity = [FRAIdentity identityWithDatabase:nil accountName:@"Alice" issuer:@"Issuer" image:nil];
     FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:nil];
-    [pushMechanism addNotification:[[FRANotification alloc] initWithDatabase:nil]];
-    [pushMechanism addNotification:[[FRANotification alloc] initWithDatabase:nil]];
+    [pushMechanism addNotification:[[FRANotification alloc] initWithDatabase:nil messageId:nil challange:nil timeRecieved:nil ttl:nil]];
+    [pushMechanism addNotification:[[FRANotification alloc] initWithDatabase:nil messageId:nil challange:nil timeRecieved:nil ttl:nil]];
     [identity addMechanism:pushMechanism];
     XCTAssertNotNil([identity mechanismOfClass:[FRAPushMechanism class]]);
     NSArray* identities = @[identity];

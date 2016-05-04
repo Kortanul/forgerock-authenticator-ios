@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		00DE0DCF00074922CDD80446 /* libPods-ForgeRock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96EC0F2175B236161D1A1C9E /* libPods-ForgeRock.a */; };
+		2D977EAB1CD8BEBA000A7F29 /* FRANotificationHandlerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D977EAA1CD8BEBA000A7F29 /* FRANotificationHandlerTest.m */; };
 		44379CF41CC6664B00D7EAE9 /* FRABlockActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 44379CF31CC6664B00D7EAE9 /* FRABlockActionSheet.m */; };
 		44379CF71CC66C0300D7EAE9 /* FRABlockAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44379CF61CC66C0300D7EAE9 /* FRABlockAlertView.m */; };
 		443F203E1CCC28A400B91C2B /* FRAApplicationAssembly.m in Sources */ = {isa = PBXBuildFile; fileRef = 443F203D1CCC28A400B91C2B /* FRAApplicationAssembly.m */; };
@@ -78,6 +79,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2D977EAA1CD8BEBA000A7F29 /* FRANotificationHandlerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FRANotificationHandlerTest.m; path = "unit-tests/FRANotificationHandlerTest.m"; sourceTree = "<group>"; };
 		30AEC1B7AAFD1DE5FF7E7301 /* Pods-ForgeRock.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgeRock.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ForgeRock/Pods-ForgeRock.debug.xcconfig"; sourceTree = "<group>"; };
 		32654F29EFBE2CCDB5F30722 /* Pods-ForgeRockTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgeRockTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ForgeRockTests/Pods-ForgeRockTests.debug.xcconfig"; sourceTree = "<group>"; };
 		44379CF21CC6664B00D7EAE9 /* FRABlockActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRABlockActionSheet.h; sourceTree = "<group>"; };
@@ -325,8 +327,8 @@
 			children = (
 				44BC41801CA97DD6000931F3 /* FRANotificationsTableViewController.h */,
 				44BC41811CA97DD6000931F3 /* FRANotificationsTableViewController.m */,
-				44BC41831CA9DC12000931F3 /* FRANotificationTableViewCell.h */,
 				44BC41841CA9DC12000931F3 /* FRANotificationTableViewCell.m */,
+				44BC41831CA9DC12000931F3 /* FRANotificationTableViewCell.h */,
 				44B744551CAAA82300A83AF1 /* FRANotificationViewController.h */,
 				44B744561CAAA82300A83AF1 /* FRANotificationViewController.m */,
 				E1A92B6B1CBFC7FD00D7BB04 /* FRANotification.h */,
@@ -364,6 +366,7 @@
 			children = (
 				E12246151CD0FC8300F52C98 /* FRANotificationTest.m */,
 				4467225A1CD4038B00E80799 /* FRANotificationGatewayTests.m */,
+				2D977EAA1CD8BEBA000A7F29 /* FRANotificationHandlerTest.m */,
 			);
 			name = Notifications;
 			sourceTree = "<group>";
@@ -721,6 +724,7 @@
 				E12246171CD0FD0600F52C98 /* FRANotificationTest.m in Sources */,
 				44695F671CA0AE4300680799 /* FRAOathCode.m in Sources */,
 				44C2068C1CD9E4E200DC4D3B /* FRAIdentityModelTests.m in Sources */,
+				2D977EAB1CD8BEBA000A7F29 /* FRANotificationHandlerTest.m in Sources */,
 				E1C725FA1AEE7D0300388026 /* base32test.m in Sources */,
 				448EAF2C1CCD639F00FEF058 /* FRAAccountsTableViewControllerTests.m in Sources */,
 				44695F5B1C9F6DD900680799 /* FRAIdentity.m in Sources */,

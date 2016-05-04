@@ -32,15 +32,16 @@
 
 @end
 
-
 @implementation FRANotificationHandler {
     
     FRAIdentityDatabase *_database;
     
 }
 
-#pragma mark -
-#pragma mark Lifecycle
+static NSString const *TTL_KEY = @"ttl";
+static NSString const *MESSAGE_ID_KEY = @"messageId";
+static NSString const *CHALLENGE_KEY = @"challenge";
+static NSString const *MECHANISM_UID_KEY = @"mechanismUID";
 
 - (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel {
     self = [super init];
@@ -55,34 +56,23 @@
     return [[FRANotificationHandler alloc] initWithDatabase:database identityModel:identityModel];
 }
 
-#pragma mark -
-#pragma mark Remote Notifications
+- (void)handleRemoteNotification:(NSDictionary *)messageData {
 
-- (void)handleRemoteNotification:(NSDictionary *)userInfo {
-
-    NSLog(@"first %@", [userInfo objectForKey:@"first"]);
-    NSLog(@"second %@", [userInfo objectForKey:@"second"]);
-
-    // TODO: Read relevant attributes from userInfo (object graph representation of JSON notification)
-    //       and populate FRANotification appropriately.
-
-    FRANotification *notification = [[FRANotification alloc] initWithDatabase:_database];
-
-    // Until registration & mechanismIds are implemented, just add the notification to the dummy push mechanism on Alice
-
-    FRAPushMechanism* dummyPushMechanism = nil;
-    for (FRAIdentity* identity in [self.identityModel identities]) {
-        for (FRAMechanism* mechanism in identity.mechanisms) {
-            if ([mechanism isKindOfClass:[FRAPushMechanism class]]) {
-                dummyPushMechanism = (FRAPushMechanism *) mechanism;
-                break;
-            }
-        }
-        if (dummyPushMechanism) {
-            break;
-        }
+    NSString *ttl = [messageData objectForKey:TTL_KEY];
+    NSTimeInterval timeToLive = [ttl doubleValue];
+    
+    FRANotification *notification = [[FRANotification alloc] initWithDatabase:_database
+                                                                    messageId:[messageData objectForKey:MESSAGE_ID_KEY]
+                                                                    challange:[messageData objectForKey:CHALLENGE_KEY]
+                                                                 timeRecieved:[NSDate date]
+                                                                          ttl:&timeToLive];
+    
+    NSInteger mechanismId = [[messageData objectForKey:MECHANISM_UID_KEY] intValue];
+    FRAMechanism* mechanism = [_identityModel mechanismWithId:mechanismId];
+    
+    if (mechanism && [mechanism isKindOfClass:[FRAPushMechanism class]]) {
+        [mechanism addNotification:notification];
     }
-    [dummyPushMechanism addNotification:notification];
 }
 
 @end

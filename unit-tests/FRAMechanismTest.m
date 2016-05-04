@@ -24,6 +24,8 @@
 
 @interface FRAMechanismTest : XCTestCase
 
+- (FRANotification *) makeTestNotification:(FRAIdentityDatabase *)database;
+
 @end
 
 @implementation FRAMechanismTest {
@@ -49,7 +51,7 @@
 
 - (void)testCanAddNotificationToMechanism {
     // Given
-    FRANotification* notification = [[FRANotification alloc] initWithDatabase:database];
+    FRANotification* notification = [self makeTestNotification:database];
     
     // When
     [mechanism addNotification:notification];
@@ -62,7 +64,7 @@
 - (void)testSavedMechanismAutomaticallySavesAddedNotificationToDatabase {
     // Given
     [database insertMechanism:mechanism];
-    FRANotification* notification = [[FRANotification alloc] initWithDatabase:database];
+    FRANotification* notification = [self makeTestNotification:database];
     
     // When
     [mechanism addNotification:notification];
@@ -75,7 +77,7 @@
 - (void)testBroadcastsOneChangeNotificationWhenNotificationIsAutomaticallySavedToDatabase {
     // Given
     [database insertMechanism:mechanism];
-    FRANotification* notification = [[FRANotification alloc] initWithDatabase:database];
+    FRANotification* notification = [self makeTestNotification:database];
     [[NSNotificationCenter defaultCenter] addMockObserver:databaseObserverMock name:FRAIdentityDatabaseChangedNotification object:database];
     [[databaseObserverMock expect] notificationWithName:FRAIdentityDatabaseChangedNotification object:database userInfo:[OCMArg any]];
     
@@ -88,7 +90,7 @@
 
 - (void)testCanRemoveNotificationFromMechanism {
     // Given
-    FRANotification* notification = [[FRANotification alloc] initWithDatabase:database];
+    FRANotification* notification = [self makeTestNotification:database];
     [mechanism addNotification:notification];
     
     // When
@@ -102,7 +104,7 @@
 - (void)testSavedMechanismAutomaticallyRemovesNotificationFromDatabase {
     // Given
     [database insertMechanism:mechanism];
-    FRANotification* notification = [[FRANotification alloc] initWithDatabase:database];
+    FRANotification* notification = [self makeTestNotification:database];
     [mechanism addNotification:notification];
     
     // When
@@ -116,7 +118,7 @@
 - (void)testBroadcastsOneChangeNotificationWhenMechanismIsAutomaticallyRemovedFromDatabase {
     // Given
     [database insertMechanism:mechanism];
-    FRANotification* notification = [[FRANotification alloc] initWithDatabase:database];
+    FRANotification* notification = [self makeTestNotification:database];
     [mechanism addNotification:notification];
     [[NSNotificationCenter defaultCenter] addMockObserver:databaseObserverMock name:FRAIdentityDatabaseChangedNotification object:database];
     [[databaseObserverMock expect] notificationWithName:FRAIdentityDatabaseChangedNotification object:database userInfo:[OCMArg any]];
@@ -126,6 +128,13 @@
     
     // Then
     OCMVerifyAll(databaseObserverMock);
+}
+
+- (FRANotification *) makeTestNotification:(FRAIdentityDatabase *)theDatabase {
+    NSTimeInterval ttl = 120.0;
+    FRANotification* notification = [[FRANotification alloc] initWithDatabase:theDatabase messageId:@"messageId" challange:@"Challange" timeRecieved:[NSDate date] ttl:&ttl];
+
+    return notification;
 }
 
 @end

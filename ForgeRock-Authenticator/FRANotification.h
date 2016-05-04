@@ -38,12 +38,12 @@
 /*!
  * A timestamp of when the Notification was received by the application.
  */
-@property (nonatomic, readonly) NSString *timeReceived;
+@property (nonatomic, readonly) NSDate* timeReceived;
 
 /*!
  * The timestamp of when the Notification is expected to expire.
  */
-@property (nonatomic, readonly) NSString *timeExpired;
+@property (nonatomic) NSDate* timeExpired;
 
 /*!
  * Indicator of whether this Notification is pending. In the pending state a
@@ -59,31 +59,26 @@
 @property (getter=isApproved, nonatomic, readonly) BOOL approved;
 
 /*!
- * JSON sctructured data which contains related information about this Notification.
+ * Message Id of the message.
  */
-@property (nonatomic, readonly) NSString *data;
-
-#pragma mark -
-#pragma mark Lifecyle
+@property (nonatomic, readonly) NSString* messageId;
 
 /*!
- * Init method.
- *
- * @param database The database to which this mechanism can be persisted.
- * @return The initialized mechanism or nil if initialization failed.
+ * The push challenge.
  */
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database;
+@property (nonatomic, readonly) NSString* challenge;
 
 /*!
- * Static factory method.
- *
- * @param database The database to which this mechanism can be persisted.
- * @return The initialized mechanism or nil if initialization failed.
+ * The time to live of the push login window.
  */
-+ (instancetype)initWithDatabase:(FRAIdentityDatabase *)database;
+@property (nonatomic, readonly) NSTimeInterval* ttl;
 
-#pragma mark -
-#pragma mark Notification Functions
+/*!
+ * Constructor for creating a Nofification.
+ */
+- (instancetype) initWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString*)messageId challange:(NSString*)challenge timeRecieved:(NSDate*)timeRecieved ttl:(NSTimeInterval*)ttl;
+
+- (instancetype) __unavailable initWithDatabase:(FRAIdentityDatabase *)database;
 
 /*!
  * Generates description of the age of this notification as:
@@ -96,7 +91,7 @@
  * else if (timeReceived < 24 hours ago)
  *     return "n hours ago";
  * else if (timeReceived < 1 day ago)
- *     return "Yesterday";
+ *     return "Yesterday";3
  * else if (timeReceived < 7 day ago)
  *     return "n days ago";
  * else
@@ -115,5 +110,6 @@
  * Notification.
  */
 - (void)deny;
+
 
 @end

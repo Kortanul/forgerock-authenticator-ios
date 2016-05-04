@@ -119,8 +119,9 @@
     FRAIdentity* bob = [FRAIdentity identityWithDatabase:database accountName:@"demo" issuer:@"Forgerock" image:nil];
     FRAPushMechanism* pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
     [bob addMechanism:pushMechanism];
-    [pushMechanism addNotification:[[FRANotification alloc] initWithDatabase:database]];
-    [pushMechanism addNotification:[[FRANotification alloc] initWithDatabase:database]];
+    NSTimeInterval ttl = 120.0;
+    [pushMechanism addNotification:[[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challange:@"challange" timeRecieved:[NSDate date] ttl:&ttl]];
+    [pushMechanism addNotification:[[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challange:@"challange" timeRecieved:[NSDate date] ttl:&ttl]];
     [[[self assembly] identityModel] addIdentity:bob];
 }
 

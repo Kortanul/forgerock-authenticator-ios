@@ -24,30 +24,47 @@
  * All notifications are expected to be able to transition from the initial state
  * of pending, to the final state of approved or denied.
  */
-@implementation FRANotification
+@implementation FRANotification {
+    NSDateFormatter *formatter;
+}
 
-#pragma mark -
-#pragma mark Lifecyle
+static double const ONE_MINUTE_IN_SECONDS = 60.0;
+static double const ONE_HOUR_IN_SECONDS = 3600.0;
+static double const ONE_DAY_IN_SECONDS = 86400.0;
+static double const TWO_DAYS_IN_SECONDS = 172800.0;
+static double const ONE_WEEK_IN_SECONDS = 604800.0;
+static NSString * const STRING_DATE_FORMAT = @"dd/MM/yyyy";
 
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database {
-    
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challange:(NSString *)challenge timeRecieved:(NSDate *)timeRecieved ttl:(NSTimeInterval *)ttl {
     self = [super initWithDatabase:database];
     if (self) {
         _pending = YES;
         _approved = NO;
+        
+        formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:STRING_DATE_FORMAT];
+        _messageId = messageId;
+        _challenge = challenge;
+        _ttl = ttl;
     }
     return self;
 }
 
-+ (instancetype)initWithDatabase:(FRAIdentityDatabase *)database {
-    return [[FRANotification alloc] initWithDatabase:database];
-}
-
-#pragma mark -
-#pragma mark Notification Functions
-
 - (NSString *)age {
-    return @"TODO: age";
+    NSTimeInterval age = [[NSDate date] timeIntervalSinceDate:self.timeReceived];
+    if (age < ONE_MINUTE_IN_SECONDS) {
+        return [NSString stringWithFormat:@"%ld seconds ago", (long)age];
+    } else if (age < ONE_HOUR_IN_SECONDS) {
+        return [NSString stringWithFormat:@"%ld minutes ago", (long)(age / ONE_MINUTE_IN_SECONDS)];
+    } else if (age < ONE_DAY_IN_SECONDS) {
+        return [NSString stringWithFormat:@"%ld hours ago", (long)(age / ONE_HOUR_IN_SECONDS)];
+    } else if (age < TWO_DAYS_IN_SECONDS) {
+        return @"Yesterday";
+    } else if (age < ONE_WEEK_IN_SECONDS) {
+        return [NSString stringWithFormat:@"%ld days ago", (long)(age / ONE_DAY_IN_SECONDS)];
+    } else {
+        return [formatter stringFromDate:self.timeReceived];
+    }
 }
 
 - (void)approve {

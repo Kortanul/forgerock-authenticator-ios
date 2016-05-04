@@ -39,7 +39,8 @@
     [super setUp];
     mockSqlOperations = OCMClassMock([FRAIdentityDatabaseSQLiteOperations class]);
     database = [[FRAIdentityDatabase alloc] initWithSqlOperations:mockSqlOperations];
-    notification = [[FRANotification alloc] initWithDatabase:database];
+    NSTimeInterval ttl = 120.0;
+    notification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challange:@"challange" timeRecieved:[NSDate date] ttl:&ttl];
     databaseObserverMock = OCMObserverMock();
 }
 
