@@ -131,8 +131,8 @@
 }
 
 - (FRANotification *) makeTestNotification:(FRAIdentityDatabase *)theDatabase {
-    NSTimeInterval ttl = 120.0;
-    FRANotification* notification = [[FRANotification alloc] initWithDatabase:theDatabase messageId:@"messageId" challange:@"Challange" timeRecieved:[NSDate date] ttl:&ttl];
+    NSTimeInterval timeToLive = 120.0;
+    FRANotification* notification = [[FRANotification alloc] initWithDatabase:theDatabase messageId:@"messageId" challenge:@"Challange" timeReceived:[NSDate date] timeToLive:timeToLive];
 
     return notification;
 }

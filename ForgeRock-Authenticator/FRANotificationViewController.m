@@ -15,6 +15,7 @@
  */
 
 #import "FRANotificationViewController.h"
+#import "FRANotification.h"
 
 @implementation FRANotificationViewController
 
@@ -34,12 +35,12 @@
 #pragma mark FRANotificationViewController
 
 - (IBAction)authorize:(id)sender {
-    NSLog(@"Permit requested action");
+    [self.notification approve];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (IBAction)dismiss:(id)sender {
-    NSLog(@"Deny requested action");
+    [self.notification deny];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

@@ -16,9 +16,13 @@
 
 #import <UIKit/UIKit.h>
 
+@class FRAPushMechanism;
+
 /*!
- * Controller for Notifications tab's table-view.
+ * Controller for Notifications table-view.
  */
 @interface FRANotificationsTableViewController : UITableViewController
+
+@property (strong, nonatomic) FRAPushMechanism *pushMechanism;
 
 @end

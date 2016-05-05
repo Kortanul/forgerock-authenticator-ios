@@ -10,7 +10,7 @@
         <!--My Accounts-->
         <scene sceneID="wqP-CD-bLc">
             <objects>
-                <tableViewController storyboardIdentifier="AccountsTableController" id="jSd-7p-fUf" customClass="FRAAccountsTableViewController" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="AccountsTableViewController" id="jSd-7p-fUf" customClass="FRAAccountsTableViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="75" sectionHeaderHeight="28" sectionFooterHeight="28" id="V0Y-MT-2sW">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -91,7 +91,7 @@
                     <navigationItem key="navigationItem" title="My Accounts" id="GOD-ca-1r4">
                         <barButtonItem key="leftBarButtonItem" systemItem="add" id="06l-0I-lU6">
                             <connections>
-                                <segue destination="buE-8b-wvc" kind="push" id="BWt-L1-kqF"/>
+                                <segue destination="buE-8b-wvc" kind="push" identifier="scanQrCodeSegue" id="BWt-L1-kqF"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -221,7 +221,7 @@
                                             <outlet property="totpCodeProgress" destination="Fiw-fe-ReQ" id="BrW-6o-bfc"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="AccountTokenCell" rowHeight="90" id="zYT-2m-uza" customClass="FRAOathMechanismTableViewCell">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" rowHeight="90" id="zYT-2m-uza" customClass="FRAPushMechanismTableViewCell">
                                         <rect key="frame" x="0.0" y="314" width="320" height="90"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="zYT-2m-uza" id="4LO-fn-bAR">
@@ -262,7 +262,8 @@
                                             <constraint firstItem="0bp-2m-SR2" firstAttribute="centerY" secondItem="zYT-2m-uza" secondAttribute="centerY" id="eH7-tR-cYn"/>
                                         </constraints>
                                         <connections>
-                                            <segue destination="HkG-Qn-fqZ" kind="push" id="X9r-c4-17f"/>
+                                            <outlet property="notificationsBadge" destination="0bp-2m-SR2" id="dSb-fv-u8L"/>
+                                            <segue destination="HkG-Qn-fqZ" kind="push" identifier="showNotificationsSegue" id="X9r-c4-17f"/>
                                         </connections>
                                     </tableViewCell>
                                 </cells>
@@ -278,8 +279,8 @@
                         <outlet property="accountName" destination="LVN-Vh-9Ua" id="ZGK-xW-6l0"/>
                         <outlet property="image" destination="vBF-7Y-ak2" id="2JP-9l-RLs"/>
                         <outlet property="issuer" destination="Obv-Zm-PPK" id="nkx-IS-akY"/>
-                        <outlet property="notificationsBadge" destination="0bp-2m-SR2" id="NdQ-3b-A9N"/>
-                        <outlet property="tokenTableViewCell" destination="IaP-zO-n9j" id="kOb-eX-pVc"/>
+                        <outlet property="oathTableViewCell" destination="IaP-zO-n9j" id="Kdh-rv-HI6"/>
+                        <outlet property="pushTableViewCell" destination="zYT-2m-uza" id="UxY-6i-Pjz"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0L3-5F-6cJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -306,7 +307,7 @@
         <!--Notifications-->
         <scene sceneID="YFo-gx-jfi">
             <objects>
-                <tableViewController storyboardIdentifier="NotificationsTableController" id="HkG-Qn-fqZ" customClass="FRANotificationsTableViewController" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="NotificationsTableViewController" id="HkG-Qn-fqZ" customClass="FRANotificationsTableViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="75" sectionHeaderHeight="28" sectionFooterHeight="28" id="2C3-eb-PDC">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -373,7 +374,7 @@
                                     <outlet property="image" destination="eTe-Uj-SAm" id="62k-Kc-lFy"/>
                                     <outlet property="status" destination="Vuz-fg-23E" id="J5F-jn-eox"/>
                                     <outlet property="time" destination="yaG-F8-aJ3" id="AKM-53-Jsp"/>
-                                    <segue destination="OAr-Ng-i5z" kind="modal" id="fEp-Iw-IPC"/>
+                                    <segue destination="OAr-Ng-i5z" kind="modal" identifier="showNotificationSegue" id="fEp-Iw-IPC"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>

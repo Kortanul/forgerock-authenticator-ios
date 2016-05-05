@@ -159,8 +159,8 @@
     // Given
     FRAPushMechanism *mechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
     [aliceIdentity addMechanism:mechanism];
-    NSTimeInterval ttl = 120.0;
-    FRANotification *notification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challange:@"challange" timeRecieved:[NSDate date] ttl:&ttl];
+    NSTimeInterval timeToLive = 120.0;
+    FRANotification *notification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challenge:@"challenge" timeReceived:[NSDate date] timeToLive:timeToLive];
     [mechanism addNotification:notification];
     [[NSNotificationCenter defaultCenter] addMockObserver:databaseObserverMock name:FRAIdentityDatabaseChangedNotification object:database];
     NSDictionary *expectedChanges = @{
@@ -184,8 +184,8 @@
     // Given
     FRAPushMechanism *mechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
     [aliceIdentity addMechanism:mechanism];
-    NSTimeInterval ttl = 120.0;
-    FRANotification *notification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challange:@"challange" timeRecieved:[NSDate date] ttl:&ttl];
+    NSTimeInterval timeToLive = 120.0;
+    FRANotification *notification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challenge:@"challenge" timeReceived:[NSDate date] timeToLive:timeToLive];
     [mechanism addNotification:notification];
     [identityModel addIdentity:aliceIdentity];
     [[NSNotificationCenter defaultCenter] addMockObserver:databaseObserverMock name:FRAIdentityDatabaseChangedNotification object:database];

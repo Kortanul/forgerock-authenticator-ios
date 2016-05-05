@@ -12,22 +12,27 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2016 ForgeRock AS.
- *
- * Portions Copyright 2013 Nathaniel McCallum, Red Hat
  */
 
-/*!
- * MVC View for elapsed time as a doughnut or filled circle.
- */
-@interface FRACircleProgressView : UIView
+#import <UIKit/UIKit.h>
+
+#import "FRAPushMechanism.h"
+#import "FRAPushMechanismTableViewCellController.h"
+#import "M13BadgeView.h"
 
 /*!
- * Color used to indicate elapsed time.
+ * Custom UITableViewCell for Account screen token.
  */
-@property (nonatomic) UIColor *progressColor;
+@interface FRAPushMechanismTableViewCell : UITableViewCell
+
 /*!
- * Normalized value for progress.
+ * The delegate that acts as controller for this cell's UI elements.
  */
-@property (nonatomic) float progress;
+@property (strong, nonatomic) FRAPushMechanismTableViewCellController *delegate;
+
+/*!
+ * The M13BadgeView in which the pending notifications count is displayed.
+ */
+@property (weak, nonatomic) IBOutlet M13BadgeView *notificationsBadge;
 
 @end

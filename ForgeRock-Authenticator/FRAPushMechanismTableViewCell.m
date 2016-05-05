@@ -12,22 +12,28 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2016 ForgeRock AS.
- *
- * Portions Copyright 2013 Nathaniel McCallum, Red Hat
  */
 
-/*!
- * MVC View for elapsed time as a doughnut or filled circle.
- */
-@interface FRACircleProgressView : UIView
+#import "FRAPushMechanismTableViewCell.h"
 
-/*!
- * Color used to indicate elapsed time.
- */
-@property (nonatomic) UIColor *progressColor;
-/*!
- * Normalized value for progress.
- */
-@property (nonatomic) float progress;
+@implementation FRAPushMechanismTableViewCell
+
+#pragma mark -
+#pragma mark UIView
+
+- (void)awakeFromNib {
+    [super awakeFromNib];
+    self.notificationsBadge.verticalAlignment = M13BadgeViewVerticalAlignmentNone;
+    self.notificationsBadge.horizontalAlignment = M13BadgeViewHorizontalAlignmentNone;
+    self.notificationsBadge.hidesWhenZero = YES;
+}
+
+#pragma mark -
+#pragma mark UITableViewCell
+
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
+    [super setEditing:editing animated:animated];
+    self.delegate.editing = editing;
+}
 
 @end

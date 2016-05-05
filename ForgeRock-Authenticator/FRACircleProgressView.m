@@ -36,7 +36,7 @@
 #pragma mark -
 #pragma mark NSCoding
 
-- (instancetype)initWithCoder:(NSCoder*)aDecoder {
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
     if (self == nil) {
         return nil;

@@ -15,41 +15,38 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "FRACircleProgressView.h"
-#import "FRAIdentityModel.h"
+
 #import "FRAOathMechanism.h"
 @class FRAOathMechanismTableViewCell;
 
 /*!
  * Controller for OATH code displayed in table cell on Account screen.
  */
-@interface FRAOathMechanismTableViewController : NSObject
+@interface FRAOathMechanismTableViewCellController : UIViewController
 
-/*!
- * The identity model. Exposed to allow (setter) dependency injection.
- */
-@property (nonatomic, strong) FRAIdentityModel* identityModel;
 /*!
  * The model.
  */
-@property (weak, nonatomic) FRAOathMechanism* mechanism;
+@property (weak, nonatomic) FRAOathMechanism *mechanism;
 /*!
  * The view.
  */
-@property (weak, nonatomic) FRAOathMechanismTableViewCell* view;
-/*!
- * Flag to be set by the owning UITableViewController when entering/exiting edit mode.
- */
-@property(nonatomic, getter=isEditing) BOOL editing;
+@property (weak, nonatomic) FRAOathMechanismTableViewCell *tableViewCell;
 
 /*!
  * Creates a new object with the provided property values.
  */
-+ (instancetype)controllerForView:(FRAOathMechanismTableViewCell*)view withMechanism:(FRAOathMechanism*)mechanism withIdentityModel:(FRAIdentityModel*)identityModel;
+- (instancetype)initWithView:(FRAOathMechanismTableViewCell *)view mechanism:(FRAOathMechanism *)mechanism;
+
 /*!
  * Creates a new object with the provided property values.
  */
-- (instancetype)initForView:(FRAOathMechanismTableViewCell*)view withMechanism:(FRAOathMechanism*)mechanism withIdentityModel:(FRAIdentityModel*)identityModel;
++ (instancetype)controllerWithView:(FRAOathMechanismTableViewCell *)view mechanism:(FRAOathMechanism *)mechanism;
+
+/*!
+ * Updates UI from latest mechanism state.
+ */
+- (void)reloadData;
 
 /*!
  * Callback for generating first HOTP code, or copying existing HOTP or TOTP code to the clipboard.

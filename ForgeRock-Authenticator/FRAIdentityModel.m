@@ -100,4 +100,15 @@
     return nil;
 }
 
+#pragma mark -
+#pragma mark Notification Functions
+
+- (NSInteger)pendingNotificationsCount {
+    NSInteger count = 0;
+    for (FRAIdentity *identity in self.identities) {
+        count += [identity pendingNotificationsCount];
+    }
+    return count;
+}
+
 @end

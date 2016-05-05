@@ -41,11 +41,21 @@
 #pragma mark -
 #pragma mark Notification Functions
 
-- (NSArray*)notifications {
+- (NSArray *)notifications {
     return [[NSArray alloc] initWithArray:notificationList];
 }
 
-- (void)addNotification:(FRANotification*)notification {
+- (NSInteger)pendingNotificationsCount {
+    NSInteger count = 0;
+    for (FRANotification *notification in self.notifications) {
+        if (notification.isPending) {
+            count += 1;
+        }
+    }
+    return count;
+}
+
+- (void)addNotification:(FRANotification *)notification {
     [notification setParent:self];
     [notificationList addObject:notification];
     if ([self isStored]) {
@@ -53,7 +63,7 @@
     }
 }
 
-- (void)removeNotification:(FRANotification*)notification {
+- (void)removeNotification:(FRANotification *)notification {
     [notificationList removeObject:notification];
     [notification setParent:nil];
     if ([self isStored]) {

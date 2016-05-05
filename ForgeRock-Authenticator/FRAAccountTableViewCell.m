@@ -32,7 +32,7 @@
 
 - (void)awakeFromNib {
     [super awakeFromNib];
-    [_firstMechanismIcon addSubview:_notificationsBadge];
+    [self.firstMechanismIcon addSubview:self.notificationsBadge];
 }
 
 #pragma mark -
@@ -44,12 +44,12 @@
     float mechanismIconsAlpha = editing ? 0.0f : 1.0f;
     if (animated) {
         [UIView animateWithDuration:0.4f animations:^{
-            _firstMechanismIcon.alpha = mechanismIconsAlpha;
-            _secondMechanismIcon.alpha = mechanismIconsAlpha;
+            self.firstMechanismIcon.alpha = mechanismIconsAlpha;
+            self.secondMechanismIcon.alpha = mechanismIconsAlpha;
         }];
     } else {
-        _firstMechanismIcon.alpha = mechanismIconsAlpha;
-        _secondMechanismIcon.alpha = mechanismIconsAlpha;
+        self.firstMechanismIcon.alpha = mechanismIconsAlpha;
+        self.secondMechanismIcon.alpha = mechanismIconsAlpha;
     }
 }
 

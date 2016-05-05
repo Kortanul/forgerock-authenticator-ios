@@ -70,7 +70,7 @@ static NSString *const TEST_USERNAME = @"Alice";
     NSDictionary* data = @{
                            @"messageId": @"123",
                            @"mechanismUID": [NSString stringWithFormat: @"%ld", (long)testMechanismUid],
-                           @"ttl": @"120",
+                           @"timeToLive": @"120",
                            @"challenge": @"pistolsAtDawn",
                            };
     // When

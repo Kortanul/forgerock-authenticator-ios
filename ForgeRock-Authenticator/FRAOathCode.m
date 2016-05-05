@@ -54,4 +54,8 @@ static uint64_t currentTimeInMilli() {
     return 1.0;
 }
 
+- (BOOL)hasExpired {
+    return [self progress] == 1.0;
+}
+
 @end

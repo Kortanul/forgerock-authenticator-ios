@@ -67,7 +67,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"AccountCell";
-    FRAAccountTableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    FRAAccountTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     FRAIdentity *identity = [self identityAtIndexPath:indexPath];
     //  cell.image = ... // TODO: Use UIImageView+AFNetworking category provided by AFNetworking
     cell.issuer.text = identity.issuer;
@@ -75,16 +75,16 @@
     
     FRAOathMechanism *oathMechanism = (FRAOathMechanism *)[identity mechanismOfClass:[FRAOathMechanism class]];
     FRAPushMechanism *pushMechanism = (FRAPushMechanism *)[identity mechanismOfClass:[FRAPushMechanism class]];
-    
+
     if (oathMechanism && pushMechanism) {
         cell.firstMechanismIcon.image = [UIImage imageNamed:@"NotificationIcon"];
-        cell.notificationsBadge.text = [NSString stringWithFormat:@"%lu", (unsigned long)pushMechanism.notifications.count];
+        cell.notificationsBadge.text = [NSString stringWithFormat:@"%lu", (unsigned long)[pushMechanism pendingNotificationsCount]];
         cell.secondMechanismIcon.image = [UIImage imageNamed:@"TokensIcon"];
         cell.firstMechanismIcon.hidden = false;
         cell.secondMechanismIcon.hidden = false;
     } else if (pushMechanism) {
         cell.firstMechanismIcon.image = [UIImage imageNamed:@"NotificationIcon"];
-        cell.notificationsBadge.text = [NSString stringWithFormat:@"%lu", (unsigned long)pushMechanism.notifications.count];
+        cell.notificationsBadge.text = [NSString stringWithFormat:@"%lu", (unsigned long)[pushMechanism pendingNotificationsCount]];
         cell.firstMechanismIcon.hidden = false;
         cell.secondMechanismIcon.hidden = true;
     } else if (oathMechanism) {
@@ -109,17 +109,19 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
 
         FRAIdentity* identity = [self identityAtIndexPath:indexPath];
-        FRABlockAlertView* alertView = [[FRABlockAlertView alloc]
-                                        initWithTitle:@"Removing this account will NOT turn off 2-step verification"
-                                        message:[NSString stringWithFormat:@"This may prevent you from logging into your %@ account.", identity.issuer]
-                                        delegate:nil
-                                        cancelButtonTitle:@"Cancel"
-                                        otherButtonTitles:@"Delete", nil];
+        FRABlockAlertView* alertView =
+                [[FRABlockAlertView alloc]
+                 initWithTitle:@"Removing this account will NOT turn off 2-step verification"
+                 message:[NSString stringWithFormat:@"This may prevent you from logging into your %@ account.", identity.issuer]
+                 delegate:nil
+                 cancelButtonTitle:@"Cancel"
+                 otherButtonTitles:@"Delete", nil];
         alertView.callback = ^(NSInteger offset) {
-            if (offset == 0) {
+            const NSInteger deleteButton = 0;
+            if (offset == deleteButton) {
                 [self.identityModel removeIdentity:identity];
-                [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
             }
+            [self setEditing:NO animated:YES];
         };
         [alertView show];
     }

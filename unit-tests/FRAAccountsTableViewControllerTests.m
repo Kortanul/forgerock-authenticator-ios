@@ -53,7 +53,7 @@
     
     // load accounts controller from storyboard
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
-    accountsController = [storyboard instantiateViewControllerWithIdentifier:@"AccountsTableController"];
+    accountsController = [storyboard instantiateViewControllerWithIdentifier:@"AccountsTableViewController"];
     [accountsController loadViewIfNeeded]; // force IBOutlets etc to be initialized
     XCTAssertNotNil(accountsController.view);
 }
@@ -99,8 +99,8 @@
     // Given
     FRAIdentity *identity = [FRAIdentity identityWithDatabase:nil accountName:@"Alice" issuer:@"Issuer" image:nil];
     FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:nil];
-    [pushMechanism addNotification:[[FRANotification alloc] initWithDatabase:nil messageId:nil challange:nil timeRecieved:nil ttl:nil]];
-    [pushMechanism addNotification:[[FRANotification alloc] initWithDatabase:nil messageId:nil challange:nil timeRecieved:nil ttl:nil]];
+    [pushMechanism addNotification:[[FRANotification alloc] initWithDatabase:nil messageId:nil challenge:nil timeReceived:nil timeToLive:120.0]];
+    [pushMechanism addNotification:[[FRANotification alloc] initWithDatabase:nil messageId:nil challenge:nil timeReceived:nil timeToLive:120.0]];
     [identity addMechanism:pushMechanism];
     XCTAssertNotNil([identity mechanismOfClass:[FRAPushMechanism class]]);
     NSArray* identities = @[identity];

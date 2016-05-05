@@ -38,7 +38,7 @@
     
 }
 
-static NSString const *TTL_KEY = @"ttl";
+static NSString const *TTL_KEY = @"timeToLive";
 static NSString const *MESSAGE_ID_KEY = @"messageId";
 static NSString const *CHALLENGE_KEY = @"challenge";
 static NSString const *MECHANISM_UID_KEY = @"mechanismUID";
@@ -58,14 +58,13 @@ static NSString const *MECHANISM_UID_KEY = @"mechanismUID";
 
 - (void)handleRemoteNotification:(NSDictionary *)messageData {
 
-    NSString *ttl = [messageData objectForKey:TTL_KEY];
-    NSTimeInterval timeToLive = [ttl doubleValue];
+    NSTimeInterval timeToLive = [[messageData objectForKey:TTL_KEY] doubleValue];
     
     FRANotification *notification = [[FRANotification alloc] initWithDatabase:_database
                                                                     messageId:[messageData objectForKey:MESSAGE_ID_KEY]
-                                                                    challange:[messageData objectForKey:CHALLENGE_KEY]
-                                                                 timeRecieved:[NSDate date]
-                                                                          ttl:&timeToLive];
+                                                                    challenge:[messageData objectForKey:CHALLENGE_KEY]
+                                                                 timeReceived:[NSDate date]
+                                                                          timeToLive:timeToLive];
     
     NSInteger mechanismId = [[messageData objectForKey:MECHANISM_UID_KEY] intValue];
     FRAMechanism* mechanism = [_identityModel mechanismWithId:mechanismId];

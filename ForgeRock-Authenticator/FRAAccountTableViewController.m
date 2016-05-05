@@ -17,10 +17,17 @@
 #import "FRAAccountTableViewController.h"
 #import "FRABlockAlertView.h"
 #import "FRAIdentityDatabase.h"
+#import "FRANotificationsTableViewController.h"
 #import "FRAOathMechanism.h"
 #import "FRAOathMechanismTableViewCell.h"
-#import "FRAOathMechanismTableViewController.h"
+#import "FRAOathMechanismTableViewCellController.h"
 #import "FRAPushMechanism.h"
+
+/*! row index of static cell defining UI for OATH mechanism (cell is hidden if no such mechanism is registered) */
+static const NSInteger OATH_MECHANISM_ROW_INDEX = 1;
+/*! row index of static cell defining UI for push mechanism (cell is hidden if no such mechanism is registered) */
+static const NSInteger PUSH_MECHANISM_ROW_INDEX = 2;
+
 
 @implementation FRAAccountTableViewController
 
@@ -32,35 +39,39 @@
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     // Show issuer logo in circle
-    _image.layer.cornerRadius = _image.frame.size.width / 2;
-    _image.clipsToBounds = YES;
+    self.image.layer.cornerRadius = self.image.frame.size.width / 2;
+    self.image.clipsToBounds = YES;
     
     // Bind identity model to UI
     //  _image = ... // TODO: Use UIImageView+AFNetworking category provided by AFNetworking
-    _issuer.text = _identity.issuer;
-    _accountName.text = _identity.accountName;
+    self.issuer.text = self.identity.issuer;
+    self.accountName.text = self.identity.accountName;
     
-    // Bind controller to OATH mechanism table view cell defined in storyboard - let controller bind model
-    // TODO: Update OATH controller so that it can handle nil
-    if ([self hasRegisteredOathMechanism]) {
-        _tokenTableViewCell.delegate = [FRAOathMechanismTableViewController controllerForView:_tokenTableViewCell withMechanism:[self oathMechanism] withIdentityModel:self.identityModel];
+    if ([self identityHasOathMechanism]) {
+        self.oathTableViewCell.delegate = [FRAOathMechanismTableViewCellController
+                controllerWithView:self.oathTableViewCell mechanism:[self oathMechanism]];
     }
-
-    // TODO: Bind controller to push mechanism table view cell defined in storyboard - let controller bind model
-    // Prevent M13BadgeView from attempting to position itself, position should be set by storyboard constraints
-    self.notificationsBadge.verticalAlignment = M13BadgeViewVerticalAlignmentNone;
-    self.notificationsBadge.horizontalAlignment = M13BadgeViewHorizontalAlignmentNone;
+    
+    if ([self identityHasPushMechanism]) {
+        self.pushTableViewCell.delegate = [FRAPushMechanismTableViewCellController
+                controllerWithView:self.pushTableViewCell mechanism:[self pushMechanism]];
+    }
+    [self reloadData];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self.tableView reloadData];
-    [self updateNotificationsCount];
+    [self reloadData];
+    [self.oathTableViewCell.delegate viewWillAppear:animated];
+    [self.pushTableViewCell.delegate viewWillAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleIdentityDatabaseChanged:) name:FRAIdentityDatabaseChangedNotification object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self.oathTableViewCell.delegate viewWillDisappear:animated];
+    [self.pushTableViewCell.delegate viewWillDisappear:animated];
 }
 
 -(void)viewDidLayoutSubviews {
@@ -70,6 +81,13 @@
     }
     if ([self.tableView respondsToSelector:@selector(setLayoutMargins:)]) {
         [self.tableView setLayoutMargins:UIEdgeInsetsZero];
+    }
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"showNotificationsSegue"]) {
+        FRANotificationsTableViewController *controller = (FRANotificationsTableViewController *)segue.destinationViewController;
+        controller.pushMechanism = [self pushMechanism];
     }
 }
 
@@ -92,11 +110,9 @@
 }
 
 - (void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
-    // TODO: Lookup FRAMechanismTableCellController for indexPath
-    //       If a mechanism controller exists, delegate to method with same signature
-    if ([self hasOathMechanismAtIndexPath:indexPath]) {
+    if (indexPath.row == OATH_MECHANISM_ROW_INDEX) {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
-        [_tokenTableViewCell.delegate didTouchUpInside];
+        [self.oathTableViewCell.delegate didTouchUpInside];
     }
 }
 
@@ -110,10 +126,10 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    // TODO: Lookup FRAMechanismTableCellController for indexPath
-    //       If a mechanism controller exists but its mechanism is nil, return 0 for height
-    if ([self hasOathMechanismAtIndexPath:indexPath] && ![self hasRegisteredOathMechanism]) {
+    if (indexPath.row == OATH_MECHANISM_ROW_INDEX && ![self identityHasOathMechanism]) {
         return 0; // hide the cell if OATH mechanism not registered
+    } else if (indexPath.row == PUSH_MECHANISM_ROW_INDEX && ![self identityHasPushMechanism]) {
+        return 0; // hide the cell if push mechanism not registered
     } else {
         return [super tableView:tableView heightForRowAtIndexPath:indexPath];
     }
@@ -126,94 +142,109 @@
     if (editingStyle != UITableViewCellEditingStyleDelete) {
         return;
     }
-    // TODO: Lookup FRAMechanismTableCellController for indexPath
-    //       If a mechanism controller exists perform deletion logic but remain agnostic regarding specific type of mechanism
-    if ([self hasOathMechanismAtIndexPath:indexPath]) {
-        FRAOathMechanism* mechanism = _tokenTableViewCell.delegate.mechanism;
-        if (mechanism) {
-            FRABlockAlertView* alertView = [[FRABlockAlertView alloc]
-                                            initWithTitle:@"Removing this will NOT turn off 2-step verification"
-                                            message:[NSString stringWithFormat:@"This may prevent you from logging into your %@ account.", self.identity.issuer]
-                                            delegate:nil
-                                            cancelButtonTitle:@"Cancel"
-                                            otherButtonTitles:@"Delete", nil];
-            alertView.callback = ^(NSInteger offset) {
-                if (offset == 0) {
-                    
-                    // TODO: If this is the only mechanism registered to the parent identity, then
-                    //       navigate back to the accounts screen and with an instruction to remove
-                    //       the identity
-                    
-                    // Remove the mechanism
-                    [mechanism.parent removeMechanism:mechanism];
-                    // Remove the mechanism cell from the UI
-                    [self.tableView beginUpdates];
-                    _tokenTableViewCell.hidden = YES;
-                    [self.tableView endUpdates];
-                    [tableView reloadData];
-                    // TODO: Only set _tokenTableViewCell.delegate.mechanism = nil but keep controller (delegate)
-                    _tokenTableViewCell.delegate.view = nil;
-                    _tokenTableViewCell.delegate = nil;
-                    // Navigate back to the accounts screen if the account was deleted
-                    
-                    if (![mechanism.parent isStored]) {
-                        [self.navigationController popViewControllerAnimated:YES];
-                    }
-                }
-            };
-            [alertView show];
-        }
+    
+    FRAMechanism *mechanism = [self mechanismAtIndexPath:indexPath];
+    
+    if (mechanism) {
+        FRABlockAlertView *alertView =
+                [[FRABlockAlertView alloc]
+                 initWithTitle:@"Removing this will NOT turn off 2-step verification"
+                 message:[NSString stringWithFormat:@"This may prevent you from logging into your %@ account.", self.identity.issuer]
+                 delegate:nil
+                 cancelButtonTitle:@"Cancel"
+                 otherButtonTitles:@"Delete", nil];
+        alertView.callback = ^(NSInteger offset) {
+            const NSInteger deleteButton = 0;
+            if (offset == deleteButton) {
+                [self deleteMechanism:mechanism];
+            }
+            [self setEditing:NO animated:YES];
+        };
+        [alertView show];
     }
 }
 
 #pragma mark -
 #pragma mark FRAAccountTableViewController (private)
 
-- (BOOL)hasOathMechanismAtIndexPath:(NSIndexPath*)indexPath {
-    return indexPath.row == 1;
-}
-
-- (BOOL)hasNotificationsMechanismAtIndexPath:(NSIndexPath*)indexPath {
-    return indexPath.row == 2;
-}
-
-- (void)updateNotificationsCount {
-    FRAPushMechanism *mechanism = [self pushMechanism];
-    NSInteger count = mechanism ? mechanism.notifications.count : 0;
-    self.notificationsBadge.text = [NSString stringWithFormat:@"%ld", (long) count];
-}
-
 - (BOOL)hasMechanismAtIndexPath:(NSIndexPath*)indexPath {
-    return [self hasOathMechanismAtIndexPath:indexPath] || [self hasNotificationsMechanismAtIndexPath:indexPath];
+    return indexPath.row == OATH_MECHANISM_ROW_INDEX || indexPath.row == PUSH_MECHANISM_ROW_INDEX;
 }
 
-- (BOOL)hasRegisteredOathMechanism {
+- (BOOL)identityHasOathMechanism {
     return [self oathMechanism] != nil;
 }
 
-- (FRAOathMechanism*)oathMechanism {
-    NSArray* mechanisms = [_identity mechanisms];
-    for (NSObject* mechanism in mechanisms) {
-        if ([mechanism isKindOfClass:[FRAOathMechanism class]]) {
-            return (FRAOathMechanism*) mechanism;
-        }
-    }
-    return nil;
+- (BOOL)identityHasPushMechanism {
+    return [self pushMechanism] != nil;
 }
 
-- (FRAPushMechanism*)pushMechanism {
-    NSArray* mechanisms = [_identity mechanisms];
-    for (NSObject* mechanism in mechanisms) {
-        if ([mechanism isKindOfClass:[FRAPushMechanism class]]) {
-            return (FRAPushMechanism*) mechanism;
-        }
+- (FRAOathMechanism *)oathMechanism {
+    return (FRAOathMechanism *)[self.identity mechanismOfClass:[FRAOathMechanism class]];
+}
+
+- (FRAPushMechanism *)pushMechanism {
+    return (FRAPushMechanism *)[self.identity mechanismOfClass:[FRAPushMechanism class]];
+}
+
+- (FRAMechanism *)mechanismAtIndexPath:(NSIndexPath *)indexPath {
+    FRAMechanism *mechanism = nil;
+    if (indexPath.row == OATH_MECHANISM_ROW_INDEX) {
+        mechanism = [self oathMechanism];
+    } else if (indexPath.row == PUSH_MECHANISM_ROW_INDEX) {
+        mechanism = [self pushMechanism];
     }
-    return nil;
+    return mechanism;
+}
+
+- (void)deleteMechanism:(FRAMechanism *)mechanism {
+    FRAIdentity *parent = mechanism.parent;
+    if ([parent mechanisms].count == 1) {
+        // If this is the only mechanism registered to the identity, then remove the identity itself
+        // (after navigating back to the accounts screen so that it's removal can be animated)
+        [self.navigationController popViewControllerAnimated:YES];
+        [self.identityModel removeIdentity:parent];
+    } else {
+        // If the parent identity has other mechanisms registered to it, then just remove this mechanism
+        // and leave the UI updates to be triggered in response to the database change event handler
+        [mechanism.parent removeMechanism:mechanism];
+    }
 }
 
 - (void)handleIdentityDatabaseChanged:(NSNotification *)notification {
-    NSLog(@"database changed notification received by account table view controller");
-    [self updateNotificationsCount];
+    [self reloadData];
+}
+
+- (void)reloadData {
+    [self.tableView beginUpdates];
+    
+    if ([self identityHasOathMechanism]) {
+        self.oathTableViewCell.hidden = NO;
+        if (self.oathTableViewCell.delegate) {
+            self.oathTableViewCell.delegate =
+                    [FRAOathMechanismTableViewCellController controllerWithView:self.oathTableViewCell mechanism:[self oathMechanism]];
+        }
+        [self.oathTableViewCell.delegate reloadData];
+    } else {
+        self.oathTableViewCell.hidden = YES;
+        self.oathTableViewCell.delegate.view = nil;
+        self.oathTableViewCell.delegate = nil;
+    }
+    
+    if ([self identityHasPushMechanism]) {
+        self.pushTableViewCell.hidden = NO;
+        if (self.pushTableViewCell.delegate) {
+            self.pushTableViewCell.delegate =
+            [FRAPushMechanismTableViewCellController controllerWithView:self.pushTableViewCell mechanism:[self pushMechanism]];
+        }
+        [self.pushTableViewCell.delegate reloadData];
+    } else {
+        self.pushTableViewCell.hidden = YES;
+        self.pushTableViewCell.delegate.view = nil;
+        self.pushTableViewCell.delegate = nil;
+    }
+    
+    [self.tableView endUpdates];
 }
 
 @end

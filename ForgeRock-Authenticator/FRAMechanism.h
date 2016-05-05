@@ -71,4 +71,11 @@
  */
 - (void)removeNotification:(FRANotification *)notification;
 
+/*!
+ * Count of notifications that have not yet been dealt with.
+ *
+ * @return The number of pending notifications.
+ */
+- (NSInteger)pendingNotificationsCount;
+
 @end

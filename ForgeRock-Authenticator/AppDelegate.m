@@ -104,7 +104,7 @@
     return factory;
 }
 
-- (FRAApplicationAssembly *) assembly {
+- (FRAApplicationAssembly *)assembly {
     return (FRAApplicationAssembly*) [TyphoonComponentFactory defaultFactory];
 }
 
@@ -116,28 +116,41 @@
     
     [factory parseFromURL:[NSURL URLWithString:@"otpauth://hotp/Umbrella-Corp:Adam?secret=IJQWIZ3FOIQUEYLE&issuer=Umbrella-Corp&counter=0"]];
     
-    FRAIdentity* bob = [FRAIdentity identityWithDatabase:database accountName:@"demo" issuer:@"Forgerock" image:nil];
-    FRAPushMechanism* pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
-    [bob addMechanism:pushMechanism];
-    NSTimeInterval ttl = 120.0;
-    [pushMechanism addNotification:[[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challange:@"challange" timeRecieved:[NSDate date] ttl:&ttl]];
-    [pushMechanism addNotification:[[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challange:@"challange" timeRecieved:[NSDate date] ttl:&ttl]];
-    [[[self assembly] identityModel] addIdentity:bob];
+    FRAIdentity *demo = [FRAIdentity identityWithDatabase:database accountName:@"demo" issuer:@"ForgeRock" image:nil];
+    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
+    [demo addMechanism:pushMechanism];
+    NSTimeInterval timeToLive = 120.0;
+    FRANotification *approvedNotification = [[FRANotification alloc] initWithDatabase:database
+                                                                            messageId:@"messageId"
+                                                                            challenge:@"challenge"
+                                                                         timeReceived:[NSDate dateWithTimeIntervalSinceNow:-360.0]
+                                                                                  timeToLive:timeToLive];
+    [approvedNotification approve];
+    FRANotification *deniedNotification = [[FRANotification alloc] initWithDatabase:database
+                                                                          messageId:@"messageId"
+                                                                          challenge:@"challenge"
+                                                                       timeReceived:[NSDate dateWithTimeIntervalSinceNow:-3060.0]
+                                                                                timeToLive:timeToLive];
+    [deniedNotification deny];
+    FRANotification *pendingNotification = [[FRANotification alloc] initWithDatabase:database
+                                                                           messageId:@"messageId"
+                                                                           challenge:@"challenge"
+                                                                        timeReceived:[NSDate date]
+                                                                                 timeToLive:timeToLive];
+    [pushMechanism addNotification:approvedNotification];
+    [pushMechanism addNotification:deniedNotification];
+    [pushMechanism addNotification:pendingNotification];
+    [[[self assembly] identityModel] addIdentity:demo];
+
+    NSLog(@"registered push mechanism with uid: %ld", (long)pushMechanism.uid);
 }
 
 - (void)handleIdentityDatabaseChanged:(NSNotification *)notification {
-    NSLog(@"database changed notification received by app delegate");
     [self updateNotificationsCount];
 }
 
 - (void)updateNotificationsCount {
-    NSInteger notificationsCount = 0;
-    for (FRAIdentity *identity in [[[self assembly] identityModel] identities]) {
-        for (FRAMechanism* mechanism in identity.mechanisms) {
-            notificationsCount += mechanism.notifications.count;
-        }
-    }
-    [UIApplication sharedApplication].applicationIconBadgeNumber = notificationsCount;
+    [UIApplication sharedApplication].applicationIconBadgeNumber = [[[self assembly] identityModel] pendingNotificationsCount];
 }
 
 @end

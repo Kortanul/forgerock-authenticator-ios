@@ -15,11 +15,12 @@
  */
 
 #import <UIKit/UIKit.h>
-#import "M13BadgeView.h"
+
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAIdentityModel.h"
 #import "FRAOathMechanismTableViewCell.h"
+#import "FRAPushMechanismTableViewCell.h"
 
 /*!
  * Controller for the table-view showing an individual Account.
@@ -27,13 +28,13 @@
 @interface FRAAccountTableViewController : UITableViewController
 
 /*!
- * The identity model. Exposed to allow (setter) dependency injection.
- */
-@property (nonatomic, strong) FRAIdentityModel* identityModel;
-/*!
  * The identity displayed by this view controller.
  */
-@property (nonatomic) FRAIdentity* identity;
+@property (nonatomic) FRAIdentity *identity;
+/*!
+ * The identity model to which the identity is stored.
+ */
+@property (nonatomic) FRAIdentityModel *identityModel;
 /*!
  * The UIImageView in which the issuer's icon will be displayed.
  */
@@ -47,12 +48,12 @@
  */
 @property (weak, nonatomic) IBOutlet UILabel *accountName;
 /*!
- * The static table-view cell in which OATH tokens are presented.
+ * The static table-view cell in which the OATH mechanism is presented.
  */
-@property (weak, nonatomic) IBOutlet FRAOathMechanismTableViewCell *tokenTableViewCell;
+@property (weak, nonatomic) IBOutlet FRAOathMechanismTableViewCell *oathTableViewCell;
 /*!
- * The M13BadgeView in which the pending notifications count is displayed.
+ * The static table-view cell in which the Push mechanism is presented.
  */
-@property (weak, nonatomic) IBOutlet M13BadgeView *notificationsBadge;
+@property (weak, nonatomic) IBOutlet FRAPushMechanismTableViewCell *pushTableViewCell;
 
 @end

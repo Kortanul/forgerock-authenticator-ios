@@ -74,4 +74,15 @@
     }
 }
 
+#pragma mark -
+#pragma mark Notification Functions
+
+- (NSInteger)pendingNotificationsCount {
+    NSInteger count = 0;
+    for (FRAMechanism *mechanism in self.mechanisms) {
+        count += [mechanism pendingNotificationsCount];
+    }
+    return count;
+}
+
 @end

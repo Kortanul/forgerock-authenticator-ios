@@ -12,41 +12,40 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2016 ForgeRock AS.
- *
- * Portions Copyright 2014 Nathaniel McCallum, Red Hat
  */
 
 #import <Foundation/Foundation.h>
-#import <sys/time.h>
+
+#import "FRAPushMechanism.h"
+@class FRAPushMechanismTableViewCell;
 
 /*!
- * Represents a currently active OTP code.
+ * Controller push mechanism displayed in table cell on Account screen.
  */
-@interface FRAOathCode : NSObject
+@interface FRAPushMechanismTableViewCellController : UIViewController
 
 /*!
- * Initializer.
- *
- * @param value The one-time-password code for current counter value.
- * @param start The start-time for this one-time-password code.
- * @param end The end-time for this one-time-password code.
- * @return instantiated instance or nil if a problem occurred.
+ * The model.
  */
-- (instancetype)initWithValue:(NSString *)value startTime:(uint64_t)start endTime:(uint64_t)end;
+@property (weak, nonatomic) FRAPushMechanism *mechanism;
+/*!
+ * The view.
+ */
+@property (weak, nonatomic) FRAPushMechanismTableViewCell *tableViewCell;
 
 /*!
- * The one-time-password value used for authentication.
+ * Creates a new object with the provided property values.
  */
-@property (strong, nonatomic) NSString *value;
+- (instancetype)initWithView:(FRAPushMechanismTableViewCell *)view mechanism:(FRAPushMechanism *)mechanism;
 
 /*!
- * The elapsed time for the current code normalized to a value between 0.0 and 1.0.
+ * Creates a new object with the provided property values.
  */
-- (float)progress;
++ (instancetype)controllerWithView:(FRAPushMechanismTableViewCell *)view mechanism:(FRAPushMechanism *)mechanism;
 
 /*!
- * Check whether this code has expired (progress == 1.0).
+ * Updates UI from latest mechanism state.
  */
-- (BOOL)hasExpired;
+- (void)reloadData;
 
 @end

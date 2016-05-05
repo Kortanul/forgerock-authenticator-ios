@@ -15,9 +15,10 @@
  */
 
 #import <UIKit/UIKit.h>
+
 #import "FRACircleProgressView.h"
 #import "FRAOathMechanism.h"
-#import "FRAOathMechanismTableViewController.h"
+#import "FRAOathMechanismTableViewCellController.h"
 
 /*!
  * Custom UITableViewCell for Account screen token.
@@ -27,16 +28,16 @@
 /*!
  * The delegate that acts as controller for this cell's UI elements relating to the OATH code value.
  */
-@property (strong, nonatomic) FRAOathMechanismTableViewController* delegate;
+@property (strong, nonatomic) FRAOathMechanismTableViewCellController *delegate;
 
 /*!
  * The UILabel in which the OTP code will be displayed.
  */
-@property (weak, nonatomic) IBOutlet UILabel* code;
+@property (weak, nonatomic) IBOutlet UILabel *code;
 /*!
  * The FRACircleProgressView in which the TOTP code's time remaining will be displayed.
  */
-@property (weak, nonatomic) IBOutlet FRACircleProgressView* totpCodeProgress;
+@property (weak, nonatomic) IBOutlet FRACircleProgressView *totpCodeProgress;
 /*!
  * The button for generating the next HOTP code.
  */

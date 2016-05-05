@@ -15,12 +15,14 @@
  */
 
 #import <UIKit/UIKit.h>
+@class FRANotification;
 
 /*!
  * Controller for Notification view.
  */
 @interface FRANotificationViewController : UIViewController
 
+@property (weak, nonatomic) FRANotification *notification;
 /*!
  * The UISlider used to authorize the requested action.
  */

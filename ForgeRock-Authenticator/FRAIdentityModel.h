@@ -77,4 +77,14 @@
  */
 - (FRAMechanism *)mechanismWithId:(NSInteger)uid;
 
+#pragma mark -
+#pragma mark Notification Functions
+
+/*!
+ * Count of notifications that have not yet been dealt with.
+ *
+ * @return The number of pending notifications.
+ */
+- (NSInteger)pendingNotificationsCount;
+
 @end

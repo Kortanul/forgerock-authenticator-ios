@@ -38,12 +38,12 @@
 /*!
  * A timestamp of when the Notification was received by the application.
  */
-@property (nonatomic, readonly) NSDate* timeReceived;
+@property (nonatomic, readonly) NSDate *timeReceived;
 
 /*!
  * The timestamp of when the Notification is expected to expire.
  */
-@property (nonatomic) NSDate* timeExpired;
+@property (nonatomic) NSDate *timeExpired;
 
 /*!
  * Indicator of whether this Notification is pending. In the pending state a
@@ -61,22 +61,27 @@
 /*!
  * Message Id of the message.
  */
-@property (nonatomic, readonly) NSString* messageId;
+@property (nonatomic, readonly) NSString *messageId;
 
 /*!
  * The push challenge.
  */
-@property (nonatomic, readonly) NSString* challenge;
+@property (nonatomic, readonly) NSString *challenge;
 
 /*!
  * The time to live of the push login window.
  */
-@property (nonatomic, readonly) NSTimeInterval* ttl;
+@property (nonatomic, readonly) NSTimeInterval timeToLive;
 
 /*!
- * Constructor for creating a Nofification.
+ * Constructor for creating a Notification.
  */
-- (instancetype) initWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString*)messageId challange:(NSString*)challenge timeRecieved:(NSDate*)timeRecieved ttl:(NSTimeInterval*)ttl;
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive;
+
+/*!
+ * Static factory for creating a Notification.
+ */
++ (instancetype)notificationWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive;
 
 - (instancetype) __unavailable initWithDatabase:(FRAIdentityDatabase *)database;
 
