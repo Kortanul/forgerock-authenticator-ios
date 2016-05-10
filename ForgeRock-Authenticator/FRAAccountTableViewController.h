@@ -22,6 +22,11 @@
 #import "FRAOathMechanismTableViewCell.h"
 #import "FRAPushMechanismTableViewCell.h"
 
+/*! The storyboard identifier assigned to this view controller. */
+extern NSString * const FRAAccountTableViewControllerStoryboardIdentifer;
+/*! The storyboard identifier for the segue from FRAAccountTableViewController to FRANotificationsTableViewController. */
+extern NSString * const FRAAccountTableViewControllerShowNotificationsSegue;
+
 /*!
  * Controller for the table-view showing an individual Account.
  */

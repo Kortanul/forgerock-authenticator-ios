@@ -71,9 +71,5 @@
  * Method copied from UIApplicationDelegate protocol.
  */
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler;
-/*!
- * Method copied from UIApplicationDelegate protocol.
- */
-- (void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo completionHandler:(void(^)())completionHandler;
 
 @end

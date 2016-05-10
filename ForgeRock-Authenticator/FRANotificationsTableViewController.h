@@ -16,6 +16,11 @@
 
 #import <UIKit/UIKit.h>
 
+/*! The storyboard identifier assigned to this view controller. */
+extern NSString * const FRANotificationsTableViewControllerStoryboardIdentifer;
+/*! The storyboard identifier for the segue from FRANotificationsTableViewController to FRANotificationViewController. */
+extern NSString * const FRANotificationsTableViewControllerShowNotificationsSegue;
+
 @class FRAPushMechanism;
 
 /*!

@@ -20,6 +20,9 @@
 #import <UIKit/UIKit.h>
 @class FRAMechanismFactory;
 
+/*! The storyboard identifier assigned to this view controller. */
+extern NSString * const FRAQRScanViewControllerStoryboardIdentifer;
+
 /*!
  * MVC Controller for QR Scan View used for registering authentication mechanisms and account details.
  */

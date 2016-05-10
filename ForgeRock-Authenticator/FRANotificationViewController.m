@@ -17,6 +17,8 @@
 #import "FRANotificationViewController.h"
 #import "FRANotification.h"
 
+NSString * const FRANotificationViewControllerStoryboardIdentifer = @"NotificationViewController";
+
 @implementation FRANotificationViewController
 
 #pragma mark -

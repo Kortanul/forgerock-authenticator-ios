@@ -21,6 +21,9 @@
 #import "FRANotificationTableViewCell.h"
 #import "FRAPushMechanism.h"
 
+NSString * const FRANotificationsTableViewControllerStoryboardIdentifer = @"NotificationsTableViewController";
+NSString * const FRANotificationsTableViewControllerShowNotificationsSegue = @"showNotificationSegue";
+
 static const NSInteger NUMBER_OF_SECTIONS = 2;
 static const NSInteger PENDING_SECTION_INDEX = 0;
 static const NSInteger COMPLETED_SECTION_INDEX = 1;
@@ -58,7 +61,7 @@ static const NSInteger COMPLETED_SECTION_INDEX = 1;
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:@"showNotificationSegue"]) {
+    if ([segue.identifier isEqualToString:FRANotificationsTableViewControllerShowNotificationsSegue]) {
         FRANotificationViewController *controller = (FRANotificationViewController *)segue.destinationViewController;
         NSArray *selection = [self.tableView indexPathsForSelectedRows];
         NSIndexPath *indexPath = [selection objectAtIndex:0];

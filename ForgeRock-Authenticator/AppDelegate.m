@@ -34,6 +34,7 @@
 #pragma mark UIApplicationDelegate - application lifecycle state changes
 
 - (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    NSLog(@"application:willFinishLaunchingWithOptions:%@", launchOptions);
     return YES;
 }
 
@@ -42,18 +43,22 @@
     [self populateWithDummyData];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleIdentityDatabaseChanged:) name:FRAIdentityDatabaseChangedNotification object:nil];
     [self updateNotificationsCount];
+    NSLog(@"application:didFinishLaunchingWithOptions\n%@", launchOptions);
     return YES;
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
+    NSLog(@"applicationDidBecomeActive:");
     [[[self assembly] notificationGateway] applicationDidBecomeActive:application];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
+    NSLog(@"applicationDidEnterBackground:");
     [[[self assembly] notificationGateway] applicationDidEnterBackground:application];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
+    NSLog(@"applicationWillTerminate:");
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -61,32 +66,33 @@
 #pragma mark UIApplicationDelegate - handling remote notifications
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    NSLog(@"application:didRegisterForRemoteNotificationsWithDeviceToken:");
     [[[self assembly] notificationGateway] application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+    NSLog(@"application:didFailToRegisterForRemoteNotificationsWithError:");
     [[[self assembly] notificationGateway] application:application didFailToRegisterForRemoteNotificationsWithError:error];
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    NSLog(@"application:didReceiveRemoteNotification:");
     [[[self assembly] notificationGateway] application:application didReceiveRemoteNotification:userInfo];
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
+    NSLog(@"application:didReceiveRemoteNotification:fetchCompletionHandler:");
     [[[self assembly] notificationGateway] application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
-}
-
-- (void)application:(UIApplication *)application handleActionWithIdentifier:(nullable NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo completionHandler:(void(^)())completionHandler {
-    [[[self assembly] notificationGateway] application:application handleActionWithIdentifier:identifier forRemoteNotification:userInfo completionHandler:completionHandler];
 }
 
 #pragma mark -
 #pragma mark UIApplicationDelegate - opening a URL-specified resource
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    NSLog(@"application:openURL:sourceApplication:annotation:");
     // Create mechanism from URL
-    FRAMechanismFactory* factory = [[self assembly] mechanismFactory];
-    FRAMechanism* mechanism = [factory parseFromURL:url];
+    FRAMechanismFactory *factory = [[self assembly] mechanismFactory];
+    FRAMechanism *mechanism = [factory parseFromURL:url];
     if (mechanism == nil) {
         return NO;
     }
@@ -105,7 +111,7 @@
 }
 
 - (FRAApplicationAssembly *)assembly {
-    return (FRAApplicationAssembly*) [TyphoonComponentFactory defaultFactory];
+    return (FRAApplicationAssembly *) [TyphoonComponentFactory defaultFactory];
 }
 
 - (void)populateWithDummyData {
@@ -124,19 +130,19 @@
                                                                             messageId:@"messageId"
                                                                             challenge:@"challenge"
                                                                          timeReceived:[NSDate dateWithTimeIntervalSinceNow:-360.0]
-                                                                                  timeToLive:timeToLive];
+                                                                           timeToLive:timeToLive];
     [approvedNotification approve];
     FRANotification *deniedNotification = [[FRANotification alloc] initWithDatabase:database
                                                                           messageId:@"messageId"
                                                                           challenge:@"challenge"
                                                                        timeReceived:[NSDate dateWithTimeIntervalSinceNow:-3060.0]
-                                                                                timeToLive:timeToLive];
+                                                                         timeToLive:timeToLive];
     [deniedNotification deny];
     FRANotification *pendingNotification = [[FRANotification alloc] initWithDatabase:database
                                                                            messageId:@"messageId"
                                                                            challenge:@"challenge"
                                                                         timeReceived:[NSDate date]
-                                                                                 timeToLive:timeToLive];
+                                                                          timeToLive:timeToLive];
     [pushMechanism addNotification:approvedNotification];
     [pushMechanism addNotification:deniedNotification];
     [pushMechanism addNotification:pendingNotification];
@@ -146,6 +152,7 @@
 }
 
 - (void)handleIdentityDatabaseChanged:(NSNotification *)notification {
+    NSLog(@"database changed: %@", notification.userInfo);
     [self updateNotificationsCount];
 }
 

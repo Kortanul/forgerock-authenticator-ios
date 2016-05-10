@@ -22,6 +22,8 @@
 #import "FRAMechanismFactory.h"
 #import "FRAIdentity.h"
 
+NSString * const FRAQRScanViewControllerStoryboardIdentifer = @"QRScanViewController";
+
 @implementation FRAQRScanViewController
 
 #pragma mark -

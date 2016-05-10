@@ -14,12 +14,17 @@
  * Copyright 2016 ForgeRock AS.
  */
 
+#import <OCMock/OCMock.h>
 #import <XCTest/XCTest.h>
-#import "FRAIdentityDatabase.h"
+
 #import "FRAIdentity.h"
-#import "FRAPushMechanism.h"
-#import "FRANotificationHandler.h"
+#import "FRAIdentityDatabase.h"
 #import "FRAIdentityModel.h"
+#import "FRAModelObjectProtected.h"
+#import "FRANotification.h"
+#import "FRANotificationHandler.h"
+#import "FRAOathMechanism.h"
+#import "FRAPushMechanism.h"
 
 @interface FRANotificationHandlerTest : XCTestCase
 
@@ -29,57 +34,87 @@
 static NSString *const TEST_USERNAME = @"Alice";
 
 @implementation FRANotificationHandlerTest {
-    FRANotificationHandler* handler;
-    FRAIdentityDatabase* database;
-    FRAIdentityModel* identityModel;
-    FRAIdentity* testIdentity;
-    FRAPushMechanism* testMechanism;
-    NSInteger testMechanismUid;
+    FRANotificationHandler *handler;
+    FRAIdentityDatabase *database;
+    FRAIdentityModel *identityModel;
+    FRAIdentity *identity;
+    FRAPushMechanism *pushMechanism;
+    FRAOathMechanism *oathMechanism;
+    UIApplication *mockApplication;
 }
 
 - (void)setUp {
     [super setUp];
     
+    mockApplication = OCMClassMock([UIApplication class]);
     database = [[FRAIdentityDatabase alloc] init];
     
+    // create object model
     identityModel = [[FRAIdentityModel alloc] initWithDatabase:database];
+    identity = [FRAIdentity identityWithDatabase:database accountName:TEST_USERNAME issuer:@"ForgeRock" image:nil];
+    pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
+    oathMechanism = [[FRAOathMechanism alloc] initWithDatabase:database];
+    [identityModel addIdentity:identity];
+    [identity addMechanism:pushMechanism];
+    [identity addMechanism:oathMechanism];
     
-    testIdentity = [FRAIdentity identityWithDatabase:database accountName:TEST_USERNAME issuer:@"ForgeRock" image:nil];
-    testMechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
-    
-    [identityModel addIdentity:testIdentity];
-    [testIdentity addMechanism:testMechanism];
-    [database insertIdentity:testIdentity];
-    [database insertMechanism:testMechanism];
-    
-    testMechanismUid = testMechanism.uid;
+    // persist to object model database
+    [database insertIdentity:identity];
     
     handler = [[FRANotificationHandler alloc] initWithDatabase:database identityModel:identityModel];
 }
 
-- (void)tearDown {
-    [testIdentity removeMechanism:testMechanism];
-    [database deleteMechanism:testMechanism];
-    [database deleteIdentity:testIdentity];
-    
-    [super tearDown];
-}
-
-- (void)testHandleRemoteNotification {
+- (void)testCreatesNotificationObjectFromMessageAndSavesToIdentifiedPushMechanism {
     // Given
     NSDictionary* data = @{
                            @"messageId": @"123",
-                           @"mechanismUID": [NSString stringWithFormat: @"%ld", (long)testMechanismUid],
+                           @"mechanismUID": [NSString stringWithFormat: @"%ld", (long)pushMechanism.uid],
                            @"timeToLive": @"120",
                            @"challenge": @"pistolsAtDawn",
                            };
     // When
+    [handler application:mockApplication didReceiveRemoteNotification:data];
     
-    [handler handleRemoteNotification:data];
     // Then
-    FRAMechanism *mechanismResult = [identityModel mechanismWithId:testMechanismUid];
+    FRANotification *notification = [pushMechanism notificationWithMessageId:@"123"];
+    XCTAssertNotNil(notification, @"Mechanism did not contain expected Notification");
+    XCTAssertEqualObjects(notification.database, database, @"Notification not initialized with database");
+    XCTAssertEqualObjects(notification.messageId, @"123", @"Notification not initialized with messageId");
+    XCTAssertEqualObjects(notification.challenge, @"pistolsAtDawn", @"Notification not initialized with challenge");
+    XCTAssertNotNil(notification.timeReceived, @"Notification not initialized with timeReceived");
+    XCTAssertEqual(notification.timeToLive, 120, @"Notification not initialized with time to live");
+}
+
+- (void)testNotificationHandlingShouldBeIdempotent {
+    // Given
+    NSDictionary* data = @{
+                           @"messageId": @"123",
+                           @"mechanismUID": [NSString stringWithFormat: @"%ld", (long)pushMechanism.uid],
+                           @"timeToLive": @"120",
+                           @"challenge": @"pistolsAtDawn",
+                           };
+    // When
+    [handler application:mockApplication didReceiveRemoteNotification:data];
+    [handler application:mockApplication didReceiveRemoteNotification:data];
     
-    XCTAssertEqual([[mechanismResult notifications] count], 1, "Mechanism did not contain expected Notification");
+    // Then
+    XCTAssertEqual([pushMechanism notifications].count, 1, @"Notification handling should be idempotent");
+}
+
+- (void)testOnlyHandlesNotificationsThatReferToPushMechanism {
+    // Given
+    NSDictionary* data = @{
+                           @"messageId": @"123",
+                           @"mechanismUID": [NSString stringWithFormat: @"%ld", (long)oathMechanism.uid],
+                           @"timeToLive": @"120",
+                           @"challenge": @"pistolsAtDawn",
+                           };
+    // When
+    [handler application:mockApplication didReceiveRemoteNotification:data];
+    
+    // Then
+    XCTAssertEqual([oathMechanism notifications].count, 0, @"Only Push-Mechanism notifications should be handled");
+    XCTAssertEqual([pushMechanism notifications].count, 0, @"Only Push-Mechanism notifications should be handled");
 }
 
 @end

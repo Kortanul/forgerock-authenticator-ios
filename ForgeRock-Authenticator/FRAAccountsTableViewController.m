@@ -24,6 +24,10 @@
 #import "FRAOathMechanism.h"
 #import "FRAPushMechanism.h"
 
+NSString * const FRAAccountsTableViewControllerStoryboardIdentifer = @"AccountsTableViewController";
+NSString * const FRAAccountsTableViewControllerShowAccountSegue = @"showAccountSegue";
+NSString * const FRAAccountsTableViewControllerScanQrCodeSegue = @"scanQrCodeSegue";
+
 @implementation FRAAccountsTableViewController;
 
 #pragma mark -
@@ -45,7 +49,7 @@
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:@"showAccountSegue"]) {
+    if ([segue.identifier isEqualToString:FRAAccountsTableViewControllerShowAccountSegue]) {
         FRAAccountTableViewController* controller = (FRAAccountTableViewController*)segue.destinationViewController;
         NSArray* selection = [self.tableView indexPathsForSelectedRows];
         NSIndexPath* indexPath = [selection objectAtIndex:0];

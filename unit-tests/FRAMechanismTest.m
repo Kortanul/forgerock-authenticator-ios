@@ -24,8 +24,6 @@
 
 @interface FRAMechanismTest : XCTestCase
 
-- (FRANotification *) makeTestNotification:(FRAIdentityDatabase *)database;
-
 @end
 
 @implementation FRAMechanismTest {
@@ -51,7 +49,7 @@
 
 - (void)testCanAddNotificationToMechanism {
     // Given
-    FRANotification* notification = [self makeTestNotification:database];
+    FRANotification *notification = [self dummyNotification];
     
     // When
     [mechanism addNotification:notification];
@@ -64,7 +62,7 @@
 - (void)testSavedMechanismAutomaticallySavesAddedNotificationToDatabase {
     // Given
     [database insertMechanism:mechanism];
-    FRANotification* notification = [self makeTestNotification:database];
+    FRANotification *notification = [self dummyNotification];
     
     // When
     [mechanism addNotification:notification];
@@ -77,7 +75,7 @@
 - (void)testBroadcastsOneChangeNotificationWhenNotificationIsAutomaticallySavedToDatabase {
     // Given
     [database insertMechanism:mechanism];
-    FRANotification* notification = [self makeTestNotification:database];
+    FRANotification *notification = [self dummyNotification];
     [[NSNotificationCenter defaultCenter] addMockObserver:databaseObserverMock name:FRAIdentityDatabaseChangedNotification object:database];
     [[databaseObserverMock expect] notificationWithName:FRAIdentityDatabaseChangedNotification object:database userInfo:[OCMArg any]];
     
@@ -90,7 +88,7 @@
 
 - (void)testCanRemoveNotificationFromMechanism {
     // Given
-    FRANotification* notification = [self makeTestNotification:database];
+    FRANotification *notification = [self dummyNotification];
     [mechanism addNotification:notification];
     
     // When
@@ -104,7 +102,7 @@
 - (void)testSavedMechanismAutomaticallyRemovesNotificationFromDatabase {
     // Given
     [database insertMechanism:mechanism];
-    FRANotification* notification = [self makeTestNotification:database];
+    FRANotification *notification = [self dummyNotification];
     [mechanism addNotification:notification];
     
     // When
@@ -118,7 +116,7 @@
 - (void)testBroadcastsOneChangeNotificationWhenMechanismIsAutomaticallyRemovedFromDatabase {
     // Given
     [database insertMechanism:mechanism];
-    FRANotification* notification = [self makeTestNotification:database];
+    FRANotification *notification = [self dummyNotification];
     [mechanism addNotification:notification];
     [[NSNotificationCenter defaultCenter] addMockObserver:databaseObserverMock name:FRAIdentityDatabaseChangedNotification object:database];
     [[databaseObserverMock expect] notificationWithName:FRAIdentityDatabaseChangedNotification object:database userInfo:[OCMArg any]];
@@ -130,11 +128,31 @@
     OCMVerifyAll(databaseObserverMock);
 }
 
-- (FRANotification *) makeTestNotification:(FRAIdentityDatabase *)theDatabase {
-    NSTimeInterval timeToLive = 120.0;
-    FRANotification* notification = [[FRANotification alloc] initWithDatabase:theDatabase messageId:@"messageId" challenge:@"Challange" timeReceived:[NSDate date] timeToLive:timeToLive];
+- (void)testCanLocateChildNotificationByMessageId {
+    // Given
+    [mechanism addNotification:[self dummyNotificationWithMessageId:@"ID-1"]];
+    [mechanism addNotification:[self dummyNotificationWithMessageId:@"ID-2"]];
+    [mechanism addNotification:[self dummyNotificationWithMessageId:@"ID-3"]];
 
-    return notification;
+    // When
+
+    // Then
+    XCTAssertEqual([mechanism notificationWithMessageId:@"ID-1"].messageId, @"ID-1", @"Should find child notification by message ID");
+    XCTAssertEqual([mechanism notificationWithMessageId:@"ID-2"].messageId, @"ID-2", @"Should find child notification by message ID");
+    XCTAssertEqual([mechanism notificationWithMessageId:@"ID-3"].messageId, @"ID-3", @"Should find child notification by message ID");
+}
+
+
+- (FRANotification *)dummyNotification {
+    return [self dummyNotificationWithMessageId:@"messageId"];
+}
+
+- (FRANotification *)dummyNotificationWithMessageId:(NSString *)messageId {
+    return [[FRANotification alloc] initWithDatabase:database
+                                           messageId:messageId
+                                           challenge:@"Challange"
+                                        timeReceived:[NSDate date]
+                                          timeToLive:120.0];
 }
 
 @end

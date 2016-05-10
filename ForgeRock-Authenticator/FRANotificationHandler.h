@@ -51,13 +51,16 @@
 #pragma mark Remote Notifications
 
 /*!
+ * Method copied from UIApplicationDelegate protocol.
+ *
  * Called by FRANotificationGateway when a push notification is received.
  *
  * This method attempts to build an FRANotification object from the provided userInfo and persists it to the
  * FRAIdentityModel under the appropriate FRAPushMechanism.
  *
- * @param userInfo An object graph representing the push notification message received.
+ * @param application The application object.
+ * @param messageData An object graph representing the push notification message received.
  */
-- (void)handleRemoteNotification:(NSDictionary *)userInfo;
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)messageData;
 
 @end

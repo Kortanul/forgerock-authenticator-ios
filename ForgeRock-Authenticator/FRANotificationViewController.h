@@ -17,6 +17,9 @@
 #import <UIKit/UIKit.h>
 @class FRANotification;
 
+/*! The storyboard identifier assigned to this view controller. */
+extern NSString * const FRANotificationViewControllerStoryboardIdentifer;
+
 /*!
  * Controller for Notification view.
  */

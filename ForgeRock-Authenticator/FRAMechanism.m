@@ -71,4 +71,13 @@
     }
 }
 
+- (FRANotification *)notificationWithMessageId:(NSString *)messageId {
+    for (FRANotification *notification in self.notifications) {
+        if ([notification.messageId isEqualToString:messageId]) {
+            return notification;
+        }
+    }
+    return nil;
+}
+
 @end

@@ -14,11 +14,13 @@
  * Copyright 2016 ForgeRock AS.
  */
 
+#import "FRABlockAlertView.h"
 #import "FRAIdentity.h"
 #import "FRAIdentityModel.h"
 #import "FRAPushMechanism.h"
 #import "FRANotification.h"
 #import "FRANotificationHandler.h"
+#import "FRANotificationViewController.h"
 
 /*!
  * Private interface.
@@ -30,13 +32,14 @@
  */
 @property (nonatomic, strong, readonly) FRAIdentityModel *identityModel;
 
+/*!
+ * The database to which notifications should be persisted.
+ */
+@property (strong, nonatomic) FRAIdentityDatabase *database;
+
 @end
 
-@implementation FRANotificationHandler {
-    
-    FRAIdentityDatabase *_database;
-    
-}
+@implementation FRANotificationHandler
 
 static NSString const *TTL_KEY = @"timeToLive";
 static NSString const *MESSAGE_ID_KEY = @"messageId";
@@ -56,21 +59,101 @@ static NSString const *MECHANISM_UID_KEY = @"mechanismUID";
     return [[FRANotificationHandler alloc] initWithDatabase:database identityModel:identityModel];
 }
 
-- (void)handleRemoteNotification:(NSDictionary *)messageData {
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)messageData {
 
+    FRANotification *notification = [self notificationFromRemoteNotification:messageData];
+    
+    if (!notification || !notification.pending) {
+        // if the notification is nil then there was a problem looking up the mechanism
+        // if the notification is not pending, then the notification timed out or was dealt with by opening the app
+        // from the homescreen and navigating to the notification; either way, there's nothing further to do here
+        return;
+    }
+    
+    [self showNotification:notification ifForegroundApplication:application];
+}
+
+- (FRANotification *)notificationFromRemoteNotification:(NSDictionary *)messageData {
+
+    // Lookup push mechanism to which the notification should be added
+    
+    FRAPushMechanism *mechanism = [self pushMechanismTargetForRemoteNotification:messageData];
+    if (!mechanism) {
+        return nil;
+    }
+
+    // Try to look up an existing notification (in case this message has already been handled)
+    
+    FRANotification *notification = [mechanism notificationWithMessageId:[messageData objectForKey:MESSAGE_ID_KEY]];
+    if (notification) {
+        return notification;
+    }
+    
+    // otherwise, create the notification from the message and add it to the mechanism
+    
     NSTimeInterval timeToLive = [[messageData objectForKey:TTL_KEY] doubleValue];
-    
-    FRANotification *notification = [[FRANotification alloc] initWithDatabase:_database
-                                                                    messageId:[messageData objectForKey:MESSAGE_ID_KEY]
-                                                                    challenge:[messageData objectForKey:CHALLENGE_KEY]
-                                                                 timeReceived:[NSDate date]
-                                                                          timeToLive:timeToLive];
-    
+    notification = [[FRANotification alloc] initWithDatabase:self.database
+                                                   messageId:[messageData objectForKey:MESSAGE_ID_KEY]
+                                                   challenge:[messageData objectForKey:CHALLENGE_KEY]
+                                                timeReceived:[NSDate date]
+                                                  timeToLive:timeToLive];
+    [mechanism addNotification:notification];
+    return notification;
+}
+
+- (FRAPushMechanism *)pushMechanismTargetForRemoteNotification:(NSDictionary *)messageData {
     NSInteger mechanismId = [[messageData objectForKey:MECHANISM_UID_KEY] intValue];
-    FRAMechanism* mechanism = [_identityModel mechanismWithId:mechanismId];
+    FRAMechanism *mechanism = [self.identityModel mechanismWithId:mechanismId];
+    if ([mechanism isKindOfClass:[FRAPushMechanism class]]) {
+        return (FRAPushMechanism *)mechanism;
+    } else {
+        return nil;
+    }
+}
+
+- (void)showNotification:(FRANotification *)notification ifForegroundApplication:(UIApplication *)application {
     
-    if (mechanism && [mechanism isKindOfClass:[FRAPushMechanism class]]) {
-        [mechanism addNotification:notification];
+    // jump to the notification if the app was in the foreground when the notification arrived or has
+    // been opened by clicking on the notification
+    
+    void (^showNotification)() = ^{
+        UIViewController *rootViewController = application.delegate.window.rootViewController;
+        UIStoryboard *storyboard = rootViewController.storyboard;
+        FRANotificationViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:FRANotificationViewControllerStoryboardIdentifer];
+        viewController.notification = notification;
+        [rootViewController presentViewController:viewController animated:YES completion:NULL];
+    };
+    
+    switch (application.applicationState) {
+            
+        case UIApplicationStateBackground: {
+            // don't show notification if app is running in background
+        }
+        break;
+            
+        case UIApplicationStateActive: {
+            // the notification arrived while the app was in the foreground
+            
+            FRABlockAlertView *alertView = [[FRABlockAlertView alloc] initWithTitle:@"Authentication Request Received"
+                                                                            message:nil
+                                                                           delegate:nil
+                                                                  cancelButtonTitle:nil
+                                                                  otherButtonTitles:@"OK", nil];
+            alertView.callback = ^(NSInteger offset) {
+                const NSInteger okButton = 0;
+                if (offset == okButton) {
+                    showNotification();
+                }
+            };
+            [alertView show];
+        }
+        break;
+            
+        case UIApplicationStateInactive: {
+            // the application is being opened from the notification
+            showNotification();
+        }
+        break;
     }
 }
 

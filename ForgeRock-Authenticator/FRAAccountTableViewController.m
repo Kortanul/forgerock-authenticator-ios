@@ -23,6 +23,9 @@
 #import "FRAOathMechanismTableViewCellController.h"
 #import "FRAPushMechanism.h"
 
+NSString * const FRAAccountTableViewControllerStoryboardIdentifer = @"AccountTableViewController";
+NSString * const FRAAccountTableViewControllerShowNotificationsSegue = @"showNotificationsSegue";
+
 /*! row index of static cell defining UI for OATH mechanism (cell is hidden if no such mechanism is registered) */
 static const NSInteger OATH_MECHANISM_ROW_INDEX = 1;
 /*! row index of static cell defining UI for push mechanism (cell is hidden if no such mechanism is registered) */
@@ -85,7 +88,7 @@ static const NSInteger PUSH_MECHANISM_ROW_INDEX = 2;
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:@"showNotificationsSegue"]) {
+    if ([segue.identifier isEqualToString:FRAAccountTableViewControllerShowNotificationsSegue]) {
         FRANotificationsTableViewController *controller = (FRANotificationsTableViewController *)segue.destinationViewController;
         controller.pushMechanism = [self pushMechanism];
     }

@@ -150,18 +150,14 @@
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     NSLog(@"Notification received: %@", userInfo);
     [[GCMService sharedInstance] appDidReceiveMessage:userInfo]; // acknowledge receipt
-    [[self notificationHandler] handleRemoteNotification:userInfo];
+    [[self notificationHandler] application:application didReceiveRemoteNotification:userInfo];
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
     NSLog(@"Notification received: %@", userInfo);
     [[GCMService sharedInstance] appDidReceiveMessage:userInfo]; // acknowledge receipt
-    [[self notificationHandler] handleRemoteNotification:userInfo];
-    completionHandler(UIBackgroundFetchResultNoData);
-}
-
-- (void)application:(UIApplication *)application handleActionWithIdentifier:(nullable NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo completionHandler:(void(^)())completionHandler {
-    NSLog(@"Notification action invoked: %@", userInfo);
+    [[self notificationHandler] application:application didReceiveRemoteNotification:userInfo];
+    completionHandler(UIBackgroundFetchResultNewData);
 }
 
 #pragma mark -

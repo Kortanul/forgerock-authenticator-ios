@@ -78,4 +78,11 @@
  */
 - (NSInteger)pendingNotificationsCount;
 
+/*!
+ * Gets the notification identified uniquely by the provided messageID.
+ * @param messageId The message id of the notification to get.
+ * @return The notification with the specified messageId or nil if no match is found.
+ */
+- (FRANotification *)notificationWithMessageId:(NSString *)messageId;
+
 @end

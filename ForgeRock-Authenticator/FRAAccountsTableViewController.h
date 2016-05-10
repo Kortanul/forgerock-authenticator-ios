@@ -18,6 +18,13 @@
 
 @class FRAIdentityModel;
 
+/*! The storyboard identifier assigned to this view controller. */
+extern NSString * const FRAAccountsTableViewControllerStoryboardIdentifer;
+/*! The storyboard identifier for the segue from FRAAccountsTableViewController to FRAAccountTableViewController. */
+extern NSString * const FRAAccountsTableViewControllerShowAccountSegue;
+/*! The storyboard identifier for the segue from FRAAccountsTableViewController to FRAQRScanViewController. */
+extern NSString * const FRAAccountsTableViewControllerScanQrCodeSegue;
+
 /*!
  * Controller for Accounts table-view.
  */

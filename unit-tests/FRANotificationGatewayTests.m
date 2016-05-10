@@ -52,7 +52,7 @@
     [notificationGateway application:mockApplication didReceiveRemoteNotification:notification];
     
     // Then
-    OCMVerify([mockNotificationHandler handleRemoteNotification:notification]);
+    OCMVerify([mockNotificationHandler application:mockApplication didReceiveRemoteNotification:notification]);
 }
 
 - (void)testBackgroundPropagatesPushNotificationsToRegisteredHandler {
@@ -64,7 +64,7 @@
               fetchCompletionHandler:^(UIBackgroundFetchResult result){}];
     
     // Then
-    OCMVerify([mockNotificationHandler handleRemoteNotification:notification]);
+    OCMVerify([mockNotificationHandler application:mockApplication didReceiveRemoteNotification:notification]);
 }
 
 @end
