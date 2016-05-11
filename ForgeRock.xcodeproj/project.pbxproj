@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		00DE0DCF00074922CDD80446 /* libPods-ForgeRock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96EC0F2175B236161D1A1C9E /* libPods-ForgeRock.a */; };
 		04DA35AE1CE9C2EF00C99062 /* FRANotificationUISlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 04DA35AD1CE9C2EF00C99062 /* FRANotificationUISlider.m */; };
+		0484ED531CE2059D00DB537A /* FRAMessageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 0484ED521CE2059D00DB537A /* FRAMessageUtils.m */; };
+		04D3D2601CE4CE9100D77EF6 /* FRAMockURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D3D25E1CE4CE9100D77EF6 /* FRAMockURLProtocol.m */; };
+		04D3D2611CE4D00400D77EF6 /* FRAMessageUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D3D25C1CE4CE9100D77EF6 /* FRAMessageUtilsTests.m */; };
 		2D977EAB1CD8BEBA000A7F29 /* FRANotificationHandlerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D977EAA1CD8BEBA000A7F29 /* FRANotificationHandlerTest.m */; };
 		443686801CDB95370056D4E3 /* FRAPushMechanismTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4436867F1CDB95370056D4E3 /* FRAPushMechanismTableViewCell.m */; };
 		443686831CDB961D0056D4E3 /* FRAPushMechanismTableViewCellController.m in Sources */ = {isa = PBXBuildFile; fileRef = 443686821CDB961D0056D4E3 /* FRAPushMechanismTableViewCellController.m */; };
@@ -82,6 +85,11 @@
 /* Begin PBXFileReference section */
 		04DA35AC1CE9C2EF00C99062 /* FRANotificationUISlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRANotificationUISlider.h; sourceTree = "<group>"; };
 		04DA35AD1CE9C2EF00C99062 /* FRANotificationUISlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRANotificationUISlider.m; sourceTree = "<group>"; };
+		0484ED511CE2030C00DB537A /* FRAMessageUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRAMessageUtils.h; sourceTree = "<group>"; };
+		0484ED521CE2059D00DB537A /* FRAMessageUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAMessageUtils.m; sourceTree = "<group>"; };
+		04D3D25C1CE4CE9100D77EF6 /* FRAMessageUtilsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FRAMessageUtilsTests.m; path = "unit-tests/FRAMessageUtilsTests.m"; sourceTree = "<group>"; };
+		04D3D25D1CE4CE9100D77EF6 /* FRAMockURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FRAMockURLProtocol.h; path = "unit-tests/FRAMockURLProtocol.h"; sourceTree = "<group>"; };
+		04D3D25E1CE4CE9100D77EF6 /* FRAMockURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FRAMockURLProtocol.m; path = "unit-tests/FRAMockURLProtocol.m"; sourceTree = "<group>"; };
 		2D977EAA1CD8BEBA000A7F29 /* FRANotificationHandlerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FRANotificationHandlerTest.m; path = "unit-tests/FRANotificationHandlerTest.m"; sourceTree = "<group>"; };
 		30AEC1B7AAFD1DE5FF7E7301 /* Pods-ForgeRock.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgeRock.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ForgeRock/Pods-ForgeRock.debug.xcconfig"; sourceTree = "<group>"; };
 		32654F29EFBE2CCDB5F30722 /* Pods-ForgeRockTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgeRockTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ForgeRockTests/Pods-ForgeRockTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -210,6 +218,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0484ED501CE2014700DB537A /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				0484ED511CE2030C00DB537A /* FRAMessageUtils.h */,
+				0484ED521CE2059D00DB537A /* FRAMessageUtils.m */,
+			);
+			name = Utils;
+			sourceTree = "<group>";
+		};
+		0484ED541CE20BDD00DB537A /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				04D3D25C1CE4CE9100D77EF6 /* FRAMessageUtilsTests.m */,
+				04D3D25D1CE4CE9100D77EF6 /* FRAMockURLProtocol.h */,
+				04D3D25E1CE4CE9100D77EF6 /* FRAMockURLProtocol.m */,
+			);
+			name = Utils;
+			sourceTree = "<group>";
+		};
 		443F203B1CCC284300B91C2B /* Assembly */ = {
 			isa = PBXGroup;
 			children = (
@@ -391,6 +418,7 @@
 		E1C725F81AEE7CBB00388026 /* Unit Tests */ = {
 			isa = PBXGroup;
 			children = (
+				0484ED541CE20BDD00DB537A /* Utils */,
 				448EAF2A1CCD636E00FEF058 /* Accounts */,
 				E12246141CD0FBEE00F52C98 /* Notifications */,
 				44695F7B1CA1709B00680799 /* Storage */,
@@ -449,6 +477,7 @@
 		F17A860617EC12670098E7F3 /* Authenticator */ = {
 			isa = PBXGroup;
 			children = (
+				0484ED501CE2014700DB537A /* Utils */,
 				443F203B1CCC284300B91C2B /* Assembly */,
 				449FD4391CAAC74200A9BF99 /* Accounts */,
 				44BC417F1CA97D8A000931F3 /* Notifications */,
@@ -713,6 +742,7 @@
 				F1030ED21818322000E478F7 /* FRACircleProgressView.m in Sources */,
 				44CF2D911CD21C1B00666258 /* FRANotificationHandler.m in Sources */,
 				443F203E1CCC28A400B91C2B /* FRAApplicationAssembly.m in Sources */,
+				04D3D2601CE4CE9100D77EF6 /* FRAMockURLProtocol.m in Sources */,
 				44695F7A1CA0BA0600680799 /* FRAIdentityDatabase.m in Sources */,
 				E1A92B711CC12F4F00D7BB04 /* FRAMechanismFactory.m in Sources */,
 				F17A860D17EC12670098E7F3 /* main.m in Sources */,
@@ -722,6 +752,7 @@
 				44C206871CD944ED00DC4D3B /* FRAIdentityModel.m in Sources */,
 				443686801CDB95370056D4E3 /* FRAPushMechanismTableViewCell.m in Sources */,
 				443686831CDB961D0056D4E3 /* FRAPushMechanismTableViewCellController.m in Sources */,
+				0484ED531CE2059D00DB537A /* FRAMessageUtils.m in Sources */,
 				F109DBEA18412A2300548A3E /* FRAQRScanViewController.m in Sources */,
 				E1A92B6A1CBFC7F300D7BB04 /* FRANotification.m in Sources */,
 				44695F5A1C9F6DD900680799 /* FRAIdentity.m in Sources */,
@@ -737,6 +768,7 @@
 			files = (
 				443686851CDCC2F40056D4E3 /* unit-tests in Sources */,
 				44695F631CA0ADAB00680799 /* FRAOathMechanism.m in Sources */,
+				04D3D2611CE4D00400D77EF6 /* FRAMessageUtilsTests.m in Sources */,
 				E12246191CD1009F00F52C98 /* FRAMechanismFactoryTest.m in Sources */,
 				44695F5D1C9F70C100680799 /* FRAIdentityTests.m in Sources */,
 				4467225B1CD4038B00E80799 /* FRANotificationGatewayTests.m in Sources */,

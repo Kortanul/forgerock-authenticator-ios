@@ -25,3 +25,21 @@ project: http://typhoonframework.org/
 license: Apache License 2.0
 
 Dependency injection framework.
+
+
+JWT
+---
+
+project: https://github.com/yourkarma/JWT
+license: MIT License
+
+A JSON Web Token implementation in Objective-C.
+
+
+AFNetworking
+------------
+
+project: http://afnetworking.com
+license: MIT License
+
+A delightful networking framework for iOS, OS X, watchOS, and tvOS.

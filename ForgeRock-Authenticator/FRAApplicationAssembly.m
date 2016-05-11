@@ -24,6 +24,7 @@
 #import "FRANotificationGateway.h"
 #import "FRANotificationHandler.h"
 #import "FRAQRScanViewController.h"
+#import "FRAMessageUtils.h"
 
 @implementation FRAApplicationAssembly
 
@@ -97,5 +98,10 @@
     }];
 }
 
+- (FRAMessageUtils *)messageUtils {
+    return [TyphoonDefinition withClass:[FRAMessageUtils class] configuration:^(TyphoonDefinition *definition) {
+        definition.scope = TyphoonScopeSingleton;
+    }];
+}
 
 @end

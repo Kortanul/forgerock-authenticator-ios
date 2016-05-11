@@ -24,6 +24,7 @@
 @class FRANotificationGateway;
 @class FRANotificationHandler;
 @class FRAQRScanViewController;
+@class FRAMessageUtils;
 
 /*!
  * Typhoon dependency injection configuration.
@@ -39,5 +40,6 @@
 - (FRANotificationGateway *)notificationGateway;
 - (FRANotificationHandler *)notificationHandler;
 - (FRAQRScanViewController *)qrScanViewController;
+- (FRAMessageUtils *)messageUtils;
 
 @end
