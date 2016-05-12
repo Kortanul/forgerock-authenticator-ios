@@ -14,55 +14,36 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-@class FRAIdentity;
-@class FRAIdentityModel;
-@class FRAMechanism;
+#import "FRAMechanism.h"
+#import "FRAIdentityModel.h"
+
+#ifndef FRAMechanismFactory_h
+#define FRAMechanismFactory_h
+
+
+#endif /* FRAMechanismFactory_h */
+
+@protocol FRAMechanismFactory
 
 /*!
- * This Authenticator Application makes use of the existing OATH
- * URL scheme for encoding Identity and Mechanism information.
+ * Build a FRA Mechanism object using the database and the model provided
  *
- * This is defined in detail here:
- * https://github.com/google/google-authenticator/wiki/Key-Uri-Format
- *
- * This factory will also be able to parse a similar URL scheme
- * Push Authentication when it is supported by this Application.
- *
- * Note: Only responsible for generating the instances of Identity and
- * Mechanism. Will not be responsible for database persistence.
+ * @param uri the uri string contianing the mechanism informaiton
+ * @param database the database to eprsist the new mechanism to
+ * @param model the identity model to place the new mechanism into
  */
-@interface FRAMechanismFactory : NSObject
+- (FRAMechanism *) buildMechanism:(NSURL *)uri database:(FRAIdentityDatabase *)database model:(FRAIdentityModel *)model;
 
 /*!
- * The identity model.
- */ // TODO: Make identityModel a private property
-@property (nonatomic, strong, readonly) FRAIdentityModel *identityModel;
-
-#pragma mark -
-#pragma mark Lifecycle
-
-/*!
- * Init method.
+ * Gets whether this FRAMechanismFactory supports the mechnaism type in the given uri
  *
- * @param database The database to which this object can be persisted.
- * @return The initialized object or nil if initialization failed.
+ * @param uri the uri string contianing the mechanism informaiton
  */
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel;
-
-#pragma mark -
-#pragma mark Factory Functions
+- (bool) supports:(NSURL *)uri;
 
 /*!
- * Given a URL, convert this into a FRAMechanism, complete with associated Identity.
- *
- * @param url The URL to parse, non-nil.
- * @return non nil FRAMechanism initialsed with the values present in the URL.
+ * Gets the supproted protocol for the FRAMechanism FRAMechanismFactory
  */
-- (FRAMechanism*)parseFromURL:(NSURL*)url;
-
-/*!
- * Convenience function which will call parseFromURL.
- */
-- (FRAMechanism*)parseFromString:(NSString*)string;
+- (NSString *) getSupportedProtocol;
 
 @end

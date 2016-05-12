@@ -20,11 +20,13 @@
 @class FRAAccountTableViewController;
 @class FRAIdentityDatabase;
 @class FRAIdentityModel;
-@class FRAMechanismFactory;
+@class FRAUriMechanismReader;
 @class FRANotificationGateway;
 @class FRANotificationHandler;
 @class FRAQRScanViewController;
 @class FRAMessageUtils;
+@class FRAOathMechanismFactory;
+@class FRAPushMechanismFactory;
 
 /*!
  * Typhoon dependency injection configuration.
@@ -36,7 +38,9 @@
 - (FRAIdentityDatabase *)identityDatabase;
 - (FRAIdentityDatabase *)identityDatabaseSQLiteOperations;
 - (FRAIdentityModel *)identityModel;
-- (FRAMechanismFactory *)mechanismFactory;
+- (FRAUriMechanismReader *)uriMechanismReader;
+- (FRAOathMechanismFactory *)oathMechanismFactory;
+- (FRAPushMechanismFactory *)pushMechanismFactory;
 - (FRANotificationGateway *)notificationGateway;
 - (FRANotificationHandler *)notificationHandler;
 - (FRAQRScanViewController *)qrScanViewController;

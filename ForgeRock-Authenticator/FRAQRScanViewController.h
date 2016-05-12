@@ -18,7 +18,7 @@
 
 @import AVFoundation;
 #import <UIKit/UIKit.h>
-@class FRAMechanismFactory;
+@class FRAUriMechanismReader;
 
 /*! The storyboard identifier assigned to this view controller. */
 extern NSString * const FRAQRScanViewControllerStoryboardIdentifer;
@@ -31,7 +31,7 @@ extern NSString * const FRAQRScanViewControllerStoryboardIdentifer;
 /*!
  * Mechanism Factory for generating Mechanism instances. Exposed to allow (setter) dependency injection.
  */
-@property (nonatomic, strong) FRAMechanismFactory* mechanismFactory;
+@property (nonatomic, strong) FRAUriMechanismReader* uriMechanismReader;
 
 /*!
  * Popover controller.

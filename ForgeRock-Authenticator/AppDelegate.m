@@ -21,7 +21,7 @@
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAIdentityModel.h"
-#import "FRAMechanismFactory.h"
+#import "FRAUriMechanismReader.h"
 #import "FRANotification.h"
 #import "FRANotificationGateway.h"
 #import "FRAOathMechanism.h"
@@ -91,8 +91,8 @@
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     NSLog(@"application:openURL:sourceApplication:annotation:");
     // Create mechanism from URL
-    FRAMechanismFactory *factory = [[self assembly] mechanismFactory];
-    FRAMechanism *mechanism = [factory parseFromURL:url];
+    FRAUriMechanismReader* factory = [[self assembly] uriMechanismReader];
+    FRAMechanism* mechanism = [factory parseFromURL:url];
     if (mechanism == nil) {
         return NO;
     }
@@ -115,7 +115,7 @@
 }
 
 - (void)populateWithDummyData {
-    FRAMechanismFactory *factory = [[self assembly] mechanismFactory];
+    FRAUriMechanismReader *factory = [[self assembly] uriMechanismReader];
     FRAIdentityDatabase *database = [[self assembly] identityDatabase];
     
     [factory parseFromURL:[NSURL URLWithString:@"otpauth://totp/Umbrella-Corp:Alice?secret=ZIFYT2GJ5UDGYCBYJ777PFBPSM======&issuer=Umbrella-Corp&digits=6&period=30"]];

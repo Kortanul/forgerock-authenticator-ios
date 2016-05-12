@@ -20,7 +20,7 @@
 
 static NSString * const url = @"http://any.website.com";
 static NSString * const messageId = @"message id";
-static NSString * const base64Secret = @"secret";
+static NSString * const base64Secret = @"c2VjcmV0";
 static NSTimeInterval const testTimeout = 10.0;
 
 @interface FRAMessageUtilsTests : XCTestCase

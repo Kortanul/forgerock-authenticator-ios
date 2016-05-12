@@ -27,6 +27,12 @@
  */
 @property (nonatomic, readonly) NSInteger version;
 
+@property (nonatomic, readonly) NSString* secret;
+@property (nonatomic, readonly) NSString* authEndpoint;
+@property (nonatomic, readonly) NSString* issuer;
+@property (nonatomic, readonly) NSString* image;
+@property (nonatomic, readonly) NSString* bgColour;
+
 #pragma mark -
 #pragma mark Lifecyle
 
@@ -40,6 +46,20 @@
 - (instancetype)initWithDatabase:(FRAIdentityDatabase *)database;
 
 /*!
+ * Init Push Mechanism
+ *
+ * @param database the database to store this object it
+ * @param authEndpoint the authentirsation enpoint uri to use when authenticating using this mechanism
+ * @param secret the secret key for the authentication exchange
+ * @param image the image ti display for this mechanism
+ * @param bgColour the backjground colour for displaying this mechanism
+ * @param issuer the issuer name to display for this mechanism
+ *
+ * @return The initialized mechanism or nil if initialization failed.
+ */
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)a secret:s image:(NSString *)image bgColour:(NSString *)b issuer:(NSString *)issuer;
+
+/*!
  * Allocate and init Push Mechanism.
  *
  * @param database The database to which this mechanism can be persisted.
@@ -47,5 +67,14 @@
  * @return The initialized mechanism or nil if initialization failed.
  */
 + (instancetype)pushMechanismWithDatabase:(FRAIdentityDatabase *)database;
+
+/*!
+ * Allocate and init Push Mechanism.
+ *
+ * @param database The database to which this mechanism can be persisted.
+ *
+ * @return The initialized mechanism or nil if initialization failed.
+ */
++ (instancetype)pushMechanismWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)a secret:s image:(NSString *)image bgColour:(NSString *)b issuer:(NSString *)issuer;
 
 @end

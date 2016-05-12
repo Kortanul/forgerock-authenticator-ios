@@ -19,7 +19,7 @@
 #import "FRAQRScanViewController.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAMechanism.h"
-#import "FRAMechanismFactory.h"
+#import "FRAUriMechanismReader.h"
 #import "FRAIdentity.h"
 
 NSString * const FRAQRScanViewControllerStoryboardIdentifer = @"QRScanViewController";
@@ -79,7 +79,7 @@ NSString * const FRAQRScanViewControllerStoryboardIdentifer = @"QRScanViewContro
             }
             NSLog(@"Read QR URL: %@", qrcode);
 
-            [self.mechanismFactory parseFromString:qrcode];
+            [self.uriMechanismReader parseFromString:qrcode];
             [self.session stopRunning];
             if (self.popover == nil) {
                 [self.navigationController popViewControllerAnimated:YES];

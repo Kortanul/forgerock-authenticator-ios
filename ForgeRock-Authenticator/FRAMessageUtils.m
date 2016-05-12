@@ -16,10 +16,10 @@
 
 #import "FRAMessageUtils.h"
 
+/*! The Communication mechanism Content Type. */
 static NSString * const JSON_CONTENT_TYPE = @"application/json";
+/*! The Communication mechanism key. */
 static NSString * const CONTENT_TYPE_HEADER = @"Content-Type";
-
-NSInteger const NOT_FOUND = 404;
 
 @implementation FRAMessageUtils
 
@@ -42,6 +42,7 @@ NSInteger const NOT_FOUND = 404;
     NSDictionary *payload = [self createPayloadWithMessageId:messageId base64Secret:base64Secret data:data];
     
     AFHTTPSessionManager *manager = [self createHTTPSessionManager:protocol];
+    [manager setRequestSerializer:[AFJSONRequestSerializer serializer]];
     [manager.requestSerializer setValue:JSON_CONTENT_TYPE forHTTPHeaderField:CONTENT_TYPE_HEADER];
     
     [manager POST:URL.absoluteString
@@ -49,9 +50,12 @@ NSInteger const NOT_FOUND = 404;
         progress:nil
          success:^(NSURLSessionTask *task, id responseObject) {
              handler([(NSHTTPURLResponse*)task.response statusCode], nil);
-         } failure:^(NSURLSessionTask *operation, NSError *error) {
-             handler(NOT_FOUND, error);
+         } failure:^(NSURLSessionTask *task, NSError *error) {
+             NSLog(@"Error code = %li", [(NSHTTPURLResponse*)task.response statusCode]);
+            
+             handler([(NSHTTPURLResponse*)task.response statusCode], error);
          }];
+    
 }
 
 - (AFHTTPSessionManager *)createHTTPSessionManager:(Class)protocol {
@@ -71,14 +75,19 @@ NSInteger const NOT_FOUND = 404;
 - (NSDictionary *)createPayloadWithMessageId:(NSString *)messageId
                                 base64Secret:(NSString *)base64Secret
                                         data:(NSDictionary *)data {
-    return @{@"messageId":messageId, @"jwt":[self generateJwtWithPayload:data base64Secret:base64Secret]};
+    NSString *jwtData = [self generateJwtWithPayload:data base64Secret:base64Secret];
+    NSDictionary *topLevelData = @{@"messageId":messageId, @"jwt":jwtData};
+    
+    return topLevelData;
 }
 
 - (NSString *)generateJwtWithPayload:(NSDictionary *)payload base64Secret:(NSString *)base64Secret {
 
     id<JWTAlgorithm> algorithm = [JWTAlgorithmFactory algorithmByName:@"HS256"];
     
-    return [JWTBuilder encodePayload:payload].secret(base64Secret).algorithm(algorithm).encode;
+    NSData *secretBytes = [[NSData alloc] initWithBase64EncodedString:base64Secret options:0];
+ 
+    return [JWTBuilder encodePayload:payload].secretData(secretBytes).algorithm(algorithm).encode;
 }
 
 @end

@@ -18,20 +18,28 @@
 #import <XCTest/XCTest.h>
 #import "FRAIdentity.h"
 #import "FRAMechanismFactory.h"
+#import "FRAOathMechanismFactory.h"
+#import "FRAUriMechanismReader.h"
 #import "FRAOathCode.h"
 #import "FRAOathMechanism.h"
+#import "FRAIdentityDatabase.h"
+#import "FRAIdentityModel.h"
 
 @interface FRAMechanismFactoryTest : XCTestCase
 
 @end
 
 @implementation FRAMechanismFactoryTest {
-    FRAMechanismFactory* factory;
+    FRAUriMechanismReader* factory;
 }
 
 - (void)setUp {
     [super setUp];
-    factory = [[FRAMechanismFactory alloc] init];
+    FRAIdentityDatabase * db = [[FRAIdentityDatabase alloc] init];
+    FRAIdentityModel * im = [[FRAIdentityModel alloc] initWithDatabase:db];
+    factory = [[FRAUriMechanismReader alloc] initWithDatabase:db identityModel:im];
+    FRAOathMechanismFactory * oathFactory = [[FRAOathMechanismFactory alloc] init];
+    [factory addMechanismFactory:oathFactory];
 }
 
 - (void)tearDown {
@@ -46,7 +54,10 @@
     FRAOathMechanism* mechanism = (FRAOathMechanism*)[factory parseFromString:qrString];
     
     // Then
-    XCTAssert(strcmp([[mechanism type] UTF8String], "hotp") == 0);
+    XCTAssertNotNil(mechanism);
+    if (mechanism) {
+        XCTAssertEqualObjects([mechanism type], @"hotp");
+    }
 }
 
 - (void)testParseOATHDefaultDigits {
@@ -80,8 +91,8 @@
     
     // Then
     FRAIdentity* identity = [mechanism parent];
-    XCTAssert(strcmp([[identity issuer] UTF8String], "Forgerock") == 0);
-    XCTAssert(strcmp([[identity accountName] UTF8String], "demo") == 0);
+    XCTAssertEqualObjects([identity issuer], @"Forgerock");
+    XCTAssertEqualObjects([identity accountName], @"demo");
 }
 
 @end

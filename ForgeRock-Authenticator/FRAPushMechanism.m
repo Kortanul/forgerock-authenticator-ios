@@ -21,6 +21,20 @@
 #pragma mark -
 #pragma mark Lifecyle
 
+
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)a secret:s image:(NSString *)image bgColour:(NSString *)b issuer:(NSString *)issuer{
+    self = [super initWithDatabase:database];
+    if (self) {
+        _version = 1;
+        _authEndpoint = a;
+        _secret = s;
+        _image = image;
+        _bgColour = b;
+        _issuer = issuer;
+    }
+    return self;
+}
+
 - (instancetype)initWithDatabase:(FRAIdentityDatabase *)database {
     
     self = [super initWithDatabase:database];
@@ -32,6 +46,10 @@
 
 + (instancetype)pushMechanismWithDatabase:(FRAIdentityDatabase *)database {
     return [[FRAPushMechanism alloc] initWithDatabase:database];
+}
+
++ (instancetype)pushMechanismWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)a secret:s image:(NSString *)image bgColour:(NSString *)b issuer:(NSString *)issuer {
+    return [[FRAPushMechanism alloc] initWithDatabase:database authEndpoint:a secret:s image:image bgColour:b issuer:issuer];
 }
 
 @end

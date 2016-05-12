@@ -18,9 +18,6 @@
 #import <JWT.h>
 #import <JWTAlgorithmFactory.h>
 
-/*! Identifier for 404 response. */
-extern NSInteger const NOT_FOUND;
-
 /*!
  * Class that handles communication with OpenAM.
  */
