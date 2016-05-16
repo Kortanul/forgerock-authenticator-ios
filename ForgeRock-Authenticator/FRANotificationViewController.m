@@ -27,7 +27,6 @@ NSString * const FRANotificationViewControllerStoryboardIdentifer = @"Notificati
 - (void)viewDidLoad {
     [super viewDidLoad];
     //  _image = ... // TODO: Use UIImageView+AFNetworking category provided by AFNetworking
-    // TODO: Override thumbRectForBounds:trackRect:value: in custom UISlider subclass to increase touch area of "thumb"
     [_authorizeSlider setThumbImage:[UIImage imageNamed:@"OffSwitchIcon"] forState:UIControlStateNormal];
     _image.layer.cornerRadius = _image.frame.size.width / 2;
     _image.clipsToBounds = YES;
@@ -36,14 +35,42 @@ NSString * const FRANotificationViewControllerStoryboardIdentifer = @"Notificati
 #pragma mark -
 #pragma mark FRANotificationViewController
 
+- (IBAction)updateSliderPosition:(id)sender {
+    if(![self isSliderAtEndOfTrack]) {
+        [self moveSliderToStartOfTrack];
+    }
+}
+
 - (IBAction)authorize:(id)sender {
+    if([self isSliderAtEndOfTrack]) {
+        [self approveNotification];
+    }
+}
+
+- (IBAction)dismiss:(id)sender {
+    [self dismissNotification];
+}
+
+#pragma mark -
+#pragma mark Helper methods
+
+- (BOOL)isSliderAtEndOfTrack {
+    return (_authorizeSlider.value == _authorizeSlider.maximumValue);
+}
+
+- (void)moveSliderToStartOfTrack {
+    [_authorizeSlider setValue:_authorizeSlider.minimumValue animated:YES];
+}
+
+- (void)approveNotification {
+    [_authorizeSlider setThumbImage:[UIImage imageNamed:@"OnSwitchIcon"] forState:UIControlStateNormal];
+    _authorizeSlider.userInteractionEnabled = NO;
     [self.notification approve];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (IBAction)dismiss:(id)sender {
+- (void)dismissNotification {
     [self.notification deny];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
-
 @end

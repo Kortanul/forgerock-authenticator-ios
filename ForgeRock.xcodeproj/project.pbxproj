@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		00DE0DCF00074922CDD80446 /* libPods-ForgeRock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96EC0F2175B236161D1A1C9E /* libPods-ForgeRock.a */; };
+		04DA35AE1CE9C2EF00C99062 /* FRANotificationUISlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 04DA35AD1CE9C2EF00C99062 /* FRANotificationUISlider.m */; };
 		2D977EAB1CD8BEBA000A7F29 /* FRANotificationHandlerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D977EAA1CD8BEBA000A7F29 /* FRANotificationHandlerTest.m */; };
 		443686801CDB95370056D4E3 /* FRAPushMechanismTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4436867F1CDB95370056D4E3 /* FRAPushMechanismTableViewCell.m */; };
 		443686831CDB961D0056D4E3 /* FRAPushMechanismTableViewCellController.m in Sources */ = {isa = PBXBuildFile; fileRef = 443686821CDB961D0056D4E3 /* FRAPushMechanismTableViewCellController.m */; };
@@ -79,6 +80,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		04DA35AC1CE9C2EF00C99062 /* FRANotificationUISlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRANotificationUISlider.h; sourceTree = "<group>"; };
+		04DA35AD1CE9C2EF00C99062 /* FRANotificationUISlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRANotificationUISlider.m; sourceTree = "<group>"; };
 		2D977EAA1CD8BEBA000A7F29 /* FRANotificationHandlerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FRANotificationHandlerTest.m; path = "unit-tests/FRANotificationHandlerTest.m"; sourceTree = "<group>"; };
 		30AEC1B7AAFD1DE5FF7E7301 /* Pods-ForgeRock.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgeRock.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ForgeRock/Pods-ForgeRock.debug.xcconfig"; sourceTree = "<group>"; };
 		32654F29EFBE2CCDB5F30722 /* Pods-ForgeRockTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgeRockTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ForgeRockTests/Pods-ForgeRockTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -332,6 +335,8 @@
 		44BC417F1CA97D8A000931F3 /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
+				04DA35AC1CE9C2EF00C99062 /* FRANotificationUISlider.h */,
+				04DA35AD1CE9C2EF00C99062 /* FRANotificationUISlider.m */,
 				44BC41801CA97DD6000931F3 /* FRANotificationsTableViewController.h */,
 				44BC41811CA97DD6000931F3 /* FRANotificationsTableViewController.m */,
 				44BC41841CA9DC12000931F3 /* FRANotificationTableViewCell.m */,
@@ -696,6 +701,7 @@
 				44BC41851CA9DC12000931F3 /* FRANotificationTableViewCell.m in Sources */,
 				44695F621CA0ADAB00680799 /* FRAOathMechanism.m in Sources */,
 				44CF2D8A1CD1553200666258 /* FRANotificationGateway.m in Sources */,
+				04DA35AE1CE9C2EF00C99062 /* FRANotificationUISlider.m in Sources */,
 				F15300431801BB8800A0E179 /* base32.c in Sources */,
 				44C2068A1CD972E500DC4D3B /* FRAIdentityDatabaseSQLiteOperations.m in Sources */,
 				44695F661CA0AE4300680799 /* FRAOathCode.m in Sources */,

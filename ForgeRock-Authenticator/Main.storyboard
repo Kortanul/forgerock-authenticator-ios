@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="jjn-fx-6D4">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="jjn-fx-6D4">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -459,13 +459,14 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Uw-nm-7UE">
                                 <rect key="frame" x="-4" y="269" width="328" height="248"/>
                                 <subviews>
-                                    <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" continuous="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sh7-9b-sF7">
+                                    <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" continuous="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sh7-9b-sF7" customClass="FRANotificationUISlider">
                                         <rect key="frame" x="46" y="109" width="236" height="31"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="30" id="O8F-EK-L7v"/>
                                         </constraints>
                                         <connections>
-                                            <action selector="authorize:" destination="OAr-Ng-i5z" eventType="valueChanged" id="spu-6r-wg1"/>
+                                            <action selector="authorize:" destination="OAr-Ng-i5z" eventType="touchUpInside" id="QJp-Ej-uOB"/>
+                                            <action selector="updateSliderPosition:" destination="OAr-Ng-i5z" eventType="valueChanged" id="Nu6-wu-ymf"/>
                                         </connections>
                                     </slider>
                                 </subviews>

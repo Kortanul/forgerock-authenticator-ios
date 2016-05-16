@@ -15,6 +15,9 @@
  */
 
 #import <UIKit/UIKit.h>
+
+#import "FRANotificationUISlider.h"
+
 @class FRANotification;
 
 /*! The storyboard identifier assigned to this view controller. */
@@ -27,9 +30,9 @@ extern NSString * const FRANotificationViewControllerStoryboardIdentifer;
 
 @property (weak, nonatomic) FRANotification *notification;
 /*!
- * The UISlider used to authorize the requested action.
+ * The FRANotificationUISlider used to authorize the requested action.
  */
-@property (weak, nonatomic) IBOutlet UISlider *authorizeSlider;
+@property (weak, nonatomic) IBOutlet FRANotificationUISlider *authorizeSlider;
 /*!
  * The UIButton used to deny the requested action.
  */
@@ -38,6 +41,11 @@ extern NSString * const FRANotificationViewControllerStoryboardIdentifer;
  * The UIImageView in which the issuer's icon will be displayed.
  */
 @property (weak, nonatomic) IBOutlet UIImageView *image;
+
+/*!
+ * The callback used to check if the slider needs to be moved to the start of the track.
+ */
+- (IBAction)updateSliderPosition:(id)sender;
 
 /*!
  * The callback used to permit the requested authorization requested.
