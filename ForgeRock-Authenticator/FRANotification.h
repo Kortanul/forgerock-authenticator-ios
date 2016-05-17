@@ -59,6 +59,18 @@
 @property (getter=isApproved, nonatomic, readonly) BOOL approved;
 
 /*!
+ * Indicator of whether the Notification has been denied. Once in the denied
+ * state, the Notification is complete and no further action is required.
+ */
+@property (getter=isDenied, nonatomic, readonly) BOOL denied;
+
+/*!
+ * Indicator of whether the Notification has expired. Once in the expired
+ * state, the Notification is complete and no further action is required.
+ */
+@property (getter=isExpired, nonatomic, readonly) BOOL expired;
+
+/*!
  * Message Id of the message.
  */
 @property (nonatomic, readonly) NSString *messageId;

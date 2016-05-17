@@ -143,9 +143,15 @@
                                                                            challenge:@"challenge"
                                                                         timeReceived:[NSDate date]
                                                                           timeToLive:timeToLive];
+    FRANotification *expiringNotification = [[FRANotification alloc] initWithDatabase:database
+                                                                            messageId:@"messageId"
+                                                                            challenge:@"challenge"
+                                                                         timeReceived:[NSDate date]
+                                                                           timeToLive:10.0];
     [pushMechanism addNotification:approvedNotification];
     [pushMechanism addNotification:deniedNotification];
     [pushMechanism addNotification:pendingNotification];
+    [pushMechanism addNotification:expiringNotification];
     [[[self assembly] identityModel] addIdentity:demo];
 
     NSLog(@"registered push mechanism with uid: %ld", (long)pushMechanism.uid);

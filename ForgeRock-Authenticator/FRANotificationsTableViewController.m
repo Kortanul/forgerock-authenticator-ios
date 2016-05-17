@@ -119,8 +119,12 @@ static const NSInteger COMPLETED_SECTION_INDEX = 1;
             cell.status.text = @"Approved";
             cell.image.image = [[UIImage imageNamed:@"ApprovedIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
             cell.image.tintColor = seaGreen;
-        } else {
+        } else if (notification.isDenied) {
             cell.status.text = @"Denied";
+            cell.image.image = [[UIImage imageNamed:@"DeniedIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            cell.image.tintColor = dashboardRed;
+        } else if (notification.isExpired) {
+            cell.status.text = @"Expired";
             cell.image.image = [[UIImage imageNamed:@"DeniedIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
             cell.image.tintColor = dashboardRed;
         }

@@ -35,4 +35,9 @@ extern NSString * const FRAAccountsTableViewControllerScanQrCodeSegue;
  */
 @property (nonatomic, strong) FRAIdentityModel *identityModel;
 
+/*!
+ * Timer for updating notifications count.
+ */
+@property (strong, nonatomic) NSTimer *timer;
+
 @end

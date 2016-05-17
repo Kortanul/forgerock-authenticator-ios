@@ -56,6 +56,19 @@
     // Then
     XCTAssertEqual([notification isPending], YES);
     XCTAssertEqual([notification isApproved], NO);
+    XCTAssertEqual([notification isDenied], NO);
+    XCTAssertEqual([notification isExpired], NO);
+}
+
+- (void)testShouldSetTimeExpired {
+    // Given
+    NSDate *timeReceived = [NSDate date];
+    NSTimeInterval timeToLive = 120.0;
+    FRANotification *expiringNotification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challenge:@"challenge" timeReceived:timeReceived timeToLive:timeToLive];
+    // When
+    
+    // Then
+    XCTAssertEqualObjects([expiringNotification timeExpired], [timeReceived dateByAddingTimeInterval:timeToLive]);
 }
 
 - (void)testShouldApproveNotification {
@@ -67,6 +80,7 @@
     // Then
     XCTAssertEqual([notification isPending], NO);
     XCTAssertEqual([notification isApproved], YES);
+    XCTAssertEqual([notification isDenied], NO);
 }
 
 - (void)testShouldDenyNotification {
@@ -78,6 +92,7 @@
     // Then
     XCTAssertEqual([notification isPending], NO);
     XCTAssertEqual([notification isApproved], NO);
+    XCTAssertEqual([notification isDenied], YES);
 }
 
 - (void)testSavedNotificationAutomaticallySavesItselfToDatabaseWhenApproved {
@@ -113,6 +128,32 @@
     
     // Then
     OCMVerifyAll(databaseObserverMock);
+}
+
+- (void)testIsExpiredReturnsYesIfNotificationHasExpired {
+    // Given
+    FRANotification *expiredNotification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challenge:@"challenge" timeReceived:[NSDate date] timeToLive:-10.0];
+    
+    // When
+    
+    // Then
+    XCTAssertEqual([expiredNotification isExpired], YES);
+    XCTAssertEqual([expiredNotification isPending], NO);
+    XCTAssertEqual([expiredNotification isApproved], NO);
+    XCTAssertEqual([expiredNotification isDenied], NO);
+}
+
+- (void)testIsExpiredReturnsNoIfNotificationHasNotExpired {
+    // Given
+    FRANotification *expiredNotification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challenge:@"challenge" timeReceived:[NSDate date] timeToLive:120.0];
+    
+    // When
+    
+    // Then
+    XCTAssertEqual([expiredNotification isExpired], NO);
+    XCTAssertEqual([expiredNotification isPending], YES);
+    XCTAssertEqual([expiredNotification isApproved], NO);
+    XCTAssertEqual([expiredNotification isDenied], NO);
 }
 
 @end

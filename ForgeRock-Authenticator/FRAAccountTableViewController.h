@@ -60,5 +60,8 @@ extern NSString * const FRAAccountTableViewControllerShowNotificationsSegue;
  * The static table-view cell in which the Push mechanism is presented.
  */
 @property (weak, nonatomic) IBOutlet FRAPushMechanismTableViewCell *pushTableViewCell;
-
+/*!
+ * Timer for updating notifications count.
+ */
+@property (strong, nonatomic) NSTimer *timer;
 @end

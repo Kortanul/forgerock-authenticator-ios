@@ -68,6 +68,9 @@ static const NSInteger PUSH_MECHANISM_ROW_INDEX = 2;
     [self.oathTableViewCell.delegate viewWillAppear:animated];
     [self.pushTableViewCell.delegate viewWillAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleIdentityDatabaseChanged:) name:FRAIdentityDatabaseChangedNotification object:nil];
+    if (!self.timer) {
+        self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(timerCallback:) userInfo:nil repeats:YES];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -248,6 +251,10 @@ static const NSInteger PUSH_MECHANISM_ROW_INDEX = 2;
     }
     
     [self.tableView endUpdates];
+}
+
+- (void)timerCallback:(NSTimer*)timer {
+    [self reloadData];
 }
 
 @end

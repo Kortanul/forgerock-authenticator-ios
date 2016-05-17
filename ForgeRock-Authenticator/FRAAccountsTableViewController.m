@@ -42,6 +42,9 @@ NSString * const FRAAccountsTableViewControllerScanQrCodeSegue = @"scanQrCodeSeg
     [super viewWillAppear:animated];
     [self.tableView reloadData];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleIdentityDatabaseChanged:) name:FRAIdentityDatabaseChangedNotification object:nil];
+    if (!self.timer) {
+        self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(timerCallback:) userInfo:nil repeats:YES];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -168,6 +171,10 @@ NSString * const FRAAccountsTableViewControllerScanQrCodeSegue = @"scanQrCodeSeg
 }
 
 - (void)handleIdentityDatabaseChanged:(NSNotification *)notification {
+    [self.tableView reloadData];
+}
+
+- (void)timerCallback:(NSTimer*)timer {
     [self.tableView reloadData];
 }
 

@@ -28,6 +28,8 @@
     NSDateFormatter *formatter;
 }
 
+@synthesize pending;
+
 static double const ONE_MINUTE_IN_SECONDS = 60.0;
 static double const ONE_HOUR_IN_SECONDS = 3600.0;
 static double const ONE_DAY_IN_SECONDS = 86400.0;
@@ -38,8 +40,9 @@ static NSString * const STRING_DATE_FORMAT = @"dd/MM/yyyy";
 - (instancetype)initWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive {
     self = [super initWithDatabase:database];
     if (self) {
-        _pending = YES;
+        pending = YES;
         _approved = NO;
+        _denied = NO;
         
         formatter = [[NSDateFormatter alloc] init];
         [formatter setDateFormat:STRING_DATE_FORMAT];
@@ -47,6 +50,7 @@ static NSString * const STRING_DATE_FORMAT = @"dd/MM/yyyy";
         _challenge = challenge;
         _timeReceived = timeReceived;
         _timeToLive = timeToLive;
+        _timeExpired = [timeReceived dateByAddingTimeInterval:timeToLive];
     }
     return self;
 }
@@ -79,7 +83,7 @@ static NSString * const STRING_DATE_FORMAT = @"dd/MM/yyyy";
 
 - (void)approve {
     _approved = YES;
-    _pending = NO;
+    pending = NO;
     if ([self isStored]) {
         [self.database updateNotification:self];
     }
@@ -87,10 +91,19 @@ static NSString * const STRING_DATE_FORMAT = @"dd/MM/yyyy";
 
 - (void)deny {
     _approved = NO;
-    _pending = NO;
+    pending = NO;
+    _denied = YES;
     if ([self isStored]) {
         [self.database updateNotification:self];
     }
+}
+
+- (BOOL)isPending {
+    return pending && ![self isExpired];
+}
+
+- (BOOL)isExpired {
+    return pending && [[NSDate date] timeIntervalSinceDate:_timeExpired] > 0;
 }
 
 @end
