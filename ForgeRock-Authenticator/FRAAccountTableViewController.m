@@ -78,6 +78,8 @@ static const NSInteger PUSH_MECHANISM_ROW_INDEX = 2;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self.oathTableViewCell.delegate viewWillDisappear:animated];
     [self.pushTableViewCell.delegate viewWillDisappear:animated];
+    [self.timer invalidate];
+    self.timer = nil;
 }
 
 -(void)viewDidLayoutSubviews {
@@ -265,7 +267,9 @@ static const NSInteger PUSH_MECHANISM_ROW_INDEX = 2;
 }
 
 - (void)timerCallback:(NSTimer*)timer {
-    [self reloadData];
+    if (!self.tableView.editing) {
+        [self reloadData];
+    }
 }
 
 @end

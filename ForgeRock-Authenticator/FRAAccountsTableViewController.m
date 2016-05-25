@@ -49,6 +49,8 @@ NSString * const FRAAccountsTableViewControllerScanQrCodeSegue = @"scanQrCodeSeg
 
 - (void)viewWillDisappear:(BOOL)animated {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self.timer invalidate];
+    self.timer = nil;
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -179,7 +181,9 @@ NSString * const FRAAccountsTableViewControllerScanQrCodeSegue = @"scanQrCodeSeg
 }
 
 - (void)timerCallback:(NSTimer*)timer {
-    [self.tableView reloadData];
+    if (!self.tableView.editing) {
+        [self.tableView reloadData];
+    }
 }
 
 @end
