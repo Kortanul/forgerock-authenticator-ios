@@ -15,10 +15,10 @@
  */
 
 #import "FRAMechanismFactory.h"
-#import "FRAMessageUtils.h"
+#import "FRANotificationGateway.h"
 
 @interface FRAPushMechanismFactory : NSObject<FRAMechanismFactory>
 
-- (instancetype)initWithMessageUtil:(FRAMessageUtils *)messageUtils;
+- (instancetype)initWithGateway:(FRANotificationGateway *)gateway;
 
 @end

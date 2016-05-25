@@ -17,8 +17,10 @@
 
 
 #import "FRAIdentityDatabase.h"
+#import "FRAMessageUtils.h"
 #import "FRAModelObjectProtected.h"
 #import "FRANotification.h"
+#import "FRAPushMechanism.h"
 
 /*!
  * All notifications are expected to be able to transition from the initial state
@@ -37,7 +39,7 @@ static double const TWO_DAYS_IN_SECONDS = 172800.0;
 static double const ONE_WEEK_IN_SECONDS = 604800.0;
 static NSString * const STRING_DATE_FORMAT = @"dd/MM/yyyy";
 
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSData *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive {
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive {
     self = [super initWithDatabase:database];
     if (self) {
         pending = YES;
@@ -55,7 +57,7 @@ static NSString * const STRING_DATE_FORMAT = @"dd/MM/yyyy";
     return self;
 }
 
-+ (instancetype)notificationWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSData *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive {
++ (instancetype)notificationWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive {
     return [[FRANotification alloc] initWithDatabase:database messageId:messageId challenge:challenge timeReceived:timeReceived timeToLive:timeToLive];
 }
 
@@ -87,6 +89,19 @@ static NSString * const STRING_DATE_FORMAT = @"dd/MM/yyyy";
     if ([self isStored]) {
         if (![self.database updateNotification:self error:error]) {
             return NO;
+        }
+        FRAPushMechanism *mechanism = (FRAPushMechanism *)_parent;
+        if (mechanism) {
+            NSDictionary *data = @{@"response":[FRAMessageUtils generateChallengeResponse:_challenge secret:mechanism.secret]};
+            [FRAMessageUtils respondWithEndpoint:mechanism.authEndpoint
+                                    base64Secret:mechanism.secret
+                                       messageId:_messageId
+                                            data:data
+                                         handler:^(NSInteger statusCode, NSError *error) {
+                                             if (statusCode != 200) {
+                                                 // TODO: Handle error
+                                             }
+                                         }];
         }
     }
     return YES;

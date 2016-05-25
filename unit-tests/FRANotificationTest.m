@@ -20,7 +20,9 @@
 
 #import "FRAIdentityDatabase.h"
 #import "FRAIdentityDatabaseSQLiteOperations.h"
+#import "FRAMessageUtils.h"
 #import "FRANotification.h"
+#import "FRAPushMechanism.h"
 
 @interface FRANotificationTest : XCTestCase
 
@@ -31,19 +33,28 @@
     id databaseObserverMock;
     FRAIdentityDatabase *database;
     FRANotification* notification;
+    id messageUtilsMock;
+    FRAPushMechanism *mechanism;
 }
 
 - (void)setUp {
     [super setUp];
+    
     mockSqlOperations = OCMClassMock([FRAIdentityDatabaseSQLiteOperations class]);
     database = [[FRAIdentityDatabase alloc] initWithSqlOperations:mockSqlOperations];
     NSTimeInterval timeToLive = 120.0;
-    notification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challenge:[@"challange" dataUsingEncoding:NSUTF8StringEncoding] timeReceived:[NSDate date] timeToLive:timeToLive];
+    mechanism = [[FRAPushMechanism alloc] initWithDatabase:database authEndpoint:@"http://service.endpoint" secret:@"secret"];
+    notification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challenge:@"challenge" timeReceived:[NSDate date] timeToLive:timeToLive];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations *)mockSqlOperations insertNotification:notification error:nil]).andReturn(YES);
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations *)mockSqlOperations updateNotification:notification error:nil]).andReturn(YES);
     databaseObserverMock = OCMObserverMock();
+    messageUtilsMock = OCMClassMock([FRAMessageUtils class]);
+    [notification setParent:mechanism];
 }
 
 - (void)tearDown {
     [mockSqlOperations stopMocking];
+    [messageUtilsMock stopMocking];
     [super tearDown];
 }
 
@@ -63,7 +74,8 @@
     // Given
     NSDate *timeReceived = [NSDate date];
     NSTimeInterval timeToLive = 120.0;
-    FRANotification *expiringNotification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challenge:[@"challenge" dataUsingEncoding:NSUTF8StringEncoding] timeReceived:timeReceived timeToLive:timeToLive];
+    FRANotification *expiringNotification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challenge:@"challenge" timeReceived:timeReceived timeToLive:timeToLive];
+
     // When
     
     // Then
@@ -80,6 +92,23 @@
     XCTAssertEqual([notification isPending], NO);
     XCTAssertEqual([notification isApproved], YES);
     XCTAssertEqual([notification isDenied], NO);
+}
+
+- (void)testApproveNotificationSendsMessageToService {
+    // Given
+    [database insertNotification:notification error:nil];
+    OCMExpect([messageUtilsMock respondWithEndpoint:@"http://service.endpoint"
+                                       base64Secret:@"secret"
+                                          messageId:@"messageId"
+                                               data:@{@"response":[FRAMessageUtils generateChallengeResponse:@"challenge"
+                                                                                                      secret:@"secret"]}
+                                            handler:[OCMArg any]]);
+    
+    // When
+    [notification approveWithError:nil];
+    
+    // Then
+    OCMVerifyAll(messageUtilsMock);
 }
 
 - (void)testShouldDenyNotification {
@@ -99,6 +128,13 @@
     OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertNotification:notification error:nil]).andReturn(YES);
     [database insertNotification:notification error:nil];
     OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations updateNotification:notification error:nil]).andReturn(YES);
+    OCMStub([messageUtilsMock respondWithEndpoint:@"http://service.endpoint"
+                                     base64Secret:@"secret"
+                                        messageId:@"messageId"
+                                             data:@{@"response":[FRAMessageUtils generateChallengeResponse:@"challenge"
+                                                                                                    secret:@"secret"]}
+                                          handler:[OCMArg any]]);
+
     
     // When
     BOOL notificationApproved = [notification approveWithError:nil];
@@ -127,6 +163,12 @@
     OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations updateNotification:notification error:nil]).andReturn(YES);
     [[NSNotificationCenter defaultCenter] addMockObserver:databaseObserverMock name:FRAIdentityDatabaseChangedNotification object:database];
     [[databaseObserverMock expect] notificationWithName:FRAIdentityDatabaseChangedNotification object:database userInfo:[OCMArg any]];
+    OCMStub([messageUtilsMock respondWithEndpoint:@"http://service.endpoint"
+                                     base64Secret:@"secret"
+                                        messageId:@"messageId"
+                                             data:@{@"response":[FRAMessageUtils generateChallengeResponse:@"challenge"
+                                                                                                    secret:@"secret"]}
+                                          handler:[OCMArg any]]);
     
     // When
     BOOL notificationApproved = [notification approveWithError:nil];
@@ -138,7 +180,7 @@
 
 - (void)testIsExpiredReturnsYesIfNotificationHasExpired {
     // Given
-    FRANotification *expiredNotification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challenge:[@"challenge" dataUsingEncoding:NSUTF8StringEncoding] timeReceived:[NSDate date] timeToLive:-10.0];
+    FRANotification *expiredNotification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challenge:@"challenge" timeReceived:[NSDate date] timeToLive:-10.0];
     
     // When
     
@@ -151,7 +193,7 @@
 
 - (void)testIsExpiredReturnsNoIfNotificationHasNotExpired {
     // Given
-    FRANotification *expiredNotification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challenge:[@"challenge" dataUsingEncoding:NSUTF8StringEncoding] timeReceived:[NSDate date] timeToLive:120.0];
+    FRANotification *expiredNotification = [[FRANotification alloc] initWithDatabase:database messageId:@"messageId" challenge:@"challenge" timeReceived:[NSDate date] timeToLive:120.0];
     
     // When
     

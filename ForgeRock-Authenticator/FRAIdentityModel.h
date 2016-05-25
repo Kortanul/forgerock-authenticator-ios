@@ -76,7 +76,7 @@
  * @param uid The storage id of the mechanism to get.
  * @return The mechanism with the specified storage ID.
  */
-- (FRAMechanism *)mechanismWithId:(NSInteger)uid;
+- (FRAMechanism *)mechanismWithId:(NSString *)uid;
 
 #pragma mark -
 #pragma mark Notification Functions

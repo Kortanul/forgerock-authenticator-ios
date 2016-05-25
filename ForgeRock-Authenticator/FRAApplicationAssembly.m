@@ -98,10 +98,10 @@
 
 - (FRAPushMechanismFactory *)pushMechanismFactory {
     return [TyphoonDefinition withClass:[FRAPushMechanismFactory class] configuration:^(TyphoonDefinition *definition) {
-        [definition useInitializer:@selector(initWithMessageUtil:) parameters:^(TyphoonMethod *initializer) {
-            [initializer injectParameterWith:[self messageUtils]];
-            definition.scope = TyphoonScopeSingleton;
+        [definition useInitializer:@selector(initWithGateway:) parameters:^(TyphoonMethod *initializer) {
+            [initializer injectParameterWith:[self notificationGateway]];
         }];
+        definition.scope = TyphoonScopeSingleton;
     }];
 }
 
@@ -127,12 +127,6 @@
 - (FRAQRScanViewController *)qrScanViewController {
     return [TyphoonDefinition withClass:[FRAQRScanViewController class] configuration:^(TyphoonDefinition *definition) {
         [definition injectProperty:@selector(uriMechanismReader) with:[self uriMechanismReader]];
-    }];
-}
-
-- (FRAMessageUtils *)messageUtils {
-    return [TyphoonDefinition withClass:[FRAMessageUtils class] configuration:^(TyphoonDefinition *definition) {
-        definition.scope = TyphoonScopeSingleton;
     }];
 }
 

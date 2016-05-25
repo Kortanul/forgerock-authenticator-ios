@@ -14,8 +14,6 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-
-
 #import "FRAPushMechanismFactory.h"
 #import "FRAMechanismFactory.h"
 #import "FRAPushMechanism.h"
@@ -24,10 +22,6 @@
 #import "FRAMessageUtils.h"
 #import "FRAMockURLProtocol.h"
 #import "FRAQRUtils.h"
-
-#include "base32.h"
-#include <CommonCrypto/CommonHMAC.h>
-//#include <sys/time.h>
 
 /*! QR code key for the secret. */
 NSString *const SECRET_QR_KEY = @"s";
@@ -47,16 +41,16 @@ NSString *const IMAGE_QR_KEY = @"image";
 NSString *const ISSUER_QR_KEY = @"issuer";
 
 @implementation FRAPushMechanismFactory {
-    FRAMessageUtils* _messageUtils;
+    FRANotificationGateway* _gateway;
 }
 
 #pragma mark -
 #pragma mark Lifecyle
 
-- (instancetype)initWithMessageUtil:(FRAMessageUtils *)messageUtils {
+- (instancetype)initWithGateway:(FRANotificationGateway *)gateway{
     self = [super init];
     if (self) {
-        _messageUtils = messageUtils;
+        _gateway = gateway;
     }
     return self;
 }
@@ -107,7 +101,7 @@ NSString *const ISSUER_QR_KEY = @"issuer";
         [identity addMechanism:mechanism error:&error];
     }
     
-    [self registerMechanismWithEndpoint:regEndpoint secret:secret challange:challange messageId:messageId mechanismUid:mechanism.uid username:_label identity:identity mechanism:mechanism];
+    [self registerMechanismWithEndpoint:regEndpoint secret:secret challange:challange messageId:messageId mechanismUid:mechanism.mechanismUID identity:identity mechanism:mechanism];
 
     return mechanism;
 }
@@ -196,44 +190,29 @@ NSString *const ISSUER_QR_KEY = @"issuer";
     return @"pushauth";
 }
 
-- (void) registerMechanismWithEndpoint:(NSString *)regEndpoint secret:(NSString *)secret challange:(NSString *)c messageId:(NSString *)messageId mechanismUid:(long)uid username:(NSString *) username identity:(FRAIdentity *)identity mechanism:(FRAMechanism *)mechanism{
+- (void) registerMechanismWithEndpoint:(NSString *)regEndpoint secret:(NSString *)secret challange:(NSString *)c messageId:(NSString *)messageId mechanismUid:(NSString *)uid identity:(FRAIdentity *)identity mechanism:(FRAMechanism *)mechanism{
     
-    [_messageUtils respond:regEndpoint
-              base64Secret:secret
-                 messageId:messageId
-                      data:@{@"response":[self getResponse:c secret:secret username:username],
-                             @"mechanismUid":[NSString stringWithFormat:@"%ld", uid],
-                             @"deviceId":messageId,
-                             @"deviceType":@"ios",
-                             @"communicationType":@"apns"
-                             }
-                   handler:^(NSInteger statusCode, NSError *error) {
-                       if (200 != statusCode) {
-                           // TODO: inform user about failure
-                           // TODO: Handle Error
-                           @autoreleasepool {
-                               NSError* error;
-                               [identity removeMechanism:mechanism error:&error];
-                           }
-
-                       }
-                  }];
+    NSString* deviceId = _gateway.deviceToken;
     
-    
-}
-
-- (NSString *) getResponse:(NSString *) challange secret:(NSString *) secret username:(NSString *) username {
-    
-    NSData *saltData = [[NSData alloc] initWithBase64EncodedString:secret options:0];
-    NSData *paramData = [[NSData alloc] initWithBase64EncodedString:challange options:0];
-    
-    NSMutableData * data = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
-    CCHmac(kCCHmacAlgSHA256, saltData.bytes, saltData.length, paramData.bytes, paramData.length, data.mutableBytes);
-    NSString * hashedResponseString = [data base64EncodedStringWithOptions:0];
-    
-    NSLog(@"hashedResponseString = %@", hashedResponseString);
-    
-    return hashedResponseString;
+    [FRAMessageUtils respondWithEndpoint:regEndpoint
+                            base64Secret:secret
+                               messageId:messageId
+                                    data:@{@"response":[FRAMessageUtils generateChallengeResponse:c secret:secret],
+                                           @"mechanismUid":uid,
+                                           @"deviceId":deviceId,
+                                           @"deviceType":@"ios",
+                                           @"communicationType":@"apns"
+                                           }
+                                 handler:^(NSInteger statusCode, NSError *error) {
+                                     if (200 != statusCode) {
+                                         // TODO: inform user about failure
+                                         // TODO: Handle Error
+                                         @autoreleasepool {
+                                             NSError* error;
+                                             [identity removeMechanism:mechanism error:&error];
+                                         }
+                                     }
+                                 }];
 }
 
 @end

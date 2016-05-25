@@ -32,11 +32,11 @@
  * @param data The payload to transmit with the request.
  * @param handler A block object to be executed when the task finishes.
  */
-- (void)respond:(NSString *)endpoint
-   base64Secret:(NSString *)base64Secret
-      messageId:(NSString *)messageId
-           data:(NSDictionary *)data
-        handler:(void (^)(NSInteger statusCode, NSError *error))handler;
++ (void)respondWithEndpoint:(NSString *)endpoint
+               base64Secret:(NSString *)base64Secret
+                  messageId:(NSString *)messageId
+                       data:(NSDictionary *)data
+                    handler:(void (^)(NSInteger statusCode, NSError *error))handler;
 
 /*!
  * POST request method.
@@ -48,11 +48,28 @@
  * @param protocol The protocol used to process URLs.
  * @param handler A block object to be executed when the task finishes.
  */
-- (void)respond:(NSString *)endpoint
-   base64Secret:(NSString *)base64Secret
-      messageId:(NSString *)messageId
-           data:(NSDictionary *)data
-       protocol:(Class) protocol
-        handler:(void (^)(NSInteger statusCode, NSError *error))handler;
++ (void)respondWithEndpoint:(NSString *)endpoint
+               base64Secret:(NSString *)base64Secret
+                  messageId:(NSString *)messageId
+                       data:(NSDictionary *)data
+                   protocol:(Class) protocol
+                    handler:(void (^)(NSInteger statusCode, NSError *error))handler;
+
+/*!
+ * Generate challenge response.
+ *
+ * @param challenge The challenge.
+ * @param secret The secret.
+ * @return The challenge response.
+ */
++ (NSString *) generateChallengeResponse:(NSString *) challenge secret:(NSString *) secret;
+
+/*!
+ * Extracts the data from the body of a JWT string;
+ *
+ * @param message the compleye JWT string
+ * @NSDictionary the data from the body of the JWT
+ */
++ (NSDictionary *)extractJTWBodyFromString:(NSString *)message;
 
 @end

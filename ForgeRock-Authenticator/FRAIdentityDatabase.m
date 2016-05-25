@@ -52,6 +52,11 @@ NSInteger const FRANotStored = -1;
 #pragma mark -
 #pragma mark Lifecyle
 
+// TODO: Remove
+- (instancetype)init {
+    return [self initWithSqlOperations:nil];
+}
+
 - (instancetype)initWithSqlOperations:(FRAIdentityDatabaseSQLiteOperations *)sqlOperations {
     if (self = [super init]) {
         nextIdentityId = 0;

@@ -64,7 +64,7 @@ extern NSString *const NOTIFICATION_MESSAGE_ID;
 /*!
  * Notification Push Challenge
  */
-extern NSString *const NOTIFICAITON_PUSH_CHALLENGE;
+extern NSString *const NOTIFICATION_PUSH_CHALLENGE;
 
 /*!
  * Notification Time To Live

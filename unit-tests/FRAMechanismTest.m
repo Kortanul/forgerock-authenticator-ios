@@ -167,10 +167,9 @@
 - (FRANotification *)dummyNotificationWithMessageId:(NSString *)messageId {
     return [[FRANotification alloc] initWithDatabase:database
                                            messageId:messageId
-                                           challenge:[@"Challange" dataUsingEncoding:NSUTF8StringEncoding]
+                                           challenge:@"Challenge"
                                         timeReceived:[NSDate date]
                                           timeToLive:120.0];
-
 }
 
 @end

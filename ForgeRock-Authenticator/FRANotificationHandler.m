@@ -21,6 +21,8 @@
 #import "FRANotification.h"
 #import "FRANotificationHandler.h"
 #import "FRANotificationViewController.h"
+#import "FRAMessageUtils.h"
+#import <JWT.h>
 
 /*!
  * Private interface.
@@ -41,10 +43,10 @@
 
 @implementation FRANotificationHandler
 
-static NSString const *TTL_KEY = @"timeToLive";
-static NSString const *MESSAGE_ID_KEY = @"messageId";
-static NSString const *CHALLENGE_KEY = @"challenge";
-static NSString const *MECHANISM_UID_KEY = @"mechanismUID";
+static NSString * const TTL_KEY = @"t";
+static NSString * const MESSAGE_ID_KEY_PATH = @"aps.messageId";
+static NSString * const CHALLENGE_KEY = @"c";
+static NSString * const MECHANISM_UID_KEY = @"u";
 
 - (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel {
     self = [super init];
@@ -75,38 +77,47 @@ static NSString const *MECHANISM_UID_KEY = @"mechanismUID";
 
 - (FRANotification *)notificationFromRemoteNotification:(NSDictionary *)messageData {
 
+    // Decode JWT from modessage
+    NSString* alertJwt = [messageData valueForKeyPath:@"aps.alert"];
+    
+    NSDictionary *payload = [FRAMessageUtils extractJTWBodyFromString:alertJwt];
+    
+    // makec mechanism from data
+    
+    NSLog(@"message data: %@", payload);
+
     // Lookup push mechanism to which the notification should be added
     
-    FRAPushMechanism *mechanism = [self pushMechanismTargetForRemoteNotification:messageData];
+    FRAPushMechanism *mechanism = [self pushMechanismTargetForRemoteNotification:payload];
     if (!mechanism) {
         return nil;
     }
 
     // Try to look up an existing notification (in case this message has already been handled)
-    
-    FRANotification *notification = [mechanism notificationWithMessageId:[messageData objectForKey:MESSAGE_ID_KEY]];
+    FRANotification *notification = [mechanism notificationWithMessageId:[messageData valueForKeyPath:MESSAGE_ID_KEY_PATH]];
     if (notification) {
         return notification;
     }
     
     // otherwise, create the notification from the message and add it to the mechanism
     
-    NSTimeInterval timeToLive = [[messageData objectForKey:TTL_KEY] doubleValue];
+    NSTimeInterval timeToLive = [[payload objectForKey:TTL_KEY] doubleValue];
     notification = [[FRANotification alloc] initWithDatabase:self.database
-                                                   messageId:[messageData objectForKey:MESSAGE_ID_KEY]
-                                                   challenge:[messageData objectForKey:CHALLENGE_KEY]
+                                                   messageId:[messageData valueForKeyPath:MESSAGE_ID_KEY_PATH]
+                                                   challenge:[payload objectForKey:CHALLENGE_KEY]
                                                 timeReceived:[NSDate date]
                                                   timeToLive:timeToLive];
-    // TODO: Handle Error
+    // TODO: Handle error
     @autoreleasepool {
         NSError* error;
         [mechanism addNotification:notification error:&error];
     }
+
     return notification;
 }
 
 - (FRAPushMechanism *)pushMechanismTargetForRemoteNotification:(NSDictionary *)messageData {
-    NSInteger mechanismId = [[messageData objectForKey:MECHANISM_UID_KEY] intValue];
+    NSString *mechanismId = [messageData objectForKey:MECHANISM_UID_KEY];
     FRAMechanism *mechanism = [self.identityModel mechanismWithId:mechanismId];
     if ([mechanism isKindOfClass:[FRAPushMechanism class]]) {
         return (FRAPushMechanism *)mechanism;

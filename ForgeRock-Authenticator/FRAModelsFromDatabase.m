@@ -229,7 +229,7 @@
                 NSString *messageId = [dataMap valueForKey:NOTIFICATION_MESSAGE_ID];
                 
                 // Data: Challenge
-                NSData *challenge = [FRASerialization deserializeBytes:[dataMap valueForKey:NOTIFICAITON_PUSH_CHALLENGE]];
+                NSString *challenge = [[NSString alloc] initWithData:[FRASerialization deserializeBytes:[dataMap valueForKey:NOTIFICATION_PUSH_CHALLENGE]] encoding:NSUTF8StringEncoding];
                 
                 // Data: TTL
                 NSTimeInterval ttl = [[dataMap valueForKey:NOTIFICATION_TIME_TO_LIVE] doubleValue];

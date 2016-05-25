@@ -14,6 +14,8 @@
  * Copyright 2016 ForgeRock AS.
  */
 
+#include <CommonCrypto/CommonHMAC.h>
+
 #import "FRAMessageUtils.h"
 
 /*! The Communication mechanism Content Type. */
@@ -23,20 +25,20 @@ static NSString * const CONTENT_TYPE_HEADER = @"Content-Type";
 
 @implementation FRAMessageUtils
 
-- (void)respond:(NSString *)endpoint
-   base64Secret:(NSString *)base64Secret
-      messageId:(NSString *)messageId
-           data:(NSDictionary *)data
-        handler:(void (^)(NSInteger, NSError *))handler {
-    [self respond:endpoint base64Secret:base64Secret messageId:messageId data:data protocol:nil handler:handler];
++ (void)respondWithEndpoint:(NSString *)endpoint
+               base64Secret:(NSString *)base64Secret
+                  messageId:(NSString *)messageId
+                       data:(NSDictionary *)data
+                    handler:(void (^)(NSInteger, NSError *))handler {
+    [self respondWithEndpoint:endpoint base64Secret:base64Secret messageId:messageId data:data protocol:nil handler:handler];
 }
 
-- (void)respond:(NSString *)endpoint
-   base64Secret:(NSString *)base64Secret
-      messageId:(NSString *)messageId
-           data:(NSDictionary *)data
-       protocol:(Class) protocol
-        handler:(void (^)(NSInteger, NSError *))handler {
++ (void)respondWithEndpoint:(NSString *)endpoint
+               base64Secret:(NSString *)base64Secret
+                  messageId:(NSString *)messageId
+                       data:(NSDictionary *)data
+                   protocol:(Class) protocol
+                    handler:(void (^)(NSInteger, NSError *))handler {
     
     NSURL *URL = [NSURL URLWithString:endpoint];
     NSDictionary *payload = [self createPayloadWithMessageId:messageId base64Secret:base64Secret data:data];
@@ -58,7 +60,7 @@ static NSString * const CONTENT_TYPE_HEADER = @"Content-Type";
     
 }
 
-- (AFHTTPSessionManager *)createHTTPSessionManager:(Class)protocol {
++ (AFHTTPSessionManager *)createHTTPSessionManager:(Class)protocol {
     
     if(protocol) {
         NSURLSessionConfiguration *sessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
@@ -72,7 +74,7 @@ static NSString * const CONTENT_TYPE_HEADER = @"Content-Type";
     return [AFHTTPSessionManager manager];
 }
 
-- (NSDictionary *)createPayloadWithMessageId:(NSString *)messageId
++ (NSDictionary *)createPayloadWithMessageId:(NSString *)messageId
                                 base64Secret:(NSString *)base64Secret
                                         data:(NSDictionary *)data {
     NSString *jwtData = [self generateJwtWithPayload:data base64Secret:base64Secret];
@@ -81,13 +83,44 @@ static NSString * const CONTENT_TYPE_HEADER = @"Content-Type";
     return topLevelData;
 }
 
-- (NSString *)generateJwtWithPayload:(NSDictionary *)payload base64Secret:(NSString *)base64Secret {
++ (NSString *)generateJwtWithPayload:(NSDictionary *)payload base64Secret:(NSString *)base64Secret {
 
     id<JWTAlgorithm> algorithm = [JWTAlgorithmFactory algorithmByName:@"HS256"];
     
     NSData *secretBytes = [[NSData alloc] initWithBase64EncodedString:base64Secret options:0];
  
     return [JWTBuilder encodePayload:payload].secretData(secretBytes).algorithm(algorithm).encode;
+}
+
++ (NSDictionary *)extractJTWBodyFromString:(NSString *)message {
+    NSArray* strings = [message componentsSeparatedByString:@"."];
+    NSString* payloadString = strings[1];
+    int padLength = (4 - (payloadString.length % 4)) % 4;
+    for (int i = 0; i < padLength; i++) {
+        payloadString = [payloadString stringByAppendingString:@"="];
+    }
+    
+    NSData *payloadBytes = [[NSData alloc] initWithBase64EncodedString:payloadString options:0];
+    
+    NSError *jsonError;
+    NSDictionary* data =  [NSJSONSerialization JSONObjectWithData:payloadBytes
+                                                          options:NSJSONReadingMutableContainers
+                                                            error:&jsonError];
+    return data;
+}
+
++ (NSString *)generateChallengeResponse:(NSString *) challenge secret:(NSString *) secret {
+    
+    NSData *saltData = [[NSData alloc] initWithBase64EncodedString:secret options:0];
+    NSData *paramData = [[NSData alloc] initWithBase64EncodedString:challenge options:0];
+    
+    NSMutableData * data = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
+    CCHmac(kCCHmacAlgSHA256, saltData.bytes, saltData.length, paramData.bytes, paramData.length, data.mutableBytes);
+    NSString * hashedResponseString = [data base64EncodedStringWithOptions:0];
+    
+    NSLog(@"hashedResponseString = %@", hashedResponseString);
+    
+    return hashedResponseString;
 }
 
 @end

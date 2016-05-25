@@ -27,13 +27,10 @@ static NSTimeInterval const testTimeout = 10.0;
 
 @end
 
-@implementation FRAMessageUtilsTests {
-    FRAMessageUtils *messageUtils;
-}
+@implementation FRAMessageUtilsTests
 
 - (void)setUp {
     [super setUp];
-    messageUtils =[FRAMessageUtils alloc];
 }
 
 - (void)tearDown {
@@ -46,16 +43,16 @@ static NSTimeInterval const testTimeout = 10.0;
 - (void)testUsePost {
     XCTestExpectation *expectation = [self expectationWithDescription:@"asynchronous request"];
     
-    [messageUtils respond:url
-         base64Secret:base64Secret
-             messageId:messageId
-                  data:@{@"some":@"data"}
-              protocol:[FRAMockURLProtocol class]
-               handler:^(NSInteger statusCode, NSError *error) {
-                   NSURLRequest *request = [FRAMockURLProtocol getRequest];
-                   XCTAssertEqualObjects([request HTTPMethod], @"POST");
-                   [expectation fulfill];
-               }];
+    [FRAMessageUtils respondWithEndpoint:url
+                         base64Secret:base64Secret
+                            messageId:messageId
+                                 data:@{@"some":@"data"}
+                             protocol:[FRAMockURLProtocol class]
+                              handler:^(NSInteger statusCode, NSError *error) {
+                                  NSURLRequest *request = [FRAMockURLProtocol getRequest];
+                                  XCTAssertEqualObjects([request HTTPMethod], @"POST");
+                                  [expectation fulfill];
+                              }];
     
     [self waitForExpectationsWithTimeout:testTimeout handler:nil];
 }
@@ -63,35 +60,46 @@ static NSTimeInterval const testTimeout = 10.0;
 - (void)testMakeCallToUrl {
     XCTestExpectation *expectation = [self expectationWithDescription:@"asynchronous request"];
     
-    [messageUtils respond:url
-         base64Secret:base64Secret
-             messageId:messageId
-                  data:@{@"some":@"data"}
-              protocol:[FRAMockURLProtocol class]
-               handler:^(NSInteger statusCode, NSError *error) {
-                NSURLRequest *request = [FRAMockURLProtocol getRequest];
-                XCTAssertEqual(request.URL.absoluteString, url);
-                [expectation fulfill];
-            }];
-
+    [FRAMessageUtils respondWithEndpoint:url
+                         base64Secret:base64Secret
+                            messageId:messageId
+                                 data:@{@"some":@"data"}
+                             protocol:[FRAMockURLProtocol class]
+                              handler:^(NSInteger statusCode, NSError *error) {
+                                  NSURLRequest *request = [FRAMockURLProtocol getRequest];
+                                  XCTAssertEqual(request.URL.absoluteString, url);
+                                  [expectation fulfill];
+                              }];
+    
     [self waitForExpectationsWithTimeout:testTimeout handler:nil];
 }
 
 - (void)testSetJsonContentType {
     XCTestExpectation *expectation = [self expectationWithDescription:@"asynchronous request"];
     
-    [messageUtils respond:url
-         base64Secret:base64Secret
-             messageId:messageId
-                  data:@{@"some":@"data"}
-              protocol:[FRAMockURLProtocol class]
-               handler:^(NSInteger statusCode, NSError *error) {
-                   NSURLRequest *request = [FRAMockURLProtocol getRequest];
-                   XCTAssertEqualObjects([request valueForHTTPHeaderField:@"Content-Type"], @"application/json");
-                   [expectation fulfill];
-               }];
+    [FRAMessageUtils respondWithEndpoint:url
+                            base64Secret:base64Secret
+                               messageId:messageId
+                                    data:@{@"some":@"data"}
+                                protocol:[FRAMockURLProtocol class]
+                                 handler:^(NSInteger statusCode, NSError *error) {
+                                     NSURLRequest *request = [FRAMockURLProtocol getRequest];
+                                     XCTAssertEqualObjects([request valueForHTTPHeaderField:@"Content-Type"], @"application/json");
+                                     [expectation fulfill];
+                                 }];
     
     [self waitForExpectationsWithTimeout:testTimeout handler:nil];
+}
+
+-(void)testDecodeJWTMessage {
+    NSString* altertJwt = @"eyAidHlwIjogIkpXVCIsICJhbGciOiAiSFMyNTYiIH0.eyAiYyI6ICJKZVlTTXlLdW9QbldmRHVXaU1GVGlENlc2WTNQOWVYTVBYUDljNUEvSEJNPSIsICJ0IjogIjEyMCIsICJ1IjogIjMiLCAibCI6ICJZVzFzWW1OdmIydHBaVDFoYld4aVkyOXZhMmxsUFRBeCIgfQ.1SAWJlT-5vjYRbpZ_57K-NpFRs4VZbSzZjAF_3RTu7k";
+    
+    NSDictionary* dictionary = [FRAMessageUtils extractJTWBodyFromString:altertJwt];
+    
+    XCTAssertEqualObjects([dictionary valueForKey:@"c"], @"JeYSMyKuoPnWfDuWiMFTiD6W6Y3P9eXMPXP9c5A/HBM=");
+    XCTAssertEqualObjects([dictionary valueForKey:@"l"], @"YW1sYmNvb2tpZT1hbWxiY29va2llPTAx");
+    XCTAssertEqualObjects([dictionary valueForKey:@"t"], @"120");
+    XCTAssertEqualObjects([dictionary valueForKey:@"u"], @"3");
 }
 
 @end

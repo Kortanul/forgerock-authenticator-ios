@@ -21,6 +21,7 @@
 #import "FRAIdentityModel.h"
 #import "FRAMechanism.h"
 #import "FRAModelsFromDatabase.h"
+#import "FRAPushMechanism.h"
 
 /*!
  * Private interface.
@@ -93,10 +94,10 @@
 #pragma mark -
 #pragma mark Mechanism Functions
 
-- (FRAMechanism *)mechanismWithId:(NSInteger)uid {
+- (FRAMechanism *)mechanismWithId:(NSString *)uid {
     for (FRAIdentity *identity in identitiesList) {
         for (FRAMechanism *mechanism in [identity mechanisms]) {
-            if (mechanism.uid == uid) {
+            if ([mechanism isKindOfClass:[FRAPushMechanism class]] && [((FRAPushMechanism *)mechanism).mechanismUID isEqualToString: uid]) {
                 return mechanism;
             }
         }

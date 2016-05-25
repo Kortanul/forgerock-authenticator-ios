@@ -25,7 +25,6 @@
 @class FRANotificationGateway;
 @class FRANotificationHandler;
 @class FRAQRScanViewController;
-@class FRAMessageUtils;
 @class FRAOathMechanismFactory;
 @class FRAPushMechanismFactory;
 @class FRASqlDatabase;
@@ -46,7 +45,6 @@
 - (FRANotificationGateway *)notificationGateway;
 - (FRANotificationHandler *)notificationHandler;
 - (FRAQRScanViewController *)qrScanViewController;
-- (FRAMessageUtils *)messageUtils;
 - (FRASqlDatabase *)databaseConnectionHelper;
 
 @end

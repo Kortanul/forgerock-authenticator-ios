@@ -159,7 +159,7 @@ static NSString * const Data = @"{\"message_id\":\"message id\", \"push_challeng
     FRAPushMechanism *mechanism = (FRAPushMechanism *)[identity.mechanisms objectAtIndex:0];
     FRANotification *notification = [mechanism.notifications objectAtIndex:0];
     XCTAssertEqualObjects(notification.messageId, @"message id");
-    XCTAssertEqualObjects([[NSString alloc] initWithData:notification.challenge encoding:NSUTF8StringEncoding], @"challenge_data");
+    XCTAssertEqualObjects(notification.challenge, @"challenge_data");
     XCTAssertEqualObjects(notification.timeReceived, [NSDate dateWithTimeIntervalSince1970:500]);
     XCTAssertEqual(notification.timeToLive, (NSTimeInterval)60.0);
 }

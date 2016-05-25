@@ -280,8 +280,8 @@
     [dataMap setObject:notification.messageId forKey:NOTIFICATION_MESSAGE_ID];
     
     // Data: Push Challenge
-    NSString *challengeJson = [FRASerialization serializeBytes:notification.challenge];
-    [dataMap setObject:challengeJson forKey:NOTIFICAITON_PUSH_CHALLENGE];
+    NSString *challengeJson = [FRASerialization serializeBytes:[notification.challenge dataUsingEncoding:NSUTF8StringEncoding]];
+    [dataMap setObject:challengeJson forKey:NOTIFICATION_PUSH_CHALLENGE];
     
     // Data: Time to Live
     NSString *ttlString = [NSString stringWithFormat:@"%f", notification.timeToLive];

@@ -28,7 +28,7 @@ NSString * const PUSH_MECHANISM_SECRET = @"secret";
 NSString * const PUSH_MECHANISM_AUTH_END_POINT = @"authEndPoint";
 
 NSString * const NOTIFICATION_MESSAGE_ID = @"message_id";
-NSString * const NOTIFICAITON_PUSH_CHALLENGE = @"push_challenge";
+NSString * const NOTIFICATION_PUSH_CHALLENGE = @"push_challenge";
 NSString * const NOTIFICATION_TIME_TO_LIVE = @"time_to_live";
 
 @implementation FRASerialization

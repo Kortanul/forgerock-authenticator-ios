@@ -78,22 +78,23 @@
 /*!
  * The push challenge.
  */
-@property (nonatomic, readonly) NSData* challenge;
+@property (nonatomic, readonly) NSString *challenge;
 
 /*!
  * The time to live of the push login window.
  */
 @property (nonatomic, readonly) NSTimeInterval timeToLive;
 
+
 /*!
  * Constructor for creating a Notification.
  */
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSData *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive;
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive;
 
 /*!
  * Static factory for creating a Notification.
  */
-+ (instancetype)notificationWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSData *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval) timeToLive;
++ (instancetype)notificationWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive;
 
 - (instancetype) __unavailable initWithDatabase:(FRAIdentityDatabase *)database;
 

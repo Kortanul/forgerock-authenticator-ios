@@ -19,6 +19,7 @@
 
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
+#import "FRAIdentityDatabaseSQLiteOperations.h"
 #import "FRAIdentityModel.h"
 #import "FRAModelObjectProtected.h"
 #import "FRANotification.h"
@@ -31,8 +32,8 @@
 
 @end
 
-
 static NSString *const TEST_USERNAME = @"Alice";
+static NSString *const CHALLENGE = @"JeYSMyKuoPnWfDuWiMFTiD6W6Y3P9eXMPXP9c5A/HBM=";
 
 @implementation FRANotificationHandlerTest {
     FRANotificationHandler *handler;
@@ -43,19 +44,23 @@ static NSString *const TEST_USERNAME = @"Alice";
     FRAOathMechanism *oathMechanism;
     UIApplication *mockApplication;
     FRASqlDatabase* mockSqlDatabase;
+    id mockDatabaseOperations;
 }
 
 - (void)setUp {
     [super setUp];
     
     mockApplication = OCMClassMock([UIApplication class]);
-    database = [[FRAIdentityDatabase alloc] init];
-    mockSqlDatabase = OCMClassMock([FRAFMDatabaseConnectionHelper class]);
+    mockDatabaseOperations = OCMClassMock([FRAIdentityDatabaseSQLiteOperations class]);
+    database = [[FRAIdentityDatabase alloc] initWithSqlOperations:mockDatabaseOperations];
     
     // create object model
     identityModel = [[FRAIdentityModel alloc] initWithDatabase:database sqlDatabase:mockSqlDatabase];
     identity = [FRAIdentity identityWithDatabase:database accountName:TEST_USERNAME issuer:@"ForgeRock" image:nil backgroundColor:nil];
+    
     pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
+    [pushMechanism setValue:@"0" forKey:@"mechanismUID"];
+
     oathMechanism = [[FRAOathMechanism alloc] initWithDatabase:database];
     [identityModel addIdentity:identity error:nil];
     [identity addMechanism:pushMechanism error:nil];
@@ -67,14 +72,14 @@ static NSString *const TEST_USERNAME = @"Alice";
     handler = [[FRANotificationHandler alloc] initWithDatabase:database identityModel:identityModel];
 }
 
+- (void)tearDown {
+    [mockDatabaseOperations stopMocking];
+    [super tearDown];
+}
+
 - (void)testCreatesNotificationObjectFromMessageAndSavesToIdentifiedPushMechanism {
     // Given
-    NSDictionary* data = @{
-                           @"messageId": @"123",
-                           @"mechanismUID": [NSString stringWithFormat: @"%ld", (long)pushMechanism.uid],
-                           @"timeToLive": @"120",
-                           @"challenge": @"pistolsAtDawn",
-                           };
+    NSDictionary *data = @{@"aps":@{@"messageId":@"123", @"alert":@"eyAidHlwIjogIkpXVCIsICJhbGciOiAiSFMyNTYiIH0.eyAiYyI6ICJKZVlTTXlLdW9QbldmRHVXaU1GVGlENlc2WTNQOWVYTVBYUDljNUEvSEJNPSIsICJ0IjogIjEyMCIsICJ1IjogIjAiLCAibCI6ICJZVzFzWW1OdmIydHBaVDFoYld4aVkyOXZhMmxsUFRBeCIgfQ==.1SAWJlT-5vjYRbpZ_57K-NpFRs4VZbSzZjAF_3RTu7k"}};
     // When
     [handler application:mockApplication didReceiveRemoteNotification:data];
     
@@ -83,19 +88,15 @@ static NSString *const TEST_USERNAME = @"Alice";
     XCTAssertNotNil(notification, @"Mechanism did not contain expected Notification");
     XCTAssertEqualObjects(notification.database, database, @"Notification not initialized with database");
     XCTAssertEqualObjects(notification.messageId, @"123", @"Notification not initialized with messageId");
-    XCTAssertEqualObjects(notification.challenge, @"pistolsAtDawn", @"Notification not initialized with challenge");
+    XCTAssertEqualObjects(notification.challenge, CHALLENGE, @"Notification not initialized with challenge");
     XCTAssertNotNil(notification.timeReceived, @"Notification not initialized with timeReceived");
     XCTAssertEqual(notification.timeToLive, 120, @"Notification not initialized with time to live");
 }
 
 - (void)testNotificationHandlingShouldBeIdempotent {
     // Given
-    NSDictionary* data = @{
-                           @"messageId": @"123",
-                           @"mechanismUID": [NSString stringWithFormat: @"%ld", (long)pushMechanism.uid],
-                           @"timeToLive": @"120",
-                           @"challenge": @"pistolsAtDawn",
-                           };
+    NSDictionary *data = @{@"aps":@{@"messageId":@"123", @"alert":@"eyAidHlwIjogIkpXVCIsICJhbGciOiAiSFMyNTYiIH0.eyAiYyI6ICJKZVlTTXlLdW9QbldmRHVXaU1GVGlENlc2WTNQOWVYTVBYUDljNUEvSEJNPSIsICJ0IjogIjEyMCIsICJ1IjogIjAiLCAibCI6ICJZVzFzWW1OdmIydHBaVDFoYld4aVkyOXZhMmxsUFRBeCIgfQ==.1SAWJlT-5vjYRbpZ_57K-NpFRs4VZbSzZjAF_3RTu7k"}};
+    
     // When
     [handler application:mockApplication didReceiveRemoteNotification:data];
     [handler application:mockApplication didReceiveRemoteNotification:data];
@@ -106,12 +107,8 @@ static NSString *const TEST_USERNAME = @"Alice";
 
 - (void)testOnlyHandlesNotificationsThatReferToPushMechanism {
     // Given
-    NSDictionary* data = @{
-                           @"messageId": @"123",
-                           @"mechanismUID": [NSString stringWithFormat: @"%ld", (long)oathMechanism.uid],
-                           @"timeToLive": @"120",
-                           @"challenge": @"pistolsAtDawn",
-                           };
+    NSDictionary *data = @{@"aps":@{@"messageId":@"123", @"alert":@"eyAidHlwIjogIkpXVCIsICJhbGciOiAiSFMyNTYiIH0.eyAiYyI6ICJKZVlTTXlLdW9QbldmRHVXaU1GVGlENlc2WTNQOWVYTVBYUDljNUEvSEJNPSIsICJ0IjogIjEyMCIsICJ1IjogIjAiLCAibCI6ICJZVzFzWW1OdmIydHBaVDFoYld4aVkyOXZhMmxsUFRBeCIgfQ==.1SAWJlT-5vjYRbpZ_57K-NpFRs4VZbSzZjAF_3RTu7k"}};
+    
     // When
     [handler application:mockApplication didReceiveRemoteNotification:data];
     
