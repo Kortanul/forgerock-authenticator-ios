@@ -28,8 +28,12 @@
 @property (nonatomic, strong) FRAIdentityDatabase* database;
 
 /*!
- * The storage ID of this object.
+ * Indicates whether this model object has been persisted to the database.
+ * YES indicates it has been stored, NO indicates it has not yet been stored.
+ *
+ * NB: This property only indicates whether or not a record has been persisted. It
+ * does not indicate whether or not this object is dirty and has unsaved changes.
  */
-@property (nonatomic) BOOL uid;
+@property (nonatomic, getter=isStored) BOOL stored;
 
 @end

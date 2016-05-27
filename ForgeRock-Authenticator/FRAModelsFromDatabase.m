@@ -258,11 +258,11 @@
         
         // As we have read the objects from the database, marked them as stored.
         for (FRAIdentity* identity in identities) {
-            identity.uid = YES;
+            identity.stored = YES;
             for (FRAMechanism *mechanism in identity.mechanisms) {
-                mechanism.uid = YES;
+                mechanism.stored = YES;
                 for (FRANotification *notification in mechanism.notifications) {
-                    notification.uid = YES;
+                    notification.stored = YES;
                 }
             }
         }

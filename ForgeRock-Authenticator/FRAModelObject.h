@@ -24,9 +24,13 @@
 @interface FRAModelObject : NSObject
 
 /*!
- * The storage ID of this object.
+ * Indicates whether this model object has been persisted to the database.
+ * YES indicates it has been stored, NO indicates it has not yet been stored.
+ *
+ * NB: This property only indicates whether or not a record has been persisted. It 
+ * does not indicate whether or not this object is dirty and has unsaved changes.
  */
-@property (nonatomic, readonly) BOOL uid;
+@property (nonatomic, readonly, getter=isStored) BOOL stored;
 
 #pragma mark -
 #pragma mark Lifecycle
@@ -45,14 +49,5 @@
  * @return The initialized object or nil if initialization failed.
  */
 - (instancetype)initWithDatabase:(FRAIdentityDatabase *)database;
-
-/**
- * Check whether or not this object has been persisted to the FRAIdentityDatabase.
- * NB. This method only indicates whether or not a record exists with this object's uid, it does
- * not indicate whether or not this object is dirty and has unsaved changes.
- *
- * @return YES if this object has been saved to FRAIdentityDatabase; NO otherwise.
- */
-- (BOOL)isStored;
 
 @end

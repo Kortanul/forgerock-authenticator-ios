@@ -23,16 +23,14 @@
 #pragma mark -
 #pragma mark Lifecyle
 
+@synthesize stored;
+
 - (instancetype)initWithDatabase:(FRAIdentityDatabase *)database {
     if (self = [super init]) {
         _database = database;
-        _uid = NO;
+        stored = NO;
     }
     return self;
-}
-
-- (BOOL)isStored {
-    return self.uid;
 }
 
 @end

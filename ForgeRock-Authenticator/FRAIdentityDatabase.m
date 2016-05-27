@@ -48,11 +48,6 @@ NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems = @"updated"
 #pragma mark -
 #pragma mark Lifecyle
 
-// TODO: Remove
-- (instancetype)init {
-    return [self initWithSqlOperations:nil];
-}
-
 - (instancetype)initWithSqlOperations:(FRAIdentityDatabaseSQLiteOperations *)sqlOperations {
     if (self = [super init]) {
         _sqlOperations = sqlOperations;
@@ -86,7 +81,7 @@ NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems = @"updated"
     if (![self.sqlOperations insertIdentity:identity error:error]) {
         return NO;
     }
-    identity.uid = YES;
+    identity.stored = YES;
     [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationAddedItems] addObject:identity];
     return YES;
 }
@@ -114,7 +109,7 @@ NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems = @"updated"
     if (![self.sqlOperations deleteIdentity:identity error:error]) {
         return NO;
     }
-    identity.uid = NO;
+    identity.stored = NO;
     [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationRemovedItems] addObject:identity];
     return YES;
 }
@@ -144,7 +139,7 @@ NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems = @"updated"
     if (![self.sqlOperations insertMechanism:mechanism error:error]) {
         return NO;
     }
-    mechanism.uid = YES;
+    mechanism.stored = YES;
     [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationAddedItems] addObject:mechanism];
     return YES;
 }
@@ -171,7 +166,7 @@ NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems = @"updated"
     if (![self.sqlOperations deleteMechanism:mechanism error:error]) {
         return NO;
     }
-    mechanism.uid = NO;
+    mechanism.stored = NO;
     [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationRemovedItems] addObject:mechanism];
     return YES;
 }
@@ -229,7 +224,7 @@ NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems = @"updated"
     if (![self.sqlOperations insertNotification:notification error:error]) {
         return NO;
     }
-    notification.uid = YES;
+    notification.stored = YES;
     [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationAddedItems] addObject:notification];
     return YES;
 }
@@ -252,7 +247,7 @@ NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems = @"updated"
     if (![self.sqlOperations deleteNotification:notification error:error]) {
         return NO;
     }
-    notification.uid = NO;
+    notification.stored = NO;
     [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationRemovedItems] addObject:notification];
     return YES;
 }

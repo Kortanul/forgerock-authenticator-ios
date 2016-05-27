@@ -14,14 +14,15 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import "FRAPushMechanismFactory.h"
-#import "FRAMechanismFactory.h"
-#import "FRAPushMechanism.h"
-#import "FRAIdentityDatabase.h"
 #import "FRAIdentity.h"
+#import "FRAIdentityDatabase.h"
+#import "FRAMechanismFactory.h"
 #import "FRAMessageUtils.h"
 #import "FRAMockURLProtocol.h"
+#import "FRAPushMechanism.h"
+#import "FRAPushMechanismFactory.h"
 #import "FRAQRUtils.h"
+#import "FRASerialization.h"
 
 /*! QR code key for the secret. */
 NSString *const SECRET_QR_KEY = @"s";
@@ -192,7 +193,13 @@ NSString *const ISSUER_QR_KEY = @"issuer";
 
 - (void) registerMechanismWithEndpoint:(NSString *)regEndpoint secret:(NSString *)secret challange:(NSString *)c messageId:(NSString *)messageId mechanismUid:(NSString *)uid identity:(FRAIdentity *)identity mechanism:(FRAMechanism *)mechanism{
     
-    NSString* deviceId = _gateway.deviceToken;
+    
+    NSString* deviceId;
+    if (_gateway.deviceToken == nil) {
+        deviceId = @"";
+    } else {
+        deviceId = _gateway.deviceToken;
+    }
     
     [FRAMessageUtils respondWithEndpoint:regEndpoint
                             base64Secret:secret
