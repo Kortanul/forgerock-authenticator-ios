@@ -32,8 +32,6 @@ NSString * const FRAIdentityDatabaseChangedNotificationAddedItems = @"added";
 NSString * const FRAIdentityDatabaseChangedNotificationRemovedItems = @"removed";
 NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems = @"updated";
 
-NSInteger const FRANotStored = -1;
-
 
 /*!
  * Responsible for persisting model objects to the SQLite database, managing the storage IDs for persisted objects
@@ -44,9 +42,7 @@ NSInteger const FRANotStored = -1;
  */
 @implementation FRAIdentityDatabase {
 
-    NSInteger nextIdentityId;
-    NSInteger nextMechanismId;
-    NSInteger nextNotificationId;
+
 }
 
 #pragma mark -
@@ -59,9 +55,6 @@ NSInteger const FRANotStored = -1;
 
 - (instancetype)initWithSqlOperations:(FRAIdentityDatabaseSQLiteOperations *)sqlOperations {
     if (self = [super init]) {
-        nextIdentityId = 0;
-        nextMechanismId = 0;
-        nextNotificationId = 0;
         _sqlOperations = sqlOperations;
     }
     return self;
@@ -93,8 +86,7 @@ NSInteger const FRANotStored = -1;
     if (![self.sqlOperations insertIdentity:identity error:error]) {
         return NO;
     }
-    identity.uid = nextIdentityId;
-    nextIdentityId++;
+    identity.uid = YES;
     [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationAddedItems] addObject:identity];
     return YES;
 }
@@ -122,7 +114,7 @@ NSInteger const FRANotStored = -1;
     if (![self.sqlOperations deleteIdentity:identity error:error]) {
         return NO;
     }
-    identity.uid = FRANotStored;
+    identity.uid = NO;
     [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationRemovedItems] addObject:identity];
     return YES;
 }
@@ -152,8 +144,7 @@ NSInteger const FRANotStored = -1;
     if (![self.sqlOperations insertMechanism:mechanism error:error]) {
         return NO;
     }
-    mechanism.uid = nextMechanismId;
-    nextMechanismId++;
+    mechanism.uid = YES;
     [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationAddedItems] addObject:mechanism];
     return YES;
 }
@@ -180,7 +171,7 @@ NSInteger const FRANotStored = -1;
     if (![self.sqlOperations deleteMechanism:mechanism error:error]) {
         return NO;
     }
-    mechanism.uid = FRANotStored;
+    mechanism.uid = NO;
     [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationRemovedItems] addObject:mechanism];
     return YES;
 }
@@ -238,8 +229,7 @@ NSInteger const FRANotStored = -1;
     if (![self.sqlOperations insertNotification:notification error:error]) {
         return NO;
     }
-    notification.uid = nextNotificationId;
-    nextNotificationId++;
+    notification.uid = YES;
     [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationAddedItems] addObject:notification];
     return YES;
 }
@@ -262,7 +252,7 @@ NSInteger const FRANotStored = -1;
     if (![self.sqlOperations deleteNotification:notification error:error]) {
         return NO;
     }
-    notification.uid = FRANotStored;
+    notification.uid = NO;
     [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationRemovedItems] addObject:notification];
     return YES;
 }

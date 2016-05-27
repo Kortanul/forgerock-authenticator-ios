@@ -35,10 +35,6 @@ extern NSString * const FRAIdentityDatabaseChangedNotificationRemovedItems;
 /*! Key identifying updated objects in FRAIdentityDatabaseChangedNotification userInfo dictionary. */
 extern NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems;
 
-/*! Initial storageId value for model objects before they are persisted to the database. */
-extern NSInteger const FRANotStored;
-
-
 /*!
  * Data Access Object which encapsulates the underlying storage
  * mechanism and provides a simplified interface to the caller.

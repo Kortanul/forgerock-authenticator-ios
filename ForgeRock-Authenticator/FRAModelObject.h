@@ -26,7 +26,7 @@
 /*!
  * The storage ID of this object.
  */
-@property (nonatomic, readonly) NSInteger uid;
+@property (nonatomic, readonly) BOOL uid;
 
 #pragma mark -
 #pragma mark Lifecycle

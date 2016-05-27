@@ -17,13 +17,14 @@
 
 #import "FMDatabase.h"
 #import "FRAError.h"
+#import "FRAFMDatabaseConnectionHelper.h"
 #import "FRAHMACAlgorithm.h"
 #import "FRAIdentity.h"
+#import "FRAModelObjectProtected.h"
 #import "FRAModelsFromDatabase.h"
 #import "FRANotification.h"
 #import "FRAOathMechanism.h"
 #import "FRAPushMechanism.h"
-#import "FRAFMDatabaseConnectionHelper.h"
 #import "FRASerialization.h"
 
 /*!
@@ -71,14 +72,17 @@
         
         int row = 0;
         while ([results next]) {
+            // Identity
             NSString *issuer = [FRASerialization nullToEmpty:[results stringForColumn:@"issuer"]];
             NSString *accountName = [FRASerialization nullToEmpty:[results stringForColumn:@"accountName"]];
             NSString *imageURL = [FRASerialization nullToEmpty:[results stringForColumn:@"imageURL"]];
             NSString *bgColor = [FRASerialization nullToEmpty:[results stringForColumn:@"bgColor"]];
+            // Mechanism
             NSString *type = [FRASerialization nullToEmpty:[results stringForColumn:@"type"]];
             NSInteger version = [results intForColumn:@"version"];
             NSString *mechanismUID = [FRASerialization nullToEmpty:[results stringForColumn:@"mechanismUID"]];
             NSString *optionsJSON = [FRASerialization nullToEmpty:[results stringForColumn:@"options"]];
+            // Notification
             NSString *timeReceived = [FRASerialization nullToEmpty:[results stringForColumn:@"timeReceived"]];
             NSString *timeExpired = [FRASerialization nullToEmpty:[results stringForColumn:@"timeExpired"]];
             NSString *data = [FRASerialization nullToEmpty:[results stringForColumn:@"data"]];
@@ -213,42 +217,56 @@
                     }
                 }
 
-                // Parse and create the Notifications for the Push Mechanism.
+                // If we have a notification, parse and create the Notification for the Push Mechanism.
                 // Note: Notifications can only currently exist for PushMechanisms.
-                
-                // Time stamp of the notification
-                NSDate *received = [NSDate dateWithTimeIntervalSince1970:[timeReceived doubleValue]];
-                
-                // Data map
-                NSDictionary *dataMap;
-                if (![FRASerialization deserializeJSON:data intoDictionary:&dataMap error:error]) {
-                    return nil;
-                }
-                
-                // Data: Message ID
-                NSString *messageId = [dataMap valueForKey:NOTIFICATION_MESSAGE_ID];
-                
-                // Data: Challenge
-                NSString *challenge = [[NSString alloc] initWithData:[FRASerialization deserializeBytes:[dataMap valueForKey:NOTIFICATION_PUSH_CHALLENGE]] encoding:NSUTF8StringEncoding];
-                
-                // Data: TTL
-                NSTimeInterval ttl = [[dataMap valueForKey:NOTIFICATION_TIME_TO_LIVE] doubleValue];
-                
-                FRANotification *notification = [FRANotification notificationWithDatabase:identityDatabase
-                                                                                messageId:messageId
-                                                                                challenge:challenge
-                                                                             timeReceived:received
-                                                                               timeToLive:ttl];
+                if (timeReceived != nil && [timeReceived length] > 0) {
+                    
+                    // Time stamp of the notification
+                    NSDate *received = [NSDate dateWithTimeIntervalSince1970:[timeReceived doubleValue]];
 
-                
-                if (![newMechanism addNotification:notification error:error]) {
-                    return nil;
+                    
+                    // Data map
+                    NSDictionary *dataMap;
+                    if (![FRASerialization deserializeJSON:data intoDictionary:&dataMap error:error]) {
+                        return nil;
+                    }
+                    
+                    // Data: Message ID
+                    NSString *messageId = [dataMap valueForKey:NOTIFICATION_MESSAGE_ID];
+
+                    // Data: Challenge
+                    NSString *challenge = [[NSString alloc] initWithData:[FRASerialization deserializeBytes:[dataMap valueForKey:NOTIFICATION_PUSH_CHALLENGE]] encoding:NSUTF8StringEncoding];
+                    
+                    // Data: TTL
+                    NSTimeInterval ttl = [[dataMap valueForKey:NOTIFICATION_TIME_TO_LIVE] doubleValue];
+                    
+                    FRANotification *notification = [FRANotification notificationWithDatabase:identityDatabase
+                                                                                    messageId:messageId
+                                                                                    challenge:challenge
+                                                                                 timeReceived:received
+                                                                                   timeToLive:ttl];
+                    
+                    if (![newMechanism addNotification:notification error:error]) {
+                        return nil;
+                    }
                 }
                 
             } else {
                 @throw [FRAError createIllegalStateException:@"Invalid mechanism"];
             }
         }
+        
+        // As we have read the objects from the database, marked them as stored.
+        for (FRAIdentity* identity in identities) {
+            identity.uid = YES;
+            for (FRAMechanism *mechanism in identity.mechanisms) {
+                mechanism.uid = YES;
+                for (FRANotification *notification in mechanism.notifications) {
+                    notification.uid = YES;
+                }
+            }
+        }
+
         
         return identities;
     }

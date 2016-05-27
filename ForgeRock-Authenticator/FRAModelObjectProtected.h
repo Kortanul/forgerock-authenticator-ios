@@ -30,6 +30,6 @@
 /*!
  * The storage ID of this object.
  */
-@property (nonatomic) NSInteger uid;
+@property (nonatomic) BOOL uid;
 
 @end

@@ -20,8 +20,10 @@
 #import "FRAIdentityDatabaseSQLiteOperations.h"
 #import "FRAIdentityModel.h"
 #import "FRAMechanism.h"
+#import "FRANotification.h"
 #import "FRAModelsFromDatabase.h"
 #import "FRAPushMechanism.h"
+#import "FRAModelObjectProtected.h"
 
 /*!
  * Private interface.
@@ -61,15 +63,6 @@
 
 - (NSArray *)identities {
     return [[NSArray alloc] initWithArray:identitiesList];
-}
-
-- (FRAIdentity *)identityWithId:(NSInteger)uid {
-    for (FRAIdentity *identity in identitiesList) {
-        if (identity.uid == uid) {
-            return identity;
-        }
-    }
-    return nil;
 }
 
 - (FRAIdentity *)identityWithIssuer:(NSString *)issuer accountName:(NSString *)accountName {

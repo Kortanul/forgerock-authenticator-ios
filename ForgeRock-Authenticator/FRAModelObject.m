@@ -26,13 +26,13 @@
 - (instancetype)initWithDatabase:(FRAIdentityDatabase *)database {
     if (self = [super init]) {
         _database = database;
-        _uid = FRANotStored;
+        _uid = NO;
     }
     return self;
 }
 
 - (BOOL)isStored {
-    return self.uid != FRANotStored;
+    return self.uid;
 }
 
 @end

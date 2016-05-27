@@ -42,13 +42,6 @@
 - (NSArray *)identities;
 
 /*!
- * Gets the identity identified uniquely by the provided ID.
- * @param uid The storage id of the identity to get.
- * @return The identity with the specified storage ID.
- */
-- (FRAIdentity *)identityWithId:(NSInteger)uid;
-
-/*!
  * Gets the identity uniquely identified by the specified issuer and accountName.
  * @param issuer The issuer of the identity.
  * @param accountName The name of the identity.
