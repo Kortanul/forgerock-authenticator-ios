@@ -17,6 +17,7 @@
 #include <CommonCrypto/CommonHMAC.h>
 
 #import "FRAMessageUtils.h"
+#import "FRAQRUtils.h"
 
 /*! The Communication mechanism Content Type. */
 static NSString * const JSON_CONTENT_TYPE = @"application/json";
@@ -84,10 +85,8 @@ static NSString * const CONTENT_TYPE_HEADER = @"Content-Type";
 }
 
 + (NSString *)generateJwtWithPayload:(NSDictionary *)payload base64Secret:(NSString *)base64Secret {
-
     id<JWTAlgorithm> algorithm = [JWTAlgorithmFactory algorithmByName:@"HS256"];
-    
-    NSData *secretBytes = [[NSData alloc] initWithBase64EncodedString:base64Secret options:0];
+    NSData *secretBytes = [[FRAQRUtils decodeURL:base64Secret] dataUsingEncoding:NSUTF8StringEncoding];
  
     return [JWTBuilder encodePayload:payload].secretData(secretBytes).algorithm(algorithm).encode;
 }
