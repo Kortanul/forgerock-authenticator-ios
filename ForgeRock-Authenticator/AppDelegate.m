@@ -40,7 +40,6 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [[[self assembly] notificationGateway] application:application didFinishLaunchingWithOptions:launchOptions];
-    [self populateWithDummyData];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleIdentityDatabaseChanged:) name:FRAIdentityDatabaseChangedNotification object:nil];
     [self updateNotificationsCount];
     NSLog(@"application:didFinishLaunchingWithOptions\n%@", launchOptions);
@@ -112,88 +111,6 @@
 
 - (FRAApplicationAssembly *)assembly {
     return (FRAApplicationAssembly *) [TyphoonComponentFactory defaultFactory];
-}
-
-- (void)populateWithDummyData {
-    FRAUriMechanismReader *factory = [[self assembly] uriMechanismReader];
-    FRAIdentityDatabase *database = [[self assembly] identityDatabase];
-    
-    [factory parseFromURL:[NSURL URLWithString:@"otpauth://totp/Umbrella-Corp:Alice?secret=ZIFYT2GJ5UDGYCBYJ777PFBPSM======&issuer=Umbrella-Corp&digits=6&period=30"]];
-    
-    [factory parseFromURL:[NSURL URLWithString:@"otpauth://hotp/Umbrella-Corp:Adam?secret=IJQWIZ3FOIQUEYLE&issuer=Umbrella-Corp&counter=0"]];
-    
-    FRAIdentity *demo = [FRAIdentity identityWithDatabase:database accountName:@"demo" issuer:@"ForgeRock" image:nil backgroundColor:nil];
-    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
-
-    // TODO: Handle Error
-    @autoreleasepool {
-        NSError* error;
-        [demo addMechanism:pushMechanism error:&error];
-    }
-    
-    NSTimeInterval timeToLive = 120.0;
-    FRANotification *approvedNotification = [[FRANotification alloc] initWithDatabase:database
-                                                                            messageId:@"messageId"
-                                                                            challenge:[@"challenge" dataUsingEncoding:NSUTF8StringEncoding]
-                                                                         timeReceived:[NSDate dateWithTimeIntervalSinceNow:-360.0]
-                                                                           timeToLive:timeToLive];
-    // TODO: Handle Error
-    @autoreleasepool {
-        NSError* error;
-        [approvedNotification approveWithError:&error];
-    }
-    FRANotification *deniedNotification = [[FRANotification alloc] initWithDatabase:database
-                                                                          messageId:@"messageId"
-                                                                          challenge:[@"challenge" dataUsingEncoding:NSUTF8StringEncoding]
-                                                                       timeReceived:[NSDate dateWithTimeIntervalSinceNow:-3060.0]
-                                                                                timeToLive:timeToLive];
-    // TODO: Handle Error
-    @autoreleasepool {
-        NSError* error;
-        [deniedNotification denyWithError:&error];
-    }
-    FRANotification *pendingNotification = [[FRANotification alloc] initWithDatabase:database
-                                                                           messageId:@"messageId"
-                                                                           challenge:[@"challenge" dataUsingEncoding:NSUTF8StringEncoding]
-                                                                        timeReceived:[NSDate date]
-                                                                          timeToLive:timeToLive];
-
-    FRANotification *expiringNotification = [[FRANotification alloc] initWithDatabase:database
-                                                                            messageId:@"messageId"
-                                                                            challenge:[@"challenge" dataUsingEncoding:NSUTF8StringEncoding]
-                                                                         timeReceived:[NSDate date]
-                                                                           timeToLive:10.0];
-    // TODO: Handle Error
-    @autoreleasepool {
-        NSError* error;
-        [pushMechanism addNotification:approvedNotification error:&error];
-    }
-
-    // TODO: Handle Error
-    @autoreleasepool {
-        NSError* error;
-        [pushMechanism addNotification:deniedNotification error:&error];
-    }
-    
-    // TODO: Handle Error
-    @autoreleasepool {
-        NSError* error;
-        [pushMechanism addNotification:pendingNotification error:&error];
-    }
-
-    // TODO: Handle Error
-    @autoreleasepool {
-        NSError* error;
-        [pushMechanism addNotification:expiringNotification error:&error];
-    }
-    
-    // TODO: Handle Error
-    @autoreleasepool {
-        NSError* error;
-        [[[self assembly] identityModel] addIdentity:demo error:&error];
-    }
-
-    NSLog(@"registered push mechanism with uid: %ld", (long)pushMechanism.uid);
 }
 
 - (void)handleIdentityDatabaseChanged:(NSNotification *)notification {
