@@ -34,4 +34,10 @@
  */
 + (NSString *) decode:(NSString*) str;
 
+/*!
+ * Pad string with '=' to have length multiple of 4 (for base 64 decoding)
+ */
++ (NSString *) pad:(NSString*) str;
+
+
 @end

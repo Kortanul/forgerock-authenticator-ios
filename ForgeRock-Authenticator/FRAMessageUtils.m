@@ -94,10 +94,7 @@ static NSString * const CONTENT_TYPE_HEADER = @"Content-Type";
 + (NSDictionary *)extractJTWBodyFromString:(NSString *)message {
     NSArray* strings = [message componentsSeparatedByString:@"."];
     NSString* payloadString = strings[1];
-    int padLength = (4 - (payloadString.length % 4)) % 4;
-    for (int i = 0; i < padLength; i++) {
-        payloadString = [payloadString stringByAppendingString:@"="];
-    }
+    payloadString = [FRAQRUtils pad:payloadString];
     
     NSData *payloadBytes = [[NSData alloc] initWithBase64EncodedString:payloadString options:0];
     
@@ -108,10 +105,10 @@ static NSString * const CONTENT_TYPE_HEADER = @"Content-Type";
     return data;
 }
 
-+ (NSString *)generateChallengeResponse:(NSString *) challenge secret:(NSString *) secret {
++ (NSString *)generateChallengeResponse:(NSString *)challenge secret:(NSString *)secret {
     
     NSData *saltData = [[NSData alloc] initWithBase64EncodedString:secret options:0];
-    NSData *paramData = [[NSData alloc] initWithBase64EncodedString:challenge options:0];
+    NSData *paramData = [challenge dataUsingEncoding:NSUTF8StringEncoding];
     
     NSMutableData * data = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
     CCHmac(kCCHmacAlgSHA256, saltData.bytes, saltData.length, paramData.bytes, paramData.length, data.mutableBytes);

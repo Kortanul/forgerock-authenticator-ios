@@ -33,7 +33,7 @@
 @end
 
 static NSString *const TEST_USERNAME = @"Alice";
-static NSString *const CHALLENGE = @"JeYSMyKuoPnWfDuWiMFTiD6W6Y3P9eXMPXP9c5A/HBM=";
+static NSString *const CHALLENGE = @"thelegendofluna";
 
 @implementation FRANotificationHandlerTest {
     FRANotificationHandler *handler;
@@ -79,7 +79,7 @@ static NSString *const CHALLENGE = @"JeYSMyKuoPnWfDuWiMFTiD6W6Y3P9eXMPXP9c5A/HBM
 
 - (void)testCreatesNotificationObjectFromMessageAndSavesToIdentifiedPushMechanism {
     // Given
-    NSDictionary *data = @{@"aps":@{@"messageId":@"123", @"data":@"eyAidHlwIjogIkpXVCIsICJhbGciOiAiSFMyNTYiIH0.eyAiYyI6ICJKZVlTTXlLdW9QbldmRHVXaU1GVGlENlc2WTNQOWVYTVBYUDljNUEvSEJNPSIsICJ0IjogIjEyMCIsICJ1IjogIjAiLCAibCI6ICJZVzFzWW1OdmIydHBaVDFoYld4aVkyOXZhMmxsUFRBeCIgfQ==.1SAWJlT-5vjYRbpZ_57K-NpFRs4VZbSzZjAF_3RTu7k"}};
+    NSDictionary *data = @{@"aps":@{@"messageId":@"123", @"data":@"eyAidHlwIjogIkpXVCIsICJhbGciOiAiSFMyNTYiIH0.ew0KICAgICJjIjoiZEdobGJHVm5aVzVrYjJac2RXNWgiLA0KICAgICJsIjoiWVcxc1ltTnZiMnRwWlQxaGJXeGlZMjl2YTJsbFBUQXgiLA0KICAgICJ0IiA6IjEyMCIsDQogICAgInUiOiIwIg0KfQ==.1SAWJlT-5vjYRbpZ_57K-NpFRs4VZbSzZjAF_3RTu7k"}};
     // When
     [handler application:mockApplication didReceiveRemoteNotification:data];
     
@@ -95,7 +95,7 @@ static NSString *const CHALLENGE = @"JeYSMyKuoPnWfDuWiMFTiD6W6Y3P9eXMPXP9c5A/HBM
 
 - (void)testNotificationHandlingShouldBeIdempotent {
     // Given
-    NSDictionary *data = @{@"aps":@{@"messageId":@"123", @"data":@"eyAidHlwIjogIkpXVCIsICJhbGciOiAiSFMyNTYiIH0.eyAiYyI6ICJKZVlTTXlLdW9QbldmRHVXaU1GVGlENlc2WTNQOWVYTVBYUDljNUEvSEJNPSIsICJ0IjogIjEyMCIsICJ1IjogIjAiLCAibCI6ICJZVzFzWW1OdmIydHBaVDFoYld4aVkyOXZhMmxsUFRBeCIgfQ==.1SAWJlT-5vjYRbpZ_57K-NpFRs4VZbSzZjAF_3RTu7k"}};
+    NSDictionary *data = @{@"aps":@{@"messageId":@"123", @"data":@"eyAidHlwIjogIkpXVCIsICJhbGciOiAiSFMyNTYiIH0.ew0KICAgICJjIjoiZEdobGJHVm5aVzVrYjJac2RXNWgiLA0KICAgICJsIjoiWVcxc1ltTnZiMnRwWlQxaGJXeGlZMjl2YTJsbFBUQXgiLA0KICAgICJ0IiA6IjEyMCIsDQogICAgInUiOiIwIg0KfQ==.1SAWJlT-5vjYRbpZ_57K-NpFRs4VZbSzZjAF_3RTu7k"}};
     
     // When
     [handler application:mockApplication didReceiveRemoteNotification:data];
@@ -107,7 +107,7 @@ static NSString *const CHALLENGE = @"JeYSMyKuoPnWfDuWiMFTiD6W6Y3P9eXMPXP9c5A/HBM
 
 - (void)testOnlyHandlesNotificationsThatReferToPushMechanism {
     // Given
-    NSDictionary *data = @{@"aps":@{@"messageId":@"123", @"data":@"eyAidHlwIjogIkpXVCIsICJhbGciOiAiSFMyNTYiIH0.eyAiYyI6ICJKZVlTTXlLdW9QbldmRHVXaU1GVGlENlc2WTNQOWVYTVBYUDljNUEvSEJNPSIsICJ0IjogIjEyMCIsICJ1IjogIjAiLCAibCI6ICJZVzFzWW1OdmIydHBaVDFoYld4aVkyOXZhMmxsUFRBeCIgfQ==.1SAWJlT-5vjYRbpZ_57K-NpFRs4VZbSzZjAF_3RTu7k"}};
+    NSDictionary *data = @{@"aps":@{@"messageId":@"123", @"data":@"eyAidHlwIjogIkpXVCIsICJhbGciOiAiSFMyNTYiIH0.ew0KICAgICJjIjoiZEdobGJHVm5aVzVrYjJac2RXNWgiLA0KICAgICJsIjoiWVcxc1ltTnZiMnRwWlQxaGJXeGlZMjl2YTJsbFBUQXgiLA0KICAgICJ0IiA6IjEyMCIsDQogICAgInUiOiIwIg0KfQ==.1SAWJlT-5vjYRbpZ_57K-NpFRs4VZbSzZjAF_3RTu7k"}};
     
     // When
     [handler application:mockApplication didReceiveRemoteNotification:data];

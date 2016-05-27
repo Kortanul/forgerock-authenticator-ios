@@ -22,6 +22,7 @@
 #import "FRANotificationHandler.h"
 #import "FRANotificationViewController.h"
 #import "FRAMessageUtils.h"
+#import "FRAQRUtils.h"
 #import <JWT.h>
 
 /*!
@@ -105,7 +106,7 @@ static NSString * const MECHANISM_UID_KEY = @"u";
     NSTimeInterval timeToLive = [[payload objectForKey:TTL_KEY] doubleValue];
     notification = [[FRANotification alloc] initWithDatabase:self.database
                                                    messageId:[messageData valueForKeyPath:MESSAGE_ID_KEY_PATH]
-                                                   challenge:[payload objectForKey:CHALLENGE_KEY]
+                                                   challenge:[FRAQRUtils decodeBase64:[payload objectForKey:CHALLENGE_KEY]]
                                                 timeReceived:[NSDate date]
                                                   timeToLive:timeToLive];
     // TODO: Handle error

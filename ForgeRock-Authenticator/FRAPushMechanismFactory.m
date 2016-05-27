@@ -35,7 +35,7 @@ NSString *const MESSAGE_ID_QR_KEY = @"m";
 /*! QR code key for the background colour of the mechanism. */
 NSString *const BACKGROUND_COLOUR_QR_KEY = @"b";
 /*! QR code key for the registration challange. */
-NSString *const REGISTRATION_CHALLANGE_QR_KEY = @"c";
+NSString *const REGISTRATION_CHALLENGE_QR_KEY = @"c";
 /*! QR code key for the mechanism image. */
 NSString *const IMAGE_QR_KEY = @"image";
 /*! QR code key for the issuer name. */
@@ -68,12 +68,12 @@ NSString *const ISSUER_QR_KEY = @"issuer";
     NSString *authEndpoint = [FRAQRUtils decodeURL:[query objectForKey:AUTHENTICATION_ENDPOINT_URL_QR_KEY]];
     NSString *messageId = [query objectForKey:MESSAGE_ID_QR_KEY];
     NSString *backgroundColor = [query objectForKey:BACKGROUND_COLOUR_QR_KEY];
-    NSString *challange = [query objectForKey:REGISTRATION_CHALLANGE_QR_KEY];
+    NSString *challenge = [FRAQRUtils decodeURL:[query objectForKey:REGISTRATION_CHALLENGE_QR_KEY]];
     NSString *image = [FRAQRUtils decodeURL:[query objectForKey:IMAGE_QR_KEY]];
     NSString *issuer = [query objectForKey:ISSUER_QR_KEY];
     NSString *_label = [query objectForKey:@"_label"];
     
-    if (nil == secret || nil == regEndpoint || nil == authEndpoint || nil == messageId || nil == challange || nil == issuer) {
+    if (nil == secret || nil == regEndpoint || nil == authEndpoint || nil == messageId || nil == challenge || nil == issuer) {
         return nil; // TODO: throw a sensible exception/Error
     }
     
@@ -102,7 +102,7 @@ NSString *const ISSUER_QR_KEY = @"issuer";
         [identity addMechanism:mechanism error:&error];
     }
     
-    [self registerMechanismWithEndpoint:regEndpoint secret:secret challange:challange messageId:messageId mechanismUid:mechanism.mechanismUID identity:identity mechanism:mechanism];
+    [self registerMechanismWithEndpoint:regEndpoint secret:secret challenge:challenge messageId:messageId mechanismUid:mechanism.mechanismUID identity:identity mechanism:mechanism];
 
     return mechanism;
 }
@@ -191,7 +191,7 @@ NSString *const ISSUER_QR_KEY = @"issuer";
     return @"pushauth";
 }
 
-- (void) registerMechanismWithEndpoint:(NSString *)regEndpoint secret:(NSString *)secret challange:(NSString *)c messageId:(NSString *)messageId mechanismUid:(NSString *)uid identity:(FRAIdentity *)identity mechanism:(FRAMechanism *)mechanism{
+- (void) registerMechanismWithEndpoint:(NSString *)regEndpoint secret:(NSString *)secret challenge:(NSString *)c messageId:(NSString *)messageId mechanismUid:(NSString *)uid identity:(FRAIdentity *)identity mechanism:(FRAMechanism *)mechanism{
     
     
     NSString* deviceId;

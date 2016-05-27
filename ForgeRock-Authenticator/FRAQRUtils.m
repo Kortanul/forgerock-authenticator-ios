@@ -23,18 +23,13 @@
 + (NSString *) decodeURL:(NSString *) content {
     NSString * fixed = [content stringByReplacingOccurrencesOfString:@"-" withString:@"+"];
     fixed = [fixed stringByReplacingOccurrencesOfString:@"_" withString:@"/"];
-    int paddSize = (4 - ([fixed length] % 4)) % 4;
-    
-    if(paddSize != 0) {
-        for(int i = 0; i < paddSize; ++i) {
-            fixed = [fixed stringByAppendingString:@"="];
-        }
-    }
+    [self pad:fixed];
     
     return [FRAQRUtils decodeBase64:fixed];
 }
 
 + (NSString *) decodeBase64:(NSString *) base64String {
+    base64String = [self pad:base64String];
     NSData *decodedData = [[NSData alloc] initWithBase64EncodedString:base64String options:0];
     NSString *decodedString = [[NSString alloc] initWithData:decodedData encoding:NSUTF8StringEncoding];
     return decodedString;
@@ -60,6 +55,18 @@
     }
     
     return ret;
+}
+
++ (NSString *)pad:(NSString *)str {
+    int paddSize = (4 - ([str length] % 4)) % 4;
+    
+    if(paddSize != 0) {
+        for(int i = 0; i < paddSize; ++i) {
+            str = [str stringByAppendingString:@"="];
+        }
+    }
+
+    return str;
 }
 
 static BOOL ishex(char c) {
