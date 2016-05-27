@@ -45,6 +45,7 @@
 
 static NSString * const TTL_KEY = @"t";
 static NSString * const MESSAGE_ID_KEY_PATH = @"aps.messageId";
+static NSString * const MESSAGE_DATA_PATH = @"aps.data";
 static NSString * const CHALLENGE_KEY = @"c";
 static NSString * const MECHANISM_UID_KEY = @"u";
 
@@ -78,7 +79,7 @@ static NSString * const MECHANISM_UID_KEY = @"u";
 - (FRANotification *)notificationFromRemoteNotification:(NSDictionary *)messageData {
 
     // Decode JWT from modessage
-    NSString* alertJwt = [messageData valueForKeyPath:@"aps.alert"];
+    NSString* alertJwt = [messageData valueForKeyPath:MESSAGE_DATA_PATH];
     
     NSDictionary *payload = [FRAMessageUtils extractJTWBodyFromString:alertJwt];
     
