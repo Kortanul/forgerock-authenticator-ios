@@ -165,7 +165,7 @@
 }
 
 - (FRANotification *)dummyNotificationWithMessageId:(NSString *)messageId {
-    return [[FRANotification alloc] initWithDatabase:database
+    return [FRANotification notificationWithDatabase:database
                                            messageId:messageId
                                            challenge:@"Challenge"
                                         timeReceived:[NSDate date]

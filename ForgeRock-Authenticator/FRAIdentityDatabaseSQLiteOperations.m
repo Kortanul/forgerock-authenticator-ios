@@ -152,7 +152,7 @@
     [arguments addObject:[FRASerialization nonNilString:type]];
 
     // Version
-    int version;
+    NSInteger version;
     if ([mechanism isKindOfClass:[FRAOathMechanism class]]) {
         FRAOathMechanism *oathMechanism = (FRAOathMechanism *)mechanism;
         version = oathMechanism.version;
@@ -162,7 +162,7 @@
     } else {
         @throw [FRAError createIllegalStateException:@"Unrecognised class of Mechanism"];
     }
-    [arguments addObject:[NSNumber numberWithInt:version]];
+    [arguments addObject:[NSNumber numberWithInteger:version]];
     
     // Options
     NSMutableDictionary *options = [[NSMutableDictionary alloc] init];
@@ -280,8 +280,7 @@
     [dataMap setObject:notification.messageId forKey:NOTIFICATION_MESSAGE_ID];
     
     // Data: Push Challenge
-    NSString *challengeJson = [FRASerialization serializeBytes:[notification.challenge dataUsingEncoding:NSUTF8StringEncoding]];
-    [dataMap setObject:challengeJson forKey:NOTIFICATION_PUSH_CHALLENGE];
+    [dataMap setObject:notification.challenge forKey:NOTIFICATION_PUSH_CHALLENGE];
     
     // Data: Time to Live
     NSString *ttlString = [NSString stringWithFormat:@"%f", notification.timeToLive];

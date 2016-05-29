@@ -195,7 +195,7 @@
                 NSInteger version = [[numberFormatter numberFromString:versionString] integerValue];
                 
                 
-                FRAPushMechanism *newMechanism = [FRAPushMechanism pushMechanismWithDatabase:identityDatabase authEndpoint:authEndpointValue secret:secretValue version:version];
+                FRAPushMechanism *newMechanism = [FRAPushMechanism pushMechanismWithDatabase:identityDatabase authEndpoint:authEndpointValue secret:secretValue version:version mechanismIdentifier:mechanismUID];
                 
                 
                 // Check to see if we already have this PushMechanism present, otherwise add it in.
@@ -244,7 +244,9 @@
                                                                                     messageId:messageId
                                                                                     challenge:challenge
                                                                                  timeReceived:received
-                                                                                   timeToLive:ttl];
+                                                                                   timeToLive:ttl
+                                                                                      pending:pending
+                                                                                     approved:approved];
                     
                     if (![newMechanism addNotification:notification error:error]) {
                         return nil;

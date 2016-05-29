@@ -32,7 +32,7 @@
 #pragma mark -
 #pragma mark Lifecyle
 
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database type:(NSString *)type usingSecretKey:(NSData *)secretKey andHMACAlgorithm:(CCHmacAlgorithm)algorithm withKeyLength:(NSUInteger)digits andEitherPeriod:(NSUInteger)timePeriod orCounter:(u_int64_t)hmacCounter {
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database type:(NSString *)type usingSecretKey:(NSData *)secretKey andHMACAlgorithm:(CCHmacAlgorithm)algorithm withKeyLength:(NSUInteger)digits andEitherPeriod:(u_int32_t)timePeriod orCounter:(u_int64_t)hmacCounter {
 
     self = [super initWithDatabase:database];
     if (self) {
@@ -47,7 +47,7 @@
     return self;
 }
 
-+ (instancetype)oathMechanismWithDatabase:(FRAIdentityDatabase *)database type:(NSString *)type usingSecretKey:(NSData *)secretKey andHMACAlgorithm:(CCHmacAlgorithm)algorithm withKeyLength:(NSUInteger)digits andEitherPeriod:(NSUInteger)period orCounter:(u_int64_t)counter {
++ (instancetype)oathMechanismWithDatabase:(FRAIdentityDatabase *)database type:(NSString *)type usingSecretKey:(NSData *)secretKey andHMACAlgorithm:(CCHmacAlgorithm)algorithm withKeyLength:(NSUInteger)digits andEitherPeriod:(u_int32_t)period orCounter:(u_int64_t)counter {
     return [[FRAOathMechanism alloc] initWithDatabase:database type:type usingSecretKey:secretKey andHMACAlgorithm:algorithm withKeyLength:digits andEitherPeriod:period orCounter:counter];
 }
 

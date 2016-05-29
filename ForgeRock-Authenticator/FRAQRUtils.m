@@ -20,19 +20,21 @@
 
 @implementation FRAQRUtils
 
-+ (NSString *) decodeURL:(NSString *) content {
++ (NSString *) replaceCharactersForURLDecoding:(NSString *)content {
     NSString * fixed = [content stringByReplacingOccurrencesOfString:@"-" withString:@"+"];
-    fixed = [fixed stringByReplacingOccurrencesOfString:@"_" withString:@"/"];
+    return [fixed stringByReplacingOccurrencesOfString:@"_" withString:@"/"];
+}
+
++ (NSData *) decodeURL:(NSString *) content {
+    NSString * fixed = [FRAQRUtils replaceCharactersForURLDecoding:content];
     [self pad:fixed];
     
     return [FRAQRUtils decodeBase64:fixed];
 }
 
-+ (NSString *) decodeBase64:(NSString *) base64String {
++ (NSData *) decodeBase64:(NSString *) base64String {
     base64String = [self pad:base64String];
-    NSData *decodedData = [[NSData alloc] initWithBase64EncodedString:base64String options:0];
-    NSString *decodedString = [[NSString alloc] initWithData:decodedData encoding:NSUTF8StringEncoding];
-    return decodedString;
+    return [[NSData alloc] initWithBase64EncodedString:base64String options:0];
 }
 
 + (NSString *) decode:(NSString *) str {

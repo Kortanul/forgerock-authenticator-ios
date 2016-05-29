@@ -86,7 +86,7 @@ static NSString * const CONTENT_TYPE_HEADER = @"Content-Type";
 
 + (NSString *)generateJwtWithPayload:(NSDictionary *)payload base64Secret:(NSString *)base64Secret {
     id<JWTAlgorithm> algorithm = [JWTAlgorithmFactory algorithmByName:@"HS256"];
-    NSData *secretBytes = [[FRAQRUtils decodeURL:base64Secret] dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *secretBytes = [FRAQRUtils decodeURL:base64Secret];
  
     return [JWTBuilder encodePayload:payload].secretData(secretBytes).algorithm(algorithm).encode;
 }
@@ -107,14 +107,12 @@ static NSString * const CONTENT_TYPE_HEADER = @"Content-Type";
 
 + (NSString *)generateChallengeResponse:(NSString *)challenge secret:(NSString *)secret {
     
-    NSData *saltData = [[NSData alloc] initWithBase64EncodedString:secret options:0];
-    NSData *paramData = [challenge dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *saltData = [FRAQRUtils decodeURL:secret];
+    NSData *paramData = [FRAQRUtils decodeBase64:challenge];
     
     NSMutableData * data = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
     CCHmac(kCCHmacAlgSHA256, saltData.bytes, saltData.length, paramData.bytes, paramData.length, data.mutableBytes);
     NSString * hashedResponseString = [data base64EncodedStringWithOptions:0];
-    
-    NSLog(@"hashedResponseString = %@", hashedResponseString);
     
     return hashedResponseString;
 }

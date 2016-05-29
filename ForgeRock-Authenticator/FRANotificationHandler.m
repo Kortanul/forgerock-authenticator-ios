@@ -104,9 +104,9 @@ static NSString * const MECHANISM_UID_KEY = @"u";
     // otherwise, create the notification from the message and add it to the mechanism
     
     NSTimeInterval timeToLive = [[payload objectForKey:TTL_KEY] doubleValue];
-    notification = [[FRANotification alloc] initWithDatabase:self.database
+    notification = [FRANotification notificationWithDatabase:self.database
                                                    messageId:[messageData valueForKeyPath:MESSAGE_ID_KEY_PATH]
-                                                   challenge:[FRAQRUtils decodeBase64:[payload objectForKey:CHALLENGE_KEY]]
+                                                   challenge:[payload objectForKey:CHALLENGE_KEY]
                                                 timeReceived:[NSDate date]
                                                   timeToLive:timeToLive];
     // TODO: Handle error

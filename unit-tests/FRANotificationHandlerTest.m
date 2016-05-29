@@ -33,7 +33,7 @@
 @end
 
 static NSString *const TEST_USERNAME = @"Alice";
-static NSString *const CHALLENGE = @"thelegendofluna";
+static NSString *const CHALLENGE = @"dGhlbGVnZW5kb2ZsdW5h";
 
 @implementation FRANotificationHandlerTest {
     FRANotificationHandler *handler;

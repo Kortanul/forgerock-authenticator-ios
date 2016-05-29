@@ -20,14 +20,19 @@
 @interface FRAQRUtils : NSObject
 
 /*!
+ * replace characters for url decoding
+ */
++ (NSString *) replaceCharactersForURLDecoding:(NSString *)content;
+
+/*!
  * decode a url from base 64 url encoded string
  */
-+ (NSString *) decodeURL:(NSString *) content;
++ (NSData *) decodeURL:(NSString *) content;
 
 /*!
  * decode a base 64 encoded string
  */
-+ (NSString *) decodeBase64:(NSString *) base64String;
++ (NSData *) decodeBase64:(NSString *) base64String;
 
 /*!
  * decode an encoded string

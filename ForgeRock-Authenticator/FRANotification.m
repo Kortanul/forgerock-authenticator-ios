@@ -39,12 +39,12 @@ static double const TWO_DAYS_IN_SECONDS = 172800.0;
 static double const ONE_WEEK_IN_SECONDS = 604800.0;
 static NSString * const STRING_DATE_FORMAT = @"dd/MM/yyyy";
 
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive {
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive pending:(BOOL)pendingState approved:(BOOL)approvedState {
     self = [super initWithDatabase:database];
     if (self) {
-        pending = YES;
-        _approved = NO;
-        _denied = NO;
+        pending = pendingState;
+        _approved = approvedState;
+        _denied = !pendingState && !approvedState; // TODO: move logic into it's own method
         
         formatter = [[NSDateFormatter alloc] init];
         [formatter setDateFormat:STRING_DATE_FORMAT];
@@ -57,8 +57,16 @@ static NSString * const STRING_DATE_FORMAT = @"dd/MM/yyyy";
     return self;
 }
 
-+ (instancetype)notificationWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive {
-    return [[FRANotification alloc] initWithDatabase:database messageId:messageId challenge:challenge timeReceived:timeReceived timeToLive:timeToLive];
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive {
+    return [self initWithDatabase:database messageId:messageId challenge:challenge timeReceived:timeReceived timeToLive:timeToLive  pending:YES approved:NO];
+}
+
++ (instancetype)notificationWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive pending:(BOOL)pendingState approved:(BOOL)approvedState{
+    return [[FRANotification alloc] initWithDatabase:database messageId:messageId challenge:challenge timeReceived:timeReceived timeToLive:timeToLive  pending:pendingState approved:approvedState];
+}
+
++ (instancetype)notificationWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive{
+    return [[FRANotification alloc] initWithDatabase:database messageId:messageId challenge:challenge timeReceived:timeReceived timeToLive:timeToLive  pending:YES approved:NO];
 }
 
 - (NSString *)age {

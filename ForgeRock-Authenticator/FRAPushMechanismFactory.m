@@ -59,17 +59,21 @@ NSString *const ISSUER_QR_KEY = @"issuer";
 #pragma mark -
 #pragma mark Fractory Methods
 
+- (NSString *)utf8StringFromData:(NSData *)data {
+    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+}
+
 - (FRAMechanism *) buildMechanism:(NSURL *)uri database:(FRAIdentityDatabase *)database model:(FRAIdentityModel *)model {
     
     NSDictionary * query = [self readQRCode:uri];
     
     NSString *secret = [query objectForKey:SECRET_QR_KEY];
-    NSString *regEndpoint = [FRAQRUtils decodeURL:[query objectForKey:REGISTRATION_ENDPOINT_URL_QR_KEY]];
-    NSString *authEndpoint = [FRAQRUtils decodeURL:[query objectForKey:AUTHENTICATION_ENDPOINT_URL_QR_KEY]];
+    NSString *regEndpoint = [self utf8StringFromData:[FRAQRUtils decodeURL:[query objectForKey:REGISTRATION_ENDPOINT_URL_QR_KEY]]];
+    NSString *authEndpoint = [self utf8StringFromData:[FRAQRUtils decodeURL:[query objectForKey:AUTHENTICATION_ENDPOINT_URL_QR_KEY]]];
     NSString *messageId = [query objectForKey:MESSAGE_ID_QR_KEY];
     NSString *backgroundColor = [query objectForKey:BACKGROUND_COLOUR_QR_KEY];
-    NSString *challenge = [FRAQRUtils decodeURL:[query objectForKey:REGISTRATION_CHALLENGE_QR_KEY]];
-    NSString *image = [FRAQRUtils decodeURL:[query objectForKey:IMAGE_QR_KEY]];
+    NSString *challenge = [FRAQRUtils replaceCharactersForURLDecoding:[query objectForKey:REGISTRATION_CHALLENGE_QR_KEY]];
+    NSString *image = [self utf8StringFromData:[FRAQRUtils decodeURL:[query objectForKey:IMAGE_QR_KEY]]];
     NSString *issuer = [query objectForKey:ISSUER_QR_KEY];
     NSString *_label = [query objectForKey:@"_label"];
     

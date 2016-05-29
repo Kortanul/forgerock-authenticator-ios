@@ -65,6 +65,19 @@
  * @param database Required to allow mechnaism to persist changes
  * @param authEndPoint The authentication endpoint URI used for signalling to the server
  * @param secret Shared secret key required for authentication
+ * @param version the version of the database object
+ * @param mechanismIdentifier uid for the mechanism
+ *
+ * @return The initialized mechanism or nil if initialization failed.
+ */
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)authEndPoint secret:(NSString *)secret version:(NSInteger)version mechanismIdentifier:(NSString *)mechanismIdentifier;
+
+/*!
+ * Create an instance of PushMechanism
+ *
+ * @param database Required to allow mechnaism to persist changes
+ * @param authEndPoint The authentication endpoint URI used for signalling to the server
+ * @param secret Shared secret key required for authentication
  *
  * @return The initialized mechanism or nil if initialization failed.
  */
@@ -95,6 +108,6 @@
  *
  * @return The initialized mechanism or nil if initialization failed.
  */
-+ (instancetype)pushMechanismWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)authEndPoint secret:(NSString *)secret version:(NSInteger)version;
++ (instancetype)pushMechanismWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)authEndPoint secret:(NSString *)secret version:(NSInteger)version mechanismIdentifier:(NSString *)mechanismIdentifier;
 
 @end

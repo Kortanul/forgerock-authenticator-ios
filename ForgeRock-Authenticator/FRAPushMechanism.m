@@ -24,21 +24,21 @@
 
 // Testing only?
 - (instancetype)initWithDatabase:(FRAIdentityDatabase *)database {
-    return [self initWithDatabase:database authEndpoint:nil secret:nil version:1];
+    return [self initWithDatabase:database authEndpoint:nil secret:nil version:1 mechanismIdentifier:[NSUUID UUID].UUIDString];
 }
 
 - (instancetype)initWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)authEndPoint secret:(NSString *)secret {
-    return [self initWithDatabase:database authEndpoint:authEndPoint secret:secret version:1];
+    return [self initWithDatabase:database authEndpoint:authEndPoint secret:secret version:1 mechanismIdentifier:[NSUUID UUID].UUIDString];
 }
 
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)authEndPoint secret:(NSString *)secret version:(NSInteger)version {
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)authEndPoint secret:(NSString *)secret version:(NSInteger)version mechanismIdentifier:(NSString *)mechanismIdentifier{
     self = [super initWithDatabase:database];
     if (self) {
         _version = version;
         _authEndpoint = authEndPoint;
         _secret = secret;
         _type = @"push";
-        _mechanismUID = [NSUUID UUID].UUIDString;
+        _mechanismUID = mechanismIdentifier;
     }
     return self;
 }
@@ -50,8 +50,8 @@
 }
 
 
-+ (instancetype)pushMechanismWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)authEndPoint secret:(NSString *)secret version:(NSInteger)version {
-    return [[FRAPushMechanism alloc] initWithDatabase:database authEndpoint:authEndPoint secret:secret version:version];
++ (instancetype)pushMechanismWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)authEndPoint secret:(NSString *)secret version:(NSInteger)version  mechanismIdentifier:(NSString *)mechanismIdentifier{
+    return [[FRAPushMechanism alloc] initWithDatabase:database authEndpoint:authEndPoint secret:secret version:version mechanismIdentifier:mechanismIdentifier];
 }
 
 + (instancetype)pushMechanismWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)authEndPoint secret:(NSString *)secret {
