@@ -23,9 +23,9 @@
 #import "FRAPushMechanismTableViewCell.h"
 
 /*! The storyboard identifier assigned to this view controller. */
-extern NSString * const FRAAccountTableViewControllerStoryboardIdentifer;
+extern NSString * const FRA_ACCOUNT_TABLE_VIEW_CONTROLLER_STORYBOARD_IDENTIFIER;
 /*! The storyboard identifier for the segue from FRAAccountTableViewController to FRANotificationsTableViewController. */
-extern NSString * const FRAAccountTableViewControllerShowNotificationsSegue;
+extern NSString * const FRA_ACCOUNT_TABLE_VIEW_CONTROLLER_SHOW_NOTIFICATIONS_SEGUE;
 
 /*!
  * Controller for the table-view showing an individual Account.
@@ -44,6 +44,10 @@ extern NSString * const FRAAccountTableViewControllerShowNotificationsSegue;
  * The UIImageView in which the issuer's icon will be displayed.
  */
 @property (weak, nonatomic) IBOutlet UIImageView *image;
+/*!
+ * The background UIView on top of which the issuer's icon and name will be displayed.
+ */
+@property (weak, nonatomic) IBOutlet UIView *backgroundView;
 /*!
  * The UILabel in which the issuer's name will be displayed.
  */

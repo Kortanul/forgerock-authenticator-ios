@@ -14,6 +14,8 @@
  * Copyright 2016 ForgeRock AS.
  */
 
+#import <UIImageView+AFNetworking.h>
+
 #import "FRAAccountsTableViewController.h"
 #import "FRAAccountTableViewCell.h"
 #import "FRAAccountTableViewController.h"
@@ -78,7 +80,15 @@ NSString * const FRAAccountsTableViewControllerScanQrCodeSegue = @"scanQrCodeSeg
     static NSString *CellIdentifier = @"AccountCell";
     FRAAccountTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     FRAIdentity *identity = [self identityAtIndexPath:indexPath];
-    //  cell.image = ... // TODO: Use UIImageView+AFNetworking category provided by AFNetworking
+    
+    NSURLRequest *imageRequest = [NSURLRequest requestWithURL:identity.image
+                                                  cachePolicy:NSURLRequestReturnCacheDataElseLoad
+                                              timeoutInterval:60];
+    [cell.image setImageWithURLRequest:imageRequest
+                      placeholderImage:[UIImage imageNamed:@"forgerock-logo.png"]
+                               success:nil
+                               failure:nil];
+    
     cell.issuer.text = identity.issuer;
     cell.accountName.text = identity.accountName;
     

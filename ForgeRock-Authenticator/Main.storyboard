@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="jjn-fx-6D4">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="jjn-fx-6D4">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -277,6 +277,7 @@
                     <navigationItem key="navigationItem" id="OpZ-tB-1ca"/>
                     <connections>
                         <outlet property="accountName" destination="LVN-Vh-9Ua" id="ZGK-xW-6l0"/>
+                        <outlet property="backgroundView" destination="JFF-eO-8Mc" id="6YG-3P-pn8"/>
                         <outlet property="image" destination="vBF-7Y-ak2" id="2JP-9l-RLs"/>
                         <outlet property="issuer" destination="Obv-Zm-PPK" id="nkx-IS-akY"/>
                         <outlet property="oathTableViewCell" destination="IaP-zO-n9j" id="Kdh-rv-HI6"/>

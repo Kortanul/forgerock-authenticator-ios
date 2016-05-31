@@ -172,11 +172,8 @@ NSString *const ISSUER_QR_KEY = @"issuer";
  * @return an initialised but not persisted Identity.
  */
 - (FRAIdentity *)getIdentity:(NSURL*)url database:(FRAIdentityDatabase *)database label:(NSString *)label issuer:(NSString *)issuer imagePath:(NSString *)imagePath backgroundColor:(NSString*) backgroundColor {
-    
-    // TODO: Get image from uri and save it as a resource
-    NSURL* _image = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"forgerock-logo" ofType:@"png"]];
-    
-    return [FRAIdentity identityWithDatabase:database accountName:label issuer:issuer image:_image backgroundColor:backgroundColor];
+
+    return [FRAIdentity identityWithDatabase:database accountName:label issuer:issuer image:[NSURL URLWithString:imagePath] backgroundColor:backgroundColor];
 }
 
 - (BOOL) supports:(NSURL *)uri {

@@ -14,6 +14,8 @@
  * Copyright 2016 ForgeRock AS.
  */
 
+#import <UIImageView+AFNetworking.h>
+
 #import "FRAAccountTableViewController.h"
 #import "FRABlockAlertView.h"
 #import "FRAIdentityDatabase.h"
@@ -23,8 +25,10 @@
 #import "FRAOathMechanismTableViewCellController.h"
 #import "FRAPushMechanism.h"
 
-NSString * const FRAAccountTableViewControllerStoryboardIdentifer = @"AccountTableViewController";
-NSString * const FRAAccountTableViewControllerShowNotificationsSegue = @"showNotificationsSegue";
+NSString * const FRA_ACCOUNT_TABLE_VIEW_CONTROLLER_STORYBOARD_IDENTIFIER = @"AccountTableViewController";
+NSString * const FRA_ACCOUNT_TABLE_VIEW_CONTROLLER_SHOW_NOTIFICATIONS_SEGUE = @"showNotificationsSegue";
+
+static NSString * const FRA_DEFAULT_BACKGROUND_COLOR = @"#519387";
 
 /*! row index of static cell defining UI for OATH mechanism (cell is hidden if no such mechanism is registered) */
 static const NSInteger OATH_MECHANISM_ROW_INDEX = 1;
@@ -46,9 +50,17 @@ static const NSInteger PUSH_MECHANISM_ROW_INDEX = 2;
     self.image.clipsToBounds = YES;
     
     // Bind identity model to UI
-    //  _image = ... // TODO: Use UIImageView+AFNetworking category provided by AFNetworking
+    NSURLRequest *imageRequest = [NSURLRequest requestWithURL:self.identity.image
+                                                  cachePolicy:NSURLRequestReturnCacheDataElseLoad
+                                              timeoutInterval:60];
+    [self.image setImageWithURLRequest:imageRequest
+                      placeholderImage:[UIImage imageNamed:@"forgerock-logo.png"]
+                               success:nil
+                               failure:nil];
+    
     self.issuer.text = self.identity.issuer;
     self.accountName.text = self.identity.accountName;
+    [self setBackgroundColor:self.identity.backgroundColor];
     
     if ([self identityHasOathMechanism]) {
         self.oathTableViewCell.delegate = [FRAOathMechanismTableViewCellController
@@ -93,7 +105,7 @@ static const NSInteger PUSH_MECHANISM_ROW_INDEX = 2;
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:FRAAccountTableViewControllerShowNotificationsSegue]) {
+    if ([segue.identifier isEqualToString:FRA_ACCOUNT_TABLE_VIEW_CONTROLLER_SHOW_NOTIFICATIONS_SEGUE]) {
         FRANotificationsTableViewController *controller = (FRANotificationsTableViewController *)segue.destinationViewController;
         controller.pushMechanism = [self pushMechanism];
     }
@@ -270,6 +282,29 @@ static const NSInteger PUSH_MECHANISM_ROW_INDEX = 2;
     if (!self.tableView.editing) {
         [self reloadData];
     }
+}
+
+- (void)setBackgroundColor:(NSString *)backgroundColor {
+    UIColor *color;
+    if ([backgroundColor length] == 0) {
+        color = [self convertHexToColor:FRA_DEFAULT_BACKGROUND_COLOR];
+    } else {
+        color = [self convertHexToColor:backgroundColor];
+    }
+    
+    self.backgroundView.backgroundColor = color;
+}
+
+- (UIColor *)convertHexToColor:(NSString *)hexString {
+    unsigned rgbValue = 0;
+    NSString *hex = [hexString stringByReplacingOccurrencesOfString:@"#" withString:@""];
+    NSScanner *scanner = [NSScanner scannerWithString:hex];
+    [scanner scanHexInt:&rgbValue];
+    
+    return [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 \
+                           green:((float)((rgbValue & 0x00FF00) >>  8))/255.0 \
+                            blue:((float)((rgbValue & 0x0000FF) >>  0))/255.0 \
+                           alpha:1.0];
 }
 
 @end
