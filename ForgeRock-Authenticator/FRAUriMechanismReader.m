@@ -61,7 +61,7 @@
     NSString* scheme = [url scheme];
     
     id<FRAMechanismFactory> mechanismFactory = [_mechanisms objectForKey:scheme];
-    return [mechanismFactory buildMechanism:url database:_database model:_identityModel];
+    return [mechanismFactory buildMechanism:url database:_database identityModel:_identityModel];
 }
 
 - (FRAMechanism *)parseFromURL:(NSURL *)url {

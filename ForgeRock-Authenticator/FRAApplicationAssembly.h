@@ -17,7 +17,6 @@
 #import <Typhoon/Typhoon.h>
 
 @class FRAAccountsTableViewController;
-@class FRAAccountTableViewController;
 @class FRAIdentityDatabase;
 @class FRAIdentityDatabaseSQLiteOperations;
 @class FRAIdentityModel;
@@ -27,14 +26,13 @@
 @class FRAQRScanViewController;
 @class FRAOathMechanismFactory;
 @class FRAPushMechanismFactory;
-@class FRASqlDatabase;
+@class FRAFMDatabaseConnectionHelper;
 
 /*!
  * Typhoon dependency injection configuration.
  */
 @interface FRAApplicationAssembly : TyphoonAssembly
 
-- (FRAAccountTableViewController *)accountTableViewController;
 - (FRAAccountsTableViewController *)accountsTableViewController;
 - (FRAIdentityDatabase *)identityDatabase;
 - (FRAIdentityDatabaseSQLiteOperations *)identityDatabaseSQLiteOperations;
@@ -45,6 +43,6 @@
 - (FRANotificationGateway *)notificationGateway;
 - (FRANotificationHandler *)notificationHandler;
 - (FRAQRScanViewController *)qrScanViewController;
-- (FRASqlDatabase *)databaseConnectionHelper;
+- (FRAFMDatabaseConnectionHelper *)databaseConnectionHelper;
 
 @end

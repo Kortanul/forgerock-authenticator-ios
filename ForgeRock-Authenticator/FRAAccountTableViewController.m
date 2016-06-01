@@ -219,26 +219,14 @@ static const NSInteger PUSH_MECHANISM_ROW_INDEX = 2;
 
 - (void)deleteMechanism:(FRAMechanism *)mechanism {
     FRAIdentity *parent = mechanism.parent;
-    if ([parent mechanisms].count == 1) {
-        // If this is the only mechanism registered to the identity, then remove the identity itself
-        // (after navigating back to the accounts screen so that it's removal can be animated)
+    // TODO: Handle error?
+    @autoreleasepool {
+        NSError* error;
+        [parent removeMechanism:mechanism error:&error];
+    }
+    if ([parent mechanisms].count == 0) {
+        // If this is the only mechanism registered to the identity, navigate back to the accounts screen so that it's removal can be animated
         [self.navigationController popViewControllerAnimated:YES];
-        
-        // TODO: Handle error?
-        @autoreleasepool {
-            NSError* error;
-            [self.identityModel removeIdentity:parent error:&error];
-        }
-
-    } else {
-        // If the parent identity has other mechanisms registered to it, then just remove this mechanism
-        // and leave the UI updates to be triggered in response to the database change event handler
-        
-        // TODO: Handle error?
-        @autoreleasepool {
-            NSError* error;
-            [mechanism.parent removeMechanism:mechanism error:&error];
-        }
     }
 }
 

@@ -20,6 +20,7 @@
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAIdentityDatabaseSQLiteOperations.h"
+#import "FRAIdentityModel.h"
 #import "FRAMechanism.h"
 #import "FRAOathMechanism.h"
 #import "FRAPushMechanism.h"
@@ -32,10 +33,11 @@
     id mockSqlOperations;
     id databaseObserverMock;
     FRAIdentityDatabase *database;
-    FRAIdentity* identity;
-    NSString* issuer;
-    NSString* accountName;
-    NSURL* image;
+    FRAIdentity *identity;
+    FRAIdentityModel *identityModel;
+    NSString *issuer;
+    NSString *accountName;
+    NSURL *image;
 }
 
 - (void)setUp {
@@ -45,7 +47,9 @@
     issuer = @"ForgeRock";
     accountName = @"joe.bloggs";
     image = [NSURL URLWithString:@"https://forgerock.org/ico/favicon-32x32.png"];
-    identity = [FRAIdentity identityWithDatabase:database accountName:accountName issuer:issuer image:image backgroundColor:nil];
+    identityModel = [[FRAIdentityModel alloc] initWithDatabase:database sqlDatabase:nil];
+    identity = [FRAIdentity identityWithDatabase:database identityModel:identityModel accountName:accountName issuer:issuer image:image backgroundColor:nil];
+    [identityModel addIdentity:identity error:nil];
     databaseObserverMock = OCMObserverMock();
 }
 
@@ -60,9 +64,16 @@
     XCTAssertEqualObjects([identity.image absoluteString], [image description]);
 }
 
+- (void)testCanGetIdentityModel {
+    
+    FRAIdentityModel *model = identity.identityModel;
+    
+    XCTAssertEqual(model, identityModel);
+}
+
 - (void)testCanAddMechanism {
     // Given
-    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
+    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database identityModel:identityModel];
     
     // When
     BOOL mechanismAdded = [identity addMechanism:pushMechanism error:nil];
@@ -75,10 +86,10 @@
 
 - (void)testSavedIdentityAutomaticallySavesAddedMechanismToDatabase {
     // Given
-    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertIdentity:identity error:nil]).andReturn(YES);
+    OCMStub([mockSqlOperations insertIdentity:identity error:nil]).andReturn(YES);
     [database insertIdentity:identity error:nil];
-    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
-    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertMechanism:pushMechanism error:nil]).andReturn(YES);
+    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database identityModel:identityModel];
+    OCMStub([mockSqlOperations insertMechanism:pushMechanism error:nil]).andReturn(YES);
     
     // When
     BOOL mechanismAdded = [identity addMechanism:pushMechanism error:nil];
@@ -91,12 +102,12 @@
 
 - (void)testBroadcastsOneChangeNotificationWhenMechanismIsAutomaticallySavedToDatabase {
     // Given
-    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertIdentity:identity error:nil]).andReturn(YES);
+    OCMStub([mockSqlOperations insertIdentity:identity error:nil]).andReturn(YES);
     [database insertIdentity:identity error:nil];
-    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
+    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database identityModel:identityModel];
     [[NSNotificationCenter defaultCenter] addMockObserver:databaseObserverMock name:FRAIdentityDatabaseChangedNotification object:database];
     [[databaseObserverMock expect] notificationWithName:FRAIdentityDatabaseChangedNotification object:database userInfo:[OCMArg any]];
-    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertMechanism:pushMechanism error:nil]).andReturn(YES);
+    OCMStub([mockSqlOperations insertMechanism:pushMechanism error:nil]).andReturn(YES);
     
     // When
     BOOL mechanismAdded = [identity addMechanism:pushMechanism error:nil];
@@ -108,10 +119,13 @@
 
 - (void)testCanRemoveMechanism {
     // Given
-    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
+    OCMStub([mockSqlOperations insertIdentity:identity error:nil]).andReturn(YES);
+    [database insertIdentity:identity error:nil];
+    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database identityModel:identityModel];
     OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertMechanism:pushMechanism error:nil]).andReturn(YES);
     [identity addMechanism:pushMechanism error:nil];
     OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations deleteMechanism:pushMechanism error:nil]).andReturn(YES);
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations deleteIdentity:identity error:nil]).andReturn(YES);
     
     // When
     BOOL mechanismRemoved = [identity removeMechanism:pushMechanism error:nil];
@@ -124,12 +138,15 @@
 
 - (void)testSavedIdentityAutomaticallyRemovesMechanismFromDatabase {
     // Given
+    OCMStub([mockSqlOperations insertIdentity:identity error:nil]).andReturn(YES);
+    [database insertIdentity:identity error:nil];
     OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertIdentity:identity error:nil]).andReturn(YES);
     [database insertIdentity:identity error:nil];
-    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
+    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database identityModel:identityModel];
     OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertMechanism:pushMechanism error:nil]).andReturn(YES);
     [identity addMechanism:pushMechanism error:nil];
     OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations deleteMechanism:pushMechanism error:nil]).andReturn(YES);
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations deleteIdentity:identity error:nil]).andReturn(YES);
     
     // When
     BOOL mechanismRemoved = [identity removeMechanism:pushMechanism error:nil];
@@ -144,12 +161,13 @@
     // Given
     OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertIdentity:identity error:nil]).andReturn(YES);
     [database insertIdentity:identity error:nil];
-    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
+    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database identityModel:identityModel];
     OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertMechanism:pushMechanism error:nil]).andReturn(YES);
     [identity addMechanism:pushMechanism error:nil];
     [[NSNotificationCenter defaultCenter] addMockObserver:databaseObserverMock name:FRAIdentityDatabaseChangedNotification object:database];
     [[databaseObserverMock expect] notificationWithName:FRAIdentityDatabaseChangedNotification object:database userInfo:[OCMArg any]];
     OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations deleteMechanism:pushMechanism error:nil]).andReturn(YES);
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations deleteIdentity:identity error:nil]).andReturn(YES);
     
     // When
     BOOL mechanismRemoved = [identity removeMechanism:pushMechanism error:nil];
@@ -159,12 +177,45 @@
     OCMVerifyAll(databaseObserverMock);
 }
 
+- (void)testRemoveMechanisRemovesIdentityFromIdentityModelIfLastMechanism {
+    // Given
+    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database identityModel:identityModel];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertMechanism:pushMechanism error:nil]).andReturn(YES);
+    [identity addMechanism:pushMechanism error:nil];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations deleteMechanism:pushMechanism error:nil]).andReturn(YES);
+    
+    // When
+    [identity removeMechanism:pushMechanism error:nil];
+    
+    // Then
+    XCTAssertEqual(identityModel.identities.count, 0);
+}
+
+- (void)testRemoveNonExistingMechanismFromIdentity {
+    // Given
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertIdentity:identity error:nil]).andReturn(YES);
+    [database insertIdentity:identity error:nil];
+    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database identityModel:identityModel];
+    [pushMechanism setValue:[NSNumber numberWithBool:YES] forKey:@"stored"];
+    OCMReject([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations deleteMechanism:pushMechanism error:[OCMArg anyObjectRef]]);
+    NSError *error;
+    
+    // When
+    BOOL mechanismRemoved = [identity removeMechanism:pushMechanism error:&error];
+    
+    // Then
+    XCTAssertFalse(mechanismRemoved);
+    XCTAssertNotNil(error);
+    // TODO: Check the error code
+    // XCTAssertEqual(error.code, FRAInvalidOperation);
+}
+
 - (void)testCanQueryForMechanismByType {
     // Given
-    FRAOathMechanism *oathMechanism = [[FRAOathMechanism alloc] initWithDatabase:database];
-    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
-    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertMechanism:oathMechanism error:nil]).andReturn(YES);
-    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertMechanism:pushMechanism error:nil]).andReturn(YES);
+    FRAOathMechanism *oathMechanism = [[FRAOathMechanism alloc] initWithDatabase:database identityModel:identityModel];
+    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database identityModel:identityModel];
+    OCMStub([mockSqlOperations insertMechanism:oathMechanism error:nil]).andReturn(YES);
+    OCMStub([mockSqlOperations insertMechanism:pushMechanism error:nil]).andReturn(YES);
     
     // When
     BOOL oathMechanismAdded = [identity addMechanism:oathMechanism error:nil];

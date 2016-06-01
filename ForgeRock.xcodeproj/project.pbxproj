@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		040272401CFDB5350014786D /* FRAPushMechanismTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0402723E1CFDB52E0014786D /* FRAPushMechanismTests.m */; };
+		044DDC7D1D01CC6500FDC9E7 /* FRAIdentityModelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 044DDC7B1D01CC5E00FDC9E7 /* FRAIdentityModelTests.m */; };
 		0467E0C81CE5E4D600A422D5 /* FRADatabaseConfigurationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0467E0C61CE5E4D200A422D5 /* FRADatabaseConfigurationTest.m */; };
 		0467E0CB1CE60C7C00A422D5 /* FRAErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0467E0C91CE60C7800A422D5 /* FRAErrorTest.m */; };
 		0484ED531CE2059D00DB537A /* FRAMessageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 0484ED521CE2059D00DB537A /* FRAMessageUtils.m */; };
@@ -111,6 +112,7 @@
 /* Begin PBXFileReference section */
 		00D810F5F8DD38D1A0B8D06B /* libPods-ForgeRockTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ForgeRockTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0402723E1CFDB52E0014786D /* FRAPushMechanismTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FRAPushMechanismTests.m; path = "unit-tests/FRAPushMechanismTests.m"; sourceTree = "<group>"; };
+		044DDC7B1D01CC5E00FDC9E7 /* FRAIdentityModelTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FRAIdentityModelTests.m; path = "unit-tests/FRAIdentityModelTests.m"; sourceTree = "<group>"; };
 		0467E0C61CE5E4D200A422D5 /* FRADatabaseConfigurationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = FRADatabaseConfigurationTest.m; path = "unit-tests/FRADatabaseConfigurationTest.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		0467E0C91CE60C7800A422D5 /* FRAErrorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = FRAErrorTest.m; path = "unit-tests/FRAErrorTest.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		0484ED511CE2030C00DB537A /* FRAMessageUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FRAMessageUtils.h; sourceTree = "<group>"; };
@@ -375,6 +377,7 @@
 		44695F6A1CA0B37100680799 /* Identity */ = {
 			isa = PBXGroup;
 			children = (
+				044DDC7B1D01CC5E00FDC9E7 /* FRAIdentityModelTests.m */,
 				44695F5C1C9F70C100680799 /* FRAIdentityTests.m */,
 			);
 			name = Identity;
@@ -915,6 +918,7 @@
 				44695F631CA0ADAB00680799 /* FRAOathMechanism.m in Sources */,
 				04D3D2611CE4D00400D77EF6 /* FRAMessageUtilsTests.m in Sources */,
 				E12246191CD1009F00F52C98 /* FRAMechanismFactoryTest.m in Sources */,
+				044DDC7D1D01CC6500FDC9E7 /* FRAIdentityModelTests.m in Sources */,
 				44695F5D1C9F70C100680799 /* FRAIdentityTests.m in Sources */,
 				4467225B1CD4038B00E80799 /* FRANotificationGatewayTests.m in Sources */,
 				040272401CFDB5350014786D /* FRAPushMechanismTests.m in Sources */,

@@ -29,8 +29,8 @@
 #pragma mark -
 #pragma mark Lifecyle
 
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database {
-    self = [super initWithDatabase:database];
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel {
+    self = [super initWithDatabase:database identityModel:identityModel];
     if (self) {
         _parent = nil;
         notificationList = [[NSMutableArray alloc] init];

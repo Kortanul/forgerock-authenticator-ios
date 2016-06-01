@@ -56,17 +56,17 @@
 /*!
  * Prevent external use of super class' initWithDatabase: method.
  */
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database __unavailable;
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel __unavailable;
 
 /*!
  * Creates a new identity object with the provided property values.
  */
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database accountName:(NSString *)accountName issuer:(NSString *)issuer image:(NSURL *)image backgroundColor:(NSString *)color;
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel accountName:(NSString *)accountName issuer:(NSString *)issuer image:(NSURL *)image backgroundColor:(NSString *)color;
 
 /*!
  * Creates a new identity object with the provided property values.
  */
-+ (instancetype)identityWithDatabase:(FRAIdentityDatabase *)database accountName:(NSString *)accountName issuer:(NSString *)issuer image:(NSURL *)image backgroundColor:(NSString *)color;
++ (instancetype)identityWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel accountName:(NSString *)accountName issuer:(NSString *)issuer image:(NSURL *)image backgroundColor:(NSString *)color;
 
 #pragma mark -
 #pragma mark Mechanism Functions
@@ -80,7 +80,7 @@
 - (FRAMechanism *)mechanismOfClass:(Class)aClass;
 
 /*!
- * When a new Mechanism is created, it will assigned to the Identity via
+ * When a new mechanism is created, it will assigned to the identity via
  * this call.
  *
  * @param mechanism The new mechanism to add to this identity.
@@ -89,7 +89,8 @@
 - (BOOL)addMechanism:(FRAMechanism *)mechanism error:(NSError *__autoreleasing *)error;
 
 /*!
- * Removes the Mechanism, only if it was assigned to this Identity.
+ * Removes the mechanism, only if it was assigned to this identity.
+ * If the identity has no more mechanisms, the identity is removed from the identity model.
  *
  * @param mechanism The mechanism to remove from the identity.
  * @return BOOL False if there was an error with the operation, in which case check the error parameter for details.

@@ -14,14 +14,16 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-
-
 @class FRAIdentityDatabase;
+@class FRAIdentityModel;
 
 /*!
  * Base class for Authenticator data model types.
  */
-@interface FRAModelObject : NSObject
+@interface FRAModelObject : NSObject {
+    @protected
+    FRAIdentityModel *_identityModel;
+}
 
 /*!
  * Indicates whether this model object has been persisted to the database.
@@ -31,6 +33,11 @@
  * does not indicate whether or not this object is dirty and has unsaved changes.
  */
 @property (nonatomic, readonly, getter=isStored) BOOL stored;
+
+/*!
+ The identity model which contains the list of identities.
+ */
+@property (nonatomic, readonly) FRAIdentityModel *identityModel;
 
 #pragma mark -
 #pragma mark Lifecycle
@@ -46,8 +53,9 @@
  * Init method.
  *
  * @param database The database to which this object can be persisted.
+ * @param identityModel The identity model which contains the list of identities.
  * @return The initialized object or nil if initialization failed.
  */
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database;
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel;
 
 @end

@@ -14,7 +14,9 @@
  * Copyright 2016 ForgeRock AS.
  */
 
+#import "FRAError.h"
 #import "FRAIdentity.h"
+#import "FRAIdentityModel.h"
 #import "FRAMechanism.h"
 #import "FRAModelObjectProtected.h"
 #import "FRAIdentityDatabase.h"
@@ -28,8 +30,8 @@
 #pragma mark -
 #pragma mark Lifecyle
 
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database accountName:(NSString *)accountName issuer:(NSString *)issuer image:(NSURL *)image backgroundColor:(NSString *) color {
-    if (self = [super initWithDatabase:database]) {
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel accountName:(NSString *)accountName issuer:(NSString *)issuer image:(NSURL *)image backgroundColor:(NSString *) color {
+    if (self = [super initWithDatabase:database identityModel:identityModel]) {
         _accountName = accountName;
         _issuer = issuer;
         _image = image;
@@ -39,8 +41,8 @@
     return self;
 }
 
-+ (instancetype)identityWithDatabase:(FRAIdentityDatabase *)database accountName:(NSString *)accountName issuer:(NSString *)issuer image:(NSURL *)image backgroundColor:(NSString *)color {
-    return [[FRAIdentity alloc] initWithDatabase:database accountName:accountName issuer:issuer image:image backgroundColor:color];
++ (instancetype)identityWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel accountName:(NSString *)accountName issuer:(NSString *)issuer image:(NSURL *)image backgroundColor:(NSString *)color {
+    return [[FRAIdentity alloc] initWithDatabase:database identityModel:identityModel accountName:accountName issuer:issuer image:image backgroundColor:color];
 }
 
 #pragma mark -
@@ -70,12 +72,23 @@
 }
 
 - (BOOL)removeMechanism:(FRAMechanism *)mechanism error:(NSError *__autoreleasing *)error {
+    BOOL result = YES;
+    
+    if (![mechanismList containsObject:mechanism]) {
+        [FRAError createError:error withReason:@"Invalid operation"];
+        return NO;
+    }
+    
+    if (mechanismList.count == 1) {
+        result = [self.identityModel removeIdentity:self error:error];
+    } else {
+        if ([self isStored]) {
+            result = [self.database deleteMechanism:mechanism error:error];
+        }
+    }
     [mechanismList removeObject:mechanism];
     [mechanism setParent:nil];
-    BOOL result = YES;
-    if ([self isStored]) {
-        result = [self.database deleteMechanism:mechanism error:error];
-    }
+    
     return result;
 }
 

@@ -37,10 +37,6 @@ extern NSString * const FRA_ACCOUNT_TABLE_VIEW_CONTROLLER_SHOW_NOTIFICATIONS_SEG
  */
 @property (nonatomic) FRAIdentity *identity;
 /*!
- * The identity model to which the identity is stored.
- */
-@property (nonatomic) FRAIdentityModel *identityModel;
-/*!
  * The UIImageView in which the issuer's icon will be displayed.
  */
 @property (weak, nonatomic) IBOutlet UIImageView *image;

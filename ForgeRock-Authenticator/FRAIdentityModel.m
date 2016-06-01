@@ -47,12 +47,12 @@
 #pragma mark -
 #pragma mark Lifecyle
 
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database sqlDatabase:(FRASqlDatabase *) sql {
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database sqlDatabase:(FRAFMDatabaseConnectionHelper *) sql {
     if (self = [super init]) {
         _database = database;
         @autoreleasepool {
             NSError *error;
-            identitiesList = [[NSMutableArray alloc] initWithArray:[FRAModelsFromDatabase getAllIdentitiesFrom:sql including:database catchingErrorsWith:&error]];
+            identitiesList = [[NSMutableArray alloc] initWithArray:[FRAModelsFromDatabase getAllIdentitiesFrom:sql including:database identityModel:self catchingErrorsWith:&error]];
         }
     }
     return self;

@@ -18,7 +18,6 @@
 @class FRAIdentity;
 @class FRAIdentityDatabase;
 @class FRAIdentityDatabaseSQLiteOperations;
-@class FRAIdentityModel;
 @class FRAMechanism;
 @class FRANotification;
 

@@ -33,7 +33,7 @@
 #pragma mark -
 #pragma mark Fractory Methods
 
-- (FRAMechanism *) buildMechanism:(NSURL *)uri database:(FRAIdentityDatabase *)database model:(FRAIdentityModel *)model {
+- (FRAMechanism *) buildMechanism:(NSURL *)uri database:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel {
     
     NSString* _type = [uri host];
     if (nil == _type) {
@@ -60,18 +60,19 @@
     
     // TODO: handle Errors or nil values for mechanism and identity
     FRAMechanism *mechanism = [self makeMechanimsObject:database
+                                          identityModel:identityModel
                                                    algo:algo
                                                     key:key
                                                  digits:_digits
                                            periodString:p
                                                    type:_type
                                           counterString:c];
-    FRAIdentity *identity = [self getIdentity:uri database:database image:image issuer:issuer label:label backgroundColor:bgColor];
-    FRAIdentity *search = [model identityWithIssuer:[identity issuer] accountName:[identity accountName]];
+    FRAIdentity *identity = [self getIdentity:uri database:database identityModel:identityModel image:image issuer:issuer label:label backgroundColor:bgColor];
+    FRAIdentity *search = [identityModel identityWithIssuer:[identity issuer] accountName:[identity accountName]];
     if (search == nil) {
         @autoreleasepool {
             NSError* error;
-            [model addIdentity:identity error:&error];
+            [identityModel addIdentity:identity error:&error];
         }
     } else {
         identity = search;
@@ -152,6 +153,7 @@
  * Make a mechanism from the required data
  */
 - (FRAMechanism *) makeMechanimsObject:(FRAIdentityDatabase *)database
+                         identityModel:(FRAIdentityModel *)identityModel
                                   algo:(CCHmacAlgorithm)algo
                                    key:(NSData *)key
                                 digits:(NSUInteger)digits
@@ -181,19 +183,19 @@
     
     // TODO: Implicit conversion loses integer precision: 'uint64_t' (aka 'unsigned long long')
     //       to 'NSUInteger' (aka 'unsigned int')
-    return [FRAOathMechanism oathMechanismWithDatabase:database type:type usingSecretKey:key andHMACAlgorithm:algo withKeyLength:digits andEitherPeriod:period orCounter:counter];
+    return [FRAOathMechanism oathMechanismWithDatabase:database identityModel:identityModel type:type usingSecretKey:key andHMACAlgorithm:algo withKeyLength:digits andEitherPeriod:period orCounter:counter];
 }
 
 /*!
  * Resolves the Identity from the URL that has been provided.
  * @return an initialised but not persisted Identity.
  */
-- (FRAIdentity *)getIdentity:(NSURL*)uri database:(FRAIdentityDatabase *)database image:(NSString *)image issuer:(NSString *)issuer label:(NSString *)label backgroundColor:(NSString*)bgColor{
+- (FRAIdentity *)getIdentity:(NSURL*)uri database:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel image:(NSString *)image issuer:(NSString *)issuer label:(NSString *)label backgroundColor:(NSString*)bgColor{
     // Get image
     // TODO: get real image from url
     NSURL* _image = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"forgerock-logo" ofType:@"png"]];
     
-    return [FRAIdentity identityWithDatabase:database accountName:label issuer:issuer image:_image backgroundColor:bgColor];
+    return [FRAIdentity identityWithDatabase:database identityModel:identityModel accountName:label issuer:issuer image:_image backgroundColor:bgColor];
 }
 
 - (bool) supports:(NSURL *)uri {

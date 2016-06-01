@@ -14,13 +14,11 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-
-
+@class FRAFMDatabaseConnectionHelper;
 @class FRAIdentity;
 @class FRAIdentityDatabase;
 @class FRAMechanism;
 @class FRANotification;
-@class FRASqlDatabase;
 
 /*!
  * Root of the Authenticator data model containing a listing of identities and methods for querying them.
@@ -30,7 +28,7 @@
 #pragma mark -
 #pragma mark Lifecycle
 
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database sqlDatabase:(FRASqlDatabase*) sql;
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database sqlDatabase:(FRAFMDatabaseConnectionHelper *) sql;
 
 #pragma mark -
 #pragma mark Identity Functions

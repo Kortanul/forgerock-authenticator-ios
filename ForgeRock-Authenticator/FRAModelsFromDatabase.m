@@ -42,7 +42,7 @@
  *
  * TODO: Split into smaller functions.
  */
-+ (NSArray<FRAIdentity*> *)getAllIdentitiesFrom:(FRAFMDatabaseConnectionHelper *)sqlDatabase including:(FRAIdentityDatabase *)identityDatabase catchingErrorsWith:(NSError *__autoreleasing *)error {
++ (NSArray<FRAIdentity*> *)getAllIdentitiesFrom:(FRAFMDatabaseConnectionHelper *)sqlDatabase including:(FRAIdentityDatabase *)identityDatabase identityModel:(FRAIdentityModel *)identityModel catchingErrorsWith:(NSError *__autoreleasing *)error {
     
     NSString *sql = [FRAFMDatabaseConnectionHelper readSchema:@"read_all" withError:error];
     if (!sql) {
@@ -107,11 +107,12 @@
             
             // Create an Identity
             FRAIdentity* newIdentity = [FRAIdentity
-                                     identityWithDatabase:identityDatabase
-                                     accountName:accountName
-                                     issuer:issuer
-                                     image:[[NSURL alloc]initWithString:imageURL]
-                                     backgroundColor:bgColor];
+                                        identityWithDatabase:identityDatabase
+                                        identityModel:identityModel
+                                        accountName:accountName
+                                        issuer:issuer
+                                        image:[[NSURL alloc]initWithString:imageURL]
+                                        backgroundColor:bgColor];
             
             // Check if we already have generated this identity, in which case re-use.
             BOOL add = true;
@@ -163,13 +164,14 @@
                 u_int64_t counter = [[numberFormatter numberFromString:counterValue] unsignedLongLongValue];
                 
                 FRAOathMechanism *newMechanism = [FRAOathMechanism
-                             oathMechanismWithDatabase:identityDatabase
-                             type:type
-                             usingSecretKey:secret
-                             andHMACAlgorithm:algorithm
-                             withKeyLength:digits
-                             andEitherPeriod:period
-                             orCounter:counter];
+                                                  oathMechanismWithDatabase:identityDatabase
+                                                  identityModel:identityModel
+                                                  type:type
+                                                  usingSecretKey:secret
+                                                  andHMACAlgorithm:algorithm
+                                                  withKeyLength:digits
+                                                  andEitherPeriod:period
+                                                  orCounter:counter];
                 
                 // Note: We are not de-duplicating OATH Mechanism becuase they will not be duplicated in the SQL results.
                 if (![newIdentity addMechanism:newMechanism error:error]) {
@@ -195,7 +197,12 @@
                 NSInteger version = [[numberFormatter numberFromString:versionString] integerValue];
                 
                 
-                FRAPushMechanism *newMechanism = [FRAPushMechanism pushMechanismWithDatabase:identityDatabase authEndpoint:authEndpointValue secret:secretValue version:version mechanismIdentifier:mechanismUID];
+                FRAPushMechanism *newMechanism = [FRAPushMechanism pushMechanismWithDatabase:identityDatabase
+                                                                               identityModel:identityModel
+                                                                                authEndpoint:authEndpointValue
+                                                                                      secret:secretValue
+                                                                                     version:version
+                                                                         mechanismIdentifier:mechanismUID];
                 
                 
                 // Check to see if we already have this PushMechanism present, otherwise add it in.
@@ -241,6 +248,7 @@
                     NSTimeInterval ttl = [[dataMap valueForKey:NOTIFICATION_TIME_TO_LIVE] doubleValue];
                     
                     FRANotification *notification = [FRANotification notificationWithDatabase:identityDatabase
+                                                                                identityModel:identityModel
                                                                                     messageId:messageId
                                                                                     challenge:challenge
                                                                                  timeReceived:received

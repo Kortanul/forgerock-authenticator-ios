@@ -30,9 +30,9 @@
  *
  * @param uri the uri string contianing the mechanism informaiton
  * @param database the database to eprsist the new mechanism to
- * @param model the identity model to place the new mechanism into
+ * @param identityModel the identity model to place the new mechanism into
  */
-- (FRAMechanism *) buildMechanism:(NSURL *)uri database:(FRAIdentityDatabase *)database model:(FRAIdentityModel *)model;
+- (FRAMechanism *) buildMechanism:(NSURL *)uri database:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel;
 
 /*!
  * Gets whether this FRAMechanismFactory supports the mechnaism type in the given uri

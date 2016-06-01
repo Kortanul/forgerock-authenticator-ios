@@ -54,60 +54,66 @@
  * Init Push Mechanism.
  *
  * @param database The database to which this mechanism can be persisted.
+ * @param identityModel The identity model which contains the list of identities.
  *
  * @return The initialized mechanism or nil if initialization failed.
  */
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database;
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel;
 
 /*!
  * Create an instance of PushMechanism
  *
- * @param database Required to allow mechnaism to persist changes
- * @param authEndPoint The authentication endpoint URI used for signalling to the server
- * @param secret Shared secret key required for authentication
- * @param version the version of the database object
- * @param mechanismIdentifier uid for the mechanism
+ * @param database Required to allow mechnaism to persist changes.
+ * @param identityModel The identity model which contains the list of identities.
+ * @param authEndPoint The authentication endpoint URI used for signalling to the server.
+ * @param secret Shared secret key required for authentication.
+ * @param version the version of the database object.
+ * @param mechanismIdentifier uid for the mechanism.
  *
  * @return The initialized mechanism or nil if initialization failed.
  */
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)authEndPoint secret:(NSString *)secret version:(NSInteger)version mechanismIdentifier:(NSString *)mechanismIdentifier;
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel authEndpoint:(NSString *)authEndPoint secret:(NSString *)secret version:(NSInteger)version mechanismIdentifier:(NSString *)mechanismIdentifier;
 
 /*!
  * Create an instance of PushMechanism
  *
- * @param database Required to allow mechnaism to persist changes
- * @param authEndPoint The authentication endpoint URI used for signalling to the server
- * @param secret Shared secret key required for authentication
+ * @param database Required to allow mechnaism to persist changes.
+ * @param identityModel The identity model which contains the list of identities.
+ * @param authEndPoint The authentication endpoint URI used for signalling to the server.
+ * @param secret Shared secret key required for authentication.
  *
  * @return The initialized mechanism or nil if initialization failed.
  */
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)authEndPoint secret:(NSString *)secret;
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel authEndpoint:(NSString *)authEndPoint secret:(NSString *)secret;
 
 /*!
  * Allocate and init Push Mechanism.
  *
  * @param database The database to which this mechanism can be persisted.
+ * @param identityModel The identity model which contains the list of identities.
  *
  * @return The initialized mechanism or nil if initialization failed.
  */
-+ (instancetype)pushMechanismWithDatabase:(FRAIdentityDatabase *)database;
++ (instancetype)pushMechanismWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel;
 
 /*!
  * Allocate and init Push Mechanism.
  *
  * @param database The database to which this mechanism can be persisted.
+ * @param identityModel The identity model which contains the list of identities.
  *
  * @return The initialized mechanism or nil if initialization failed.
  */
-+ (instancetype)pushMechanismWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)authEndPoint secret:(NSString *)secret;
++ (instancetype)pushMechanismWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel authEndpoint:(NSString *)authEndPoint secret:(NSString *)secret;
 
 /*!
  * Allocate and init Push Mechanism with version information included.
  *
  * @param database The database to which this mechanism can be persisted.
+ * @param identityModel The identity model which contains the list of identities.
  *
  * @return The initialized mechanism or nil if initialization failed.
  */
-+ (instancetype)pushMechanismWithDatabase:(FRAIdentityDatabase *)database authEndpoint:(NSString *)authEndPoint secret:(NSString *)secret version:(NSInteger)version mechanismIdentifier:(NSString *)mechanismIdentifier;
++ (instancetype)pushMechanismWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel authEndpoint:(NSString *)authEndPoint secret:(NSString *)secret version:(NSInteger)version mechanismIdentifier:(NSString *)mechanismIdentifier;
 
 @end

@@ -33,12 +33,6 @@
 
 @implementation FRAApplicationAssembly
 
-- (FRAAccountTableViewController *)accountTableViewController {
-    return [TyphoonDefinition withClass:[FRAAccountTableViewController class] configuration:^(TyphoonDefinition *definition) {
-        [definition injectProperty:@selector(identityModel) with:[self identityModel]];
-    }];
-}
-
 - (FRAAccountsTableViewController *)accountsTableViewController {
     return [TyphoonDefinition withClass:[FRAAccountsTableViewController class] configuration:^(TyphoonDefinition *definition) {
         [definition injectProperty:@selector(identityModel) with:[self identityModel]];

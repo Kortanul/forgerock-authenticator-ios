@@ -43,7 +43,7 @@ static NSString *const CHALLENGE = @"dGhlbGVnZW5kb2ZsdW5h";
     FRAPushMechanism *pushMechanism;
     FRAOathMechanism *oathMechanism;
     UIApplication *mockApplication;
-    FRASqlDatabase* mockSqlDatabase;
+    FRAFMDatabaseConnectionHelper *mockSqlDatabase;
     id mockDatabaseOperations;
 }
 
@@ -56,12 +56,12 @@ static NSString *const CHALLENGE = @"dGhlbGVnZW5kb2ZsdW5h";
     
     // create object model
     identityModel = [[FRAIdentityModel alloc] initWithDatabase:database sqlDatabase:mockSqlDatabase];
-    identity = [FRAIdentity identityWithDatabase:database accountName:TEST_USERNAME issuer:@"ForgeRock" image:nil backgroundColor:nil];
+    identity = [FRAIdentity identityWithDatabase:database identityModel:identityModel accountName:TEST_USERNAME issuer:@"ForgeRock" image:nil backgroundColor:nil];
     
-    pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database];
+    pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database identityModel:identityModel];
     [pushMechanism setValue:@"0" forKey:@"mechanismUID"];
 
-    oathMechanism = [[FRAOathMechanism alloc] initWithDatabase:database];
+    oathMechanism = [[FRAOathMechanism alloc] initWithDatabase:database identityModel:identityModel];
     [identityModel addIdentity:identity error:nil];
     [identity addMechanism:pushMechanism error:nil];
     [identity addMechanism:oathMechanism error:nil];

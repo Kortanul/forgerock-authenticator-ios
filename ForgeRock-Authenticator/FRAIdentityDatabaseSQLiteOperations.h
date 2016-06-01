@@ -14,12 +14,11 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-
+@class FRAFMDatabaseConnectionHelper;
 @class FRAIdentity;
 @class FRAIdentityModel;
 @class FRAMechanism;
 @class FRANotification;
-@class FRASqlDatabase;
 
 /*!
  * Delegate for FRAIdentityDatabase SQL operations.
@@ -31,7 +30,7 @@
 #pragma mark -
 #pragma Life cycle Functions
 
-- (instancetype)initWithDatabase:(FRASqlDatabase *)database;
+- (instancetype)initWithDatabase:(FRAFMDatabaseConnectionHelper *)database;
 
 #pragma mark -
 #pragma mark Identity Functions

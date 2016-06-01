@@ -89,25 +89,25 @@
 /*!
  * Constructor for creating a Notification.
  */
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive pending:(BOOL)pendingState approved:(BOOL)approvedState;
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive pending:(BOOL)pendingState approved:(BOOL)approvedState;
 
 /*!
  * Constructor for creating a Notification.
  */
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive;
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive;
 
 /*!
  * Static factory for creating a Notification.
  */
-+ (instancetype)notificationWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive pending:(BOOL)pendingState approved:(BOOL)approvedState;
++ (instancetype)notificationWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive pending:(BOOL)pendingState approved:(BOOL)approvedState;
 
 /*!
  * Static factory for creating a Notification.
  */
-+ (instancetype)notificationWithDatabase:(FRAIdentityDatabase *)database messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive;
++ (instancetype)notificationWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive;
 
 
-- (instancetype) __unavailable initWithDatabase:(FRAIdentityDatabase *)database;
+- (instancetype) __unavailable initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel;
 
 /*!
  * Generates description of the age of this notification as:

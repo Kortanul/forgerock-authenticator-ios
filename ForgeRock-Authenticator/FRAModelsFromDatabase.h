@@ -14,11 +14,8 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-
-
 @class FRAIdentity;
-@class FRASqlDatabase;
-@class FRAHMACAlgorithm;
+@class FRAFMDatabaseConnectionHelper;
 
 /*!
  * Defines all configuration needed to locate the SQLite Database.
@@ -31,9 +28,10 @@
  *
  * @param sqlDatabase The SQL Database to read the identities from.
  * @param identityDatabase Assigned to the model objects created.
+ * @param identityModel The identity model which contains the list of identities.
  * @param error To contain any error encountered.
  * @return A non null, possibly empty list of FRAIdentity read from the database.
  */
-+ (NSArray<FRAIdentity*> *)getAllIdentitiesFrom:(FRASqlDatabase *)sqlDatabase including:(FRAIdentityDatabase *)identityDatabase catchingErrorsWith:(NSError *__autoreleasing *)error;
++ (NSArray<FRAIdentity*> *)getAllIdentitiesFrom:(FRAFMDatabaseConnectionHelper *)sqlDatabase including:(FRAIdentityDatabase *)identityDatabase identityModel:(FRAIdentityModel *)identityModel catchingErrorsWith:(NSError *__autoreleasing *)error;
 
 @end

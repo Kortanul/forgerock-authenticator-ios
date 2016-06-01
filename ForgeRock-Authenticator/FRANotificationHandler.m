@@ -105,6 +105,7 @@ static NSString * const MECHANISM_UID_KEY = @"u";
     
     NSTimeInterval timeToLive = [[payload objectForKey:TTL_KEY] doubleValue];
     notification = [FRANotification notificationWithDatabase:self.database
+                                               identityModel:_identityModel
                                                    messageId:[messageData valueForKeyPath:MESSAGE_ID_KEY_PATH]
                                                    challenge:[payload objectForKey:CHALLENGE_KEY]
                                                 timeReceived:[NSDate date]

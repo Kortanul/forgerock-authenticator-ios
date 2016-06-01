@@ -63,7 +63,7 @@ NSString *const ISSUER_QR_KEY = @"issuer";
     return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 }
 
-- (FRAMechanism *) buildMechanism:(NSURL *)uri database:(FRAIdentityDatabase *)database model:(FRAIdentityModel *)model {
+- (FRAMechanism *) buildMechanism:(NSURL *)uri database:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel {
     
     NSDictionary * query = [self readQRCode:uri];
     
@@ -81,15 +81,15 @@ NSString *const ISSUER_QR_KEY = @"issuer";
         return nil; // TODO: throw a sensible exception/Error
     }
     
-    FRAPushMechanism* mechanism = [FRAPushMechanism pushMechanismWithDatabase:database authEndpoint:authEndpoint secret:secret];
+    FRAPushMechanism* mechanism = [FRAPushMechanism pushMechanismWithDatabase:database identityModel:identityModel authEndpoint:authEndpoint secret:secret];
     
-    FRAIdentity *identity = [self getIdentity:uri database:database label:_label issuer:issuer imagePath:image backgroundColor:backgroundColor];
-    FRAIdentity *search = [model identityWithIssuer:[identity issuer] accountName:[identity accountName]];
+    FRAIdentity *identity = [self getIdentity:uri database:database identityModel:identityModel label:_label issuer:issuer imagePath:image backgroundColor:backgroundColor];
+    FRAIdentity *search = [identityModel identityWithIssuer:[identity issuer] accountName:[identity accountName]];
     if (search == nil) {
         // TODO: Error Handling
         @autoreleasepool {
             NSError* error;
-            [model addIdentity:identity error:&error];
+            [identityModel addIdentity:identity error:&error];
         }
 
     } else {
@@ -106,7 +106,7 @@ NSString *const ISSUER_QR_KEY = @"issuer";
         [identity addMechanism:mechanism error:&error];
     }
     
-    [self registerMechanismWithEndpoint:regEndpoint secret:secret challenge:challenge messageId:messageId mechanismUid:mechanism.mechanismUID identity:identity mechanism:mechanism];
+    [self registerMechanismWithEndpoint:regEndpoint secret:secret challenge:challenge messageId:messageId mechanismUid:mechanism.mechanismUID identity:identity mechanism:mechanism identityModel:identityModel];
 
     return mechanism;
 }
@@ -175,9 +175,9 @@ NSString *const ISSUER_QR_KEY = @"issuer";
  * Resolves the Identity from the URL that has been provided.
  * @return an initialised but not persisted Identity.
  */
-- (FRAIdentity *)getIdentity:(NSURL*)url database:(FRAIdentityDatabase *)database label:(NSString *)label issuer:(NSString *)issuer imagePath:(NSString *)imagePath backgroundColor:(NSString*) backgroundColor {
+- (FRAIdentity *)getIdentity:(NSURL*)url database:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel label:(NSString *)label issuer:(NSString *)issuer imagePath:(NSString *)imagePath backgroundColor:(NSString*) backgroundColor {
 
-    return [FRAIdentity identityWithDatabase:database accountName:label issuer:issuer image:[NSURL URLWithString:imagePath] backgroundColor:backgroundColor];
+    return [FRAIdentity identityWithDatabase:database identityModel:identityModel accountName:label issuer:issuer image:[NSURL URLWithString:imagePath] backgroundColor:backgroundColor];
 }
 
 - (BOOL) supports:(NSURL *)uri {
@@ -192,8 +192,7 @@ NSString *const ISSUER_QR_KEY = @"issuer";
     return @"pushauth";
 }
 
-- (void) registerMechanismWithEndpoint:(NSString *)regEndpoint secret:(NSString *)secret challenge:(NSString *)c messageId:(NSString *)messageId mechanismUid:(NSString *)uid identity:(FRAIdentity *)identity mechanism:(FRAMechanism *)mechanism{
-    
+- (void) registerMechanismWithEndpoint:(NSString *)regEndpoint secret:(NSString *)secret challenge:(NSString *)c messageId:(NSString *)messageId mechanismUid:(NSString *)uid identity:(FRAIdentity *)identity mechanism:(FRAMechanism *)mechanism identityModel:(FRAIdentityModel *)identityModel {
     
     NSString* deviceId;
     if (_gateway.deviceToken == nil) {
@@ -216,7 +215,7 @@ NSString *const ISSUER_QR_KEY = @"issuer";
                                          // TODO: inform user about failure
                                          // TODO: Handle Error
                                          @autoreleasepool {
-                                             NSError* error;
+                                             NSError *error;
                                              [identity removeMechanism:mechanism error:&error];
                                          }
                                      }

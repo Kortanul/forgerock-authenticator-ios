@@ -24,10 +24,12 @@
 #pragma mark Lifecyle
 
 @synthesize stored;
+@synthesize identityModel = _identityModel;
 
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database {
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel {
     if (self = [super init]) {
         _database = database;
+        _identityModel = identityModel;
         stored = NO;
     }
     return self;

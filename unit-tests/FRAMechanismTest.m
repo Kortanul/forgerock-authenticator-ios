@@ -19,6 +19,7 @@
 
 #import "FRAIdentityDatabase.h"
 #import "FRAIdentityDatabaseSQLiteOperations.h"
+#import "FRAIdentitymodel.h"
 #import "FRAMechanism.h"
 #import "FRANotification.h"
 
@@ -29,6 +30,7 @@
 @implementation FRAMechanismTest {
     id mockSqlOperations;
     id databaseObserverMock;
+    id mockIdentityModel;
     FRAIdentityDatabase *database;
     FRAMechanism *mechanism;
 }
@@ -36,13 +38,15 @@
 - (void)setUp {
     [super setUp];
     mockSqlOperations = OCMClassMock([FRAIdentityDatabaseSQLiteOperations class]);
+    mockIdentityModel = OCMClassMock([FRAIdentityModel class]);
     database = [[FRAIdentityDatabase alloc] initWithSqlOperations:mockSqlOperations];
-    mechanism = [[FRAMechanism alloc] initWithDatabase:database];
+    mechanism = [[FRAMechanism alloc] initWithDatabase:database identityModel:mockIdentityModel];
     databaseObserverMock = OCMObserverMock();
 }
 
 - (void)tearDown {
     [mockSqlOperations stopMocking];
+    [mockIdentityModel stopMocking];
     [super tearDown];
 }
 
@@ -166,6 +170,7 @@
 
 - (FRANotification *)dummyNotificationWithMessageId:(NSString *)messageId {
     return [FRANotification notificationWithDatabase:database
+                                       identityModel:mockIdentityModel
                                            messageId:messageId
                                            challenge:@"Challenge"
                                         timeReceived:[NSDate date]

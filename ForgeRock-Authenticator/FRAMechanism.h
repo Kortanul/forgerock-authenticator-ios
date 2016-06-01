@@ -48,9 +48,10 @@
  * Init method.
  *
  * @param database The database to which this mechanism can be persisted.
+ * @param identityModel The identity model which contains the list of identities.
  * @return The initialized mechanism or nil if initialization failed.
  */
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database;
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel;
 
 #pragma mark -
 #pragma mark Notification Functions

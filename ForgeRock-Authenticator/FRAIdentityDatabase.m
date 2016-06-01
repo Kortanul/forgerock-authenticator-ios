@@ -20,7 +20,6 @@
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAIdentityDatabaseSQLiteOperations.h"
-#import "FRAIdentityModel.h"
 #import "FRAMechanismFactory.h"
 #import "FRAModelObjectProtected.h"
 #import "FRANotification.h"
