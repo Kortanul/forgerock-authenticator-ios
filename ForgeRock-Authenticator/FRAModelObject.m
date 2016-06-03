@@ -24,7 +24,6 @@
 #pragma mark Lifecyle
 
 @synthesize stored;
-@synthesize identityModel = _identityModel;
 
 - (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel {
     if (self = [super init]) {

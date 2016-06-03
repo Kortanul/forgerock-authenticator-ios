@@ -14,18 +14,13 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import "FMDatabase.h"
-#import "FRAFMDatabaseFactory.h"
-#import "FRAError.h"
+@interface FRAAlertController : NSObject
 
-@implementation FRAFMDatabaseFactory : NSObject 
-
--(FMDatabase *)createDatabaseFor:(NSString *)path withError:(NSError *__autoreleasing *)error {
-    FMDatabase *database = [FMDatabase databaseWithPath:path];
-    if (!database && error) {
-        *error = [FRAError createErrorForFilePath:path reason:@"Could not open database"];
-    }
-    return database;
-}
+/*!
+ * Shows an alert for the user to respond to. The handler provided must be able to accept the expected OK/Cancel response that will be provided by the alert.
+ * @param error The error to alert the user about.
+ * @param handler The handler that will be invoked after the user's response.
+ */
++ (void)showAlert:(NSError *)error handler:(void (^)(NSInteger selection))handler;
 
 @end

@@ -61,6 +61,10 @@ NSString * const FRAAccountsTableViewControllerScanQrCodeSegue = @"scanQrCodeSeg
         NSIndexPath* indexPath = [selection objectAtIndex:0];
         controller.identity = [self identityAtIndexPath:indexPath];
     }
+    
+    if ([segue.identifier isEqualToString:FRAAccountsTableViewControllerScanQrCodeSegue]) {
+        [self setEditing:NO animated:YES];
+    }
 }
 
 #pragma mark -

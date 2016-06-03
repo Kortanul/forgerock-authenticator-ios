@@ -88,7 +88,9 @@
     }
     
     if (![database open]) {
-        [FRAError createErrorForLastFailure:database withError:error];
+        if (error) {
+            *error = [FRAError createErrorForLastFailure:database];
+        }
         return nil;
     }
     NSLog(@"Database opened: %@", database);
@@ -142,7 +144,9 @@
     
     FMResultSet* results = [database executeQuery:query];
     if (results == nil) {
-        [FRAError createErrorForLastFailure:database withError:error];
+        if (error) {
+            *error = [FRAError createErrorForLastFailure:database];
+        }
         return -1;
     }
     
@@ -171,7 +175,9 @@
     
     BOOL result = [database executeStatements:schema];
     if (!result) {
-        [FRAError createErrorForLastFailure:database withError:error];
+        if (error) {
+            *error = [FRAError createErrorForLastFailure:database];
+        }
         return NO;
     }
     NSLog(@"Database setup complete");
@@ -187,14 +193,18 @@
     // Locate in App bundle
     NSString *path = [[NSBundle mainBundle] pathForResource:schemaName ofType:extension];
     if (path == nil) {
-        [FRAError createErrorForFilePath:schemaName withReason:@"Could not find schema file" withError:error];
+        if (error) {
+            *error = [FRAError createErrorForFilePath:schemaName reason:@"Could not find schema file"];
+        }
         return nil;
     }
     
     // Read contents into String
     NSString *result = [[NSString alloc] initWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
     if (result == nil) {
-        [FRAError createErrorForFilePath:path withReason:@"Could not read contents" withError:error];
+        if (error) {
+            *error = [FRAError createErrorForFilePath:path reason:@"Could not read contents"];
+        }
         return nil;
     }
     

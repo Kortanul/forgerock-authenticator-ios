@@ -14,8 +14,7 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-
-
+#import "FRAError.h"
 #import "FRAOathMechanismFactory.h"
 #import "FRAMechanismFactory.h"
 #import "FRAOathMechanism.h"
@@ -26,23 +25,22 @@
 
 #include "base32.h"
 #include <CommonCrypto/CommonHMAC.h>
-//#include <sys/time.h>
 
 @implementation FRAOathMechanismFactory
     
 #pragma mark -
 #pragma mark Fractory Methods
 
-- (FRAMechanism *) buildMechanism:(NSURL *)uri database:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel {
+- (FRAMechanism *) buildMechanism:(NSURL *)uri database:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel error:(NSError *__autoreleasing *)error {
     
     NSString* _type = [uri host];
     if (nil == _type) {
-        return nil; // TODO: Error handeling integration
+        return nil; // TODO: Error handling integration
     }
     
     NSDictionary *query = [self readQRCode:uri];
     if (nil == query) {
-        return nil; // TODO: Error handeling integration
+        return nil; // TODO: Error handling integration
     }
 
     CCHmacAlgorithm algo = parseAlgo([query objectForKey:@"algorithm"]);
@@ -67,24 +65,11 @@
                                            periodString:p
                                                    type:_type
                                           counterString:c];
-    FRAIdentity *identity = [self getIdentity:uri database:database identityModel:identityModel image:image issuer:issuer label:label backgroundColor:bgColor];
-    FRAIdentity *search = [identityModel identityWithIssuer:[identity issuer] accountName:[identity accountName]];
-    if (search == nil) {
-        @autoreleasepool {
-            NSError* error;
-            [identityModel addIdentity:identity error:&error];
-        }
-    } else {
-        identity = search;
-        if ([self checkForDuplicate:identity mechanism:mechanism]) {
-            // TODO: populate NSError
-            return nil;
-        }
-    }
-    
-    @autoreleasepool {
-        NSError* error;
-        [identity addMechanism:mechanism error:&error];
+
+    FRAIdentity *identity = [self identityWithIssuer:issuer accountName:label identityModel:identityModel backgroundColor:bgColor image:image database:database];
+
+    if (![identity addMechanism:mechanism error:error]) {
+        return nil;
     }
     
     return mechanism;
@@ -145,10 +130,6 @@
     return query;
 }
 
-- (bool) checkForDuplicate:(FRAIdentity *)identity mechanism:(FRAMechanism *)mechanism{
-    return false;
-}
-
 /*!
  * Make a mechanism from the required data
  */
@@ -186,16 +167,18 @@
     return [FRAOathMechanism oathMechanismWithDatabase:database identityModel:identityModel type:type usingSecretKey:key andHMACAlgorithm:algo withKeyLength:digits andEitherPeriod:period orCounter:counter];
 }
 
-/*!
- * Resolves the Identity from the URL that has been provided.
- * @return an initialised but not persisted Identity.
- */
-- (FRAIdentity *)getIdentity:(NSURL*)uri database:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel image:(NSString *)image issuer:(NSString *)issuer label:(NSString *)label backgroundColor:(NSString*)bgColor{
-    // Get image
-    // TODO: get real image from url
-    NSURL* _image = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"forgerock-logo" ofType:@"png"]];
+- (FRAIdentity *)identityWithIssuer:(NSString *)issuer accountName:(NSString *)accountName identityModel:(FRAIdentityModel *)identityModel backgroundColor:(NSString *)backgroundColor image:(NSString *)image database:(FRAIdentityDatabase *)database {
     
-    return [FRAIdentity identityWithDatabase:database identityModel:identityModel accountName:label issuer:issuer image:_image backgroundColor:bgColor];
+    FRAIdentity *identity = [identityModel identityWithIssuer:issuer accountName:accountName];
+    if (!identity) {
+        identity = [FRAIdentity identityWithDatabase:database identityModel:identityModel accountName:accountName issuer:issuer image:[NSURL URLWithString:image] backgroundColor:backgroundColor];
+        @autoreleasepool {
+            NSError* error;
+            [identityModel addIdentity:identity error:&error];
+        }
+    }
+    
+    return identity;
 }
 
 - (bool) supports:(NSURL *)uri {

@@ -62,6 +62,16 @@
 }
 
 - (BOOL)addMechanism:(FRAMechanism *)mechanism error:(NSError *__autoreleasing *)error {
+    FRAMechanism *duplicateMechanism = [self getDuplicate:mechanism];
+    if (duplicateMechanism) {
+        if (error) {
+            *error = [FRAError createError:[NSString stringWithFormat:@"This will replace an existing login mechanism for your %@ account. This operation cannot be undone. You should only proceed if you were expecting to update a mechanism.", _issuer]
+                                      code:FRADuplicateMechanism
+                                  userInfo:@{ @"identity":self, @"mechanism":duplicateMechanism }];
+        }
+        return NO;
+    }
+    
     [mechanism setParent:self];
     [mechanismList addObject:mechanism];
     BOOL result = YES;
@@ -75,12 +85,14 @@
     BOOL result = YES;
     
     if (![mechanismList containsObject:mechanism]) {
-        [FRAError createError:error withReason:@"Invalid operation"];
+        if (error) {
+            *error = [FRAError createError:@"Invalid operation" code:FRAInvalidOperation];
+        }
         return NO;
     }
     
     if (mechanismList.count == 1) {
-        result = [self.identityModel removeIdentity:self error:error];
+        result = [_identityModel removeIdentity:self error:error];
     } else {
         if ([self isStored]) {
             result = [self.database deleteMechanism:mechanism error:error];
@@ -101,6 +113,25 @@
         count += [mechanism pendingNotificationsCount];
     }
     return count;
+}
+
+#pragma mark -
+#pragma mark Private Functions
+
+/*!
+ * Identify if a mechanism of the same type already exists on the identity.
+ * @param mechanism The mechanism used to search for a duplicate.
+ * @return The duplicate mechanism.
+ */
+- (FRAMechanism *)getDuplicate:(FRAMechanism *)mechanism {
+    if (mechanismList) {
+        for (FRAMechanism *identityMechanism in mechanismList) {
+            if ([identityMechanism.type isEqualToString:mechanism.type]) {
+                return identityMechanism;
+            }
+        }
+    }
+    return nil;
 }
 
 @end

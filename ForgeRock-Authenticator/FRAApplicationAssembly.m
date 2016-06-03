@@ -22,6 +22,7 @@
 #import "FRAIdentityDatabase.h"
 #import "FRAIdentityDatabaseSQLiteOperations.h"
 #import "FRAIdentityModel.h"
+#import "FRAMechanismReaderAction.h"
 #import "FRAMessageUtils.h"
 #import "FRANotificationGateway.h"
 #import "FRANotificationHandler.h"
@@ -120,7 +121,7 @@
 
 - (FRAQRScanViewController *)qrScanViewController {
     return [TyphoonDefinition withClass:[FRAQRScanViewController class] configuration:^(TyphoonDefinition *definition) {
-        [definition injectProperty:@selector(uriMechanismReader) with:[self uriMechanismReader]];
+        [definition injectProperty:@selector(mechanismReaderAction) with:[self mechanismReaderAction]];
     }];
 }
 
@@ -131,6 +132,15 @@
             [initializer injectParameterWith:[[FRAFMDatabaseFactory alloc] init]];
         }];
         definition.scope = TyphoonScopeSingleton;
+    }];
+}
+
+- (FRAMechanismReaderAction *)mechanismReaderAction {
+    return [TyphoonDefinition withClass:[FRAMechanismReaderAction class] configuration:^(TyphoonDefinition *definition) {
+        [definition useInitializer:@selector(initWithMechanismReader:) parameters:^(TyphoonMethod *initializer) {
+            [initializer injectParameterWith:[self uriMechanismReader]];
+        }];
+
     }];
 }
 

@@ -27,7 +27,10 @@
  *
  * Encapsulates the related settings, as well as an owning Identity.
  */
-@interface FRAMechanism : FRAModelObject
+@interface FRAMechanism : FRAModelObject {
+    @protected
+    NSString *_type;
+}
 
 /*!
  * The parent Identity object which this mechanism belongs to.
@@ -40,6 +43,11 @@
  * A list of the current Notficiations that are assigned to this Mechanism.
  */
 @property (getter=notifications, nonatomic, readonly) NSArray<FRANotification *> *notifications;
+
+/*!
+ * The type of this mechanism (totp, hotp or push).
+ */
+@property (nonatomic, readonly) NSString *type;
 
 #pragma mark -
 #pragma mark Lifecyle

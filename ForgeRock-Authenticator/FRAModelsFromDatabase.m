@@ -60,7 +60,9 @@
         // Perform update
         FMResultSet *results = [database executeQuery:sql];
         if (!results) {
-            [FRAError createErrorForLastFailure:database withError:error];
+            if (error) {
+                *error = [FRAError createErrorForLastFailure:database];
+            }
             return nil;
         }
         

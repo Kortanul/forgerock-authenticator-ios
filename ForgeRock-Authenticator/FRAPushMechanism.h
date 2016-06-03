@@ -38,11 +38,6 @@
 @property (nonatomic, readonly) NSString *authEndpoint;
 
 /*!
- * The type of this mechanism. E.g. push
- */
-@property (nonatomic, readonly) NSString* type;
-
-/*!
  * The Device ID that this device is registered under.
  */
 @property (nonatomic, readonly) NSString* mechanismUID;

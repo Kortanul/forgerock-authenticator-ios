@@ -17,6 +17,7 @@
 #import <OCMock/OCMock.h>
 #import <XCTest/XCTest.h>
 
+#import "FRAerror.h"
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAIdentityDatabaseSQLiteOperations.h"
@@ -62,13 +63,6 @@
     XCTAssertEqualObjects(identity.issuer, issuer);
     XCTAssertEqualObjects(identity.accountName, accountName);
     XCTAssertEqualObjects([identity.image absoluteString], [image description]);
-}
-
-- (void)testCanGetIdentityModel {
-    
-    FRAIdentityModel *model = identity.identityModel;
-    
-    XCTAssertEqual(model, identityModel);
 }
 
 - (void)testCanAddMechanism {
@@ -206,8 +200,7 @@
     // Then
     XCTAssertFalse(mechanismRemoved);
     XCTAssertNotNil(error);
-    // TODO: Check the error code
-    // XCTAssertEqual(error.code, FRAInvalidOperation);
+    XCTAssertEqual(error.code, FRAInvalidOperation);
 }
 
 - (void)testCanQueryForMechanismByType {
@@ -226,6 +219,43 @@
     XCTAssertTrue(pushMechanismAdded);
     XCTAssertEqualObjects([identity mechanismOfClass:[FRAOathMechanism class]], oathMechanism);
     XCTAssertEqualObjects([identity mechanismOfClass:[FRAPushMechanism class]], pushMechanism);
+}
+
+- (void)testMechanismIsNotAddedIfIdentityHasSameTypeMechanism {
+    // Given
+    NSError * error;
+    FRAPushMechanism *mechanism = [[FRAPushMechanism alloc] initWithDatabase:database identityModel:nil];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertMechanism:mechanism error:nil]).andReturn(YES);
+    [identity addMechanism:mechanism error:nil];
+    FRAPushMechanism *duplicateMechanism = [[FRAPushMechanism alloc] initWithDatabase:database identityModel:nil];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertMechanism:duplicateMechanism error:nil]).andReturn(YES);
+    
+    // When
+    BOOL duplicateMechanismAdded = [identity addMechanism:duplicateMechanism error:&error];
+    
+    // Then
+    XCTAssertFalse(duplicateMechanismAdded);
+    XCTAssertNotNil(error);
+    XCTAssertEqual(error.code, FRADuplicateMechanism);
+    XCTAssertEqual([error.userInfo valueForKey:@"identity"], identity);
+    XCTAssertEqual([error.userInfo valueForKey:@"mechanism"], mechanism);
+}
+
+- (void)testMechanismIsAddedIfIdentityHasDifferentTypeMechanism {
+    // Given
+    NSError * error;
+    FRAOathMechanism *mechanism = [[FRAOathMechanism alloc] initWithDatabase:database identityModel:nil];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertMechanism:mechanism error:nil]).andReturn(YES);
+    [identity addMechanism:mechanism error:nil];
+    FRAPushMechanism *differentMechanism = [[FRAPushMechanism alloc] initWithDatabase:database identityModel:nil];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertMechanism:differentMechanism error:nil]).andReturn(YES);
+    
+    // When
+    BOOL mechanismAdded = [identity addMechanism:differentMechanism error:&error];
+    
+    // Then
+    XCTAssertTrue(mechanismAdded);
+    XCTAssertNil(error);
 }
 
 @end

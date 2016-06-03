@@ -64,7 +64,7 @@
  * @param url The URL to parse, non-nil.
  * @return non nil FRAMechanism initialsed with the values present in the URL.
  */
-- (FRAMechanism*)parseFromURL:(NSURL*)url;
+- (FRAMechanism*)parseFromURL:(NSURL*)url error:(NSError *__autoreleasing *)error;
 
 /*!
  * Convenience function which will call parseFromURL.
@@ -72,6 +72,6 @@
  * @param string the String uri to parse a mechanism from
  * @return the FRAMechanism object extracted from the string.
  */
-- (FRAMechanism*)parseFromString:(NSString*)string;
+- (FRAMechanism*)parseFromString:(NSString*)string error:(NSError *__autoreleasing *)error;
 
 @end

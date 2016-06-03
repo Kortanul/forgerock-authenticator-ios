@@ -21,7 +21,7 @@
 #import "FRAError.h"
 #import "FRAFMDatabaseFactory.h"
 
-static NSString * const Path = @"/database/path";
+static NSString * const PATH = @"/database/path";
 
 @interface FRAFMDatabaseFactoryTest : XCTestCase
 
@@ -29,36 +29,34 @@ static NSString * const Path = @"/database/path";
 
 @implementation FRAFMDatabaseFactoryTest {
     id mockDatabase;
-    id mockError;
 }
 
 - (void)setUp {
     [super setUp];
     mockDatabase = OCMClassMock([FMDatabase class]);
-    mockError = OCMClassMock([FRAError class]);
 }
 
 - (void)tearDown {
     [mockDatabase stopMocking];
-    [mockError stopMocking];
     [super tearDown];
 }
 
 - (void)testCreateDatabaseReturnsNilIfNoDatabaseAtPath {
-    OCMStub([mockDatabase databaseWithPath:Path]).andReturn(nil);
-    FRAFMDatabaseFactory *factory = [FRAFMDatabaseFactory new];
-    
-    FMDatabase *database = [factory createDatabaseFor:Path withError:nil];
+    OCMStub([mockDatabase databaseWithPath:PATH]).andReturn(nil);
+    FRAFMDatabaseFactory *factory = [[FRAFMDatabaseFactory alloc] init];
+    NSError *error;
+    FMDatabase *database = [factory createDatabaseFor:PATH withError:&error];
     
     XCTAssertNil(database);
-    OCMVerify([mockError createErrorForFilePath:Path withReason:@"Could not open database" withError:nil]);
+    XCTAssertNotNil(error);
+    XCTAssertEqualObjects([error.userInfo valueForKey:NSFilePathErrorKey], PATH);
 }
 
 - (void)testCreateDatabaseReturnsDatabaseAtPath {
-    OCMStub([mockDatabase databaseWithPath:Path]).andReturn(mockDatabase);
-    FRAFMDatabaseFactory *factory = [FRAFMDatabaseFactory new];
+    OCMStub([mockDatabase databaseWithPath:PATH]).andReturn(mockDatabase);
+    FRAFMDatabaseFactory *factory = [[FRAFMDatabaseFactory alloc] init];
     
-    FMDatabase *database = [factory createDatabaseFor:Path withError:nil];
+    FMDatabase *database = [factory createDatabaseFor:PATH withError:nil];
     
     XCTAssertEqual(database, mockDatabase);
 }

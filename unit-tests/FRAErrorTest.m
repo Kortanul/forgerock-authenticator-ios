@@ -27,18 +27,15 @@ static NSString * const ERROR_DOMAIN = @"ForgeRockErrorDomain";
 @end
 
 @implementation FRAErrorTest {
-    id mockError;
     id mockDatabase;
 }
 
 - (void)setUp {
     [super setUp];
-    mockError = OCMClassMock([NSError class]);
     mockDatabase = OCMClassMock([FMDatabase class]);
 }
 
 - (void)tearDown {
-    [mockError stopMocking];
     [mockDatabase stopMocking];
     [super tearDown];
 }
@@ -47,11 +44,11 @@ static NSString * const ERROR_DOMAIN = @"ForgeRockErrorDomain";
     
     NSString *errorMessage = @"error message";
     int const errorCode = 102;
-    NSError *error;
+    
     OCMStub([mockDatabase lastErrorMessage]).andReturn(errorMessage);
     OCMStub([mockDatabase lastErrorCode]).andReturn(errorCode);
     
-    [FRAError createErrorForLastFailure:mockDatabase withError:&error];
+    NSError *error = [FRAError createErrorForLastFailure:mockDatabase];
     
     XCTAssertEqualObjects(error.domain, ERROR_DOMAIN);
     XCTAssertEqual(error.code, errorCode);
@@ -60,9 +57,7 @@ static NSString * const ERROR_DOMAIN = @"ForgeRockErrorDomain";
 
 - (void)testCreateErrorForLastFailureWhenNoDatabaseReturnsError {
     
-    NSError *error;
-    
-    [FRAError createErrorForLastFailure:nil withError:&error];
+    NSError *error = [FRAError createErrorForLastFailure:nil];
     
     XCTAssertEqualObjects(error.domain, ERROR_DOMAIN);
     XCTAssertEqual(error.code, -1);
@@ -73,14 +68,25 @@ static NSString * const ERROR_DOMAIN = @"ForgeRockErrorDomain";
     
     NSString *reason = @"error reason";
     NSString *filePath = @"/file/path";
-    NSError *error;
-    
-    [FRAError createErrorForFilePath:filePath withReason:reason withError:&error];
+    NSError *error = [FRAError createErrorForFilePath:filePath reason:reason];
     
     XCTAssertEqualObjects(error.domain, ERROR_DOMAIN);
     XCTAssertEqual(error.code, 1000);
     XCTAssertEqualObjects([error.userInfo valueForKey:NSLocalizedDescriptionKey], reason);
     XCTAssertEqualObjects([error.userInfo valueForKey:NSFilePathErrorKey], filePath);
+}
+
+- (void)testCreateErrorWithReasonCodeAndUserInfoReturnsCorrectError {
+    
+    NSString *reason = @"error reason";
+    enum FRAErrorCodes errorCode = FRAApplicationError;
+    NSDictionary *userInfo = @{ @"other" : @"data" };
+    
+    NSError *error = [FRAError createError:reason code:errorCode userInfo:userInfo];
+    
+    XCTAssertEqual(error.code, errorCode);
+    XCTAssertEqualObjects([error.userInfo valueForKey:NSLocalizedDescriptionKey], reason);
+    XCTAssertEqualObjects([error.userInfo valueForKey:@"other"], @"data");
 }
 
 @end

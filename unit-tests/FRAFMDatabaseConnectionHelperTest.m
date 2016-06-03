@@ -40,7 +40,6 @@ static NSString * const SchemaFilePath = @"/schema/file/path";
     id mockFactory;
     id mockDatabase;
     id mockSchemaResults;
-    id mockError;
     NSMutableArray *schemaResultsList;
 }
 
@@ -84,7 +83,6 @@ static NSString * const SchemaFilePath = @"/schema/file/path";
     [mockFactory stopMocking];
     [mockDatabase stopMocking];
     [mockSchemaResults stopMocking];
-    [mockError stopMocking];
     [super tearDown];
 }
 
@@ -121,16 +119,15 @@ static NSString * const SchemaFilePath = @"/schema/file/path";
 - (void)testGetConnectionReturnsNilIfCantOpenConnection {
     
     FMDatabase *cannotOpenDatabase = OCMClassMock([FMDatabase class]);
-    mockError = OCMClassMock([FRAError class]);
-    OCMStub([mockConfig getDatabasePathWithError:nil]).andReturn(DatabaseFilePath);
-    OCMStub([mockFactory createDatabaseFor:DatabaseFilePath withError:nil]).andReturn(cannotOpenDatabase);
+    OCMStub([mockConfig getDatabasePathWithError:[OCMArg anyObjectRef]]).andReturn(DatabaseFilePath);
+    OCMStub([mockFactory createDatabaseFor:DatabaseFilePath withError:[OCMArg anyObjectRef]]).andReturn(cannotOpenDatabase);
     OCMStub([cannotOpenDatabase open]).andReturn(NO);
     FRAFMDatabaseConnectionHelper *database = [[FRAFMDatabaseConnectionHelper alloc] initWithConfiguration:mockConfig databaseFactory:mockFactory];
-    
-    FMDatabase *connection = [database getConnectionWithError:nil];
+    NSError *error;
+    FMDatabase *connection = [database getConnectionWithError:&error];
     
     XCTAssertNil(connection);
-    OCMVerify([mockError createErrorForLastFailure:cannotOpenDatabase withError:nil]);
+    XCTAssertNotNil(error);
 }
 
 - (void)testGetConnectionReturnsNilIfCantFindInitCheckDatabaseSchema {

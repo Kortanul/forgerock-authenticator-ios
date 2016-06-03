@@ -14,18 +14,32 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import "FMDatabase.h"
-#import "FRAFMDatabaseFactory.h"
-#import "FRAError.h"
+@class FRAUriMechanismReader;
 
-@implementation FRAFMDatabaseFactory : NSObject 
-
--(FMDatabase *)createDatabaseFor:(NSString *)path withError:(NSError *__autoreleasing *)error {
-    FMDatabase *database = [FMDatabase databaseWithPath:path];
-    if (!database && error) {
-        *error = [FRAError createErrorForFilePath:path reason:@"Could not open database"];
-    }
-    return database;
+/*!
+ * View controller for adding mechanisms using a mechanism reader.
+ */
+@interface FRAMechanismReaderAction : NSObject {
+    @protected
+    FRAUriMechanismReader *_mechanismReader;
 }
+
+/*!
+ * Init controller.
+ *
+ * @param mechanismReader The mechanism reader.
+ *
+ * @return The initialized controller or nil if initialization failed.
+ */
+- (instancetype)initWithMechanismReader:(FRAUriMechanismReader *)mechanismReader;
+
+/*!
+ * Read mechanism details from a code.
+ *
+ * @param code The code with the mechanism details.
+ * 
+ * @return Whether the mechanism has been read successfully.
+ */
+- (BOOL)read:(NSString *)code error:(NSError *__autoreleasing*)error;
 
 @end

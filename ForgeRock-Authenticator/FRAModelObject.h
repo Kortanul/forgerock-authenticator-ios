@@ -34,11 +34,6 @@
  */
 @property (nonatomic, readonly, getter=isStored) BOOL stored;
 
-/*!
- The identity model which contains the list of identities.
- */
-@property (nonatomic, readonly) FRAIdentityModel *identityModel;
-
 #pragma mark -
 #pragma mark Lifecycle
 

@@ -51,7 +51,7 @@
     NSString* qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0";
     
     // When
-    FRAOathMechanism* mechanism = (FRAOathMechanism*)[factory parseFromString:qrString];
+    FRAOathMechanism* mechanism = (FRAOathMechanism*)[factory parseFromString:qrString error:nil];
     
     // Then
     XCTAssertNotNil(mechanism);
@@ -65,7 +65,7 @@
     NSString* qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0";
     
     // When
-    FRAOathMechanism* mechanism = (FRAOathMechanism*)[factory parseFromString:qrString];
+    FRAOathMechanism* mechanism = (FRAOathMechanism*)[factory parseFromString:qrString error:nil];
     
     // Then
     XCTAssertEqual([mechanism digits], 6);
@@ -76,7 +76,7 @@
     NSString* qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0&digits=8";
     
     // When
-    FRAOathMechanism* mechanism = (FRAOathMechanism*)[factory parseFromString:qrString];
+    FRAOathMechanism* mechanism = (FRAOathMechanism*)[factory parseFromString:qrString error:nil];
     
     // Then
     XCTAssertEqual([mechanism digits], 8);
@@ -87,7 +87,7 @@
     NSString* qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0";
     
     // When
-    FRAMechanism* mechanism = [factory parseFromString:qrString];
+    FRAMechanism* mechanism = [factory parseFromString:qrString error:nil];
     
     // Then
     FRAIdentity* identity = [mechanism parent];

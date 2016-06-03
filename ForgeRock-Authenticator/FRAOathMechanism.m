@@ -26,7 +26,6 @@
 #include <sys/time.h>
 #include "base32.h"
 
-
 @implementation FRAOathMechanism
 
 #pragma mark -

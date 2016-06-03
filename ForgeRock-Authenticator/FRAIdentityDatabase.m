@@ -68,8 +68,10 @@ NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems = @"updated"
 
 - (BOOL)doInsertIdentity:(FRAIdentity *)identity andCollectStateChanges:(NSMutableDictionary *)stateChanges withError:(NSError *__autoreleasing *)error {
     if ([identity isStored]) {
-        NSString *reason = [[NSString alloc] initWithFormat:@"Identity %@/%@ was already persisted", identity.issuer, identity.accountName];
-        [FRAError createError:error withReason:reason];
+        if (error) {
+            NSString *reason = [[NSString alloc] initWithFormat:@"Identity %@/%@ was already persisted", identity.issuer, identity.accountName];
+            *error = [FRAError createError:reason];
+        }
         return NO;
     }
     for (FRAMechanism *mechanism in [identity mechanisms]) {
@@ -96,8 +98,10 @@ NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems = @"updated"
 
 - (BOOL)doDeleteIdentity:(FRAIdentity *)identity andCollectStateChanges:(NSMutableDictionary *)stateChanges withError:(NSError *__autoreleasing *)error {
     if (![identity isStored]) {
-        NSString *reason = [[NSString alloc] initWithFormat:@"Identity %@/%@ was not already persisted", identity.issuer, identity.accountName];
-        [FRAError createError:error withReason:reason];
+        if (error) {
+            NSString *reason = [[NSString alloc] initWithFormat:@"Identity %@/%@ was not already persisted", identity.issuer, identity.accountName];
+            *error = [FRAError createError:reason];
+        }
         return NO;
     }
     for (FRAMechanism *mechanism in [identity mechanisms]) {
@@ -127,7 +131,9 @@ NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems = @"updated"
 
 - (BOOL)doInsertMechanism:(FRAMechanism *)mechanism andCollectStateChanges:(NSMutableDictionary *)stateChanges withError:(NSError *__autoreleasing *)error {
     if ([mechanism isStored]) {
-        [FRAError createError:error withReason:@"Mechanism was already persisted"];
+        if (error) {
+            *error = [FRAError createError:@"Mechanism was already persisted"];
+        }
         return NO;
     }
     for (FRANotification *notification in [mechanism notifications]) {
@@ -154,7 +160,9 @@ NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems = @"updated"
 
 - (BOOL)doDeleteMechanism:(FRAMechanism *)mechanism andCollectStateChanges:(NSMutableDictionary *)stateChanges withError:(NSError *__autoreleasing *)error {
     if (![mechanism isStored]) {
-        [FRAError createError:error withReason:@"Mechanism was not already persisted"];
+        if (error) {
+            *error = [FRAError createError:@"Mechanism was not already persisted"];
+        }
         return NO;
     }
     for (FRANotification *notification in [mechanism notifications]) {
@@ -181,7 +189,9 @@ NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems = @"updated"
 
 - (BOOL)doUpdateMechanism:(FRAMechanism *)mechanism andCollectStateChanges:(NSMutableDictionary *)stateChanges withError:(NSError *__autoreleasing *)error {
     if (![mechanism isStored]) {
-        [FRAError createError:error withReason:@"Mechanism was not already persisted"];
+        if (error) {
+            *error = [FRAError createError:@"Mechanism was not already persisted"];
+        }
         return NO;
     }
     if ([mechanism isKindOfClass:[FRAOathMechanism class]]) {
@@ -216,8 +226,10 @@ NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems = @"updated"
 
 - (BOOL)doInsertNotification:(FRANotification *)notification andCollectStateChanges:(NSMutableDictionary *)stateChanges withError:(NSError *__autoreleasing *)error {
     if ([notification isStored]) {
-        NSString *reason = [[NSString alloc] initWithFormat:@"Notification %@ was already persisted", notification.messageId];
-        [FRAError createError:error withReason:reason];
+        if (error) {
+            NSString *reason = [[NSString alloc] initWithFormat:@"Notification %@ was already persisted", notification.messageId];
+            *error = [FRAError createError:reason];
+        }
         return NO;
     }
     if (![self.sqlOperations insertNotification:notification error:error]) {
@@ -239,8 +251,10 @@ NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems = @"updated"
 
 - (BOOL)doDeleteNotification:(FRANotification *)notification andCollectStateChanges:(NSMutableDictionary *)stateChanges withError:(NSError *__autoreleasing *)error {
     if (![notification isStored]) {
-        NSString* reason = [[NSString alloc] initWithFormat:@"Notification %@ was not already persisted", notification.messageId];
-        [FRAError createError:error withReason:reason];
+        if (error) {
+            NSString* reason = [[NSString alloc] initWithFormat:@"Notification %@ was not already persisted", notification.messageId];
+            *error = [FRAError createError:reason];
+        }
         return NO;
     }
     if (![self.sqlOperations deleteNotification:notification error:error]) {
@@ -262,8 +276,10 @@ NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems = @"updated"
 
 - (BOOL)doUpdateNotification:(FRANotification *)notification andCollectStateChanges:(NSMutableDictionary *)stateChanges withError:(NSError *__autoreleasing *)error {
     if (![notification isStored]) {
-        NSString *reason = [[NSString alloc] initWithFormat:@"Notification %@ was not already persisted", notification.messageId];
-        [FRAError createError:error withReason:reason];
+        if (error) {
+            NSString *reason = [[NSString alloc] initWithFormat:@"Notification %@ was not already persisted", notification.messageId];
+            *error = [FRAError createError:reason];
+        }
         return NO;
     }
     if (![self.sqlOperations updateNotification:notification error:error]) {

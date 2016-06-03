@@ -71,7 +71,9 @@
     NSArray<NSURL*> *possibleURLs = [manager URLsForDirectory:NSLibraryDirectory inDomains:NSUserDomainMask];
     // Guaranteed to be present by OS
     if ([possibleURLs count] == 0) {
-        [FRAError createErrorForFilePath:@"NSLibraryDirectory" withReason:@"Could not locate system folder /Library" withError:error];
+        if (error) {
+            *error = [FRAError createErrorForFilePath:@"NSLibraryDirectory" reason:@"Could not locate system folder /Library"];
+        }
         return nil;
     }
     return [possibleURLs objectAtIndex:0];

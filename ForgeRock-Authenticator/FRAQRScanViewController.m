@@ -16,10 +16,12 @@
  * Portions Copyright 2013 Nathaniel McCallum, Red Hat
  */
 
+#import "FRAAlertController.h"
+#import "FRAError.h"
 #import "FRAQRScanViewController.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAMechanism.h"
-#import "FRAUriMechanismReader.h"
+#import "FRAMechanismReaderAction.h"
 #import "FRAIdentity.h"
 
 NSString * const FRAQRScanViewControllerStoryboardIdentifer = @"QRScanViewController";
@@ -78,8 +80,13 @@ NSString * const FRAQRScanViewControllerStoryboardIdentifer = @"QRScanViewContro
                 continue;
             }
             NSLog(@"Read QR URL: %@", qrcode);
-
-            [self.uriMechanismReader parseFromString:qrcode];
+            
+            [self setEditing:NO animated:YES];
+            //TODO: Handle error
+            @autoreleasepool {
+                NSError *error;
+                [self.mechanismReaderAction read:qrcode error:&error];
+            }
             [self.session stopRunning];
             if (self.popover == nil) {
                 [self.navigationController popViewControllerAnimated:YES];

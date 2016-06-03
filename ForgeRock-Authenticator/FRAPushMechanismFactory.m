@@ -14,6 +14,7 @@
  * Copyright 2016 ForgeRock AS.
  */
 
+#import "FRAError.h"
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAMechanismFactory.h"
@@ -57,13 +58,13 @@ NSString *const ISSUER_QR_KEY = @"issuer";
 }
 
 #pragma mark -
-#pragma mark Fractory Methods
+#pragma mark Factory Methods
 
 - (NSString *)utf8StringFromData:(NSData *)data {
     return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 }
 
-- (FRAMechanism *) buildMechanism:(NSURL *)uri database:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel {
+- (FRAMechanism *) buildMechanism:(NSURL *)uri database:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel error:(NSError *__autoreleasing *)error {
     
     NSDictionary * query = [self readQRCode:uri];
     
@@ -80,30 +81,13 @@ NSString *const ISSUER_QR_KEY = @"issuer";
     if (nil == secret || nil == regEndpoint || nil == authEndpoint || nil == messageId || nil == challenge || nil == issuer) {
         return nil; // TODO: throw a sensible exception/Error
     }
-    
-    FRAPushMechanism* mechanism = [FRAPushMechanism pushMechanismWithDatabase:database identityModel:identityModel authEndpoint:authEndpoint secret:secret];
-    
-    FRAIdentity *identity = [self getIdentity:uri database:database identityModel:identityModel label:_label issuer:issuer imagePath:image backgroundColor:backgroundColor];
-    FRAIdentity *search = [identityModel identityWithIssuer:[identity issuer] accountName:[identity accountName]];
-    if (search == nil) {
-        // TODO: Error Handling
-        @autoreleasepool {
-            NSError* error;
-            [identityModel addIdentity:identity error:&error];
-        }
 
-    } else {
-        identity = search;
-        if ([self checkForDuplicate]) {
-            // TODO: populate NSError
-            return nil;
-        }
-    }
+    FRAPushMechanism* mechanism = [FRAPushMechanism pushMechanismWithDatabase:database identityModel:identityModel authEndpoint:authEndpoint secret:secret];
+    FRAIdentity *identity = [self identityWithIssuer:issuer accountName:_label identityModel:identityModel backgroundColor:backgroundColor image:image database:database];
     
     // TODO: Error Handling
-    @autoreleasepool {
-        NSError* error;
-        [identity addMechanism:mechanism error:&error];
+    if (![identity addMechanism:mechanism error:error]) {
+        return nil;
     }
     
     [self registerMechanismWithEndpoint:regEndpoint secret:secret challenge:challenge messageId:messageId mechanismUid:mechanism.mechanismUID identity:identity mechanism:mechanism identityModel:identityModel];
@@ -167,17 +151,18 @@ NSString *const ISSUER_QR_KEY = @"issuer";
     return query;
 }
 
-- (bool) checkForDuplicate {
-    return false;
-}
-
-/*!
- * Resolves the Identity from the URL that has been provided.
- * @return an initialised but not persisted Identity.
- */
-- (FRAIdentity *)getIdentity:(NSURL*)url database:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel label:(NSString *)label issuer:(NSString *)issuer imagePath:(NSString *)imagePath backgroundColor:(NSString*) backgroundColor {
-
-    return [FRAIdentity identityWithDatabase:database identityModel:identityModel accountName:label issuer:issuer image:[NSURL URLWithString:imagePath] backgroundColor:backgroundColor];
+- (FRAIdentity *)identityWithIssuer:(NSString *)issuer accountName:(NSString *)accountName identityModel:(FRAIdentityModel *)identityModel backgroundColor:(NSString *)backgroundColor image:(NSString *)image database:(FRAIdentityDatabase *)database {
+    FRAIdentity *identity = [identityModel identityWithIssuer:issuer accountName:accountName];
+    if (!identity) {
+        identity = [FRAIdentity identityWithDatabase:database identityModel:identityModel accountName:accountName issuer:issuer image:[NSURL URLWithString:image] backgroundColor:backgroundColor];
+        // TODO: Error Handling
+        @autoreleasepool {
+            NSError* error;
+            [identityModel addIdentity:identity error:&error];
+        }
+    }
+    
+    return identity;
 }
 
 - (BOOL) supports:(NSURL *)uri {
@@ -192,21 +177,14 @@ NSString *const ISSUER_QR_KEY = @"issuer";
     return @"pushauth";
 }
 
-- (void) registerMechanismWithEndpoint:(NSString *)regEndpoint secret:(NSString *)secret challenge:(NSString *)c messageId:(NSString *)messageId mechanismUid:(NSString *)uid identity:(FRAIdentity *)identity mechanism:(FRAMechanism *)mechanism identityModel:(FRAIdentityModel *)identityModel {
-    
-    NSString* deviceId;
-    if (_gateway.deviceToken == nil) {
-        deviceId = @"";
-    } else {
-        deviceId = _gateway.deviceToken;
-    }
+- (void) registerMechanismWithEndpoint:(NSString *)regEndpoint secret:(NSString *)secret challenge:(NSString *)c messageId:(NSString *)messageId mechanismUid:(NSString *)uid identity:(FRAIdentity *)identity mechanism:(FRAMechanism *)mechanism identityModel:(FRAIdentityModel *)identityModel{
     
     [FRAMessageUtils respondWithEndpoint:regEndpoint
                             base64Secret:secret
                                messageId:messageId
                                     data:@{@"response":[FRAMessageUtils generateChallengeResponse:c secret:secret],
                                            @"mechanismUid":uid,
-                                           @"deviceId":deviceId,
+                                           @"deviceId":(_gateway.deviceToken) ? _gateway.deviceToken : @"",
                                            @"deviceType":@"ios",
                                            @"communicationType":@"apns"
                                            }

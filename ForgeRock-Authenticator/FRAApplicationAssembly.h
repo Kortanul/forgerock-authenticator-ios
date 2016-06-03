@@ -27,6 +27,7 @@
 @class FRAOathMechanismFactory;
 @class FRAPushMechanismFactory;
 @class FRAFMDatabaseConnectionHelper;
+@class FRAMechanismReaderAction;
 
 /*!
  * Typhoon dependency injection configuration.
@@ -44,5 +45,6 @@
 - (FRANotificationHandler *)notificationHandler;
 - (FRAQRScanViewController *)qrScanViewController;
 - (FRAFMDatabaseConnectionHelper *)databaseConnectionHelper;
+- (FRAMechanismReaderAction *)mechanismReaderAction;
 
 @end

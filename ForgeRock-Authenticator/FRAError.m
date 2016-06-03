@@ -21,54 +21,41 @@
 
 static NSString * const FRAErrorDomain = @"ForgeRockErrorDomain";
 
-int const FRAFileError = 1000;
-int const FRAApplicationError = 2000;
++ (NSError *)createErrorForLastFailure:(FMDatabase *) database {
+    NSString* description = ([database.lastErrorMessage length] > 0) ? database.lastErrorMessage : @"nil";
+    int code = (database) ? database.lastErrorCode : -1;
+    
+    NSLog(@"Database error: Last:%@ Code:%d", description, code);
 
-+ (BOOL)createErrorForLastFailure:(FMDatabase *) database withError:(NSError *__autoreleasing *)error {
-    NSString* description;
-    int code;
-    if (database == nil) {
-        description = @"nil";
-        code = -1;
-    } else {
-        description = database.lastErrorMessage != nil ? database.lastErrorMessage : @"nil";
-        code = database.lastErrorCode;
-    }
-    
-    NSLog(@"Database error: Reporting?:%@ Last:%@ Code:%d",
-          error == nil ? @"NO" : @"YES",
-          description,
-          code);
-    
-    NSDictionary *errorDictionary = @{ NSLocalizedDescriptionKey : description };
-    return [self createError:error withCode:code andUserInfo:errorDictionary];
+    return [self createErrorWithCode:code userInfo:@{ NSLocalizedDescriptionKey : description }];
 }
 
-+ (BOOL)createErrorForFilePath:(NSString *)path withReason:(NSString *)reason withError:(NSError *__autoreleasing *)error {
-    NSLog(@"File error: Reporting?:%@ Reason:%@ Path:%@",
-          error == nil ? @"NO" : @"YES",
-          path,
-          reason);
++ (NSError *)createErrorForFilePath:(NSString *)path reason:(NSString *)reason {
+    NSLog(@"File error: Reason:%@ Path:%@", path, reason);
     
-    NSDictionary *errorDictionary = @{ NSLocalizedDescriptionKey : reason, NSFilePathErrorKey : path };
-    return [self createError:error withCode:FRAFileError andUserInfo:errorDictionary];
+    return [self createErrorWithCode:FRAFileError userInfo:@{ NSLocalizedDescriptionKey : reason, NSFilePathErrorKey : path }];
 }
 
-+ (BOOL)createError:(NSError *__autoreleasing *)error withReason:(NSString *)reason {
-    NSDictionary *errorDictionary = @{ NSLocalizedDescriptionKey : reason };
-    return [self createError:error withCode:FRAApplicationError andUserInfo:errorDictionary];
++ (NSError *)createError:(NSString *)reason {
+    return [self createError:reason code:FRAApplicationError];
+}
+
++ (NSError *)createError:(NSString *)reason code:(enum FRAErrorCodes)code {
+    return [self createErrorWithCode:code userInfo:@{ NSLocalizedDescriptionKey : reason }];
+}
+
++ (NSError *)createError:(NSString *)reason code:(enum FRAErrorCodes)code userInfo:(NSDictionary *)userInfo {
+    NSMutableDictionary *info = [userInfo mutableCopy];
+    [info setObject:reason forKey:NSLocalizedDescriptionKey];
+    return [self createErrorWithCode:code userInfo:info];
 }
 
 + (NSException *)createIllegalStateException:(NSString *)reason {
     return [NSException exceptionWithName:@"IllegalStateException" reason:reason userInfo:nil];
 }
 
-+ (BOOL)createError:(NSError *__autoreleasing *)error withCode:(int)code andUserInfo:(NSDictionary *)errorDictionary {
-    if (error == nil) {
-        return NO;
-    }
-    *error = [[NSError alloc] initWithDomain:FRAErrorDomain code:code userInfo:errorDictionary];
-    return YES;
++ (NSError *)createErrorWithCode:(int)code userInfo:(NSDictionary *)errorDictionary {
+    return [[NSError alloc] initWithDomain:FRAErrorDomain code:code userInfo:errorDictionary];
 }
 
 @end

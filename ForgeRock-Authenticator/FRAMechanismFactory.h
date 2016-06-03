@@ -32,7 +32,7 @@
  * @param database the database to eprsist the new mechanism to
  * @param identityModel the identity model to place the new mechanism into
  */
-- (FRAMechanism *) buildMechanism:(NSURL *)uri database:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel;
+- (FRAMechanism *) buildMechanism:(NSURL *)uri database:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel error:(NSError *__autoreleasing *)error;
 
 /*!
  * Gets whether this FRAMechanismFactory supports the mechnaism type in the given uri

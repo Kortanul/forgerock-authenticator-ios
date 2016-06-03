@@ -29,7 +29,6 @@ static NSString * const FOLDER_NAME = @"any_folder";
 
 @implementation FRADatabaseConfigurationTest {
     id mockFileManager;
-    id mockError;
 }
 
 - (void)setUp {
@@ -37,11 +36,9 @@ static NSString * const FOLDER_NAME = @"any_folder";
     
     mockFileManager = OCMClassMock([NSFileManager class]);
     OCMStub([mockFileManager defaultManager]).andReturn(mockFileManager);
-    mockError = OCMClassMock([FRAError class]);
 }
 
 - (void)tearDown {
-    [mockError stopMocking];
     [mockFileManager stopMocking];
     [super tearDown];
 }
@@ -79,12 +76,14 @@ static NSString * const FOLDER_NAME = @"any_folder";
     
     NSArray<NSURL*> *urls = [NSMutableArray new];
     OCMStub([mockFileManager URLsForDirectory:NSLibraryDirectory inDomains:NSUserDomainMask]).andReturn(urls);
+    NSError *error;
     
     FRADatabaseConfiguration *databaseConfiguration = [FRADatabaseConfiguration alloc];
-    NSString *path = [databaseConfiguration getDatabasePathWithError:nil];
+    NSString *path = [databaseConfiguration getDatabasePathWithError:&error];
     
     XCTAssertNil(path);
-    OCMVerify([mockError createErrorForFilePath:@"NSLibraryDirectory" withReason:@"Could not locate system folder /Library" withError:nil]);
+    XCTAssertNotNil(error);
+    XCTAssertEqualObjects([error.userInfo valueForKey:NSLocalizedDescriptionKey], @"Could not locate system folder /Library");
 }
 
 - (void)testGetDatabasePathReturnsNilIfCannotCreateFolder {

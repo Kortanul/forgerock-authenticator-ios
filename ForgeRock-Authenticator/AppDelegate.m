@@ -17,10 +17,14 @@
  */
 
 #import "AppDelegate.h"
+#import "FRAAlertController.h"
 #import "FRAApplicationAssembly.h"
+#import "FRABlockAlertView.h"
+#import "FRAError.h"
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAIdentityModel.h"
+#import "FRAMechanismReaderAction.h"
 #import "FRAUriMechanismReader.h"
 #import "FRANotification.h"
 #import "FRANotificationGateway.h"
@@ -80,14 +84,17 @@
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     NSLog(@"application:openURL:sourceApplication:annotation:");
     // Create mechanism from URL
-    FRAUriMechanismReader* factory = [[self assembly] uriMechanismReader];
-    FRAMechanism* mechanism = [factory parseFromURL:url];
-    if (mechanism == nil) {
-        return NO;
+    @autoreleasepool {
+        NSError *error;
+        FRAMechanismReaderAction *mechanismReaderAction = [[self assembly] mechanismReaderAction];
+        BOOL result = [mechanismReaderAction read:url.absoluteString error:&error];
+        if (result) {
+            // Reload the view
+            [self.window.rootViewController loadView];
+        }
+        
+        return result;
     }
-    // Reload the view
-    [self.window.rootViewController loadView];
-    return YES;
 }
 
 #pragma mark -

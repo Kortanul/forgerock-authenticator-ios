@@ -16,31 +16,53 @@
 
 @class FMDatabase;
 
+typedef NS_ENUM(NSInteger, FRAErrorCodes) {
+    FRAFileError = 1000,
+    FRAApplicationError = 2000,
+    FRADuplicateMechanism = 2001,
+    FRAInvalidOperation = 2002
+};
+
 @interface FRAError : NSObject
 
 /*!
  * Create an error based on the last detected error from the FMDatabase.
  * @param database The FMDatabase instance to query for its error.
- * @param error The error pointer to populate.
- * @return BOOL Indicates if the error was created.
+ * @return The error created.
  */
-+ (BOOL)createErrorForLastFailure:(FMDatabase *)database withError:(NSError *__autoreleasing *)error;
++ (NSError *)createErrorForLastFailure:(FMDatabase *)database;
 
 /*!
  * Create an error based on a file system error for a given path.
  * @param path The file system path the error occured against.
- * @param error The error pointer to populate.
- * @return BOOL Indicates if the error was created.
+ * @return The error created.
  */
-+ (BOOL)createErrorForFilePath:(NSString *)path withReason:(NSString *)reason withError:(NSError *__autoreleasing *)error;
++ (NSError *)createErrorForFilePath:(NSString *)path reason:(NSString *)reason;
 
 /*!
  * Create a general application error with a defined reason.
  * @param reason The cause of the error.
- * @param error The error pointer to populate.
- * @return BOOL Indicates if the error was created.
+ * @return The error created.
  */
-+ (BOOL)createError:(NSError *__autoreleasing *)error withReason:(NSString *)reason;
++ (NSError *)createError:(NSString *)reason;
+
+/*!
+ * Create a specific application error with a defined reason, a code and additional info.
+ * @param reason The cause of the error.
+ * @param code The error code.
+ * @return The error created.
+ */
++ (NSError *)createError:(NSString *)reason code:(enum FRAErrorCodes)code;
+
+/*!
+ * Create a specific application error with a defined reason, a code and additional info.
+ * @param reason The cause of the error.
+ * @param code The error code.
+ * @param userInfo Any addiotnal info.
+ * @return The error created.
+ */
++ (NSError *)createError:(NSString *)reason code:(enum FRAErrorCodes)code userInfo:(NSDictionary *)userInfo;
+
 
 /*!
  * Create a runtime exception for indicating an illegal state.

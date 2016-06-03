@@ -14,18 +14,20 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import "FMDatabase.h"
-#import "FRAFMDatabaseFactory.h"
-#import "FRAError.h"
+#import "FRAAlertController.h"
+#import "FRABlockAlertView.h"
 
-@implementation FRAFMDatabaseFactory : NSObject 
+@implementation FRAAlertController
 
--(FMDatabase *)createDatabaseFor:(NSString *)path withError:(NSError *__autoreleasing *)error {
-    FMDatabase *database = [FMDatabase databaseWithPath:path];
-    if (!database && error) {
-        *error = [FRAError createErrorForFilePath:path reason:@"Could not open database"];
-    }
-    return database;
++ (void)showAlert:(NSError *)error handler:(void (^)(NSInteger))handler {
+    FRABlockAlertView *alertView = [[FRABlockAlertView alloc] initWithTitle:NSLocalizedString(@"Warning", nil)
+                                                                    message:error.localizedDescription
+                                                                   delegate:nil
+                                                          cancelButtonTitle:@"Cancel"
+                                                          otherButtonTitles:@"OK", nil];
+    
+    alertView.callback = handler;
+    [alertView show];
 }
 
 @end

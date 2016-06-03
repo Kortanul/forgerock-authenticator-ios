@@ -52,7 +52,6 @@ static NSString * const Data = @"{\"message_id\":\"message id\", \"push_challeng
     id mockSqlDatabase;
     id mockIdentityDatabase;
     id mockDatabase;
-    id mockError;
     id mockQueryResults;
     id mockIdentityModel;
 }
@@ -62,7 +61,6 @@ static NSString * const Data = @"{\"message_id\":\"message id\", \"push_challeng
     mockSqlDatabase = OCMClassMock([FRAFMDatabaseConnectionHelper class]);
     mockIdentityDatabase = OCMClassMock([FRAIdentityDatabase class]);
     mockDatabase = OCMClassMock([FMDatabase class]);
-    mockError = OCMClassMock([FRAError class]);
     mockQueryResults = OCMClassMock([FMResultSet class]);
     mockIdentityModel = OCMClassMock([FRAIdentityModel class]);
 }
@@ -71,7 +69,6 @@ static NSString * const Data = @"{\"message_id\":\"message id\", \"push_challeng
     [mockSqlDatabase stopMocking];
     [mockIdentityDatabase stopMocking];
     [mockDatabase stopMocking];
-    [mockError stopMocking];
     [mockIdentityModel stopMocking];
     [super tearDown];
 }
@@ -97,14 +94,15 @@ static NSString * const Data = @"{\"message_id\":\"message id\", \"push_challeng
 
 - (void)testGetAllIdentitiesReturnsNilIfCannotExecuteQueryOnDatabase {
     
-    OCMStub([mockSqlDatabase readSchema:@"read_all" withError:nil]).andReturn(ReadSchema);
-    OCMStub([mockSqlDatabase getConnectionWithError:nil]).andReturn(mockDatabase);
+    OCMStub([mockSqlDatabase readSchema:@"read_all" withError:[OCMArg anyObjectRef]]).andReturn(ReadSchema);
+    OCMStub([mockSqlDatabase getConnectionWithError:[OCMArg anyObjectRef]]).andReturn(mockDatabase);
     OCMStub([mockDatabase executeQuery:ReadSchema]).andReturn(nil);
-    
-    NSArray<FRAIdentity*>* identities = [FRAModelsFromDatabase getAllIdentitiesFrom:mockSqlDatabase including:mockIdentityDatabase identityModel:mockIdentityModel catchingErrorsWith:nil];
-    
+    NSError *error;
+
+    NSArray<FRAIdentity*>* identities = [FRAModelsFromDatabase getAllIdentitiesFrom:mockSqlDatabase including:mockIdentityDatabase identityModel:mockIdentityModel catchingErrorsWith:&error];
+  
     XCTAssertNil(identities);
-    OCMVerify([FRAError createErrorForLastFailure:mockDatabase withError:nil]);
+    XCTAssertNotNil(error);
 }
 
 - (void)testGetAllIdentitiesReturnsIdentityWithHMACOneTimePasswordMechanism {
