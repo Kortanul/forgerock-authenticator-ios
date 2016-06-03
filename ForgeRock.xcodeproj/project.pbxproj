@@ -48,7 +48,6 @@
 		44CF2D8A1CD1553200666258 /* FRANotificationGateway.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CF2D891CD1553200666258 /* FRANotificationGateway.m */; };
 		44CF2D8E1CD1610400666258 /* FRAPushMechanism.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CF2D8D1CD1610400666258 /* FRAPushMechanism.m */; };
 		44CF2D911CD21C1B00666258 /* FRANotificationHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 44CF2D901CD21C1B00666258 /* FRANotificationHandler.m */; };
-		44E212B21CD0E79F00269DE9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 44E212B11CD0E79F00269DE9 /* GoogleService-Info.plist */; };
 		B5E90540F95CEF0F71F20925 /* libPods-ForgeRockTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00D810F5F8DD38D1A0B8D06B /* libPods-ForgeRockTests.a */; };
 		C7D2DEB61DEEEB3E3058CC68 /* libPods-ForgeRock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96FCE7C37A708C5D914322B1 /* libPods-ForgeRock.a */; };
 		E12246171CD0FD0600F52C98 /* FRANotificationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E12246151CD0FC8300F52C98 /* FRANotificationTest.m */; };
@@ -181,7 +180,6 @@
 		44CF2D8D1CD1610400666258 /* FRAPushMechanism.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAPushMechanism.m; sourceTree = "<group>"; };
 		44CF2D8F1CD21C1B00666258 /* FRANotificationHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRANotificationHandler.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		44CF2D901CD21C1B00666258 /* FRANotificationHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRANotificationHandler.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		44E212B11CD0E79F00269DE9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		96FCE7C37A708C5D914322B1 /* libPods-ForgeRock.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ForgeRock.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BF38B774E86C6CD26C305FE /* Pods-ForgeRockTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgeRockTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-ForgeRockTests/Pods-ForgeRockTests.release.xcconfig"; sourceTree = "<group>"; };
 		9C6114B55D3356F2F9573691 /* Pods-ForgeRock.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgeRock.release.xcconfig"; path = "Pods/Target Support Files/Pods-ForgeRock/Pods-ForgeRock.release.xcconfig"; sourceTree = "<group>"; };
@@ -569,7 +567,6 @@
 		F17A85F417EC12670098E7F3 = {
 			isa = PBXGroup;
 			children = (
-				44E212B11CD0E79F00269DE9 /* GoogleService-Info.plist */,
 				E1C725F81AEE7CBB00388026 /* Unit Tests */,
 				F17A860617EC12670098E7F3 /* Authenticator */,
 				F17A85FF17EC12670098E7F3 /* Frameworks */,
@@ -752,7 +749,6 @@
 				E166B2321CDB601200DFB029 /* delete_identity.sql in Resources */,
 				E166B22E1CDA50E300DFB029 /* insert_mechanism.sql in Resources */,
 				E155C8BC1CDB9609008853E4 /* delete_notification.sql in Resources */,
-				44E212B21CD0E79F00269DE9 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
