@@ -12,18 +12,15 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2016 ForgeRock AS.
- *
- * Portions copyright 2015 Google Inc.
  */
 
 
-#import <Google/CloudMessaging.h>
 #import "FRANotificationHandler.h"
 
 /*!
  * Gateway which encapsulates interaction with Push Notification Service.
  */
-@interface FRANotificationGateway : NSObject <GGLInstanceIDDelegate>
+@interface FRANotificationGateway : NSObject
 
 /*! APNS identifier for this app/device pair. This identifier can change when reconnecting to APNS. */
 @property (nonatomic, strong, readonly) NSString *deviceToken;
@@ -46,14 +43,6 @@
  * Method copied from UIApplicationDelegate protocol.
  */
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;
-/*!
- * Method copied from UIApplicationDelegate protocol.
- */
-- (void)applicationDidBecomeActive:(UIApplication *)application;
-/*!
- * Method copied from UIApplicationDelegate protocol.
- */
-- (void)applicationDidEnterBackground:(UIApplication *)application;
 
 /*!
  * Method copied from UIApplicationDelegate protocol.

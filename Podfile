@@ -22,7 +22,6 @@
 target 'ForgeRock' do
     pod 'M13BadgeView', '~> 1.0.4'
     pod 'Typhoon'
-    pod 'Google/CloudMessaging'
     pod 'AFNetworking', '~> 3.0'
     pod 'JWT'
     pod 'FMDB', '~> 2.6'

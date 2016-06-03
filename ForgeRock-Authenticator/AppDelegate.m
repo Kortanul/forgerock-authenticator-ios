@@ -46,16 +46,6 @@
     return YES;
 }
 
-- (void)applicationDidBecomeActive:(UIApplication *)application {
-    NSLog(@"applicationDidBecomeActive:");
-    [[[self assembly] notificationGateway] applicationDidBecomeActive:application];
-}
-
-- (void)applicationDidEnterBackground:(UIApplication *)application {
-    NSLog(@"applicationDidEnterBackground:");
-    [[[self assembly] notificationGateway] applicationDidEnterBackground:application];
-}
-
 - (void)applicationWillTerminate:(UIApplication *)application {
     NSLog(@"applicationWillTerminate:");
     [[NSNotificationCenter defaultCenter] removeObserver:self];
