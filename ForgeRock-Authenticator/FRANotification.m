@@ -28,9 +28,12 @@
  */
 @implementation FRANotification {
     NSDateFormatter *formatter;
+    BOOL _approved;
+    BOOL _pending;
 }
 
-@synthesize pending;
+@synthesize approved = _approved;
+@synthesize pending = _pending;
 
 static double const ONE_MINUTE_IN_SECONDS = 60.0;
 static double const ONE_HOUR_IN_SECONDS = 3600.0;
@@ -42,9 +45,8 @@ static NSString * const STRING_DATE_FORMAT = @"dd/MM/yyyy";
 - (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive pending:(BOOL)pendingState approved:(BOOL)approvedState {
     self = [super initWithDatabase:database identityModel:identityModel];
     if (self) {
-        pending = pendingState;
+        _pending = pendingState;
         _approved = approvedState;
-        _denied = !pendingState && !approvedState; // TODO: move logic into it's own method
         
         formatter = [[NSDateFormatter alloc] init];
         [formatter setDateFormat:STRING_DATE_FORMAT];
@@ -92,18 +94,30 @@ static NSString * const STRING_DATE_FORMAT = @"dd/MM/yyyy";
 }
 
 - (BOOL)approveWithError:(NSError *__autoreleasing*)error {
-    _approved = YES;
-    pending = NO;
+    return [self sendAuthenticationResponse:YES withError:error];
+}
+
+- (BOOL)denyWithError:(NSError *__autoreleasing*)error {
+    return [self sendAuthenticationResponse:NO withError:error];
+}
+
+- (BOOL)sendAuthenticationResponse:(BOOL)approved withError:(NSError *__autoreleasing*)error {
+    _approved = approved;
+    _pending = NO;
     if ([self isStored]) {
         if (![self.database updateNotification:self error:error]) {
             return NO;
         }
-        FRAPushMechanism *mechanism = (FRAPushMechanism *)_parent;
+        FRAPushMechanism *mechanism = (FRAPushMechanism *)self.parent;
         if (mechanism) {
-            NSDictionary *data = @{@"response":[FRAMessageUtils generateChallengeResponse:_challenge secret:mechanism.secret]};
+            NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+            data[@"response"] = [FRAMessageUtils generateChallengeResponse:self.challenge secret:mechanism.secret];
+            if (!approved) {
+                data[@"deny"] = @YES;
+            }
             [FRAMessageUtils respondWithEndpoint:mechanism.authEndpoint
                                     base64Secret:mechanism.secret
-                                       messageId:_messageId
+                                       messageId:self.messageId
                                             data:data
                                          handler:^(NSInteger statusCode, NSError *error) {
                                              if (statusCode != 200) {
@@ -115,24 +129,20 @@ static NSString * const STRING_DATE_FORMAT = @"dd/MM/yyyy";
     return YES;
 }
 
-- (BOOL)denyWithError:(NSError *__autoreleasing*)error {
-    _approved = NO;
-    pending = NO;
-    _denied = YES;
-    if ([self isStored]) {
-        if (![self.database updateNotification:self error:error]) {
-            return NO;
-        }
-    }
-    return YES;
-}
-
 - (BOOL)isPending {
-    return pending && ![self isExpired];
+    return _pending && ![self isExpired];
 }
 
 - (BOOL)isExpired {
-    return pending && [[NSDate date] timeIntervalSinceDate:_timeExpired] > 0;
+    return _pending && [[NSDate date] timeIntervalSinceDate:_timeExpired] > 0;
+}
+
+- (BOOL)isApproved {
+    return !_pending && _approved;
+}
+
+- (BOOL)isDenied {
+    return !_pending && !_approved;
 }
 
 @end

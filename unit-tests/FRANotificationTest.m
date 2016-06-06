@@ -126,6 +126,26 @@
     XCTAssertEqual([notification isDenied], YES);
 }
 
+- (void)testDenyNotificationSendsMessageToService {
+    // Given
+    [database insertNotification:notification error:nil];
+    NSDictionary *expectedData = @{
+            @"response":[FRAMessageUtils generateChallengeResponse:@"challenge" secret:@"secret"],
+            @"deny": @YES
+            };
+    OCMExpect([messageUtilsMock respondWithEndpoint:@"http://service.endpoint"
+                                        base64Secret:@"secret"
+                                           messageId:@"messageId"
+                                                data:expectedData
+                                             handler:[OCMArg any]]);
+    
+    // When
+    [notification denyWithError:nil];
+    
+    // Then
+    OCMVerifyAll(messageUtilsMock);
+}
+
 - (void)testSavedNotificationAutomaticallySavesItselfToDatabaseWhenApproved {
     // Given
     OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertNotification:notification error:nil]).andReturn(YES);
