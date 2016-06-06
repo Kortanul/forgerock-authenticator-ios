@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="jjn-fx-6D4">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="jjn-fx-6D4">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -497,8 +497,10 @@
                     <navigationItem key="navigationItem" id="W2w-a7-8OE"/>
                     <connections>
                         <outlet property="authorizeSlider" destination="Sh7-9b-sF7" id="M95-gG-4if"/>
+                        <outlet property="backgroundView" destination="cU8-k4-xcI" id="lnF-y2-8OF"/>
                         <outlet property="denyButton" destination="JnB-uY-5f6" id="sj0-x4-lRh"/>
                         <outlet property="image" destination="8g9-F3-eiZ" id="LAS-AX-bvG"/>
+                        <outlet property="message" destination="M6k-WM-ZCz" id="JG7-y3-GNk"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BcE-Cy-tYe" userLabel="First Responder" sceneMemberID="firstResponder"/>

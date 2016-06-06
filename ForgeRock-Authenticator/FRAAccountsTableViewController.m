@@ -14,8 +14,6 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import <UIImageView+AFNetworking.h>
-
 #import "FRAAccountsTableViewController.h"
 #import "FRAAccountTableViewCell.h"
 #import "FRAAccountTableViewController.h"
@@ -25,6 +23,7 @@
 #import "FRAIdentityModel.h"
 #import "FRAOathMechanism.h"
 #import "FRAPushMechanism.h"
+#import "FRAUIUtils.h"
 
 NSString * const FRAAccountsTableViewControllerStoryboardIdentifer = @"AccountsTableViewController";
 NSString * const FRAAccountsTableViewControllerShowAccountSegue = @"showAccountSegue";
@@ -81,13 +80,7 @@ NSString * const FRAAccountsTableViewControllerScanQrCodeSegue = @"scanQrCodeSeg
     FRAAccountTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     FRAIdentity *identity = [self identityAtIndexPath:indexPath];
     
-    NSURLRequest *imageRequest = [NSURLRequest requestWithURL:identity.image
-                                                  cachePolicy:NSURLRequestReturnCacheDataElseLoad
-                                              timeoutInterval:60];
-    [cell.image setImageWithURLRequest:imageRequest
-                      placeholderImage:[UIImage imageNamed:@"forgerock-logo.png"]
-                               success:nil
-                               failure:nil];
+    [FRAUIUtils setImage:cell.image fromIssuerLogoURL:identity.image];
     
     cell.issuer.text = identity.issuer;
     cell.accountName.text = identity.accountName;

@@ -14,8 +14,11 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import "FRANotificationViewController.h"
+#import "FRAIdentity.h"
+#import "FRAMechanism.h"
 #import "FRANotification.h"
+#import "FRANotificationViewController.h"
+#import "FRAUIUtils.h"
 
 NSString * const FRANotificationViewControllerStoryboardIdentifer = @"NotificationViewController";
 
@@ -26,10 +29,13 @@ NSString * const FRANotificationViewControllerStoryboardIdentifer = @"Notificati
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    //  _image = ... // TODO: Use UIImageView+AFNetworking category provided by AFNetworking
-    [_authorizeSlider setThumbImage:[UIImage imageNamed:@"OffSwitchIcon"] forState:UIControlStateNormal];
-    _image.layer.cornerRadius = _image.frame.size.width / 2;
-    _image.clipsToBounds = YES;
+    [self.authorizeSlider setThumbImage:[UIImage imageNamed:@"OffSwitchIcon"] forState:UIControlStateNormal];
+    FRAIdentity *identity = self.notification.parent.parent;
+    [FRAUIUtils setImage:self.image fromIssuerLogoURL:identity.image];
+    self.image.layer.cornerRadius = self.image.frame.size.width / 2;
+    self.image.clipsToBounds = YES;
+    self.message.text = [NSString stringWithFormat:@"Log in to %@", identity.issuer];
+    [FRAUIUtils setView:self.backgroundView issuerBackgroundColor:identity.backgroundColor];
 }
 
 #pragma mark -
@@ -55,16 +61,17 @@ NSString * const FRANotificationViewControllerStoryboardIdentifer = @"Notificati
 #pragma mark Helper methods
 
 - (BOOL)isSliderAtEndOfTrack {
-    return (_authorizeSlider.value == _authorizeSlider.maximumValue);
+    return (self.authorizeSlider.value == self.authorizeSlider.maximumValue);
 }
 
 - (void)moveSliderToStartOfTrack {
-    [_authorizeSlider setValue:_authorizeSlider.minimumValue animated:YES];
+    [self.authorizeSlider setValue:self.authorizeSlider.minimumValue animated:YES];
 }
 
 - (void)approveNotification {
-    [_authorizeSlider setThumbImage:[UIImage imageNamed:@"OnSwitchIcon"] forState:UIControlStateNormal];
-    _authorizeSlider.userInteractionEnabled = NO;
+    [self.authorizeSlider setThumbImage:[UIImage imageNamed:@"OnSwitchIcon"] forState:UIControlStateNormal];
+    self.authorizeSlider.userInteractionEnabled = NO;
+    self.denyButton.userInteractionEnabled = NO;
     @autoreleasepool {
         NSError* error;
         [self.notification approveWithError:&error];
@@ -73,10 +80,13 @@ NSString * const FRANotificationViewControllerStoryboardIdentifer = @"Notificati
 }
 
 - (void)dismissNotification {
+    self.authorizeSlider.userInteractionEnabled = NO;
+    self.denyButton.userInteractionEnabled = NO;
     @autoreleasepool {
         NSError* error;
         [self.notification denyWithError:&error];
     }
     [self dismissViewControllerAnimated:YES completion:nil];
 }
+
 @end

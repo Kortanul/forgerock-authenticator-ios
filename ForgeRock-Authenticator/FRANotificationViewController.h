@@ -41,6 +41,14 @@ extern NSString * const FRANotificationViewControllerStoryboardIdentifer;
  * The UIImageView in which the issuer's icon will be displayed.
  */
 @property (weak, nonatomic) IBOutlet UIImageView *image;
+/*!
+ * The UILabel in which the notification message will be displayed.
+ */
+@property (weak, nonatomic) IBOutlet UILabel *message;
+/*!
+ * The UIView whose background color will be set to that of the issuer.
+ */
+@property (weak, nonatomic) IBOutlet UIView *backgroundView;
 
 /*!
  * The callback used to check if the slider needs to be moved to the start of the track.
