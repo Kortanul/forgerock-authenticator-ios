@@ -154,7 +154,8 @@
     FRAPushMechanism *mechanism = [[FRAPushMechanism alloc] initWithDatabase:database identityModel:identityModel];
     [aliceIdentity addMechanism:mechanism error:nil];
     NSTimeInterval timeToLive = 120.0;
-    FRANotification *notification = [[FRANotification alloc] initWithDatabase:database identityModel:identityModel messageId:@"messageId" challenge:@"challenge" timeReceived:[NSDate date] timeToLive:timeToLive];
+    NSString *amlbCookie = @"amlbcookie=03";
+    FRANotification *notification = [[FRANotification alloc] initWithDatabase:database identityModel:identityModel messageId:@"messageId" challenge:@"challenge" timeReceived:[NSDate date] timeToLive:timeToLive loadBalancerCookieData:amlbCookie];
 
     [mechanism addNotification:notification error:nil];
 
@@ -185,7 +186,8 @@
     FRAPushMechanism *mechanism = [[FRAPushMechanism alloc] initWithDatabase:database identityModel:identityModel];
     [aliceIdentity addMechanism:mechanism error:nil];
     NSTimeInterval timeToLive = 120.0;
-    FRANotification *notification = [[FRANotification alloc] initWithDatabase:database identityModel:identityModel messageId:@"messageId" challenge:@"challenge" timeReceived:[NSDate date] timeToLive:timeToLive];
+    NSString *amlbCookie = @"amlbcookie=03";
+    FRANotification *notification = [[FRANotification alloc] initWithDatabase:database identityModel:identityModel messageId:@"messageId" challenge:@"challenge" timeReceived:[NSDate date] timeToLive:timeToLive loadBalancerCookieData:amlbCookie];
     [mechanism addNotification:notification error:nil];
 
     OCMStub([mockSqlOperations insertIdentity:aliceIdentity error:nil]).andReturn(YES);

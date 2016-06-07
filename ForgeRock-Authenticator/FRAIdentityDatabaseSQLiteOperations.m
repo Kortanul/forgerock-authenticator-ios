@@ -282,7 +282,10 @@
     // Data: Time to Live
     NSString *ttlString = [NSString stringWithFormat:@"%f", notification.timeToLive];
     [dataMap setObject:ttlString forKey:NOTIFICATION_TIME_TO_LIVE];
-    
+
+    // Data: Load Balancer cookie
+    [dataMap setObject:notification.loadBalancerCookie forKey:NOTIFICATION_LOAD_BALANCER_COOKIE];
+
     // Convert map to JSON
     NSString *jsonString;
     if (![FRASerialization serializeMap:dataMap intoString:&jsonString error:error]) {

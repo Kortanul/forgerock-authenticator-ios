@@ -44,11 +44,12 @@ static NSTimeInterval const testTimeout = 10.0;
     XCTestExpectation *expectation = [self expectationWithDescription:@"asynchronous request"];
     
     [FRAMessageUtils respondWithEndpoint:url
-                         base64Secret:base64Secret
-                            messageId:messageId
-                                 data:@{@"some":@"data"}
-                             protocol:[FRAMockURLProtocol class]
-                              handler:^(NSInteger statusCode, NSError *error) {
+                            base64Secret:base64Secret
+                               messageId:messageId
+                  loadBalancerCookieData:@"amlbcookie=03"
+                                    data:@{@"some":@"data"}
+                                protocol:[FRAMockURLProtocol class]
+                                 handler:^(NSInteger statusCode, NSError *error) {
                                   NSURLRequest *request = [FRAMockURLProtocol getRequest];
                                   XCTAssertEqualObjects([request HTTPMethod], @"POST");
                                   [expectation fulfill];
@@ -61,11 +62,12 @@ static NSTimeInterval const testTimeout = 10.0;
     XCTestExpectation *expectation = [self expectationWithDescription:@"asynchronous request"];
     
     [FRAMessageUtils respondWithEndpoint:url
-                         base64Secret:base64Secret
-                            messageId:messageId
-                                 data:@{@"some":@"data"}
-                             protocol:[FRAMockURLProtocol class]
-                              handler:^(NSInteger statusCode, NSError *error) {
+                            base64Secret:base64Secret
+                               messageId:messageId
+                  loadBalancerCookieData:@"amlbcookie=03"
+                                    data:@{@"some":@"data"}
+                                protocol:[FRAMockURLProtocol class]
+                                 handler:^(NSInteger statusCode, NSError *error) {
                                   NSURLRequest *request = [FRAMockURLProtocol getRequest];
                                   XCTAssertEqual(request.URL.absoluteString, url);
                                   [expectation fulfill];
@@ -80,6 +82,7 @@ static NSTimeInterval const testTimeout = 10.0;
     [FRAMessageUtils respondWithEndpoint:url
                             base64Secret:base64Secret
                                messageId:messageId
+                  loadBalancerCookieData:@"amlbcookie=03"
                                     data:@{@"some":@"data"}
                                 protocol:[FRAMockURLProtocol class]
                                  handler:^(NSInteger statusCode, NSError *error) {
@@ -100,6 +103,33 @@ static NSTimeInterval const testTimeout = 10.0;
     XCTAssertEqualObjects([dictionary valueForKey:@"l"], @"YW1sYmNvb2tpZT1hbWxiY29va2llPTAx");
     XCTAssertEqualObjects([dictionary valueForKey:@"t"], @"120");
     XCTAssertEqualObjects([dictionary valueForKey:@"u"], @"3");
+}
+
+- (void)testIncludesLoadBalancerCookie {
+    XCTestExpectation *expectation = [self expectationWithDescription:@"request with cookie"];
+
+    [FRAMessageUtils respondWithEndpoint:url
+                            base64Secret:base64Secret
+                               messageId:messageId
+                  loadBalancerCookieData:@"amlbcookie=03"
+                                    data:@{@"some":@"data"}
+                                protocol:[FRAMockURLProtocol class]
+                                 handler:^(NSInteger statusCode, NSError *error) {
+                                     NSURLRequest *request = [FRAMockURLProtocol getRequest];
+
+                                     NSArray *cookies =[[NSArray alloc]init];
+                                     cookies = [NSHTTPCookie
+                                                cookiesWithResponseHeaderFields:[request allHTTPHeaderFields]
+                                                forURL:[NSURL URLWithString:@""]];
+                                     NSHTTPCookie *actualCookie = cookies.firstObject;
+
+                                     XCTAssertTrue([@"amlbcookie" isEqualToString:actualCookie.name]);
+                                     XCTAssertTrue([@"03" isEqualToString:actualCookie.value]);
+
+                                     [expectation fulfill];
+                                 }];
+
+    [self waitForExpectationsWithTimeout:testTimeout handler:nil];
 }
 
 @end

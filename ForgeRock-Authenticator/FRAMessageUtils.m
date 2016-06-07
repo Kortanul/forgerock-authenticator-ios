@@ -29,14 +29,16 @@ static NSString * const CONTENT_TYPE_HEADER = @"Content-Type";
 + (void)respondWithEndpoint:(NSString *)endpoint
                base64Secret:(NSString *)base64Secret
                   messageId:(NSString *)messageId
+     loadBalancerCookieData:(NSString *)loadBalancerCookieData
                        data:(NSDictionary *)data
                     handler:(void (^)(NSInteger, NSError *))handler {
-    [self respondWithEndpoint:endpoint base64Secret:base64Secret messageId:messageId data:data protocol:nil handler:handler];
+    [self respondWithEndpoint:endpoint base64Secret:base64Secret messageId:messageId loadBalancerCookieData:loadBalancerCookieData data:data protocol:nil handler:handler];
 }
 
 + (void)respondWithEndpoint:(NSString *)endpoint
                base64Secret:(NSString *)base64Secret
                   messageId:(NSString *)messageId
+     loadBalancerCookieData:(NSString *)loadBalancerCookieData
                        data:(NSDictionary *)data
                    protocol:(Class) protocol
                     handler:(void (^)(NSInteger, NSError *))handler {
@@ -47,6 +49,7 @@ static NSString * const CONTENT_TYPE_HEADER = @"Content-Type";
     AFHTTPSessionManager *manager = [self createHTTPSessionManager:protocol];
     [manager setRequestSerializer:[AFJSONRequestSerializer serializer]];
     [manager.requestSerializer setValue:JSON_CONTENT_TYPE forHTTPHeaderField:CONTENT_TYPE_HEADER];
+    [manager.requestSerializer setValue:loadBalancerCookieData forHTTPHeaderField:@"Set-Cookie"];
     
     [manager POST:URL.absoluteString
       parameters:payload

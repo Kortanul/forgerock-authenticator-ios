@@ -230,31 +230,25 @@
                 // Note: Notifications can only currently exist for PushMechanisms.
                 if (timeReceived != nil && [timeReceived length] > 0) {
                     
-                    // Time stamp of the notification
-                    NSDate *received = [NSDate dateWithTimeIntervalSince1970:[timeReceived doubleValue]];
-
-                    
-                    // Data map
+                    // Extract notifcation data from database
+                    NSDate *dateTimeReceived = [NSDate dateWithTimeIntervalSince1970:[timeReceived doubleValue]];
                     NSDictionary *dataMap;
                     if (![FRASerialization deserializeJSON:data intoDictionary:&dataMap error:error]) {
                         return nil;
                     }
-                    
-                    // Data: Message ID
                     NSString *messageId = [dataMap valueForKey:NOTIFICATION_MESSAGE_ID];
-
-                    // Data: Challenge
                     NSString *challenge = [[NSString alloc] initWithData:[FRASerialization deserializeBytes:[dataMap valueForKey:NOTIFICATION_PUSH_CHALLENGE]] encoding:NSUTF8StringEncoding];
-                    
-                    // Data: TTL
                     NSTimeInterval ttl = [[dataMap valueForKey:NOTIFICATION_TIME_TO_LIVE] doubleValue];
+                    NSString *loadBalancerCookieData = [dataMap valueForKey:NOTIFICATION_LOAD_BALANCER_COOKIE];
                     
+                    // recreate notificaiton
                     FRANotification *notification = [FRANotification notificationWithDatabase:identityDatabase
                                                                                 identityModel:identityModel
                                                                                     messageId:messageId
                                                                                     challenge:challenge
-                                                                                 timeReceived:received
+                                                                                 timeReceived:dateTimeReceived
                                                                                    timeToLive:ttl
+                                                                       loadBalancerCookieData:loadBalancerCookieData
                                                                                       pending:pending
                                                                                      approved:approved];
                     

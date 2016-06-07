@@ -48,6 +48,7 @@
     OCMStub([mockMessageUtils respondWithEndpoint:[OCMArg any]
                                      base64Secret:[OCMArg any]
                                         messageId:[OCMArg any]
+                           loadBalancerCookieData:[OCMArg any]
                                              data:[OCMArg any]
                                           handler:[OCMArg any]]);
     mockSQLiteOperations = OCMClassMock([FRAIdentityDatabaseSQLiteOperations class]);

@@ -72,6 +72,11 @@ extern NSString *const NOTIFICATION_PUSH_CHALLENGE;
 extern NSString *const NOTIFICATION_TIME_TO_LIVE;
 
 /*!
+ * Notification Load Balancer cookie
+ */
+extern NSString * const NOTIFICATION_LOAD_BALANCER_COOKIE;
+
+/*!
  * A collection of useful data storage functions to simplify persistence
  * of data structures to JSON and back again.
  */

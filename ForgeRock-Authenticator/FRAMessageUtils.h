@@ -35,6 +35,7 @@
 + (void)respondWithEndpoint:(NSString *)endpoint
                base64Secret:(NSString *)base64Secret
                   messageId:(NSString *)messageId
+     loadBalancerCookieData:(NSString *)loadBalancerCookieData
                        data:(NSDictionary *)data
                     handler:(void (^)(NSInteger statusCode, NSError *error))handler;
 
@@ -51,6 +52,7 @@
 + (void)respondWithEndpoint:(NSString *)endpoint
                base64Secret:(NSString *)base64Secret
                   messageId:(NSString *)messageId
+     loadBalancerCookieData:(NSString *)loadBalancerCookieData
                        data:(NSDictionary *)data
                    protocol:(Class) protocol
                     handler:(void (^)(NSInteger statusCode, NSError *error))handler;

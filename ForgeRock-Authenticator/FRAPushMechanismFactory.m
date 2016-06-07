@@ -37,6 +37,8 @@ NSString *const MESSAGE_ID_QR_KEY = @"m";
 NSString *const BACKGROUND_COLOUR_QR_KEY = @"b";
 /*! QR code key for the registration challange. */
 NSString *const REGISTRATION_CHALLENGE_QR_KEY = @"c";
+/*! QR code key for the registration challange. */
+NSString *const REGISTRATION_LOAD_BALLANCE_KEY = @"l";
 /*! QR code key for the mechanism image. */
 NSString *const IMAGE_QR_KEY = @"image";
 /*! QR code key for the issuer name. */
@@ -74,8 +76,9 @@ NSString *const ISSUER_QR_KEY = @"issuer";
     NSString *messageId = [query objectForKey:MESSAGE_ID_QR_KEY];
     NSString *backgroundColor = [query objectForKey:BACKGROUND_COLOUR_QR_KEY];
     NSString *challenge = [FRAQRUtils replaceCharactersForURLDecoding:[query objectForKey:REGISTRATION_CHALLENGE_QR_KEY]];
+    NSString *loadBalancer = [self utf8StringFromData:[FRAQRUtils decodeURL:[query objectForKey:REGISTRATION_LOAD_BALLANCE_KEY]]];
     NSString *image = [self utf8StringFromData:[FRAQRUtils decodeURL:[query objectForKey:IMAGE_QR_KEY]]];
-    NSString *issuer = [query objectForKey:ISSUER_QR_KEY];
+    NSString *issuer = [self utf8StringFromData:[FRAQRUtils decodeURL:[query objectForKey:ISSUER_QR_KEY]]];
     NSString *_label = [query objectForKey:@"_label"];
     
     if (nil == secret || nil == regEndpoint || nil == authEndpoint || nil == messageId || nil == challenge || nil == issuer) {
@@ -90,7 +93,7 @@ NSString *const ISSUER_QR_KEY = @"issuer";
         return nil;
     }
     
-    [self registerMechanismWithEndpoint:regEndpoint secret:secret challenge:challenge messageId:messageId mechanismUid:mechanism.mechanismUID identity:identity mechanism:mechanism identityModel:identityModel];
+    [self registerMechanismWithEndpoint:regEndpoint secret:secret challenge:challenge messageId:messageId mechanismUid:mechanism.mechanismUID identity:identity mechanism:mechanism identityModel:identityModel loadBalancerCookieData:loadBalancer];
 
     return mechanism;
 }
@@ -177,11 +180,19 @@ NSString *const ISSUER_QR_KEY = @"issuer";
     return @"pushauth";
 }
 
-- (void) registerMechanismWithEndpoint:(NSString *)regEndpoint secret:(NSString *)secret challenge:(NSString *)c messageId:(NSString *)messageId mechanismUid:(NSString *)uid identity:(FRAIdentity *)identity mechanism:(FRAMechanism *)mechanism identityModel:(FRAIdentityModel *)identityModel{
+- (void) registerMechanismWithEndpoint:(NSString *)regEndpoint secret:(NSString *)secret challenge:(NSString *)c messageId:(NSString *)messageId mechanismUid:(NSString *)uid identity:(FRAIdentity *)identity mechanism:(FRAMechanism *)mechanism identityModel:(FRAIdentityModel *)identityModel loadBalancerCookieData:(NSString *)loadBalancerCookieData  {
+    
+    NSString* deviceId;
+    if (_gateway.deviceToken == nil) {
+        deviceId = @"";
+    } else {
+        deviceId = _gateway.deviceToken;
+    }
     
     [FRAMessageUtils respondWithEndpoint:regEndpoint
                             base64Secret:secret
                                messageId:messageId
+                  loadBalancerCookieData:loadBalancerCookieData
                                     data:@{@"response":[FRAMessageUtils generateChallengeResponse:c secret:secret],
                                            @"mechanismUid":uid,
                                            @"deviceId":(_gateway.deviceToken) ? _gateway.deviceToken : @"",

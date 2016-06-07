@@ -174,7 +174,8 @@
                                            messageId:messageId
                                            challenge:@"Challenge"
                                         timeReceived:[NSDate date]
-                                          timeToLive:120.0];
+                                          timeToLive:120.0
+                              loadBalancerCookieData:@"amlbcookie=03"];
 }
 
 @end

@@ -42,7 +42,7 @@ static double const TWO_DAYS_IN_SECONDS = 172800.0;
 static double const ONE_WEEK_IN_SECONDS = 604800.0;
 static NSString * const STRING_DATE_FORMAT = @"dd/MM/yyyy";
 
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive pending:(BOOL)pendingState approved:(BOOL)approvedState {
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive loadBalancerCookieData:(NSString *)loadBalancerCookie pending:(BOOL)pendingState approved:(BOOL)approvedState {
     self = [super initWithDatabase:database identityModel:identityModel];
     if (self) {
         _pending = pendingState;
@@ -55,20 +55,21 @@ static NSString * const STRING_DATE_FORMAT = @"dd/MM/yyyy";
         _timeReceived = timeReceived;
         _timeToLive = timeToLive;
         _timeExpired = [timeReceived dateByAddingTimeInterval:timeToLive];
+        _loadBalancerCookie = loadBalancerCookie;
     }
     return self;
 }
 
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive {
-    return [self initWithDatabase:database identityModel:identityModel messageId:messageId challenge:challenge timeReceived:timeReceived timeToLive:timeToLive  pending:YES approved:NO];
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive loadBalancerCookieData:(NSString *)loadBalancerCookie{
+    return [self initWithDatabase:database identityModel:identityModel messageId:messageId challenge:challenge timeReceived:timeReceived timeToLive:timeToLive loadBalancerCookieData:loadBalancerCookie pending:YES approved:NO];
 }
 
-+ (instancetype)notificationWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive pending:(BOOL)pendingState approved:(BOOL)approvedState{
-    return [[FRANotification alloc] initWithDatabase:database identityModel:identityModel messageId:messageId challenge:challenge timeReceived:timeReceived timeToLive:timeToLive  pending:pendingState approved:approvedState];
++ (instancetype)notificationWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive loadBalancerCookieData:(NSString *)loadBalancerCookie pending:(BOOL)pendingState approved:(BOOL)approvedState{
+    return [[FRANotification alloc] initWithDatabase:database identityModel:identityModel messageId:messageId challenge:challenge timeReceived:timeReceived timeToLive:timeToLive loadBalancerCookieData:loadBalancerCookie pending:pendingState approved:approvedState];
 }
 
-+ (instancetype)notificationWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive{
-    return [[FRANotification alloc] initWithDatabase:database identityModel:identityModel messageId:messageId challenge:challenge timeReceived:timeReceived timeToLive:timeToLive  pending:YES approved:NO];
++ (instancetype)notificationWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive loadBalancerCookieData:(NSString *)loadBalancerCookie{
+    return [[FRANotification alloc] initWithDatabase:database identityModel:identityModel messageId:messageId challenge:challenge timeReceived:timeReceived timeToLive:timeToLive loadBalancerCookieData:loadBalancerCookie pending:YES approved:NO];
 }
 
 - (NSString *)age {
@@ -118,6 +119,7 @@ static NSString * const STRING_DATE_FORMAT = @"dd/MM/yyyy";
             [FRAMessageUtils respondWithEndpoint:mechanism.authEndpoint
                                     base64Secret:mechanism.secret
                                        messageId:self.messageId
+                                    loadBalancerCookieData:self.loadBalancerCookie
                                             data:data
                                          handler:^(NSInteger statusCode, NSError *error) {
                                              if (statusCode != 200) {

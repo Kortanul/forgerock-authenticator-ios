@@ -85,26 +85,31 @@
  */
 @property (nonatomic, readonly) NSTimeInterval timeToLive;
 
+/*!
+ * The load balancer cooky to send with the notification response.  Format = "<cookiename>=<cookievalue">.
+ */
+@property (nonatomic, readonly) NSString *loadBalancerCookie;
+
 
 /*!
  * Constructor for creating a Notification.
  */
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive pending:(BOOL)pendingState approved:(BOOL)approvedState;
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive loadBalancerCookieData:(NSString *)loadBalancerCookie pending:(BOOL)pendingState approved:(BOOL)approvedState;
 
 /*!
  * Constructor for creating a Notification.
  */
-- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive;
+- (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive loadBalancerCookieData:(NSString *)loadBalancerCookie;
 
 /*!
  * Static factory for creating a Notification.
  */
-+ (instancetype)notificationWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive pending:(BOOL)pendingState approved:(BOOL)approvedState;
++ (instancetype)notificationWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive loadBalancerCookieData:(NSString *)loadBalancerCookie pending:(BOOL)pendingState approved:(BOOL)approvedState;
 
 /*!
  * Static factory for creating a Notification.
  */
-+ (instancetype)notificationWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive;
++ (instancetype)notificationWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive loadBalancerCookieData:(NSString *)loadBalancerCookie;
 
 
 - (instancetype) __unavailable initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel;

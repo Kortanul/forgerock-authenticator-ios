@@ -47,7 +47,7 @@
     database = [[FRAIdentityDatabase alloc] initWithSqlOperations:mockSqlOperations];
     NSTimeInterval timeToLive = 120.0;
     mechanism = [[FRAPushMechanism alloc] initWithDatabase:database identityModel:mockIdentityModel authEndpoint:@"http://service.endpoint" secret:@"secret"];
-    notification = [[FRANotification alloc] initWithDatabase:database identityModel:mockIdentityModel messageId:@"messageId" challenge:@"challenge" timeReceived:[NSDate date] timeToLive:timeToLive];
+    notification = [[FRANotification alloc] initWithDatabase:database identityModel:mockIdentityModel messageId:@"messageId" challenge:@"challenge" timeReceived:[NSDate date] timeToLive:timeToLive loadBalancerCookieData:@"amlbcookie=03"];
     OCMStub([(FRAIdentityDatabaseSQLiteOperations *)mockSqlOperations insertNotification:notification error:nil]).andReturn(YES);
     OCMStub([(FRAIdentityDatabaseSQLiteOperations *)mockSqlOperations updateNotification:notification error:nil]).andReturn(YES);
     databaseObserverMock = OCMObserverMock();
@@ -77,7 +77,7 @@
     // Given
     NSDate *timeReceived = [NSDate date];
     NSTimeInterval timeToLive = 120.0;
-    FRANotification *expiringNotification = [[FRANotification alloc] initWithDatabase:database identityModel:mockIdentityModel messageId:@"messageId" challenge:@"challenge" timeReceived:timeReceived timeToLive:timeToLive];
+    FRANotification *expiringNotification = [[FRANotification alloc] initWithDatabase:database identityModel:mockIdentityModel messageId:@"messageId" challenge:@"challenge" timeReceived:timeReceived timeToLive:timeToLive loadBalancerCookieData:@"amlbcookie=03"];
 
     // When
     
@@ -103,6 +103,7 @@
     OCMExpect([messageUtilsMock respondWithEndpoint:@"http://service.endpoint"
                                        base64Secret:@"secret"
                                           messageId:@"messageId"
+                             loadBalancerCookieData:@"amlbcookie=03"
                                                data:@{@"response":[FRAMessageUtils generateChallengeResponse:@"challenge"
                                                                                                       secret:@"secret"]}
                                             handler:[OCMArg any]]);
@@ -134,10 +135,11 @@
             @"deny": @YES
             };
     OCMExpect([messageUtilsMock respondWithEndpoint:@"http://service.endpoint"
-                                        base64Secret:@"secret"
-                                           messageId:@"messageId"
-                                                data:expectedData
-                                             handler:[OCMArg any]]);
+                                       base64Secret:@"secret"
+                                          messageId:@"messageId"
+                             loadBalancerCookieData:@"amlbcookie=03"
+                                               data:expectedData
+                                            handler:[OCMArg any]]);
     
     // When
     [notification denyWithError:nil];
@@ -154,6 +156,7 @@
     OCMStub([messageUtilsMock respondWithEndpoint:@"http://service.endpoint"
                                      base64Secret:@"secret"
                                         messageId:@"messageId"
+                           loadBalancerCookieData:@"amlbcookie=03"
                                              data:@{@"response":[FRAMessageUtils generateChallengeResponse:@"challenge"
                                                                                                     secret:@"secret"]}
                                           handler:[OCMArg any]]);
@@ -189,6 +192,7 @@
     OCMStub([messageUtilsMock respondWithEndpoint:@"http://service.endpoint"
                                      base64Secret:@"secret"
                                         messageId:@"messageId"
+                           loadBalancerCookieData:@"amlbcookie=03"
                                              data:@{@"response":[FRAMessageUtils generateChallengeResponse:@"challenge"
                                                                                                     secret:@"secret"]}
                                           handler:[OCMArg any]]);
@@ -203,7 +207,7 @@
 
 - (void)testIsExpiredReturnsYesIfNotificationHasExpired {
     // Given
-    FRANotification *expiredNotification = [[FRANotification alloc] initWithDatabase:database identityModel:mockIdentityModel messageId:@"messageId" challenge:@"challenge" timeReceived:[NSDate date] timeToLive:-10.0];
+    FRANotification *expiredNotification = [[FRANotification alloc] initWithDatabase:database identityModel:mockIdentityModel messageId:@"messageId" challenge:@"challenge" timeReceived:[NSDate date] timeToLive:-10.0 loadBalancerCookieData:@"amlbcookie=03"];
     
     // When
     
@@ -216,7 +220,7 @@
 
 - (void)testIsExpiredReturnsNoIfNotificationHasNotExpired {
     // Given
-    FRANotification *expiredNotification = [[FRANotification alloc] initWithDatabase:database identityModel:mockIdentityModel messageId:@"messageId" challenge:@"challenge" timeReceived:[NSDate date] timeToLive:120.0];
+    FRANotification *expiredNotification = [[FRANotification alloc] initWithDatabase:database identityModel:mockIdentityModel messageId:@"messageId" challenge:@"challenge" timeReceived:[NSDate date] timeToLive:120.0 loadBalancerCookieData:@"amlbcookie=03"];
     
     // When
     

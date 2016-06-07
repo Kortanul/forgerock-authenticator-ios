@@ -30,6 +30,7 @@ NSString * const PUSH_MECHANISM_AUTH_END_POINT = @"authEndPoint";
 NSString * const NOTIFICATION_MESSAGE_ID = @"message_id";
 NSString * const NOTIFICATION_PUSH_CHALLENGE = @"push_challenge";
 NSString * const NOTIFICATION_TIME_TO_LIVE = @"time_to_live";
+NSString * const NOTIFICATION_LOAD_BALANCER_COOKIE = @"load_balancer_cookie";
 
 @implementation FRASerialization
 

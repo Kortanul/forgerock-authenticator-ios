@@ -49,6 +49,7 @@ static NSString * const MESSAGE_ID_KEY_PATH = @"aps.messageId";
 static NSString * const MESSAGE_DATA_PATH = @"aps.data";
 static NSString * const CHALLENGE_KEY = @"c";
 static NSString * const MECHANISM_UID_KEY = @"u";
+static NSString * const LOAD_BALANCE_KEY = @"l";
 
 - (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel {
     self = [super init];
@@ -80,9 +81,9 @@ static NSString * const MECHANISM_UID_KEY = @"u";
 - (FRANotification *)notificationFromRemoteNotification:(NSDictionary *)messageData {
 
     // Decode JWT from modessage
-    NSString* alertJwt = [messageData valueForKeyPath:MESSAGE_DATA_PATH];
+    NSString* dataJwt = [messageData valueForKeyPath:MESSAGE_DATA_PATH];
     
-    NSDictionary *payload = [FRAMessageUtils extractJTWBodyFromString:alertJwt];
+    NSDictionary *payload = [FRAMessageUtils extractJTWBodyFromString:dataJwt];
     
     // makec mechanism from data
     
@@ -104,12 +105,15 @@ static NSString * const MECHANISM_UID_KEY = @"u";
     // otherwise, create the notification from the message and add it to the mechanism
     
     NSTimeInterval timeToLive = [[payload objectForKey:TTL_KEY] doubleValue];
+    
+    NSString * loadBalancerCookieData = [[NSString alloc] initWithData:[FRAQRUtils decodeBase64:[payload objectForKey:LOAD_BALANCE_KEY]] encoding:NSUTF8StringEncoding];
     notification = [FRANotification notificationWithDatabase:self.database
                                                identityModel:_identityModel
                                                    messageId:[messageData valueForKeyPath:MESSAGE_ID_KEY_PATH]
                                                    challenge:[payload objectForKey:CHALLENGE_KEY]
                                                 timeReceived:[NSDate date]
-                                                  timeToLive:timeToLive];
+                                                  timeToLive:timeToLive
+                                          loadBalancerCookieData:loadBalancerCookieData];
     // TODO: Handle error
     @autoreleasepool {
         NSError* error;
