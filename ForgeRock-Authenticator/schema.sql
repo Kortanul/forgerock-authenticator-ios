@@ -1,7 +1,6 @@
 CREATE TABLE identity (
 issuer         TEXT,
 accountName    TEXT,
-image          BLOB,
 imageURL       TEXT,
 bgColor        TEXT,
 PRIMARY KEY( issuer,  accountName ));

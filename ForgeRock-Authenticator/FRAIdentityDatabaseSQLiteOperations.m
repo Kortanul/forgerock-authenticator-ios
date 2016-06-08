@@ -81,9 +81,6 @@
     // Account Name
     [arguments addObject:[FRASerialization nonNilString:identity.accountName]];
     
-    // Image Blob
-    [arguments addObject:[NSNull null]];
-    
     // Image URL
     if (identity.image) {
         NSURL *imageUrl = identity.image;

@@ -1,7 +1,6 @@
 SELECT
     i.issuer,
     i.accountName,
-    i.image,
     i.imageURL,
     i.bgColor,
 	m.type,
