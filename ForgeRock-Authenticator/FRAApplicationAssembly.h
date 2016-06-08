@@ -23,6 +23,7 @@
 @class FRAUriMechanismReader;
 @class FRANotificationGateway;
 @class FRANotificationHandler;
+@class FRANotificationViewController;
 @class FRAQRScanViewController;
 @class FRAOathMechanismFactory;
 @class FRAPushMechanismFactory;
@@ -35,16 +36,17 @@
 @interface FRAApplicationAssembly : TyphoonAssembly
 
 - (FRAAccountsTableViewController *)accountsTableViewController;
+- (FRAFMDatabaseConnectionHelper *)databaseConnectionHelper;
 - (FRAIdentityDatabase *)identityDatabase;
 - (FRAIdentityDatabaseSQLiteOperations *)identityDatabaseSQLiteOperations;
 - (FRAIdentityModel *)identityModel;
-- (FRAUriMechanismReader *)uriMechanismReader;
+- (FRAMechanismReaderAction *)mechanismReaderAction;
+- (FRANotificationHandler *)notificationHandler;
+- (FRANotificationGateway *)notificationGateway;
+- (FRANotificationViewController *)notificationViewController;
 - (FRAOathMechanismFactory *)oathMechanismFactory;
 - (FRAPushMechanismFactory *)pushMechanismFactory;
-- (FRANotificationGateway *)notificationGateway;
-- (FRANotificationHandler *)notificationHandler;
 - (FRAQRScanViewController *)qrScanViewController;
-- (FRAFMDatabaseConnectionHelper *)databaseConnectionHelper;
-- (FRAMechanismReaderAction *)mechanismReaderAction;
+- (FRAUriMechanismReader *)uriMechanismReader;
 
 @end

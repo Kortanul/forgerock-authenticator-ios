@@ -14,8 +14,9 @@
  * Copyright 2016 ForgeRock AS.
  */
 
+#import <LocalAuthentication/LocalAuthentication.h>
 
-
+#import "FRALAContextFactory.h"
 #import "FRANotificationUISlider.h"
 
 @class FRANotification;
@@ -28,7 +29,14 @@ extern NSString * const FRANotificationViewControllerStoryboardIdentifer;
  */
 @interface FRANotificationViewController : UIViewController
 
+/*!
+ * The notification model. Exposed to allow (setter) dependency injection.
+ */
 @property (weak, nonatomic) FRANotification *notification;
+/*!
+ * Factory for LAContext objects used to perform Touch ID.
+ */
+@property (strong, nonatomic) FRALAContextFactory *authContextFactory;
 /*!
  * The FRANotificationUISlider used to authorize the requested action.
  */

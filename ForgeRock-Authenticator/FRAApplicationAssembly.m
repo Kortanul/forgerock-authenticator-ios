@@ -19,6 +19,7 @@
 #import "FRAApplicationAssembly.h"
 #import "FRADatabaseConfiguration.h"
 #import "FRAFMDatabaseFactory.h"
+#import "FRALAContextFactory.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAIdentityDatabaseSQLiteOperations.h"
 #import "FRAIdentityModel.h"
@@ -26,6 +27,7 @@
 #import "FRAMessageUtils.h"
 #import "FRANotificationGateway.h"
 #import "FRANotificationHandler.h"
+#import "FRANotificationViewController.h"
 #import "FRAOathMechanismFactory.h"
 #import "FRAPushMechanismFactory.h"
 #import "FRAQRScanViewController.h"
@@ -37,6 +39,16 @@
 - (FRAAccountsTableViewController *)accountsTableViewController {
     return [TyphoonDefinition withClass:[FRAAccountsTableViewController class] configuration:^(TyphoonDefinition *definition) {
         [definition injectProperty:@selector(identityModel) with:[self identityModel]];
+    }];
+}
+
+- (FRAFMDatabaseConnectionHelper *)databaseConnectionHelper {
+    return [TyphoonDefinition withClass:[FRAFMDatabaseConnectionHelper class] configuration:^(TyphoonDefinition *definition) {
+        [definition useInitializer:@selector(initWithConfiguration:databaseFactory:) parameters:^(TyphoonMethod *initializer) {
+            [initializer injectParameterWith:[[FRADatabaseConfiguration alloc] init]];
+            [initializer injectParameterWith:[[FRAFMDatabaseFactory alloc] init]];
+        }];
+        definition.scope = TyphoonScopeSingleton;
     }];
 }
 
@@ -68,35 +80,12 @@
     }];
 }
 
-- (FRAUriMechanismReader *)uriMechanismReader {
-    return [TyphoonDefinition withClass:[FRAUriMechanismReader class] configuration:^(TyphoonDefinition *definition) {
-        [definition useInitializer:@selector(initWithDatabase:identityModel:) parameters:^(TyphoonMethod *initializer) {
-            [initializer injectParameterWith:[self identityDatabase]];
-            [initializer injectParameterWith:[self identityModel]];
+- (FRAMechanismReaderAction *)mechanismReaderAction {
+    return [TyphoonDefinition withClass:[FRAMechanismReaderAction class] configuration:^(TyphoonDefinition *definition) {
+        [definition useInitializer:@selector(initWithMechanismReader:) parameters:^(TyphoonMethod *initializer) {
+            [initializer injectParameterWith:[self uriMechanismReader]];
         }];
-        [definition injectMethod:@selector(addMechanismFactory:) parameters:^(TyphoonMethod *initializer) {
-            [initializer injectParameterWith:[self oathMechanismFactory]];
-        }];
-        [definition injectMethod:@selector(addMechanismFactory:) parameters:^(TyphoonMethod *initializer) {
-            [initializer injectParameterWith:[self pushMechanismFactory]];
-        }];
-        definition.scope = TyphoonScopeSingleton;
-    }];
-}
-
-- (FRAOathMechanismFactory *)oathMechanismFactory {
-    return [TyphoonDefinition withClass:[FRAOathMechanismFactory class] configuration:^(TyphoonDefinition *definition) {
-        [definition useInitializer:@selector(init)];
-        definition.scope = TyphoonScopeSingleton;
-    }];
-}
-
-- (FRAPushMechanismFactory *)pushMechanismFactory {
-    return [TyphoonDefinition withClass:[FRAPushMechanismFactory class] configuration:^(TyphoonDefinition *definition) {
-        [definition useInitializer:@selector(initWithGateway:) parameters:^(TyphoonMethod *initializer) {
-            [initializer injectParameterWith:[self notificationGateway]];
-        }];
-        definition.scope = TyphoonScopeSingleton;
+        
     }];
 }
 
@@ -119,28 +108,47 @@
     }];
 }
 
+- (FRANotificationViewController *)notificationViewController {
+    return [TyphoonDefinition withClass:[FRANotificationViewController class] configuration:^(TyphoonDefinition *definition) {
+        [definition injectProperty:@selector(authContextFactory) with:[[FRALAContextFactory alloc] init]];
+    }];
+}
+
+- (FRAOathMechanismFactory *)oathMechanismFactory {
+    return [TyphoonDefinition withClass:[FRAOathMechanismFactory class] configuration:^(TyphoonDefinition *definition) {
+        [definition useInitializer:@selector(init)];
+        definition.scope = TyphoonScopeSingleton;
+    }];
+}
+
+- (FRAPushMechanismFactory *)pushMechanismFactory {
+    return [TyphoonDefinition withClass:[FRAPushMechanismFactory class] configuration:^(TyphoonDefinition *definition) {
+        [definition useInitializer:@selector(initWithGateway:) parameters:^(TyphoonMethod *initializer) {
+            [initializer injectParameterWith:[self notificationGateway]];
+        }];
+        definition.scope = TyphoonScopeSingleton;
+    }];
+}
+
 - (FRAQRScanViewController *)qrScanViewController {
     return [TyphoonDefinition withClass:[FRAQRScanViewController class] configuration:^(TyphoonDefinition *definition) {
         [definition injectProperty:@selector(mechanismReaderAction) with:[self mechanismReaderAction]];
     }];
 }
 
-- (FRAFMDatabaseConnectionHelper *)databaseConnectionHelper {
-    return [TyphoonDefinition withClass:[FRAFMDatabaseConnectionHelper class] configuration:^(TyphoonDefinition *definition) {
-        [definition useInitializer:@selector(initWithConfiguration:databaseFactory:) parameters:^(TyphoonMethod *initializer) {
-            [initializer injectParameterWith:[[FRADatabaseConfiguration alloc] init]];
-            [initializer injectParameterWith:[[FRAFMDatabaseFactory alloc] init]];
+- (FRAUriMechanismReader *)uriMechanismReader {
+    return [TyphoonDefinition withClass:[FRAUriMechanismReader class] configuration:^(TyphoonDefinition *definition) {
+        [definition useInitializer:@selector(initWithDatabase:identityModel:) parameters:^(TyphoonMethod *initializer) {
+            [initializer injectParameterWith:[self identityDatabase]];
+            [initializer injectParameterWith:[self identityModel]];
+        }];
+        [definition injectMethod:@selector(addMechanismFactory:) parameters:^(TyphoonMethod *initializer) {
+            [initializer injectParameterWith:[self oathMechanismFactory]];
+        }];
+        [definition injectMethod:@selector(addMechanismFactory:) parameters:^(TyphoonMethod *initializer) {
+            [initializer injectParameterWith:[self pushMechanismFactory]];
         }];
         definition.scope = TyphoonScopeSingleton;
-    }];
-}
-
-- (FRAMechanismReaderAction *)mechanismReaderAction {
-    return [TyphoonDefinition withClass:[FRAMechanismReaderAction class] configuration:^(TyphoonDefinition *definition) {
-        [definition useInitializer:@selector(initWithMechanismReader:) parameters:^(TyphoonMethod *initializer) {
-            [initializer injectParameterWith:[self uriMechanismReader]];
-        }];
-
     }];
 }
 

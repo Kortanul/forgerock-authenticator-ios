@@ -14,23 +14,13 @@
  * Copyright 2016 ForgeRock AS.
  */
 
+#import "FRALAContextFactory.h"
 
+@implementation FRALAContextFactory
 
-/*! The storyboard identifier assigned to this view controller. */
-extern NSString * const FRANotificationsTableViewControllerStoryboardIdentifer;
-/*! The storyboard identifier for the segue from FRANotificationsTableViewController to FRANotificationViewController. */
-extern NSString * const FRANotificationsTableViewControllerShowNotificationsSegue;
-
-@class FRAPushMechanism;
-
-/*!
- * Controller for Notifications table-view.
- */
-@interface FRANotificationsTableViewController : UITableViewController
-
-/*!
- * The mechanism whose notifications should be displayed. Exposed to allow (setter) dependency injection.
- */
-@property (strong, nonatomic) FRAPushMechanism *pushMechanism;
+- (LAContext *)newLAContext {
+    return [[LAContext alloc] init];
+}
 
 @end
+

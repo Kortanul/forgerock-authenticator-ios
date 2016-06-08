@@ -14,23 +14,19 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-
-
-/*! The storyboard identifier assigned to this view controller. */
-extern NSString * const FRANotificationsTableViewControllerStoryboardIdentifer;
-/*! The storyboard identifier for the segue from FRANotificationsTableViewController to FRANotificationViewController. */
-extern NSString * const FRANotificationsTableViewControllerShowNotificationsSegue;
-
-@class FRAPushMechanism;
+#import <LocalAuthentication/LocalAuthentication.h>
 
 /*!
- * Controller for Notifications table-view.
+ * Factory for LAContext objects to allow code dependent on Touch ID to use mock LAContext in unit tests.
  */
-@interface FRANotificationsTableViewController : UITableViewController
+@interface FRALAContextFactory : NSObject
 
 /*!
- * The mechanism whose notifications should be displayed. Exposed to allow (setter) dependency injection.
+ * Create an instance of `LAContext`.
+ *
+ * @return New, non-nil LAContext object.
  */
-@property (strong, nonatomic) FRAPushMechanism *pushMechanism;
+- (LAContext *)newLAContext;
 
 @end
+

@@ -14,6 +14,8 @@
  * Copyright 2016 ForgeRock AS.
  */
 
+#import <LocalAuthentication/LocalAuthentication.h>
+
 #import "FRAIdentity.h"
 #import "FRAMechanism.h"
 #import "FRANotification.h"
@@ -29,6 +31,7 @@ NSString * const FRANotificationViewControllerStoryboardIdentifer = @"Notificati
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     [self.authorizeSlider setThumbImage:[UIImage imageNamed:@"OffSwitchIcon"] forState:UIControlStateNormal];
     FRAIdentity *identity = self.notification.parent.parent;
     [FRAUIUtils setImage:self.image fromIssuerLogoURL:identity.image];
@@ -36,19 +39,28 @@ NSString * const FRANotificationViewControllerStoryboardIdentifer = @"Notificati
     self.image.clipsToBounds = YES;
     self.message.text = [NSString stringWithFormat:@"Log in to %@", identity.issuer];
     [FRAUIUtils setView:self.backgroundView issuerBackgroundColor:identity.backgroundColor];
+    
+    if ([self isTouchIDEnabled]) {
+        self.authorizeSlider.hidden = YES;
+        self.denyButton.hidden = YES;
+        [self authenticateUsingTouchID];
+    } else {
+        self.authorizeSlider.hidden = NO;
+        self.denyButton.hidden = NO;
+    }
 }
 
 #pragma mark -
 #pragma mark FRANotificationViewController
 
 - (IBAction)updateSliderPosition:(id)sender {
-    if(![self isSliderAtEndOfTrack]) {
+    if (![self isSliderAtEndOfTrack]) {
         [self moveSliderToStartOfTrack];
     }
 }
 
 - (IBAction)authorize:(id)sender {
-    if([self isSliderAtEndOfTrack]) {
+    if ([self isSliderAtEndOfTrack]) {
         [self approveNotification];
     }
 }
@@ -87,6 +99,35 @@ NSString * const FRANotificationViewControllerStoryboardIdentifer = @"Notificati
         [self.notification denyWithError:&error];
     }
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+// TODO: Ensure code still compiles / runs on iOS 7 - May need to guard calls to Touch ID functions etc
+
+- (BOOL)isTouchIDEnabled {
+    LAContext *authContext = [self.authContextFactory newLAContext];
+    NSError *error = nil;
+    return [authContext canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error];
+}
+
+- (void)authenticateUsingTouchID {
+    LAContext *authContext = [self.authContextFactory newLAContext];
+    FRAIdentity *identity = self.notification.parent.parent;
+    NSString *localizedReason = [NSString stringWithFormat:@"Log in to %@ as %@ using Touch ID", identity.issuer, identity.accountName];
+    
+    [authContext evaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics
+                localizedReason:localizedReason
+                          reply:^(BOOL success, NSError *callbackError) {
+                              if (success) {
+                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                      [self approveNotification];
+                                  });
+                              } else {
+                                  // TODO: Provide error feedback to user in some circumstances
+                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                      [self dismissNotification];
+                                  });
+                              }
+                          }];
 }
 
 @end
