@@ -14,7 +14,7 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import "FRAAlertController.h"
+#import "FRABlockAlertView.h"
 #import "FRAError.h"
 #import "FRAIdentity.h"
 #import "FRAUriMechanismReader.h"
@@ -48,7 +48,13 @@
         FRAIdentity *identity = [(*error).userInfo valueForKey:@"identity"];
         FRAMechanism *duplicateMechanism = [(*error).userInfo valueForKey:@"mechanism"];
         void(^handler)(NSInteger) = [self duplicateMechanismCallback:code identity:identity mechanism:duplicateMechanism error:error];
-        [FRAAlertController showAlert:*error handler:handler];
+        FRABlockAlertView *alertView = [[FRABlockAlertView alloc] initWithTitle:NSLocalizedString(@"Warning", nil)
+                                                                        message:(*error).localizedDescription
+                                                                       delegate:nil
+                                                              cancelButtonTitle:@"Cancel"
+                                                               otherButtonTitle:@"OK"
+                                                                        handler:handler];
+        [alertView show];
         return YES;
     }
     

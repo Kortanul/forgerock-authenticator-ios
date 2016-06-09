@@ -17,7 +17,7 @@
 #import <OCMock/OCMock.h>
 #import <XCTest/XCTest.h>
 
-#import "FRAAlertController.h"
+#import "FRABlockAlertView.h"
 #import "FRAFMDatabaseConnectionHelper.h"
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
@@ -28,6 +28,10 @@
 #import "FRAPushMechanismFactory.h"
 #import "FRAUriMechanismReader.h"
 
+static NSInteger const ALERT_HANDLER_CALLBACK_PARAMETER_INDEX = 7;
+static NSInteger const ALERT_CANCEL_SELECTION = 1;
+static NSInteger const ALERT_OK_SELECTION = 0;
+
 @interface FRAMechanismReaderActionTests : XCTestCase
 
 @end
@@ -35,7 +39,7 @@
 @implementation FRAMechanismReaderActionTests {
     id mockSQLiteOperations;
     id mockMessageUtils;
-    id mockAlertController;
+    id mockAlertView;
     FRAIdentityDatabase *identityDatabase;
     FRAIdentityModel *identityModel;
     FRAUriMechanismReader *mechanismReader;
@@ -56,7 +60,8 @@
     OCMStub([mockSQLiteOperations insertMechanism:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(YES);
     OCMStub([mockSQLiteOperations deleteIdentity:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(YES);
     OCMStub([mockSQLiteOperations deleteMechanism:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(YES);
-    mockAlertController = OCMClassMock([FRAAlertController class]);
+    mockAlertView = OCMClassMock([FRABlockAlertView class]);
+    OCMStub([mockAlertView alloc]).andReturn(mockAlertView);
     identityDatabase = [[FRAIdentityDatabase alloc] initWithSqlOperations:mockSQLiteOperations];
     identityModel = [[FRAIdentityModel alloc] initWithDatabase:identityDatabase sqlDatabase:nil];
     mechanismReader = [[FRAUriMechanismReader alloc] initWithDatabase:identityDatabase identityModel:identityModel];
@@ -67,7 +72,7 @@
 - (void)tearDown {
     [mockSQLiteOperations stopMocking];
     [mockMessageUtils stopMocking];
-    [mockAlertController stopMocking];
+    [mockAlertView stopMocking];
     [super tearDown];
 }
 
@@ -99,11 +104,11 @@
 }
 
 - (void)whenAttemptingToRegisterDuplicateMechanismUserChoosesToCancel:(BOOL)cancel {
-    OCMStub([mockAlertController showAlert:[OCMArg any] handler:[OCMArg any]])
+    OCMStub([mockAlertView initWithTitle:[OCMArg any] message:[OCMArg any] delegate:[OCMArg any] cancelButtonTitle:[OCMArg any] otherButtonTitle:[OCMArg any] handler:[OCMArg any]])
     .andDo(^(NSInvocation *invocation) {
         void (^callback)(NSInteger);
-        [invocation getArgument:&callback atIndex:3];
-        callback(cancel ? 1 : 0);
+        [invocation getArgument:&callback atIndex:ALERT_HANDLER_CALLBACK_PARAMETER_INDEX];
+        callback(cancel ? ALERT_CANCEL_SELECTION : ALERT_OK_SELECTION);
     });
 }
 

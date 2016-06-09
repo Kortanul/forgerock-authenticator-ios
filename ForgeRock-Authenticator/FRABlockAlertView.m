@@ -22,23 +22,23 @@
 
 @end
 
-@implementation FRABlockAlertView
+@implementation FRABlockAlertView {
+    void(^callback)(NSInteger);
+}
 
 #pragma mark -
 #pragma mark UIAlertView
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    self.callback(self.numberOfButtons - 1 - buttonIndex);
+- (instancetype)initWithTitle:(NSString *)title message:(NSString *)message delegate:(id)delegate cancelButtonTitle:(NSString *)cancelButtonTitle otherButtonTitle:(NSString *)otherButtonTitle handler:(void (^)(NSInteger))handler {
+    self = [super initWithTitle:title message:message delegate:(delegate ? delegate : self) cancelButtonTitle:cancelButtonTitle otherButtonTitles:otherButtonTitle, nil];
+    if (self) {
+        callback = handler;
+    }
+    return self;
 }
 
-#pragma mark -
-#pragma mark FRABlockAlertView
-
-- (void)setCallback:(void (^)(NSInteger))callback {
-    _callback = callback;
-    if (self.delegate == nil) {
-        self.delegate = self;
-    }
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    callback(self.numberOfButtons - 1 - buttonIndex);
 }
 
 @end

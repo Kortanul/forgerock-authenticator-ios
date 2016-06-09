@@ -131,18 +131,18 @@ NSString * const FRAAccountsTableViewControllerScanQrCodeSegue = @"scanQrCodeSeg
                  message:[NSString stringWithFormat:@"This may prevent you from logging into your %@ account.", identity.issuer]
                  delegate:nil
                  cancelButtonTitle:@"Cancel"
-                 otherButtonTitles:@"Delete", nil];
-        alertView.callback = ^(NSInteger offset) {
-            const NSInteger deleteButton = 0;
-            if (offset == deleteButton) {
-                // TODO: Handle Error?
-                @autoreleasepool {
-                    NSError* error;
-                    [self.identityModel removeIdentity:identity error:&error];
-                }
-            }
-            [self setEditing:NO animated:YES];
-        };
+                 otherButtonTitle:@"Delete"
+                 handler: ^(NSInteger offset) {
+                     const NSInteger deleteButton = 0;
+                     if (offset == deleteButton) {
+                         // TODO: Handle Error?
+                         @autoreleasepool {
+                             NSError* error;
+                             [self.identityModel removeIdentity:identity error:&error];
+                         }
+                     }
+                     [self setEditing:NO animated:YES];
+                 }];
         [alertView show];
     }
 }

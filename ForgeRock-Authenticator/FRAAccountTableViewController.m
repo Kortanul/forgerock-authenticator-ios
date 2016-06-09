@@ -162,14 +162,14 @@ static const NSInteger PUSH_MECHANISM_ROW_INDEX = 2;
                  message:[NSString stringWithFormat:@"This may prevent you from logging into your %@ account.", self.identity.issuer]
                  delegate:nil
                  cancelButtonTitle:@"Cancel"
-                 otherButtonTitles:@"Delete", nil];
-        alertView.callback = ^(NSInteger offset) {
-            const NSInteger deleteButton = 0;
-            if (offset == deleteButton) {
-                [self deleteMechanism:mechanism];
-            }
-            [self setEditing:NO animated:YES];
-        };
+                 otherButtonTitle:@"Delete"
+                 handler: ^(NSInteger offset) {
+                     const NSInteger deleteButton = 0;
+                     if (offset == deleteButton) {
+                         [self deleteMechanism:mechanism];
+                     }
+                     [self setEditing:NO animated:YES];
+                 }];
         [alertView show];
     }
 }

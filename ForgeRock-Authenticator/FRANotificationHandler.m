@@ -160,13 +160,13 @@ static NSString * const LOAD_BALANCE_KEY = @"l";
                                                                             message:nil
                                                                            delegate:nil
                                                                   cancelButtonTitle:nil
-                                                                  otherButtonTitles:@"OK", nil];
-            alertView.callback = ^(NSInteger offset) {
-                const NSInteger okButton = 0;
-                if (offset == okButton) {
-                    showNotification();
-                }
-            };
+                                                                   otherButtonTitle:@"OK"
+                                                                            handler:^(NSInteger offset) {
+                                                                                const NSInteger okButton = 0;
+                                                                                if (offset == okButton) {
+                                                                                    showNotification();
+                                                                                }
+                                                                            }];
             [alertView show];
         }
         break;

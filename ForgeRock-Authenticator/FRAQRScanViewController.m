@@ -16,7 +16,6 @@
  * Portions Copyright 2013 Nathaniel McCallum, Red Hat
  */
 
-#import "FRAAlertController.h"
 #import "FRAError.h"
 #import "FRAQRScanViewController.h"
 #import "FRAIdentityDatabase.h"

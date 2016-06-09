@@ -16,8 +16,6 @@
  * Portions Copyright 2014 Nathaniel McCallum, Red Hat
  */
 
-
-
 /*!
  * Subclass of UIAlertView that accepts a block for handling button clicks rather than requiring a UIAlertViewDelegate.
  *
@@ -26,9 +24,17 @@
 @interface FRABlockAlertView : UIAlertView
 
 /*!
- * Block that is invoked when the UIAlertViewDelegate alertView:clickedButtonAtIndex: method is called.
- * The offset parameter passed to the block gives the index of the button that was clicked.
+ * Convenience method for initializing a block alert view.
+ *
+ * @param title The string that appears in the receiver’s title bar.
+ * @param message Descriptive text that provides more details than the title.
+ * @param delegate The receiver’s delegate or nil if it doesn’t have a delegate.
+ * @param cancelButtonTitle The title of the cancel button or nil if there is no cancel button.
+ * @param otherButtonTitle The title of another button.
+ * @param handler The handler to be invoked when one of the buttons is clicked.
+ *
+ * @return Newly initialized block alert view.
  */
-@property (nonatomic, copy) void (^callback)(NSInteger offset);
+- (instancetype)initWithTitle:(NSString *)title message:(NSString *)message delegate:(id)delegate cancelButtonTitle:(NSString *)cancelButtonTitle otherButtonTitle:(NSString *)otherButtonTitle handler:(void (^)(NSInteger))handler;
 
 @end

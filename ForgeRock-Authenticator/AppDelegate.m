@@ -17,9 +17,7 @@
  */
 
 #import "AppDelegate.h"
-#import "FRAAlertController.h"
 #import "FRAApplicationAssembly.h"
-#import "FRABlockAlertView.h"
 #import "FRAError.h"
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
