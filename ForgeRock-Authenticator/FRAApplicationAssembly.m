@@ -14,12 +14,13 @@
  * Copyright 2016 ForgeRock AS.
  */
 
+#import <LocalAuthentication/LocalAuthentication.h>
+
 #import "FRAAccountsTableViewController.h"
 #import "FRAAccountTableViewController.h"
 #import "FRAApplicationAssembly.h"
 #import "FRADatabaseConfiguration.h"
 #import "FRAFMDatabaseFactory.h"
-#import "FRALAContextFactory.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAIdentityDatabaseSQLiteOperations.h"
 #import "FRAIdentityModel.h"
@@ -110,7 +111,7 @@
 
 - (FRANotificationViewController *)notificationViewController {
     return [TyphoonDefinition withClass:[FRANotificationViewController class] configuration:^(TyphoonDefinition *definition) {
-        [definition injectProperty:@selector(authContextFactory) with:[[FRALAContextFactory alloc] init]];
+        [definition injectProperty:@selector(authContext) with:[[LAContext alloc] init]];
     }];
 }
 

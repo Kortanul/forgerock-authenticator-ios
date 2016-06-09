@@ -14,11 +14,14 @@
  * Copyright 2016 ForgeRock AS.
  */
 
+#import <LocalAuthentication/LocalAuthentication.h>
+
 #import <OCMock/OCMock.h>
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 
-#import "FRALAContextFactory.h"
+#import "FRAIdentity.h"
+#import "FRAPushMechanism.h"
 #import "FRANotification.h"
 #import "FRANotificationViewController.h"
 
@@ -29,22 +32,29 @@
 @implementation FRANotificationViewControllerTests {
     
     FRANotificationViewController *viewController;
+    FRAIdentity *identity;
+    FRAPushMechanism *mechanism;
     FRANotification *notification;
-    FRALAContextFactory *authContextFactory;
+    LAContext *authContext;
     
 }
 
 - (void)setUp {
     [super setUp];
     
+    identity = OCMClassMock([FRAIdentity class]);
+    mechanism = OCMClassMock([FRAPushMechanism class]);
     notification = OCMClassMock([FRANotification class]);
-    authContextFactory = OCMClassMock([FRALAContextFactory class]);
-    
+    authContext = OCMClassMock([LAContext class]);
+
+    OCMStub([notification parent]).andReturn(mechanism);
+    OCMStub([mechanism parent]).andReturn(identity);
+
     // load notification controller from storyboard
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
     viewController = [storyboard instantiateViewControllerWithIdentifier:FRANotificationViewControllerStoryboardIdentifer];
     viewController.notification = notification;
-    viewController.authContextFactory = authContextFactory;
+    viewController.authContext = authContext;
 }
 
 - (void)tearDown {
@@ -54,30 +64,30 @@
 
 - (void)testIfTouchIDUnavailableThenUserShouldBeShownSliderToApproveAndButtonToDenyAuthentication {
     // Given
-    id authContext = OCMClassMock([LAContext class]);
-    OCMStub([authContextFactory newLAContext]).andReturn(authContext);
     
     // When
     [self simulateLoadingOfView];
     
     // Then
-    OCMVerifyAll(authContext);
+    OCMVerifyAll((id)authContext);
     XCTAssertEqual(viewController.authorizeSlider.hidden, NO, "slider should be shown if Touch ID unavailable");
     XCTAssertEqual(viewController.denyButton.hidden, NO, "deny button should be shown if Touch ID unavailable");
 }
 
 - (void)testTouchIDShouldBeUsedIfAvailable {
     // Given
-    id authContext = OCMClassMock([LAContext class]);
-    OCMStub([authContextFactory newLAContext]).andReturn(authContext);
-    OCMExpect([authContext canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:[OCMArg anyObjectRef]]).andReturn(YES);
-    OCMExpect([authContext evaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics localizedReason:@"Log in to <issuer> using Touch ID" reply:[OCMArg any]]);
+    OCMExpect([authContext canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics
+                                       error:[OCMArg anyObjectRef]]).andReturn(YES);
+    OCMStub([identity issuer]).andReturn(@"Umbrella Corp");
+    OCMStub([identity accountName]).andReturn(@"alice");
+    OCMExpect([authContext evaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics
+                          localizedReason:@"Log in to Umbrella Corp as alice using Touch ID" reply:[OCMArg any]]);
     
     // When
     [self simulateLoadingOfView];
     
     // Then
-    OCMVerifyAll(authContext);
+    OCMVerifyAll((id)authContext);
     XCTAssertEqual(viewController.authorizeSlider.hidden, YES, "slider should not be shown if Touch ID is available");
     XCTAssertEqual(viewController.denyButton.hidden, YES, "deny button should not be shown if Touch ID is available");
 }
