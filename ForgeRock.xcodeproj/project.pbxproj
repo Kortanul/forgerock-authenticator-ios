@@ -26,6 +26,7 @@
 		2D977EAB1CD8BEBA000A7F29 /* FRANotificationHandlerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D977EAA1CD8BEBA000A7F29 /* FRANotificationHandlerTest.m */; };
 		2D977EAF1CDCE3A6000A7F29 /* FRAOathMechanismFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D977EAE1CDCE3A6000A7F29 /* FRAOathMechanismFactory.m */; };
 		2D977EB21CE0C31E000A7F29 /* FRAPushMechanismFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D977EB11CE0C31E000A7F29 /* FRAPushMechanismFactory.m */; };
+		442CB7A91D09869D0074716B /* FRALAContextFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 442CB7A81D09869D0074716B /* FRALAContextFactory.m */; };
 		442CB7AD1D098C470074716B /* FRANotificationViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 442CB7AC1D098C470074716B /* FRANotificationViewControllerTests.m */; };
 		443686801CDB95370056D4E3 /* FRAPushMechanismTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4436867F1CDB95370056D4E3 /* FRAPushMechanismTableViewCell.m */; };
 		443686831CDB961D0056D4E3 /* FRAPushMechanismTableViewCellController.m in Sources */ = {isa = PBXBuildFile; fileRef = 443686821CDB961D0056D4E3 /* FRAPushMechanismTableViewCellController.m */; };
@@ -142,6 +143,8 @@
 		2D977EAE1CDCE3A6000A7F29 /* FRAOathMechanismFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRAOathMechanismFactory.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		2D977EB01CE0C2D4000A7F29 /* FRAPushMechanismFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAPushMechanismFactory.h; sourceTree = "<group>"; };
 		2D977EB11CE0C31E000A7F29 /* FRAPushMechanismFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRAPushMechanismFactory.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		442CB7A71D09869D0074716B /* FRALAContextFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRALAContextFactory.h; sourceTree = "<group>"; };
+		442CB7A81D09869D0074716B /* FRALAContextFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRALAContextFactory.m; sourceTree = "<group>"; };
 		442CB7AC1D098C470074716B /* FRANotificationViewControllerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FRANotificationViewControllerTests.m; path = "unit-tests/FRANotificationViewControllerTests.m"; sourceTree = "<group>"; };
 		4436867E1CDB95370056D4E3 /* FRAPushMechanismTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAPushMechanismTableViewCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4436867F1CDB95370056D4E3 /* FRAPushMechanismTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAPushMechanismTableViewCell.m; sourceTree = "<group>"; };
@@ -323,6 +326,15 @@
 				04D3D25E1CE4CE9100D77EF6 /* FRAMockURLProtocol.m */,
 			);
 			name = Utils;
+			sourceTree = "<group>";
+		};
+		442CB7A61D09868C0074716B /* TouchID */ = {
+			isa = PBXGroup;
+			children = (
+				442CB7A71D09869D0074716B /* FRALAContextFactory.h */,
+				442CB7A81D09869D0074716B /* FRALAContextFactory.m */,
+			);
+			name = TouchID;
 			sourceTree = "<group>";
 		};
 		443F203B1CCC284300B91C2B /* Assembly */ = {
@@ -624,6 +636,7 @@
 		F17A860617EC12670098E7F3 /* Authenticator */ = {
 			isa = PBXGroup;
 			children = (
+				442CB7A61D09868C0074716B /* TouchID */,
 				0484ED501CE2014700DB537A /* Utils */,
 				443F203B1CCC284300B91C2B /* Assembly */,
 				449FD4391CAAC74200A9BF99 /* Accounts */,
@@ -882,6 +895,7 @@
 				E1A8B8AA1CD8E1F20029B89B /* FRAFMDatabaseFactory.m in Sources */,
 				44FF7E131D05C73800BDC512 /* FRAUIUtils.m in Sources */,
 				44BC41821CA97DD6000931F3 /* FRANotificationsTableViewController.m in Sources */,
+				442CB7A91D09869D0074716B /* FRALAContextFactory.m in Sources */,
 				4445075E1CB520D8003EE400 /* FRAOathMechanismTableViewCellController.m in Sources */,
 				44C2068F1CDB391500DC4D3B /* FRAModelObject.m in Sources */,
 				44BC41851CA9DC12000931F3 /* FRANotificationTableViewCell.m in Sources */,

@@ -102,28 +102,35 @@ NSString * const FRANotificationViewControllerStoryboardIdentifer = @"Notificati
 // TODO: Ensure code still compiles / runs on iOS 7 - May need to guard calls to Touch ID functions etc
 
 - (BOOL)isTouchIDEnabled {
+    LAContext *authContext = [self.authContextFactory newLAContext];
     NSError *error = nil;
-    return [self.authContext canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error];
+    return [authContext canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error];
 }
 
 - (void)authenticateUsingTouchID {
     FRAIdentity *identity = self.notification.parent.parent;
     NSString *localizedReason = [NSString stringWithFormat:@"Log in to %@ as %@ using Touch ID", identity.issuer, identity.accountName];
     
-    [self.authContext evaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics
-                     localizedReason:localizedReason
-                               reply:^(BOOL success, NSError *callbackError) {
-                                   if (success) {
-                                       dispatch_async(dispatch_get_main_queue(), ^{
-                                           [self approveNotification];
-                                       });
-                                   } else {
-                                       // TODO: Provide error feedback to user in some circumstances
-                                       dispatch_async(dispatch_get_main_queue(), ^{
-                                           [self dismissNotification];
-                                       });
-                                   }
-                               }];
+    LAContext *authContext = [self.authContextFactory newLAContext];
+    
+    // Disable option to enter password instead of fingerprint
+    authContext.localizedFallbackTitle = @"";
+    
+    // Request Touch ID authentication
+    [authContext evaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics
+                localizedReason:localizedReason
+                          reply:^(BOOL success, NSError *callbackError) {
+                              if (success) {
+                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                      [self approveNotification];
+                                  });
+                              } else {
+                                  // TODO: Provide error feedback to user in some circumstances
+                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                      [self dismissNotification];
+                                  });
+                              }
+                          }];
 }
 
 @end
