@@ -15,11 +15,14 @@
  */
 
 #import "FRAError.h"
+#import "FRAHotpOathMechanism.h"
 #import "FRAIdentity.h"
+#import "FRAIdentityDatabase.h"
 #import "FRAIdentityModel.h"
 #import "FRAMechanism.h"
 #import "FRAModelObjectProtected.h"
-#import "FRAIdentityDatabase.h"
+#import "FRAPushMechanism.h"
+#import "FRATotpOathMechanism.h"
 
 @implementation FRAIdentity {
     
@@ -62,7 +65,14 @@
 }
 
 - (BOOL)addMechanism:(FRAMechanism *)mechanism error:(NSError *__autoreleasing *)error {
-    FRAMechanism *duplicateMechanism = [self getDuplicate:mechanism];
+    
+    FRAMechanism *duplicateMechanism;
+    if ([mechanism isKindOfClass:[FRAPushMechanism class]]) {
+        duplicateMechanism = [self mechanismOfClass:[FRAPushMechanism class]];
+    } else {
+        duplicateMechanism = [self mechanismOfClass:[FRAHotpOathMechanism class]] ? [self mechanismOfClass:[FRAHotpOathMechanism class]] : [self mechanismOfClass:[FRATotpOathMechanism class]];
+    }
+
     if (duplicateMechanism) {
         if (error) {
             *error = [FRAError createError:[NSString stringWithFormat:@"This will replace an existing login mechanism for your %@ account. This operation cannot be undone. You should only proceed if you were expecting to update a mechanism.", _issuer]
@@ -113,25 +123,6 @@
         count += [mechanism pendingNotificationsCount];
     }
     return count;
-}
-
-#pragma mark -
-#pragma mark Private Functions
-
-/*!
- * Identify if a mechanism of the same type already exists on the identity.
- * @param mechanism The mechanism used to search for a duplicate.
- * @return The duplicate mechanism.
- */
-- (FRAMechanism *)getDuplicate:(FRAMechanism *)mechanism {
-    if (mechanismList) {
-        for (FRAMechanism *identityMechanism in mechanismList) {
-            if ([identityMechanism.type isEqualToString:mechanism.type]) {
-                return identityMechanism;
-            }
-        }
-    }
-    return nil;
 }
 
 @end

@@ -23,11 +23,6 @@
 @interface FRAPushMechanism : FRAMechanism
 
 /*!
- * The version number of this mechanism.
- */
-@property (nonatomic, readonly) NSInteger version;
-
-/*!
  * Secret key for Push Notifications
  */
 @property (nonatomic, readonly) NSString *secret;

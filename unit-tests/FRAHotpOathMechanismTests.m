@@ -11,31 +11,30 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2015-2016 ForgeRock AS.
+ * Copyright 2016 ForgeRock AS.
  */
 
 #import <OCMock/OCMock.h>
-
 #import <XCTest/XCTest.h>
 
+#import "FRAHotpOathMechanism.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAIdentityDatabaseSQLiteOperations.h"
 #import "FRAIdentityModel.h"
 #import "FRAOathCode.h"
-#import "FRAOathMechanism.h"
 #import "FRAOathMechanismFactory.h"
 #import "FRAFMDatabaseConnectionHelper.h"
 #import "FRAUriMechanismReader.h"
 
-@interface FRAOathMechanismTests : XCTestCase
+@interface FRAHotpOathMechanismTests : XCTestCase
 
 @end
 
-@implementation FRAOathMechanismTests {
+@implementation FRAHotpOathMechanismTests {
     id mockSqlOperations;
     id mockSqlDatabase;
     id databaseObserverMock;
-    FRAUriMechanismReader* factory;
+    FRAUriMechanismReader *reader;
     FRAIdentityDatabase *database;
     FRAIdentityModel *identityModel;
 }
@@ -49,8 +48,8 @@
     databaseObserverMock = OCMObserverMock();
     
     // Factory used for parsing OATH URLs
-    factory = [[FRAUriMechanismReader alloc] initWithDatabase:database identityModel:identityModel];
-    [factory addMechanismFactory:[[FRAOathMechanismFactory alloc] init]];
+    reader = [[FRAUriMechanismReader alloc] initWithDatabase:database identityModel:identityModel];
+    [reader addMechanismFactory:[[FRAOathMechanismFactory alloc] init]];
 }
 
 - (void)tearDown {
@@ -61,12 +60,12 @@
 
 - (void)testShouldGenerateNextCodeSequence {
     // Given
-    NSString* qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0";
-    FRAOathMechanism* mechanism = (FRAOathMechanism*)[factory parseFromString:qrString error:nil];
+    NSString *qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0";
+    FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)[reader parseFromString:qrString error:nil];
     
     // When
-    [mechanism generateNextCodeWithError:nil];
-    NSString* result = [[mechanism code] value];
+    [mechanism generateNextCode:nil];
+    NSString *result = [mechanism code];
     
     // Then
     XCTAssertEqualObjects(result, @"352916", @"Incorrect next hash");
@@ -74,12 +73,12 @@
 
 - (void)testGenerateDifferentCodeSequence {
     // Given
-    NSString* qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOI======&issuer=Forgerock&counter=0";
-    FRAOathMechanism* mechanism = (FRAOathMechanism*)[factory parseFromString:qrString error:nil];
+    NSString *qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOI======&issuer=Forgerock&counter=0";
+    FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)[reader parseFromString:qrString error:nil];
     
     // When
-    [mechanism generateNextCodeWithError:nil];
-    NSString* result = [[mechanism code] value];
+    [mechanism generateNextCode:nil];
+    NSString *result = [mechanism code];
     
     // Then
     XCTAssertEqualObjects(result, @"545550", @"Incorrect next hash");
@@ -87,13 +86,13 @@
 
 - (void)testSavedHotpOathMechanismAutomaticallySavesItselfToDatabaseWhenIncrementingCounter {
     // Given
-    NSString* qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0";
-    FRAOathMechanism* mechanism = (FRAOathMechanism*)[factory parseFromString:qrString error:nil];
-    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertMechanism:mechanism error:nil]).andReturn(YES);
+    NSString *qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0";
+    FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)[reader parseFromString:qrString error:nil];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations *)mockSqlOperations insertMechanism:mechanism error:nil]).andReturn(YES);
     [database insertMechanism:mechanism error:nil];
     
     // When
-    [mechanism generateNextCodeWithError:nil];
+    [mechanism generateNextCode:nil];
     
     // Then
     OCMVerify([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations updateMechanism:mechanism error:nil]);
@@ -101,16 +100,16 @@
 
 - (void)testBroadcastsOneChangeNotificationWhenHotpOathMechanismUpdateIsAutomaticallySavedToDatabase {
     // Given
-    NSString* qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0";
-    FRAOathMechanism* mechanism = (FRAOathMechanism*)[factory parseFromString:qrString error:nil];
-    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertMechanism:mechanism error:nil]).andReturn(YES);
+    NSString *qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0";
+    FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)[reader parseFromString:qrString error:nil];
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations *)mockSqlOperations insertMechanism:mechanism error:nil]).andReturn(YES);
     [database insertMechanism:mechanism error:nil];
-    OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations updateMechanism:mechanism error:nil]).andReturn(YES);
+    OCMStub([(FRAIdentityDatabaseSQLiteOperations *)mockSqlOperations updateMechanism:mechanism error:nil]).andReturn(YES);
     [[NSNotificationCenter defaultCenter] addMockObserver:databaseObserverMock name:FRAIdentityDatabaseChangedNotification object:database];
     [[databaseObserverMock expect] notificationWithName:FRAIdentityDatabaseChangedNotification object:database userInfo:[OCMArg any]];
     
     // When
-    [mechanism generateNextCodeWithError:nil];
+    [mechanism generateNextCode:nil];
     
     // Then
     OCMVerifyAll(databaseObserverMock);

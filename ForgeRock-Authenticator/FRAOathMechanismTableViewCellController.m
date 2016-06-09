@@ -14,11 +14,12 @@
  * Copyright 2016 ForgeRock AS.
  */
 
+#import "FRAHotpOathMechanism.h"
+#import "FRATotpOathMechanism.h"
 #import "FRAOathMechanismTableViewCellController.h"
 #import "FRABlockActionSheet.h"
 #import "FRAOathMechanismTableViewCell.h"
 #import "FRAIdentityModel.h"
-#import "FRAOathMechanism.h"
 #import "FRAOathCode.h"
 
 /*!
@@ -35,11 +36,11 @@
 
 @implementation FRAOathMechanismTableViewCellController
 
-+ (instancetype)controllerWithView:(FRAOathMechanismTableViewCell*)view mechanism:(FRAOathMechanism*)mechanism {
++ (instancetype)controllerWithView:(FRAOathMechanismTableViewCell*)view mechanism:(FRAMechanism *)mechanism {
     return [[FRAOathMechanismTableViewCellController alloc] initWithView:view mechanism:mechanism];
 }
 
-- (instancetype)initWithView:(FRAOathMechanismTableViewCell*)view mechanism:(FRAOathMechanism*)mechanism {
+- (instancetype)initWithView:(FRAOathMechanismTableViewCell*)view mechanism:(FRAMechanism *)mechanism {
     if (self = [super init]) {
         _tableViewCell = view;
         _mechanism = mechanism;
@@ -49,9 +50,9 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    if ([self.mechanism.type isEqualToString:@"totp"]) {
+    if ([self.mechanism isKindOfClass:[FRATotpOathMechanism class]]) {
         [self startProgressAnimationTimer];
-    } else if ([self.mechanism.type isEqualToString:@"hotp"]) {
+    } else if ([self.mechanism isKindOfClass:[FRAHotpOathMechanism class]]) {
         [self stopProgressAnimationTimer];
     }
     [self showHideElements];
@@ -69,12 +70,12 @@
             self.tableViewCell.hotpRefreshButton.alpha = 0.0f;
         }];
     } else {
-        if ([self.mechanism.type isEqualToString:@"totp"]) {
+        if ([self.mechanism isKindOfClass:[FRATotpOathMechanism class]]) {
             [UIView animateWithDuration:0.5f animations:^{
                 self.tableViewCell.totpCodeProgress.alpha = 1.0f;
                 self.tableViewCell.hotpRefreshButton.alpha = 0.0f;
             }];
-        } else if ([self.mechanism.type isEqualToString:@"hotp"]) {
+        } else if ([self.mechanism isKindOfClass:[FRAHotpOathMechanism class]]) {
             [UIView animateWithDuration:0.5f animations:^{
                 self.tableViewCell.totpCodeProgress.alpha = 0.0f;
                 self.tableViewCell.hotpRefreshButton.alpha = 1.0f;
@@ -86,13 +87,26 @@
 }
 
 - (void)timerCallback:(NSTimer*)timer {
-    if ((!self.mechanism.code) || [self.mechanism.code hasExpired]) {
-        // TODO: Handle error
-        @autoreleasepool {
-            NSError* error;
-            [self.mechanism generateNextCodeWithError:&error];
+    if ([self.mechanism isKindOfClass:[FRATotpOathMechanism class]]) {
+        FRATotpOathMechanism *mechanism = (FRATotpOathMechanism *)self.mechanism;
+        if ((!mechanism.code) || [mechanism hasExpired]) {
+            // TODO: Handle error
+            @autoreleasepool {
+                NSError* error;
+                [mechanism generateNextCode:&error];
+            }
+        }
+    } else if ([self.mechanism isKindOfClass:[FRAHotpOathMechanism class]]) {
+        FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)self.mechanism;
+        if ((!mechanism.code)) {
+            // TODO: Handle error
+            @autoreleasepool {
+                NSError* error;
+                [mechanism generateNextCode:&error];
+            }
         }
     }
+    
     [self reloadData];
 }
 
@@ -104,7 +118,7 @@
 
 - (void)didTouchUpInside {
     if (!self.isEditing) {
-        if (!self.mechanism.code) {
+        if (![self mechanismCode]) {
             // if no code has been generated, allow the first to be created by touching anywhere within the cell;
             // once the first code has been generated, the refresh button must be used
             [self generateNextCode];
@@ -118,8 +132,8 @@
                                                 otherButtonTitles:@"Copy", nil];
             actionSheet.callback = ^(NSInteger offset) {
                 if (offset == 1) {
-                    NSString* codeValue = self.mechanism.code.value;
-                    if (codeValue != nil) {
+                    NSString* codeValue = [self mechanismCode];
+                    if (codeValue) {
                         [[UIPasteboard generalPasteboard] setString:codeValue];
                     }
                 }
@@ -129,12 +143,24 @@
     }
 }
 
+- (NSString *)mechanismCode {
+    return (FRAHotpOathMechanism *)self.mechanism ? ((FRAHotpOathMechanism *)self.mechanism).code : ((FRATotpOathMechanism *)self.mechanism).code;
+}
+
+- (NSInteger)mechanismCodeLength {
+    return (FRAHotpOathMechanism *)self.mechanism ? ((FRAHotpOathMechanism *)self.mechanism).codeLength : ((FRATotpOathMechanism *)self.mechanism).codeLength;
+}
+
 - (void)generateNextCode {
     if (!self.isEditing) {
         // TODO: Handle error
         @autoreleasepool {
             NSError* error;
-            [self.mechanism generateNextCodeWithError:&error];
+            if ([[self mechanism] isKindOfClass:[FRAHotpOathMechanism class]]) {
+                [(FRAHotpOathMechanism *)self.mechanism generateNextCode:&error];
+            } else if ([[self mechanism] isKindOfClass:[FRATotpOathMechanism class]]) {
+                [(FRATotpOathMechanism *)self.mechanism generateNextCode:&error];
+            }
         }
     }
 }
@@ -145,8 +171,9 @@
     UIColor *color = seaGreen;
     
     // Set font color for code and (if totp-based) the progress indicator
-    if ([self.mechanism.type isEqualToString:@"totp"] && !self.isEditing) {
-        float progress = self.mechanism.code.progress;
+    if ([self.mechanism isKindOfClass:[FRATotpOathMechanism class]] && !self.isEditing) {
+        FRATotpOathMechanism *mechanism = (FRATotpOathMechanism *)[self mechanism];
+        float progress = mechanism.progress;
         if (progress > 0.9f) {
             color = dashboardRed;
         }
@@ -158,9 +185,10 @@
     }
     
     // Set the code text
-    NSString* codeValue = [@"" stringByPaddingToLength:self.mechanism.digits withString:@"●" startingAtIndex:0];
-    if (self.mechanism.code && !self.isEditing) {
-        codeValue = self.mechanism.code.value;
+    NSString* codeValue = [@"" stringByPaddingToLength:[self mechanismCodeLength] withString:@"●" startingAtIndex:0];
+    NSString *mechanismCode = [self mechanismCode];
+    if (mechanismCode && !self.isEditing) {
+        codeValue = mechanismCode;
     }
     NSUInteger midPoint = codeValue.length / 2;
     NSString *firstHalf = [codeValue substringToIndex:midPoint];

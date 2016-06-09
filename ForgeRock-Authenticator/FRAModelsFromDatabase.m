@@ -18,12 +18,13 @@
 #import "FMDatabase.h"
 #import "FRAError.h"
 #import "FRAFMDatabaseConnectionHelper.h"
-#import "FRAHMACAlgorithm.h"
+#import "FRAOathCode.h"
 #import "FRAIdentity.h"
 #import "FRAModelObjectProtected.h"
 #import "FRAModelsFromDatabase.h"
 #import "FRANotification.h"
-#import "FRAOathMechanism.h"
+#import "FRAHotpOathMechanism.h"
+#import "FRATotpOathMechanism.h"
 #import "FRAPushMechanism.h"
 #import "FRASerialization.h"
 
@@ -135,7 +136,7 @@
             numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
             
             // Create the Mechanism
-            if ([type  isEqualToString:@"hotp"] || [type  isEqualToString:@"totp"]) {
+            if ([type  isEqualToString:[FRAHotpOathMechanism mechanismType]]) {
                 
                 // TODO: Null checking on errors.
                 
@@ -151,36 +152,67 @@
                 
                 // Algorithm - String enumeration
                 NSString *algorithmValue = [optionsMap objectForKey:OATH_MECHANISM_ALGORITHM];
-                CCHmacAlgorithm algorithm = [FRAHMACAlgorithm fromString:algorithmValue];
+                CCHmacAlgorithm algorithm = [FRAOathCode fromString:algorithmValue];
                 
-                // Digits - String value of Integer
-                NSString *digitsValue = [optionsMap objectForKey:OATH_MECHANISM_DIGITS];
-                int digits = [[numberFormatter numberFromString:digitsValue] intValue];
-                
-                // Period - String value of unsigned Integer
-                NSString *periodValue = [optionsMap objectForKey:OATH_MECHANISM_PERIOD];
-                u_int32_t period = [[numberFormatter numberFromString:periodValue] unsignedIntValue];
+                // Code Length - String value of Integer
+                NSString *codeLengthValue = [optionsMap objectForKey:OATH_MECHANISM_DIGITS];
+                int codeLength = [[numberFormatter numberFromString:codeLengthValue] intValue];
                 
                 // Counter - String value of unsigned Long Long
                 NSString *counterValue = [optionsMap objectForKey:OATH_MECHANISM_COUNTER];
                 u_int64_t counter = [[numberFormatter numberFromString:counterValue] unsignedLongLongValue];
                 
-                FRAOathMechanism *newMechanism = [FRAOathMechanism
-                                                  oathMechanismWithDatabase:identityDatabase
-                                                  identityModel:identityModel
-                                                  type:type
-                                                  usingSecretKey:secret
-                                                  andHMACAlgorithm:algorithm
-                                                  withKeyLength:digits
-                                                  andEitherPeriod:period
-                                                  orCounter:counter];
+                FRAHotpOathMechanism *newMechanism = [FRAHotpOathMechanism mechanismWithDatabase:identityDatabase
+                                                                                   identityModel:identityModel
+                                                                                       secretKey:secret
+                                                                                   HMACAlgorithm:algorithm
+                                                                                      codeLength:codeLength
+                                                                                         counter:counter];
                 
-                // Note: We are not de-duplicating OATH Mechanism becuase they will not be duplicated in the SQL results.
+                // Note: We are not de-duplicating OATH Mechanism because they will not be duplicated in the SQL results.
                 if (![newIdentity addMechanism:newMechanism error:error]) {
                     return nil;
                 }
                 
-            } else if ([type isEqualToString:@"push"]) {
+            } else if ([type isEqualToString:[FRATotpOathMechanism mechanismType]]) {
+                
+                // TODO: Null checking on errors.
+                
+                // Options Map is a String to String mapping stored in JSON.
+                NSDictionary *optionsMap;
+                if (![FRASerialization deserializeJSON:optionsJSON intoDictionary:&optionsMap error:error]) {
+                    return nil;
+                }
+                
+                // Secret Key - Base 64 encoded bytes
+                NSString *secretValue = [optionsMap objectForKey:OATH_MECHANISM_SECRET];
+                NSData* secret = [FRASerialization deserializeBytes:secretValue];
+                
+                // Algorithm - String enumeration
+                NSString *algorithmValue = [optionsMap objectForKey:OATH_MECHANISM_ALGORITHM];
+                CCHmacAlgorithm algorithm = [FRAOathCode fromString:algorithmValue];
+                
+                // Code Length - String value of Integer
+                NSString *codeLengthValue = [optionsMap objectForKey:OATH_MECHANISM_DIGITS];
+                int codeLength = [[numberFormatter numberFromString:codeLengthValue] intValue];
+                
+                // Period - String value of unsigned Integer
+                NSString *periodValue = [optionsMap objectForKey:OATH_MECHANISM_PERIOD];
+                u_int32_t period = [[numberFormatter numberFromString:periodValue] unsignedIntValue];
+                
+                FRATotpOathMechanism *newMechanism = [FRATotpOathMechanism mechanismWithDatabase:identityDatabase
+                                                                                   identityModel:identityModel
+                                                                                       secretKey:secret
+                                                                                   HMACAlgorithm:algorithm
+                                                                                      codeLength:codeLength
+                                                                                          period:period];
+                
+                // Note: We are not de-duplicating OATH Mechanism because they will not be duplicated in the SQL results.
+                if (![newIdentity addMechanism:newMechanism error:error]) {
+                    return nil;
+                }
+                
+            } else if ([type isEqualToString:[FRAPushMechanism mechanismType]]) {
                 
                 // Options Map is a String to String mapping stored in JSON.
                 NSDictionary *optionsMap;

@@ -14,13 +14,11 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-
-
+#import "FRAError.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAMechanism.h"
 #import "FRAModelObjectProtected.h"
 #import "FRANotification.h"
-
 
 @implementation FRAMechanism {
     NSMutableArray *notificationList;
@@ -80,6 +78,10 @@
         }
     }
     return nil;
+}
+
++ (NSString *)mechanismType {
+    @throw [FRAError createIllegalStateException:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]];
 }
 
 @end

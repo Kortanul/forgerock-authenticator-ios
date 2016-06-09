@@ -26,7 +26,6 @@
 #import "FRAUriMechanismReader.h"
 #import "FRANotification.h"
 #import "FRANotificationGateway.h"
-#import "FRAOathMechanism.h"
 #import "FRAPushMechanism.h"
 
 

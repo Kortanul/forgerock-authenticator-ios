@@ -16,37 +16,54 @@
  * Portions Copyright 2014 Nathaniel McCallum, Red Hat
  */
 
+#include <CommonCrypto/CommonHMAC.h>
+#include <sys/time.h>
+#include "base32.h"
 
 #import <sys/time.h>
 
 /*!
- * Represents a currently active OTP code.
+ * Methods for dealing with keyed-hash message authentication codes (HMAC).
  */
 @interface FRAOathCode : NSObject
 
 /*!
- * Initializer.
+ * Create a keyed-hash message authentication code (HMAC).
  *
- * @param value The one-time-password code for current counter value.
- * @param start The start-time for this one-time-password code.
- * @param end The end-time for this one-time-password code.
- * @return instantiated instance or nil if a problem occurred.
+ * @param algorithm The cryptographic function to use in the calculation of the HMAC.
+ * @param codeLength The length of the code.
+ * @param key The secret key.
+ * @param counter The counter to hash.
+ *
+ * @return The keyed-hash message authentication code (HMAC).
  */
-- (instancetype)initWithValue:(NSString *)value startTime:(uint64_t)start endTime:(uint64_t)end;
++ (NSString *)hmac:(CCHmacAlgorithm)algorithm codeLength:(uint8_t)codeLength key:(NSData *)key counter:(uint64_t) counter;
 
 /*!
- * The one-time-password value used for authentication.
+ * String representation of an HMAC algorithm.
+ *
+ * @param algorithm The HMAC algorithm to convert to a string.
+ *
+ * @return The string representation of the HMAC algorithm.
  */
-@property (strong, nonatomic) NSString *value;
++ (NSString *)asString:(CCHmacAlgorithm)algorithm;
 
 /*!
- * The elapsed time for the current code normalized to a value between 0.0 and 1.0.
+ * Convert string to HMAC algorithm constant.
+ *
+ * @param string The string to convert back to the HMAC algorithm constant.
+ *
+ * @return The HMAC algorithm constant.
  */
-- (float)progress;
++ (CCHmacAlgorithm)fromString:(NSString *) string;
 
 /*!
- * Check whether this code has expired (progress == 1.0).
+ * Returns the number of bytes used by a specific HMAC algorithm.
+ *
+ * @param algorithm The HMAC algorithm.
+ *
+ * @return The number of bytes used by the algorithm.
  */
-- (BOOL)hasExpired;
++ (int)getDigestLength:(CCHmacAlgorithm) algorithm;
 
 @end

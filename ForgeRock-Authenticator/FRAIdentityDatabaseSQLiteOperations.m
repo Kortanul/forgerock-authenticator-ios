@@ -16,16 +16,16 @@
 
 #import "FMDatabase.h"
 #import "FRAError.h"
-#import "FRAHMACAlgorithm.h"
+#import "FRAFMDatabaseConnectionHelper.h"
+#import "FRAHotpOathMechanism.h"
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabaseSQLiteOperations.h"
 #import "FRAMechanism.h"
 #import "FRANotification.h"
 #import "FRAOathCode.h"
-#import "FRAOathMechanism.h"
 #import "FRAPushMechanism.h"
-#import "FRAFMDatabaseConnectionHelper.h"
 #import "FRASerialization.h"
+#import "FRATotpOathMechanism.h"
 
 @implementation FRAIdentityDatabaseSQLiteOperations {
     FRAFMDatabaseConnectionHelper *sqlDatabase;
@@ -126,68 +126,61 @@
     [arguments addObject:[FRASerialization nonNilString:parent.accountName]];
     
     // mechanismUID - Special case for PushMechanism
-    if ([mechanism isKindOfClass:[FRAOathMechanism class]]) {
+    if ([mechanism isKindOfClass:[FRAHotpOathMechanism class]] || [mechanism isKindOfClass:[FRATotpOathMechanism class]]) {
         [arguments addObject:[NSNull null]];
     } else if ([mechanism isKindOfClass:[FRAPushMechanism class]]) {
-        FRAPushMechanism* pushMechanism = (FRAPushMechanism*)mechanism;
+        FRAPushMechanism *pushMechanism = (FRAPushMechanism*)mechanism;
         [arguments addObject:[FRASerialization nonNilString:pushMechanism.mechanismUID]];
     } else {
         @throw [FRAError createIllegalStateException:@"Unrecognised class of Mechanism"];
     }
     
-    // type
-    NSString *type;
-    if ([mechanism isKindOfClass:[FRAOathMechanism class]]) {
-        FRAOathMechanism *oathMechanism = (FRAOathMechanism *)mechanism;
-        type = oathMechanism.type;
-    } else if ([mechanism isKindOfClass:[FRAPushMechanism class]]) {
-        FRAPushMechanism *pushMechanism = (FRAPushMechanism *)mechanism;
-        type = pushMechanism.type;
-    } else {
-        @throw [FRAError createIllegalStateException:@"Unrecognised class of Mechanism"];
-    }
-    [arguments addObject:[FRASerialization nonNilString:type]];
+    // Mechanism Type
+    [arguments addObject:[FRASerialization nonNilString:[[mechanism class] mechanismType]]];
 
     // Version
-    NSInteger version;
-    if ([mechanism isKindOfClass:[FRAOathMechanism class]]) {
-        FRAOathMechanism *oathMechanism = (FRAOathMechanism *)mechanism;
-        version = oathMechanism.version;
-    } else if ([mechanism isKindOfClass:[FRAPushMechanism class]]) {
-        FRAPushMechanism *pushMechanism = (FRAPushMechanism *)mechanism;
-        version = pushMechanism.version;
-    } else {
-        @throw [FRAError createIllegalStateException:@"Unrecognised class of Mechanism"];
-    }
-    [arguments addObject:[NSNumber numberWithInteger:version]];
+    [arguments addObject:[NSNumber numberWithInteger:mechanism.version]];
     
     // Options
     NSMutableDictionary *options = [[NSMutableDictionary alloc] init];
-    if ([mechanism isKindOfClass:[FRAOathMechanism class]]) {
-        FRAOathMechanism *oathMechanism = (FRAOathMechanism *)mechanism;
+    if ([mechanism isKindOfClass:[FRAHotpOathMechanism class]]) {
+        FRAHotpOathMechanism *hotpOathMechanism = (FRAHotpOathMechanism *)mechanism;
         
         // Secret Key
-        NSString *base64Key = [FRASerialization serializeBytes:oathMechanism.secretKey];
+        NSString *base64Key = [FRASerialization serializeBytes:hotpOathMechanism.secretKey];
         [options setObject:[FRASerialization nonNilString:base64Key] forKey:OATH_MECHANISM_SECRET];
         
         // Algorithm
-        NSString *algorithm = [FRAHMACAlgorithm asString:oathMechanism.algorithm];
+        NSString *algorithm = [FRAOathCode asString:hotpOathMechanism.algorithm];
         [options setObject:[FRASerialization nonNilString:algorithm] forKey:OATH_MECHANISM_ALGORITHM];
 
-        // Digits
-        NSString *digitsString = [[NSNumber numberWithUnsignedInteger:oathMechanism.digits] stringValue];
+        // Code Length
+        NSString *digitsString = [[NSNumber numberWithUnsignedInteger:hotpOathMechanism.codeLength] stringValue];
+        [options setObject:[FRASerialization nonNilString:digitsString] forKey:OATH_MECHANISM_DIGITS];
+        
+        // Counter
+        NSString *counterString = [[NSNumber numberWithUnsignedLongLong:hotpOathMechanism.counter] stringValue];
+        [options setObject:[FRASerialization nonNilString:counterString] forKey:OATH_MECHANISM_COUNTER];
+        
+    } else if ([mechanism isKindOfClass:[FRATotpOathMechanism class]]) {
+        FRATotpOathMechanism *totpOathMechanism = (FRATotpOathMechanism *)mechanism;
+        
+        // Secret Key
+        NSString *base64Key = [FRASerialization serializeBytes:totpOathMechanism.secretKey];
+        [options setObject:[FRASerialization nonNilString:base64Key] forKey:OATH_MECHANISM_SECRET];
+        
+        // Algorithm
+        NSString *algorithm = [FRAOathCode asString:totpOathMechanism.algorithm];
+        [options setObject:[FRASerialization nonNilString:algorithm] forKey:OATH_MECHANISM_ALGORITHM];
+        
+        // Code Length
+        NSString *digitsString = [[NSNumber numberWithUnsignedInteger:totpOathMechanism.codeLength] stringValue];
         [options setObject:[FRASerialization nonNilString:digitsString] forKey:OATH_MECHANISM_DIGITS];
         
         // Period
-        NSString *periodString = [[NSNumber numberWithUnsignedInteger:oathMechanism.period] stringValue];
+        NSString *periodString = [[NSNumber numberWithUnsignedInteger:totpOathMechanism.period] stringValue];
         [options setObject:[FRASerialization nonNilString:periodString] forKey:OATH_MECHANISM_PERIOD];
-        
-        // Counter
-        NSString *counterString = [[NSNumber numberWithUnsignedLongLong:oathMechanism.counter] stringValue];
-        [options setObject:[FRASerialization nonNilString:counterString] forKey:OATH_MECHANISM_COUNTER];
-        
     } else if ([mechanism isKindOfClass:[FRAPushMechanism class]]) {
-        
         FRAPushMechanism *pushMechanism = (FRAPushMechanism *)mechanism;
         
         // Secret Key as String
@@ -199,7 +192,6 @@
         // Version integer as String
         NSString *versionString = [[NSNumber numberWithInteger:pushMechanism.version] stringValue];
         [options setObject:[FRASerialization nonNilString:versionString] forKey:PUSH_MECHANISM_VERSION];
-        
     } else {
         @throw [FRAError createIllegalStateException:@"Unrecognised class of Mechanism"];
     }
@@ -225,18 +217,8 @@
     // Account Name
     [arguments addObject:[FRASerialization nonNilString:parent.accountName]];
     
-    // Type
-    NSString *type;
-    if ([mechanism isKindOfClass:[FRAOathMechanism class]]) {
-        FRAOathMechanism *oathMechanism = (FRAOathMechanism *)mechanism;
-        type = oathMechanism.type;
-    } else if ([mechanism isKindOfClass:[FRAPushMechanism class]]) {
-        FRAPushMechanism *pushMechanism = (FRAPushMechanism *)mechanism;
-        type = pushMechanism.type;
-    } else {
-        @throw [FRAError createIllegalStateException:@"Unrecognised class of Mechanism"];
-    }
-    [arguments addObject:[FRASerialization nonNilString:type]];
+    // Mechanism Type
+    [arguments addObject:[FRASerialization nonNilString:[[mechanism class] mechanismType]]];
     
     return [self performStatement:@"delete_mechanism" withValues:arguments error:error];
 }
@@ -254,7 +236,7 @@
     FRAMechanism *parent = notification.parent;
     // mechanismUID
     NSString *mechanismUID;
-    if ([parent isKindOfClass:[FRAOathMechanism class]]) {
+    if ([parent isKindOfClass:[FRAHotpOathMechanism class]] || [parent isKindOfClass:[FRATotpOathMechanism class]]) {
         mechanismUID = nil;
     } else if ([parent isKindOfClass:[FRAPushMechanism class]]) {
         FRAPushMechanism *pushMechanism = (FRAPushMechanism *)parent;
@@ -309,7 +291,7 @@
     
     // mechanismUID
     NSString *mechanismUID;
-    if ([parent isKindOfClass:[FRAOathMechanism class]]) {
+    if ([parent isKindOfClass:[FRAHotpOathMechanism class]] || [parent isKindOfClass:[FRATotpOathMechanism class]]) {
         mechanismUID = nil;
     } else if ([parent isKindOfClass:[FRAPushMechanism class]]) {
         FRAPushMechanism *pushMechanism = (FRAPushMechanism *)parent;

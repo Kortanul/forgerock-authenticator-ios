@@ -29,7 +29,7 @@
  */
 @interface FRAMechanism : FRAModelObject {
     @protected
-    NSString *_type;
+    NSInteger _version;
 }
 
 /*!
@@ -40,14 +40,14 @@
 @property (nonatomic) FRAIdentity *parent;
 
 /*!
+ * The version number of this mechanism.
+ */
+@property (nonatomic, readonly) NSInteger version;
+
+/*!
  * A list of the current Notficiations that are assigned to this Mechanism.
  */
 @property (getter=notifications, nonatomic, readonly) NSArray<FRANotification *> *notifications;
-
-/*!
- * The type of this mechanism (totp, hotp or push).
- */
-@property (nonatomic, readonly) NSString *type;
 
 #pragma mark -
 #pragma mark Lifecyle
@@ -97,5 +97,10 @@
  * @return The notification with the specified messageId or nil if no match is found.
  */
 - (FRANotification *)notificationWithMessageId:(NSString *)messageId;
+
+/*!
+ * Return the mechanism type (i.e. totp, hotp or push).
+ */
++ (NSString *)mechanismType;
 
 @end

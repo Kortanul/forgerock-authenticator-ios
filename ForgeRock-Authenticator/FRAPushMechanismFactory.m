@@ -105,7 +105,7 @@ NSString *const ISSUER_QR_KEY = @"issuer";
         return nil;
     }
     NSString* _type = [uri host];
-    if (_type == nil || ![_type isEqualToString:@"push"]) {
+    if (_type == nil || ![_type isEqualToString:[FRAPushMechanism mechanismType]]) {
         return nil;
     }
     // Get the path and strip it of its leading '/'

@@ -16,19 +16,16 @@
  * Portions Copyright 2014 Nathaniel McCallum, Red Hat
  */
 
+#include "base32.h"
+#include <CommonCrypto/CommonHMAC.h>
+#include <sys/time.h>
 
 #import "FRAMechanismFactory.h"
-#import "FRAOathMechanism.h"
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAIdentityModel.h"
 #import "FRAMechanism.h"
 #import "FRAUriMechanismReader.h"
-
-
-#include "base32.h"
-#include <CommonCrypto/CommonHMAC.h>
-#include <sys/time.h>
 
 @implementation FRAUriMechanismReader {
 

@@ -17,6 +17,7 @@
 #import <OCMock/OCMock.h>
 #import <XCTest/XCTest.h>
 
+#import "FRAHotpOathMechanism.h"
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAIdentityDatabaseSQLiteOperations.h"
@@ -24,7 +25,6 @@
 #import "FRAModelObjectProtected.h"
 #import "FRANotification.h"
 #import "FRANotificationHandler.h"
-#import "FRAOathMechanism.h"
 #import "FRAPushMechanism.h"
 #import "FRAFMDatabaseConnectionHelper.h"
 
@@ -41,7 +41,7 @@ static NSString *const CHALLENGE = @"dGhlbGVnZW5kb2ZsdW5h";
     FRAIdentityModel *identityModel;
     FRAIdentity *identity;
     FRAPushMechanism *pushMechanism;
-    FRAOathMechanism *oathMechanism;
+    FRAHotpOathMechanism *oathMechanism;
     UIApplication *mockApplication;
     FRAFMDatabaseConnectionHelper *mockSqlDatabase;
     id mockDatabaseOperations;
@@ -61,7 +61,7 @@ static NSString *const CHALLENGE = @"dGhlbGVnZW5kb2ZsdW5h";
     pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database identityModel:identityModel];
     [pushMechanism setValue:@"0" forKey:@"mechanismUID"];
 
-    oathMechanism = [[FRAOathMechanism alloc] initWithDatabase:database identityModel:identityModel];
+    oathMechanism = [[FRAHotpOathMechanism alloc] initWithDatabase:database identityModel:identityModel];
     [identityModel addIdentity:identity error:nil];
     [identity addMechanism:pushMechanism error:nil];
     [identity addMechanism:oathMechanism error:nil];

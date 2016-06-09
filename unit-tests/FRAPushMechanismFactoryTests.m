@@ -18,9 +18,12 @@
 #import <OCMock/OCMock.h>
 
 #import "FRAError.h"
+#import "FRAidentity.h"
 #import "FRAMessageUtils.h"
+#import "FRAPushMechanism.h"
 #import "FRAPushMechanismFactory.h"
 
+static NSInteger const RESPOND_WITH_ENDPOINT_HANDLER_CALLBACK_PARAMETER_INDEX = 7;
 @interface FRAPushMechanismFactoryTests : XCTestCase
 
 @end
@@ -41,6 +44,89 @@
 - (void)tearDown {
     [mockMessageUtils stopMocking];
     [super tearDown];
+}
+
+- (void)testParseSetsImageUrlOnIdentity {
+    OCMStub([mockMessageUtils respondWithEndpoint:[OCMArg any]
+                                     base64Secret:[OCMArg any]
+                                        messageId:[OCMArg any]
+                           loadBalancerCookieData:[OCMArg any]
+                                             data:[OCMArg any]
+                                          handler:[OCMArg any]]);
+    NSURL *qrUrl = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=dA18Iph3slIUDVuRc5+3y7nv9NLGnPksH66d3jIF6uE=&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMQ==&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer=Rm9yZ2Vyb2Nr"];
+    
+    FRAPushMechanism *mechanism = (FRAPushMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel error:nil];
+    
+    FRAIdentity *identity = mechanism.parent;
+    XCTAssertEqualObjects([identity.image absoluteString], @"http://seattlewriter.com/wp-content/uploads/2013/01/weight-watchers-small.gif");
+}
+
+- (void)testMechanismIsRemovedIfFailedToRespond {
+    OCMStub([mockMessageUtils respondWithEndpoint:[OCMArg any]
+                                     base64Secret:[OCMArg any]
+                                        messageId:[OCMArg any]
+                           loadBalancerCookieData:[OCMArg any]
+                                             data:[OCMArg any]
+                                          handler:[OCMArg any]])
+    .andDo(^(NSInvocation *invocation) {
+        void (^callback)(NSInteger, NSError *);
+        [invocation getArgument:&callback atIndex:RESPOND_WITH_ENDPOINT_HANDLER_CALLBACK_PARAMETER_INDEX];
+        
+        callback(404, nil);
+    });
+    NSURL *qrUrl = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=dA18Iph3slIUDVuRc5+3y7nv9NLGnPksH66d3jIF6uE=&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMQ==&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer=Rm9yZ2Vyb2Nr"];
+    
+    FRAPushMechanism *mechanism = (FRAPushMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel error:nil];
+    
+    XCTAssertNil([identityModel mechanismWithId:mechanism.mechanismUID]);
+}
+
+- (void)testIdentityIsRemovedIfFailedToRespondAndIdentityHasNoOtherMechanism {
+    OCMStub([mockMessageUtils respondWithEndpoint:[OCMArg any]
+                                     base64Secret:[OCMArg any]
+                                        messageId:[OCMArg any]
+                           loadBalancerCookieData:[OCMArg any]
+                                             data:[OCMArg any]
+                                          handler:[OCMArg any]])
+    .andDo(^(NSInvocation *invocation) {
+        void (^callback)(NSInteger, NSError *);
+        [invocation getArgument:&callback atIndex:RESPOND_WITH_ENDPOINT_HANDLER_CALLBACK_PARAMETER_INDEX];
+        
+        callback(404, nil);
+    });
+    NSURL *qrUrl = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=dA18Iph3slIUDVuRc5+3y7nv9NLGnPksH66d3jIF6uE=&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMQ==&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer=Rm9yZ2Vyb2Nr"];
+    
+    [factory buildMechanism:qrUrl database:nil identityModel:identityModel error:nil];
+    
+    XCTAssertNil([identityModel identityWithIssuer:@"ForgeRock" accountName:@"demo3"]);
+}
+
+- (void)testIdentityIsNotRemovedIfFailedToRespondButIdentityHasOtherMechanisms {
+    OCMExpect([mockMessageUtils respondWithEndpoint:[OCMArg any]
+                                       base64Secret:[OCMArg any]
+                                          messageId:[OCMArg any]
+                             loadBalancerCookieData:[OCMArg any]
+                                               data:[OCMArg any]
+                                            handler:[OCMArg any]]);
+    NSURL *successfulQr = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=dGhlbGVnZW5kb2ZsdW5h=&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMQ==&m=0efccfa7-c4ac-4fa4-99ef-b425027f03f7&issuer=Rm9yZ2Vyb2Nr"];
+    [factory buildMechanism:successfulQr database:nil identityModel:identityModel error:nil];
+    
+    OCMExpect([mockMessageUtils respondWithEndpoint:[OCMArg any]
+                                       base64Secret:[OCMArg any]
+                                          messageId:[OCMArg any]
+                             loadBalancerCookieData:[OCMArg any]
+                                               data:[OCMArg any]
+                                            handler:[OCMArg any]])
+    .andDo(^(NSInvocation *invocation) {
+        void (^callback)(NSInteger, NSError *);
+        [invocation getArgument:&callback atIndex:RESPOND_WITH_ENDPOINT_HANDLER_CALLBACK_PARAMETER_INDEX];
+        
+        callback(404, nil);
+    });
+    NSURL *unsuccessfulQr = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=dA18Iph3slIUDVuRc5+3y7nv9NLGnPksH66d3jIF6uE=&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMQ==&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer=Rm9yZ2Vyb2Nr"];
+    [factory buildMechanism:unsuccessfulQr database:nil identityModel:identityModel error:nil];
+    
+    XCTAssertNotNil([identityModel identityWithIssuer:@"Forgerock" accountName:@"demo3"]);
 }
 
 - (void)testBuildMechanismReturnsNilIfDuplicate {

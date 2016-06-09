@@ -14,10 +14,7 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-
-
 #import "FRACircleProgressView.h"
-#import "FRAOathMechanism.h"
 #import "FRAOathMechanismTableViewCellController.h"
 
 /*!

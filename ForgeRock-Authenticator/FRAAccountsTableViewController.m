@@ -18,11 +18,12 @@
 #import "FRAAccountTableViewCell.h"
 #import "FRAAccountTableViewController.h"
 #import "FRABlockAlertView.h"
+#import "FRAHotpOathMechanism.h"
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAIdentityModel.h"
-#import "FRAOathMechanism.h"
 #import "FRAPushMechanism.h"
+#import "FRATotpOathMechanism.h"
 #import "FRAUIUtils.h"
 
 NSString * const FRAAccountsTableViewControllerStoryboardIdentifer = @"AccountsTableViewController";
@@ -89,10 +90,11 @@ NSString * const FRAAccountsTableViewControllerScanQrCodeSegue = @"scanQrCodeSeg
     cell.issuer.text = identity.issuer;
     cell.accountName.text = identity.accountName;
     
-    FRAOathMechanism *oathMechanism = (FRAOathMechanism *)[identity mechanismOfClass:[FRAOathMechanism class]];
+    FRAHotpOathMechanism *hotpOathMechanism = (FRAHotpOathMechanism *)[identity mechanismOfClass:[FRAHotpOathMechanism class]];
+    FRATotpOathMechanism *totpOathMechanism = (FRATotpOathMechanism *)[identity mechanismOfClass:[FRATotpOathMechanism class]];
     FRAPushMechanism *pushMechanism = (FRAPushMechanism *)[identity mechanismOfClass:[FRAPushMechanism class]];
 
-    if (oathMechanism && pushMechanism) {
+    if ((hotpOathMechanism || totpOathMechanism) && pushMechanism) {
         cell.firstMechanismIcon.image = [UIImage imageNamed:@"NotificationIcon"];
         cell.notificationsBadge.text = [NSString stringWithFormat:@"%lu", (unsigned long)[pushMechanism pendingNotificationsCount]];
         cell.secondMechanismIcon.image = [UIImage imageNamed:@"TokensIcon"];
@@ -103,7 +105,7 @@ NSString * const FRAAccountsTableViewControllerScanQrCodeSegue = @"scanQrCodeSeg
         cell.notificationsBadge.text = [NSString stringWithFormat:@"%lu", (unsigned long)[pushMechanism pendingNotificationsCount]];
         cell.firstMechanismIcon.hidden = false;
         cell.secondMechanismIcon.hidden = true;
-    } else if (oathMechanism) {
+    } else if (hotpOathMechanism || totpOathMechanism) {
         cell.firstMechanismIcon.image = [UIImage imageNamed:@"TokensIcon"];
         cell.notificationsBadge.text = @"0";
         cell.firstMechanismIcon.hidden = false;

@@ -17,14 +17,15 @@
 #import "FMDatabase.h"
 #import "FRADatabaseConfiguration.h"
 #import "FRAError.h"
+#import "FRAHotpOathMechanism.h"
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAIdentityDatabaseSQLiteOperations.h"
 #import "FRAMechanismFactory.h"
 #import "FRAModelObjectProtected.h"
 #import "FRANotification.h"
-#import "FRAOathMechanism.h"
 #import "FRAPushMechanism.h"
+#import "FRATotpOathMechanism.h"
 
 NSString * const FRAIdentityDatabaseChangedNotification = @"FRAIdentityDatabaseChangedNotification";
 NSString * const FRAIdentityDatabaseChangedNotificationAddedItems = @"added";
@@ -39,10 +40,7 @@ NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems = @"updated"
  * 
  * Actual SQL calls are delegated to FRAIdentityDatabaseSQLiteOperations.
  */
-@implementation FRAIdentityDatabase {
-
-
-}
+@implementation FRAIdentityDatabase
 
 #pragma mark -
 #pragma mark Lifecyle
@@ -194,21 +192,10 @@ NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems = @"updated"
         }
         return NO;
     }
-    if ([mechanism isKindOfClass:[FRAOathMechanism class]]) {
-        FRAOathMechanism *oathMechanism = (FRAOathMechanism *)mechanism;
-        if (![self.sqlOperations updateMechanism:oathMechanism error:error]) {
-            return NO;
-        }
-        [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationUpdatedItems] addObject:mechanism];
-    } else if ([mechanism isKindOfClass:[FRAPushMechanism class]]) {
-        FRAPushMechanism *pushMechanism = (FRAPushMechanism *)mechanism;
-        if (![self.sqlOperations updateMechanism:pushMechanism error:error]) {
-            return NO;
-        }
-        [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationUpdatedItems] addObject:mechanism];
-    } else {
-        @throw [FRAError createIllegalStateException:@"Unknown Mechanism"];
+    if (![self.sqlOperations updateMechanism:mechanism error:error]) {
+        return NO;
     }
+    [[stateChanges valueForKey:FRAIdentityDatabaseChangedNotificationUpdatedItems] addObject:mechanism];
     return YES;
 }
 

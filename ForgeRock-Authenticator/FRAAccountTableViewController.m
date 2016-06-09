@@ -16,12 +16,13 @@
 
 #import "FRAAccountTableViewController.h"
 #import "FRABlockAlertView.h"
+#import "FRAHotpOathMechanism.h"
 #import "FRAIdentityDatabase.h"
 #import "FRANotificationsTableViewController.h"
-#import "FRAOathMechanism.h"
 #import "FRAOathMechanismTableViewCell.h"
 #import "FRAOathMechanismTableViewCellController.h"
 #import "FRAPushMechanism.h"
+#import "FRATotpOathMechanism.h"
 #import "FRAUIUtils.h"
 
 NSString * const FRA_ACCOUNT_TABLE_VIEW_CONTROLLER_STORYBOARD_IDENTIFIER = @"AccountTableViewController";
@@ -189,8 +190,8 @@ static const NSInteger PUSH_MECHANISM_ROW_INDEX = 2;
     return [self pushMechanism] != nil;
 }
 
-- (FRAOathMechanism *)oathMechanism {
-    return (FRAOathMechanism *)[self.identity mechanismOfClass:[FRAOathMechanism class]];
+- (FRAMechanism *)oathMechanism {
+    return [self.identity mechanismOfClass:[FRAHotpOathMechanism class]] ? [self.identity mechanismOfClass:[FRAHotpOathMechanism class]] : [self.identity mechanismOfClass:[FRATotpOathMechanism class]];
 }
 
 - (FRAPushMechanism *)pushMechanism {

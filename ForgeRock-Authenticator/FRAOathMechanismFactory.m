@@ -14,17 +14,18 @@
  * Copyright 2016 ForgeRock AS.
  */
 
+#include "base32.h"
+#include <CommonCrypto/CommonHMAC.h>
+
 #import "FRAError.h"
-#import "FRAOathMechanismFactory.h"
-#import "FRAMechanismFactory.h"
-#import "FRAOathMechanism.h"
+#import "FRAHotpOathMechanism.h"
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAIdentityModel.h"
+#import "FRAMechanismFactory.h"
+#import "FRAOathMechanismFactory.h"
 #import "FRAQRUtils.h"
-
-#include "base32.h"
-#include <CommonCrypto/CommonHMAC.h>
+#import "FRATotpOathMechanism.h"
 
 @implementation FRAOathMechanismFactory
     
@@ -59,9 +60,9 @@
     // TODO: handle Errors or nil values for mechanism and identity
     FRAMechanism *mechanism = [self makeMechanimsObject:database
                                           identityModel:identityModel
-                                                   algo:algo
+                                              algorithm:algo
                                                     key:key
-                                                 digits:_digits
+                                             codeLength:_digits
                                            periodString:p
                                                    type:_type
                                           counterString:c];
@@ -81,7 +82,7 @@
         return nil;
     }
     NSString* _type = [uri host];
-    if (_type == nil || (![_type isEqualToString:@"totp"] && ![_type isEqualToString:@"hotp"])) {
+    if (_type == nil || (![_type isEqualToString:[FRATotpOathMechanism mechanismType]] && ![_type isEqualToString:[FRAHotpOathMechanism mechanismType]])) {
         return nil;
     }
     // Get the path and strip it of its leading '/'
@@ -135,9 +136,9 @@
  */
 - (FRAMechanism *) makeMechanimsObject:(FRAIdentityDatabase *)database
                          identityModel:(FRAIdentityModel *)identityModel
-                                  algo:(CCHmacAlgorithm)algo
+                             algorithm:(CCHmacAlgorithm)algorithm
                                    key:(NSData *)key
-                                digits:(NSUInteger)digits
+                            codeLength:(NSUInteger)codeLength
                           periodString:(NSString *)periodString
                                   type:(NSString *)type
                          counterString:(NSString *)counterString {
@@ -158,13 +159,19 @@
     
     // Get counter
     uint64_t counter = 0;
-    if ([type isEqualToString:@"hotp"]) {
+    if ([type isEqualToString:[FRAHotpOathMechanism mechanismType]]) {
         counter = counterString != nil ? [counterString longLongValue] : 0;
     }
     
     // TODO: Implicit conversion loses integer precision: 'uint64_t' (aka 'unsigned long long')
     //       to 'NSUInteger' (aka 'unsigned int')
-    return [FRAOathMechanism oathMechanismWithDatabase:database identityModel:identityModel type:type usingSecretKey:key andHMACAlgorithm:algo withKeyLength:digits andEitherPeriod:period orCounter:counter];
+    
+    if ([type isEqualToString:[FRAHotpOathMechanism mechanismType]]) {
+        return [FRAHotpOathMechanism mechanismWithDatabase:database identityModel:identityModel secretKey:key HMACAlgorithm:algorithm codeLength:codeLength counter:counter];
+    } else {
+        return [FRATotpOathMechanism mechanismWithDatabase:database identityModel:identityModel secretKey:key HMACAlgorithm:algorithm codeLength:codeLength period:period];
+    }
+    
 }
 
 - (FRAIdentity *)identityWithIssuer:(NSString *)issuer accountName:(NSString *)accountName identityModel:(FRAIdentityModel *)identityModel backgroundColor:(NSString *)backgroundColor image:(NSString *)image database:(FRAIdentityDatabase *)database {

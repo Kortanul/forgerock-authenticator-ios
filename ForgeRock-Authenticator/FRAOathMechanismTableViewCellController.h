@@ -14,9 +14,7 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-
-
-#import "FRAOathMechanism.h"
+#import "FRAMechanism.h"
 @class FRAOathMechanismTableViewCell;
 
 /*!
@@ -27,7 +25,7 @@
 /*!
  * The model.
  */
-@property (weak, nonatomic) FRAOathMechanism *mechanism;
+@property (weak, nonatomic) FRAMechanism *mechanism;
 /*!
  * The view.
  */
@@ -36,12 +34,12 @@
 /*!
  * Creates a new object with the provided property values.
  */
-- (instancetype)initWithView:(FRAOathMechanismTableViewCell *)view mechanism:(FRAOathMechanism *)mechanism;
+- (instancetype)initWithView:(FRAOathMechanismTableViewCell *)view mechanism:(FRAMechanism *)mechanism;
 
 /*!
  * Creates a new object with the provided property values.
  */
-+ (instancetype)controllerWithView:(FRAOathMechanismTableViewCell *)view mechanism:(FRAOathMechanism *)mechanism;
++ (instancetype)controllerWithView:(FRAOathMechanismTableViewCell *)view mechanism:(FRAMechanism *)mechanism;
 
 /*!
  * Updates UI from latest mechanism state.

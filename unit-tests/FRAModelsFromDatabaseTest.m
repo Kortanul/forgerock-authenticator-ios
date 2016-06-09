@@ -19,20 +19,21 @@
 
 #import "FMDatabase.h"
 #import "FRAError.h"
+#import "FRAFMDatabaseConnectionHelper.h"
+#import "FRAHotpOathMechanism.h"
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAIdentityModel.h"
 #import "FRAModelsFromDatabase.h"
 #import "FRANotification.h"
-#import "FRAOathMechanism.h"
 #import "FRAPushMechanism.h"
-#import "FRAFMDatabaseConnectionHelper.h"
+#import "FRATotpOathMechanism.h"
 
 static NSString * const ReadSchema = @"read_all schema";
 static NSString * const Issuer = @"issuer";
 static NSString * const AccountName = @"account name";
 static NSString * const ImageURL = @"image url";
-static NSString * const BackgroundColour = @"background colour";
+static NSString * const BackgroundColour = @"background color";
 static NSString * const HMACOtpType = @"hotp";
 static NSString * const TimeOtpType = @"totp";
 static NSString * const PushType = @"push";
@@ -120,8 +121,8 @@ static NSString * const Data = @"{\"message_id\":\"message id\", \"push_challeng
     XCTAssertEqual(identity.accountName, AccountName);
     XCTAssertEqual(identity.backgroundColor, BackgroundColour);
     XCTAssertEqual(identity.mechanisms.count, 1);
-    FRAOathMechanism *mechanism = (FRAOathMechanism*)[identity.mechanisms objectAtIndex:0];
-    XCTAssertEqual(mechanism.type, @"hotp");
+    FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)[identity.mechanisms objectAtIndex:0];
+    XCTAssertEqual([mechanism class], [FRAHotpOathMechanism class]);
 }
 
 - (void)testGetAllIdentitiesReturnsIdentityWithTimeOneTimePasswordMechanism {
@@ -139,8 +140,8 @@ static NSString * const Data = @"{\"message_id\":\"message id\", \"push_challeng
     XCTAssertEqual(identity.accountName, AccountName);
     XCTAssertEqual(identity.backgroundColor, BackgroundColour);
     XCTAssertEqual(identity.mechanisms.count, 1);
-    FRAOathMechanism *mechanism = (FRAOathMechanism*)[identity.mechanisms objectAtIndex:0];
-    XCTAssertEqual(mechanism.type, @"totp");
+    FRATotpOathMechanism *mechanism = (FRATotpOathMechanism *)[identity.mechanisms objectAtIndex:0];
+    XCTAssertEqual([mechanism class], [FRATotpOathMechanism class]);
 }
 
 - (void)testGetAllIdentitiesReturnsIdentityWithPushMechanism {

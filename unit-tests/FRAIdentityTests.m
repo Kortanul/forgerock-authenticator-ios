@@ -18,12 +18,12 @@
 #import <XCTest/XCTest.h>
 
 #import "FRAerror.h"
+#import "FRAHotpOathMechanism.h"
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAIdentityDatabaseSQLiteOperations.h"
 #import "FRAIdentityModel.h"
 #import "FRAMechanism.h"
-#import "FRAOathMechanism.h"
 #import "FRAPushMechanism.h"
 
 @interface FRAIdentityTests : XCTestCase
@@ -205,7 +205,7 @@
 
 - (void)testCanQueryForMechanismByType {
     // Given
-    FRAOathMechanism *oathMechanism = [[FRAOathMechanism alloc] initWithDatabase:database identityModel:identityModel];
+    FRAHotpOathMechanism *oathMechanism = [[FRAHotpOathMechanism alloc] initWithDatabase:database identityModel:identityModel];
     FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:database identityModel:identityModel];
     OCMStub([mockSqlOperations insertMechanism:oathMechanism error:nil]).andReturn(YES);
     OCMStub([mockSqlOperations insertMechanism:pushMechanism error:nil]).andReturn(YES);
@@ -217,7 +217,7 @@
     // Then
     XCTAssertTrue(oathMechanismAdded);
     XCTAssertTrue(pushMechanismAdded);
-    XCTAssertEqualObjects([identity mechanismOfClass:[FRAOathMechanism class]], oathMechanism);
+    XCTAssertEqualObjects([identity mechanismOfClass:[FRAHotpOathMechanism class]], oathMechanism);
     XCTAssertEqualObjects([identity mechanismOfClass:[FRAPushMechanism class]], pushMechanism);
 }
 
@@ -244,7 +244,7 @@
 - (void)testMechanismIsAddedIfIdentityHasDifferentTypeMechanism {
     // Given
     NSError * error;
-    FRAOathMechanism *mechanism = [[FRAOathMechanism alloc] initWithDatabase:database identityModel:nil];
+    FRAHotpOathMechanism *mechanism = [[FRAHotpOathMechanism alloc] initWithDatabase:database identityModel:nil];
     OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations insertMechanism:mechanism error:nil]).andReturn(YES);
     [identity addMechanism:mechanism error:nil];
     FRAPushMechanism *differentMechanism = [[FRAPushMechanism alloc] initWithDatabase:database identityModel:nil];

@@ -37,7 +37,6 @@
         _version = version;
         _authEndpoint = authEndPoint;
         _secret = secret;
-        _type = @"push";
         _mechanismUID = mechanismIdentifier;
     }
     return self;
@@ -56,6 +55,10 @@
 
 + (instancetype)pushMechanismWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel authEndpoint:(NSString *)authEndPoint secret:(NSString *)secret {
     return [[FRAPushMechanism alloc] initWithDatabase:database identityModel:identityModel authEndpoint:authEndPoint secret:secret];
+}
+
++ (NSString *)mechanismType {
+    return @"push";
 }
 
 @end
