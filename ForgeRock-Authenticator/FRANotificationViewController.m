@@ -99,8 +99,6 @@ NSString * const FRANotificationViewControllerStoryboardIdentifer = @"Notificati
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-// TODO: Ensure code still compiles / runs on iOS 7 - May need to guard calls to Touch ID functions etc
-
 - (BOOL)isTouchIDEnabled {
     LAContext *authContext = [self.authContextFactory newLAContext];
     NSError *error = nil;

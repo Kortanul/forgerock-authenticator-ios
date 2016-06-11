@@ -20,11 +20,13 @@
 #import "FRAAccountsTableViewController.h"
 #import "FRAAccountTableViewCell.h"
 #import "FRAApplicationAssembly.h"
+#import "FRAHotpOathMechanism.h"
 #import "FRAIdentityModel.h"
 #import "FRAIdentity.h"
+#import "FRAModelUtils.h"
 #import "FRANotification.h"
-#import "FRAOathMechanism.h"
 #import "FRAPushMechanism.h"
+#import "FRATotpOathMechanism.h"
 
 @interface FRAAccountsTableViewControllerTests : XCTestCase
 
@@ -33,6 +35,7 @@
 @implementation FRAAccountsTableViewControllerTests {
     FRAAccountsTableViewController *accountsController;
     id mockIdentityModel;
+    FRAModelUtils *modelUtils;
 }
 
 - (void)setUp {
@@ -52,13 +55,29 @@
     // load accounts controller from storyboard
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
     accountsController = [storyboard instantiateViewControllerWithIdentifier:@"AccountsTableViewController"];
-    [accountsController loadViewIfNeeded]; // force IBOutlets etc to be initialized
-    XCTAssertNotNil(accountsController.view);
+    [self simulateLoadingOfView];
+    
+    modelUtils = [[FRAModelUtils alloc] init];
+    
 }
 
 - (void)tearDown {
+    [self simulateUnloadingOfView];
     [mockIdentityModel stopMocking];
     [super tearDown];
+}
+
+- (void)simulateLoadingOfView {
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_8_4) {
+        [accountsController view]; // force IBOutlets etc to be initialized
+    } else {
+        [accountsController loadViewIfNeeded]; // force IBOutlets etc to be initialized
+    }
+    XCTAssertNotNil(accountsController.view);
+}
+
+- (void)simulateUnloadingOfView {
+    [accountsController viewWillDisappear:YES];
 }
 
 - (void)testHasNoCellsWhenDatabaseIsEmpty {
@@ -76,9 +95,9 @@
 
 - (void)testHasOneCellPerDatabaseIdentitySortedByIssuerThenAccountName {
     // Given
-    FRAIdentity *firstIdentity = [FRAIdentity identityWithDatabase:nil accountName:@"Alice" issuer:@"Issuer_1" image:nil backgroundColor:nil];
-    FRAIdentity *secondIdentity = [FRAIdentity identityWithDatabase:nil accountName:@"Bob" issuer:@"Issuer_1" image:nil backgroundColor:nil];
-    FRAIdentity *thirdIdentity = [FRAIdentity identityWithDatabase:nil accountName:@"Alice" issuer:@"Issuer_2" image:nil backgroundColor:nil];
+    FRAIdentity *firstIdentity = [FRAIdentity identityWithDatabase:nil identityModel:mockIdentityModel accountName:@"Alice" issuer:@"Issuer_1" image:nil backgroundColor:nil];
+    FRAIdentity *secondIdentity = [FRAIdentity identityWithDatabase:nil identityModel:mockIdentityModel accountName:@"Bob" issuer:@"Issuer_1" image:nil backgroundColor:nil];
+    FRAIdentity *thirdIdentity = [FRAIdentity identityWithDatabase:nil identityModel:mockIdentityModel accountName:@"Alice" issuer:@"Issuer_2" image:nil backgroundColor:nil];
     NSArray *identities = @[secondIdentity, thirdIdentity, firstIdentity]; // NB. Identities aren't sorted
     OCMStub([mockIdentityModel identities]).andReturn(identities);
     
@@ -96,11 +115,12 @@
 
 - (void)testShowsNotificationIconWithBadgeForPushMechanism {
     // Given
-    FRAIdentity *identity = [FRAIdentity identityWithDatabase:nil accountName:@"Alice" issuer:@"Issuer" image:nil backgroundColor:nil];
-    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:nil];
-    [pushMechanism addNotification:[[FRANotification alloc] initWithDatabase:nil messageId:nil challenge:nil timeReceived:nil timeToLive:120.0] withError:nil];
-    [pushMechanism addNotification:[[FRANotification alloc] initWithDatabase:nil messageId:nil challenge:nil timeReceived:nil timeToLive:120.0] withError:nil];
-    [identity addMechanism:pushMechanism];
+    FRAIdentity *identity = [FRAIdentity identityWithDatabase:nil identityModel:nil accountName:@"Alice" issuer:@"Issuer" image:nil backgroundColor:nil];
+    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:nil identityModel:nil ];
+
+    [pushMechanism addNotification:[self dummyNotification] error:nil];
+    [pushMechanism addNotification:[self dummyNotification] error:nil];
+    [identity addMechanism:pushMechanism error:nil];
     XCTAssertNotNil([identity mechanismOfClass:[FRAPushMechanism class]]);
     NSArray* identities = @[identity];
     OCMStub([mockIdentityModel identities]).andReturn(identities);
@@ -114,49 +134,78 @@
     XCTAssertEqualObjects(cell.notificationsBadge.text, @"2");
 }
 
-// FIXME: testShowsTokenIconWithoutBadgeForOathMechanism
-//- (void)testShowsTokenIconWithoutBadgeForOathMechanism {
-//    // Given
-//    FRAIdentity *identity = [FRAIdentity identityWithDatabase:nil accountName:@"Alice" issuer:@"Issuer" image:nil];
-//    FRAOathMechanism *oathMechanism = [[FRAOathMechanism alloc] init];
-//    [identity addMechanism:oathMechanism];
-//    XCTAssertNotNil([identity mechanismOfClass:[FRAOathMechanism class]]);
-//    NSArray* identities = @[identity];
-//    OCMStub([mockIdentityModel identities]).andReturn(identities);
-//    
-//    // When
-//    FRAAccountTableViewCell *cell = [self cellForRow:0];
-//    
-//    // Then
-//    XCTAssertFalse(cell.firstMechanismIcon.hidden);
-//    XCTAssertTrue(cell.secondMechanismIcon.hidden);
-//    XCTAssertEqualObjects(cell.notificationsBadge.text, @"0");
-//    XCTAssertTrue(cell.notificationsBadge.hidesWhenZero);
-//}
+- (void)testShowsTokenIconWithoutBadgeForOathMechanism {
+    // Given
+    FRAIdentity *identity = [FRAIdentity identityWithDatabase:nil
+                                                identityModel:nil
+                                                  accountName:@"Alice"
+                                                       issuer:@"Issuer"
+                                                        image:nil
+                                              backgroundColor:nil];
+    
+    FRAHotpOathMechanism *mechanism = [modelUtils demoOathMechanism];
+    [identity addMechanism:mechanism error:nil];
+    XCTAssertNotNil([identity mechanismOfClass:[FRAHotpOathMechanism class]]);
+    NSArray* identities = @[identity];
+    OCMStub([mockIdentityModel identities]).andReturn(identities);
+    
+    // When
+    FRAAccountTableViewCell *cell = [self cellForRow:0];
+    
+    // Then
+    XCTAssertFalse(cell.firstMechanismIcon.hidden);
+    XCTAssertTrue(cell.secondMechanismIcon.hidden);
+    XCTAssertEqualObjects(cell.notificationsBadge.text, @"0");
+    XCTAssertTrue(cell.notificationsBadge.hidesWhenZero);
+}
 
-// FIXME: testCanShowOathMechanismAndPushMechanism
-//- (void)testCanShowOathMechanismAndPushMechanism {
-//    // Given
-//    FRAIdentity *identity = [FRAIdentity identityWithDatabase:nil accountName:@"Alice" issuer:@"Issuer" image:nil];
-//    FRAOathMechanism *oathMechanism = [[FRAOathMechanism alloc] init];
-//    [identity addMechanism:oathMechanism];
-//    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:nil];
-//    [pushMechanism addNotification:[[FRANotification alloc] init]];
-//    [identity addMechanism:pushMechanism];
-//    XCTAssertNotNil([identity mechanismOfClass:[FRAOathMechanism class]]);
-//    XCTAssertNotNil([identity mechanismOfClass:[FRAPushMechanism class]]);
-//    NSArray* identities = @[identity];
-//    OCMStub([mockIdentityModel identities]).andReturn(identities);
-//    
-//    // When
-//    FRAAccountTableViewCell *cell = [self cellForRow:0];
-//    
-//    // Then
-//    XCTAssertFalse(cell.firstMechanismIcon.hidden);
-//    XCTAssertFalse(cell.secondMechanismIcon.hidden);
-//    XCTAssertEqualObjects(cell.notificationsBadge.text, @"1");
-//    XCTAssertTrue(cell.notificationsBadge.hidesWhenZero);
-//}
+- (void)testCanShowOathMechanismAndPushMechanism {
+    // Given
+    FRAIdentity *identity = [FRAIdentity identityWithDatabase:nil
+                                                identityModel:nil
+                                                  accountName:@"Alice"
+                                                       issuer:@"Issuer"
+                                                        image:nil
+                                              backgroundColor:nil];
+    FRAHotpOathMechanism *mechanism = [modelUtils demoOathMechanism];
+    [identity addMechanism:mechanism error:nil];
+    FRAPushMechanism *pushMechanism = [[FRAPushMechanism alloc] initWithDatabase:nil identityModel:nil ];
+    [pushMechanism addNotification:[self pendingNotification] error:nil];
+    [identity addMechanism:pushMechanism error:nil];
+    XCTAssertNotNil([identity mechanismOfClass:[FRAHotpOathMechanism class]]);
+    XCTAssertNotNil([identity mechanismOfClass:[FRAPushMechanism class]]);
+    NSArray* identities = @[identity];
+    OCMStub([mockIdentityModel identities]).andReturn(identities);
+    
+    // When
+    FRAAccountTableViewCell *cell = [self cellForRow:0];
+    
+    // Then
+    XCTAssertFalse(cell.firstMechanismIcon.hidden);
+    XCTAssertFalse(cell.secondMechanismIcon.hidden);
+    XCTAssertEqualObjects(cell.notificationsBadge.text, @"1");
+    XCTAssertTrue(cell.notificationsBadge.hidesWhenZero);
+}
+
+- (FRANotification *)dummyNotification {
+    return [FRANotification notificationWithDatabase:nil
+                                       identityModel:nil
+                                           messageId:nil
+                                           challenge:nil
+                                        timeReceived:nil
+                                          timeToLive:120.0
+                              loadBalancerCookieData:nil];
+}
+
+- (FRANotification *)pendingNotification {
+    return [FRANotification notificationWithDatabase:nil
+                                       identityModel:nil
+                                           messageId:@"dummy"
+                                           challenge:@"dummy"
+                                        timeReceived:[NSDate date]
+                                          timeToLive:120.0
+                              loadBalancerCookieData:nil];
+}
 
 - (FRAAccountTableViewCell *)cellForRow:(NSInteger)row {
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];

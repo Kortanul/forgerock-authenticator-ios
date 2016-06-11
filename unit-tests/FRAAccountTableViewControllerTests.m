@@ -20,12 +20,14 @@
 
 #import "FRAAccountTableViewController.h"
 #import "FRAApplicationAssembly.h"
+#import "FRAHotpOathMechanism.h"
 #import "FRAIdentityModel.h"
 #import "FRAIdentity.h"
+#import "FRAModelUtils.h"
 #import "FRANotification.h"
-#import "FRAOathMechanism.h"
 #import "FRAPushMechanism.h"
 #import "FRAPushMechanismTableViewCell.h"
+#import "FRATotpOathMechanism.h"
 
 @interface FRAAccountTableViewControllerTests : XCTestCase
 
@@ -37,13 +39,14 @@
     FRAIdentity *identity;
     NSIndexPath *oathMechanismIndexPath;
     NSIndexPath *pushMechanismIndexPath;
+    FRAModelUtils *modelUtils;
     
 }
 
 - (void)setUp {
     [super setUp];
     
-    identity = [FRAIdentity identityWithDatabase:nil accountName:@"Alice" issuer:@"ForgeRock" image:nil];
+    identity = [FRAIdentity identityWithDatabase:nil identityModel:nil accountName:@"Alice" issuer:@"ForgeRock" image:nil backgroundColor:nil];
     
     // load accounts controller from storyboard
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
@@ -52,6 +55,8 @@
     
     oathMechanismIndexPath = [NSIndexPath indexPathForRow:1 inSection:0];
     pushMechanismIndexPath = [NSIndexPath indexPathForRow:2 inSection:0];
+    
+    modelUtils = [[FRAModelUtils alloc] init];
 }
 
 - (void)tearDown {
@@ -81,24 +86,24 @@
     XCTAssertFalse([self isShowingCellAtIndexPath:pushMechanismIndexPath], @"Push mechanism UI should not be displayed");
 }
 
-// FIXME: This test failing because FRAIdentity mechanismsList sees oath mechanism as FRAMechanism rather than FRAOathMechanism!
-//- (void)testShowsOathMechanismIfIdentityHasOneRegistered {
-//    // Given
-//    FRAOathMechanism *oathMechanism = [FRAOathMechanism oathMechanismWithDatabase:nil type:nil usingSecretKey:nil andHMACAlgorithm:nil withKeyLength:nil andEitherPeriod:nil orCounter:nil];
-//    [identity addMechanism:oathMechanism];
-//    
-//    // When
-//    [self simulateLoadingOfView];
-//    
-//    // Then
-//    XCTAssertTrue([self isShowingCellAtIndexPath:oathMechanismIndexPath], @"OATH mechanism UI should be displayed");
-//    XCTAssertFalse([self isShowingCellAtIndexPath:pushMechanismIndexPath], @"Push mechanism UI should not be displayed");
-//}
+- (void)testShowsOathMechanismIfIdentityHasOneRegistered {
+    // Given
+    FRAHotpOathMechanism *mechanism = [modelUtils demoOathMechanism];
+    
+    [identity addMechanism:mechanism error:nil];
+    
+    // When
+    [self simulateLoadingOfView];
+    
+    // Then
+    XCTAssertTrue([self isShowingCellAtIndexPath:oathMechanismIndexPath], @"OATH mechanism UI should be displayed");
+    XCTAssertFalse([self isShowingCellAtIndexPath:pushMechanismIndexPath], @"Push mechanism UI should not be displayed");
+}
 
 - (void)testShowsPushMechanismIfIdentityHasOneRegistered {
     // Given
-    FRAPushMechanism *pushMechanism = [FRAPushMechanism pushMechanismWithDatabase:nil];
-    [identity addMechanism:pushMechanism];
+    FRAPushMechanism *pushMechanism = [FRAPushMechanism pushMechanismWithDatabase:nil identityModel:nil];
+    [identity addMechanism:pushMechanism error:nil];
     
     // When
     [self simulateLoadingOfView];
@@ -110,11 +115,11 @@
 
 - (void)testShowsCountOfPendingNotificationsIfIdentityHasRegisteredPushMechanism {
     // Given
-    FRAPushMechanism *pushMechanism = [FRAPushMechanism pushMechanismWithDatabase:nil];
-    [pushMechanism addNotification:[self pendingNotification]];
-    [pushMechanism addNotification:[self pendingNotification]];
-    [pushMechanism addNotification:[self approvedNotification]];
-    [identity addMechanism:pushMechanism];
+    FRAPushMechanism *pushMechanism = [FRAPushMechanism pushMechanismWithDatabase:nil identityModel:nil];
+    [pushMechanism addNotification:[self pendingNotification] error:nil];
+    [pushMechanism addNotification:[self pendingNotification] error:nil];
+    [pushMechanism addNotification:[self approvedNotification] error:nil];
+    [identity addMechanism:pushMechanism error:nil];
     
     // When
     [self simulateLoadingOfView];
@@ -124,7 +129,11 @@
 }
 
 - (void)simulateLoadingOfView {
-    [viewController loadViewIfNeeded]; // force IBOutlets etc to be initialized
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_8_4) {
+        [viewController view]; // force IBOutlets etc to be initialized
+    } else {
+        [viewController loadViewIfNeeded]; // force IBOutlets etc to be initialized
+    }
     XCTAssertNotNil(viewController.view);
     [viewController viewWillAppear:YES];
 }
@@ -139,15 +148,17 @@
 
 - (FRANotification *)pendingNotification {
     return [FRANotification notificationWithDatabase:nil
+                                       identityModel:nil
                                            messageId:@"dummy"
                                            challenge:@"dummy"
                                         timeReceived:[NSDate date]
-                                                 timeToLive:120.0];
+                                          timeToLive:120.0
+                              loadBalancerCookieData:nil];
 }
 
 - (FRANotification *)approvedNotification {
     FRANotification *notification = [self pendingNotification];
-    [notification approve];
+    [notification approveWithError:nil];
     return notification;
 }
 

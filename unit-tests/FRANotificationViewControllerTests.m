@@ -98,7 +98,11 @@
 }
 
 - (void)simulateLoadingOfView {
-    [viewController loadViewIfNeeded]; // force IBOutlets etc to be initialized
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_8_4) {
+        [viewController view]; // force IBOutlets etc to be initialized
+    } else {
+        [viewController loadViewIfNeeded]; // force IBOutlets etc to be initialized
+    }
     XCTAssertNotNil(viewController.view);
     [viewController viewWillAppear:YES];
 }
