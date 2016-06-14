@@ -44,13 +44,18 @@ NSString *const IMAGE_QR_KEY = @"image";
 /*! QR code key for the issuer name. */
 NSString *const ISSUER_QR_KEY = @"issuer";
 
+static BOOL SUCCESS = YES;
+static BOOL FAILURE = NO;
+
 @interface FRAPushMechanismFactory ()
 
 @property (strong, nonatomic) FRANotificationGateway *gateway;
 
 @end
 
-@implementation FRAPushMechanismFactory
+@implementation FRAPushMechanismFactory {
+    FRANotificationGateway* _gateway;
+}
 
 #pragma mark -
 #pragma mark Lifecyle
@@ -70,7 +75,8 @@ NSString *const ISSUER_QR_KEY = @"issuer";
     return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 }
 
-- (FRAMechanism *) buildMechanism:(NSURL *)uri database:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel error:(NSError *__autoreleasing *)error {
+- (FRAMechanism *) buildMechanism:(NSURL *)uri database:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel handler:(void (^)(BOOL, NSError *))handler error:(NSError *__autoreleasing *)error {
+    
     if (![self isValid:self.gateway.deviceToken]) {
         *error = [FRAError createError:NSLocalizedString(@"Cannot register while notifications are disabled or the device is offline", nil) code:FRAMissingDeviceId];
         return nil;
@@ -101,7 +107,7 @@ NSString *const ISSUER_QR_KEY = @"issuer";
         return nil;
     }
     
-    [self registerMechanismWithEndpoint:regEndpoint secret:secret challenge:challenge messageId:messageId mechanismUid:mechanism.mechanismUID identity:identity mechanism:mechanism identityModel:identityModel loadBalancerCookieData:loadBalancer];
+    [self registerMechanismWithEndpoint:regEndpoint secret:secret challenge:challenge messageId:messageId mechanismUid:mechanism.mechanismUID identity:identity mechanism:mechanism identityModel:identityModel loadBalancerCookieData:loadBalancer handler:handler];
 
     return mechanism;
 }
@@ -192,7 +198,7 @@ NSString *const ISSUER_QR_KEY = @"issuer";
     return @"pushauth";
 }
 
-- (void) registerMechanismWithEndpoint:(NSString *)regEndpoint secret:(NSString *)secret challenge:(NSString *)c messageId:(NSString *)messageId mechanismUid:(NSString *)uid identity:(FRAIdentity *)identity mechanism:(FRAMechanism *)mechanism identityModel:(FRAIdentityModel *)identityModel loadBalancerCookieData:(NSString *)loadBalancerCookieData  {
+- (void) registerMechanismWithEndpoint:(NSString *)regEndpoint secret:(NSString *)secret challenge:(NSString *)c messageId:(NSString *)messageId mechanismUid:(NSString *)uid identity:(FRAIdentity *)identity mechanism:(FRAMechanism *)mechanism identityModel:(FRAIdentityModel *)identityModel loadBalancerCookieData:(NSString *)loadBalancerCookieData handler:(void(^)(BOOL, NSError *))handler {
     
     [FRAMessageUtils respondWithEndpoint:regEndpoint
                             base64Secret:secret
@@ -206,14 +212,21 @@ NSString *const ISSUER_QR_KEY = @"issuer";
                                            }
                                  handler:^(NSInteger statusCode, NSError *error) {
                                      if (200 != statusCode) {
-                                         // TODO: inform user about failure
-                                         // TODO: Handle Error
-                                         @autoreleasepool {
-                                             NSError *error;
-                                             [identity removeMechanism:mechanism error:&error];
+                                         if (![identity removeMechanism:mechanism error:&error]) {
+                                             [self invokeRegistrationHandler:handler result:FAILURE error:error];
+                                         } else {
+                                             [self invokeRegistrationHandler:handler result:FAILURE error:nil];
                                          }
+                                     } else {
+                                         [self invokeRegistrationHandler:handler result:SUCCESS error:nil];
                                      }
                                  }];
+}
+
+- (void)invokeRegistrationHandler:(void(^)(BOOL, NSError *))handler result:(BOOL)result error:(NSError *) error {
+    if (handler) {
+        handler(result, error);
+    }
 }
 
 @end

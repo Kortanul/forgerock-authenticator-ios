@@ -50,12 +50,16 @@
 /*!
  * Add the identity to the database.
  * @param identity The identity to add.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
+ * @return YES if the identity is added to the identity model, otherwise NO.
  */
 - (BOOL)addIdentity:(FRAIdentity *)identity error:(NSError *__autoreleasing *)error;
 
 /*!
  * Remove the provided Identity from the model.
  * @param identity The identity to remove.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
+ * @return YES if the identity is removed from the identity model, otherwise NO.
  */
 - (BOOL)removeIdentity:(FRAIdentity *)identity error:(NSError *__autoreleasing *)error;
 

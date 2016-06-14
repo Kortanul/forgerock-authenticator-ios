@@ -41,7 +41,7 @@
 - (void)testMechanismCanGenerateCode {
     NSURL *qrUrl = [NSURL URLWithString:@"otpauth://totp/ForgeRock:demo?secret=EE3PFF5BM6GHVRNZIBBQWBNRLQ======&issuer=ForgeRock&digits=6&period=30"];
     
-    FRATotpOathMechanism *mechanism = (FRATotpOathMechanism *)[reader parseFromURL:qrUrl error:nil];
+    FRATotpOathMechanism *mechanism = (FRATotpOathMechanism *)[reader parseFromURL:qrUrl handler:nil error:nil];
     [mechanism generateNextCode:nil];
     
     XCTAssertGreaterThan(mechanism.code.length, 0);
@@ -50,7 +50,7 @@
 - (void)testMechanismCodeHasntExpired {
     NSURL *qrUrl = [NSURL URLWithString:@"otpauth://totp/ForgeRock:demo?secret=EE3PFF5BM6GHVRNZIBBQWBNRLQ======&issuer=ForgeRock&digits=6&period=30"];
     
-    FRATotpOathMechanism *mechanism = (FRATotpOathMechanism *)[reader parseFromURL:qrUrl error:nil];
+    FRATotpOathMechanism *mechanism = (FRATotpOathMechanism *)[reader parseFromURL:qrUrl handler:nil error:nil];
     [mechanism generateNextCode:nil];
     
     XCTAssertGreaterThan(mechanism.progress, 0);
@@ -61,7 +61,7 @@
 - (void)testMechanismCodeHasExpired {
     NSURL *qrUrl = [NSURL URLWithString:@"otpauth://totp/ForgeRock:demo?secret=EE3PFF5BM6GHVRNZIBBQWBNRLQ======&issuer=ForgeRock&digits=6&period=1"];
     
-    FRATotpOathMechanism *mechanism = (FRATotpOathMechanism *)[reader parseFromURL:qrUrl error:nil];
+    FRATotpOathMechanism *mechanism = (FRATotpOathMechanism *)[reader parseFromURL:qrUrl handler:nil error:nil];
     [mechanism generateNextCode:nil];
     [NSThread sleepForTimeInterval:1.1f];
     

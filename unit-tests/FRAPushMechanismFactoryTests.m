@@ -61,7 +61,7 @@ static NSString * const DEVICE_ID = @"device id";
                                           handler:[OCMArg any]]);
     NSURL *qrUrl = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=dA18Iph3slIUDVuRc5+3y7nv9NLGnPksH66d3jIF6uE=&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMQ==&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer=Rm9yZ2Vyb2Nr"];
     
-    FRAPushMechanism *mechanism = (FRAPushMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel error:nil];
+    FRAPushMechanism *mechanism = (FRAPushMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel handler:nil error:nil];
     
     FRAIdentity *identity = mechanism.parent;
     XCTAssertEqualObjects([identity.image absoluteString], @"http://seattlewriter.com/wp-content/uploads/2013/01/weight-watchers-small.gif");
@@ -82,7 +82,7 @@ static NSString * const DEVICE_ID = @"device id";
     });
     NSURL *qrUrl = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=dA18Iph3slIUDVuRc5+3y7nv9NLGnPksH66d3jIF6uE=&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMQ==&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer=Rm9yZ2Vyb2Nr"];
     
-    FRAPushMechanism *mechanism = (FRAPushMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel error:nil];
+    FRAPushMechanism *mechanism = (FRAPushMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel handler:nil error:nil];
     
     XCTAssertNil([identityModel mechanismWithId:mechanism.mechanismUID]);
 }
@@ -102,7 +102,7 @@ static NSString * const DEVICE_ID = @"device id";
     });
     NSURL *qrUrl = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=dA18Iph3slIUDVuRc5+3y7nv9NLGnPksH66d3jIF6uE=&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMQ==&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer=Rm9yZ2Vyb2Nr"];
     
-    [factory buildMechanism:qrUrl database:nil identityModel:identityModel error:nil];
+    [factory buildMechanism:qrUrl database:nil identityModel:identityModel handler:nil error:nil];
     
     XCTAssertNil([identityModel identityWithIssuer:@"ForgeRock" accountName:@"demo3"]);
 }
@@ -115,7 +115,7 @@ static NSString * const DEVICE_ID = @"device id";
                                                data:[OCMArg any]
                                             handler:[OCMArg any]]);
     NSURL *successfulQr = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=dGhlbGVnZW5kb2ZsdW5h=&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMQ==&m=0efccfa7-c4ac-4fa4-99ef-b425027f03f7&issuer=Rm9yZ2Vyb2Nr"];
-    [factory buildMechanism:successfulQr database:nil identityModel:identityModel error:nil];
+    [factory buildMechanism:successfulQr database:nil identityModel:identityModel handler:nil error:nil];
     
     OCMExpect([mockMessageUtils respondWithEndpoint:[OCMArg any]
                                        base64Secret:[OCMArg any]
@@ -130,7 +130,7 @@ static NSString * const DEVICE_ID = @"device id";
         callback(404, nil);
     });
     NSURL *unsuccessfulQr = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=dA18Iph3slIUDVuRc5+3y7nv9NLGnPksH66d3jIF6uE=&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMQ==&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer=Rm9yZ2Vyb2Nr"];
-    [factory buildMechanism:unsuccessfulQr database:nil identityModel:identityModel error:nil];
+    [factory buildMechanism:unsuccessfulQr database:nil identityModel:identityModel handler:nil error:nil];
     
     XCTAssertNotNil([identityModel identityWithIssuer:@"Forgerock" accountName:@"demo3"]);
 }
@@ -143,10 +143,10 @@ static NSString * const DEVICE_ID = @"device id";
                                              data:[OCMArg any]
                                           handler:[OCMArg any]]);
     NSURL *qrUrl = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=dA18Iph3slIUDVuRc5+3y7nv9NLGnPksH66d3jIF6uE=&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMT1hbWxiY29va2ll&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer=Rm9yZ2Vyb2Nr"];
-    [factory buildMechanism:qrUrl database:nil identityModel:identityModel error:nil];
+    [factory buildMechanism:qrUrl database:nil identityModel:identityModel handler:nil error:nil];
     
     NSError *error;
-    FRAMechanism *duplicateMechanism = [factory buildMechanism:qrUrl database:nil identityModel:identityModel error:&error];
+    FRAMechanism *duplicateMechanism = [factory buildMechanism:qrUrl database:nil identityModel:identityModel handler:nil error:&error];
     
     XCTAssertNil(duplicateMechanism);
     XCTAssertEqual(error.code, FRADuplicateMechanism);
@@ -165,7 +165,7 @@ static NSString * const DEVICE_ID = @"device id";
     NSURL *qrUrl = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=dA18Iph3slIUDVuRc5+3y7nv9NLGnPksH66d3jIF6uE=&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMT1hbWxiY29va2ll&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer=Rm9yZ2Vyb2Nr"];
 
     NSError *error;
-    FRAMechanism *mechanism = [mechanismFactory buildMechanism:qrUrl database:nil identityModel:identityModel error:&error];
+    FRAMechanism *mechanism = [mechanismFactory buildMechanism:qrUrl database:nil identityModel:identityModel handler:nil error:&error];
     
     XCTAssertNil(mechanism);
     XCTAssertEqual(error.code, FRAMissingDeviceId);
@@ -181,7 +181,7 @@ static NSString * const DEVICE_ID = @"device id";
     NSURL *qrUrl = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMQ==&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer=Rm9yZ2Vyb2Nr"];
     
     NSError *error;
-    FRAPushMechanism *mechanism = (FRAPushMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel error:&error];
+    FRAPushMechanism *mechanism = (FRAPushMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel handler:nil error:&error];
     
     XCTAssertNil(mechanism);
     XCTAssertEqual(error.code, FRAMissingMechanismInfo);
@@ -197,7 +197,7 @@ static NSString * const DEVICE_ID = @"device id";
     NSURL *qrUrl = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=dA18Iph3slIUDVuRc5+3y7nv9NLGnPksH66d3jIF6uE=&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMT1hbWxiY29va2ll&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer=Rm9yZ2Vyb2Nr"];
     
     NSError *error;
-    FRAPushMechanism *mechanism = (FRAPushMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel error:&error];
+    FRAPushMechanism *mechanism = (FRAPushMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel handler:nil error:&error];
     
     XCTAssertNil(mechanism);
     XCTAssertEqual(error.code, FRAMissingMechanismInfo);
@@ -213,7 +213,7 @@ static NSString * const DEVICE_ID = @"device id";
     NSURL *qrUrl = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=&s=dA18Iph3slIUDVuRc5+3y7nv9NLGnPksH66d3jIF6uE=&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMT1hbWxiY29va2ll&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer=Rm9yZ2Vyb2Nr"];
     
     NSError *error;
-    FRAPushMechanism *mechanism = (FRAPushMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel error:&error];
+    FRAPushMechanism *mechanism = (FRAPushMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel handler:nil error:&error];
     
     XCTAssertNil(mechanism);
     XCTAssertEqual(error.code, FRAMissingMechanismInfo);
@@ -229,7 +229,7 @@ static NSString * const DEVICE_ID = @"device id";
     NSURL *qrUrl = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=dA18Iph3slIUDVuRc5+3y7nv9NLGnPksH66d3jIF6uE=&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMT1hbWxiY29va2ll&m=&issuer=Rm9yZ2Vyb2Nr"];
     
     NSError *error;
-    FRAPushMechanism *mechanism = (FRAPushMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel error:&error];
+    FRAPushMechanism *mechanism = (FRAPushMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel handler:nil error:&error];
     
     XCTAssertNil(mechanism);
     XCTAssertEqual(error.code, FRAMissingMechanismInfo);
@@ -245,7 +245,7 @@ static NSString * const DEVICE_ID = @"device id";
     NSURL *qrUrl = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=dA18Iph3slIUDVuRc5+3y7nv9NLGnPksH66d3jIF6uE=&c=&l=YW1sYmNvb2tpZT0wMT1hbWxiY29va2ll&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer=Rm9yZ2Vyb2Nr"];
     
     NSError *error;
-    FRAPushMechanism *mechanism = (FRAPushMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel error:&error];
+    FRAPushMechanism *mechanism = (FRAPushMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel handler:nil error:&error];
     
     XCTAssertNil(mechanism);
     XCTAssertEqual(error.code, FRAMissingMechanismInfo);
@@ -261,7 +261,7 @@ static NSString * const DEVICE_ID = @"device id";
     NSURL *qrUrl = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=dA18Iph3slIUDVuRc5+3y7nv9NLGnPksH66d3jIF6uE=&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMT1hbWxiY29va2ll&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer="];
     
     NSError *error;
-    FRAPushMechanism *mechanism = (FRAPushMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel error:&error];
+    FRAPushMechanism *mechanism = (FRAPushMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel handler:nil error:&error];
     
     XCTAssertNil(mechanism);
     XCTAssertEqual(error.code, FRAMissingMechanismInfo);

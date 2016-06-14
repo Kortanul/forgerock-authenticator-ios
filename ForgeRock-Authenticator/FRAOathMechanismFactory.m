@@ -27,12 +27,14 @@
 #import "FRAQRUtils.h"
 #import "FRATotpOathMechanism.h"
 
+static BOOL SUCCESS = YES;
+
 @implementation FRAOathMechanismFactory
     
 #pragma mark -
 #pragma mark Fractory Methods
 
-- (FRAMechanism *) buildMechanism:(NSURL *)uri database:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel error:(NSError *__autoreleasing *)error {
+- (FRAMechanism *) buildMechanism:(NSURL *)uri database:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel handler:(void (^)(BOOL, NSError *))handler error:(NSError *__autoreleasing *)error {
     
     NSString* _type = [uri host];
     if (nil == _type) {
@@ -72,6 +74,8 @@
     if (![identity addMechanism:mechanism error:error]) {
         return nil;
     }
+    
+    [self invokeCompletionHandler:handler];
     
     return mechanism;
 }
@@ -186,6 +190,12 @@
     }
     
     return identity;
+}
+
+- (void)invokeCompletionHandler:(void (^)(BOOL, NSError *))handler {
+    if (handler) {
+        handler(SUCCESS, nil);
+    }
 }
 
 - (bool) supports:(NSURL *)uri {

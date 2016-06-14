@@ -56,6 +56,7 @@ extern NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems;
 /*!
  * Save the identity to the database.
  * @param identity The identity to save.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  * @return NO if there was an error whilst processing. YES if the operation completed successfully.
  */
 - (BOOL)insertIdentity:(FRAIdentity *)identity error:(NSError *__autoreleasing *)error;
@@ -63,6 +64,7 @@ extern NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems;
 /*!
  * Remove the identity from the database.
  * @param identity The identity to remove.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  * @return NO if there was an error whilst processing. YES if the operation completed successfully.
  */
 - (BOOL)deleteIdentity:(FRAIdentity *)identity error:(NSError *__autoreleasing *)error;
@@ -73,6 +75,7 @@ extern NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems;
 /*!
  * Save a new mechanism to the database.
  * @param mechanism The mechanism to save.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  * @return NO if there was an error whilst processing. YES if the operation completed successfully.
  */
 - (BOOL)insertMechanism:(FRAMechanism *)mechanism error:(NSError *__autoreleasing *)error;
@@ -80,6 +83,7 @@ extern NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems;
 /*!
  * Remove the mechanism from the database.
  * @param mechanism The mechanism to remove.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  * @return NO if there was an error whilst processing. YES if the operation completed successfully.
  */
 - (BOOL)deleteMechanism:(FRAMechanism *)mechanism error:(NSError *__autoreleasing *)error;
@@ -87,6 +91,7 @@ extern NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems;
 /*!
  * Save changes to an existing mechanism to the database.
  * @param mechanism The mechanism to save.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  * @return NO if there was an error whilst processing. YES if the operation completed successfully.
  */
 - (BOOL)updateMechanism:(FRAMechanism *)mechanism error:(NSError *__autoreleasing *)error;
@@ -97,6 +102,7 @@ extern NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems;
 /*!
  * Save a new notification to the database.
  * @param notification The notification to save.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  * @return NO if there was an error whilst processing. YES if the operation completed successfully.
  */
 - (BOOL)insertNotification:(FRANotification *)notification error:(NSError *__autoreleasing *)error;
@@ -104,6 +110,7 @@ extern NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems;
 /*!
  * Remove the notification from the database.
  * @param notification The notification to remove.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  * @return NO if there was an error whilst processing. YES if the operation completed successfully.
  */
 - (BOOL)deleteNotification:(FRANotification *)notification error:(NSError *__autoreleasing *)error;
@@ -111,6 +118,7 @@ extern NSString * const FRAIdentityDatabaseChangedNotificationUpdatedItems;
 /*!
  * Save changes to an existing notification to the database.
  * @param notification The notification to save.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  * @return NO if there was an error whilst processing. YES if the operation completed successfully.
  */
 - (BOOL)updateNotification:(FRANotification *)notification error:(NSError *__autoreleasing *)error;

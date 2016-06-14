@@ -86,7 +86,7 @@ static NSString * const DEVICE_ID = @"device id";
     
     @autoreleasepool {
         NSError *error;
-        [action read:qrCode error:&error];
+        [action read:qrCode view:nil error:&error];
     }
     
     [self assertOnlyOneMechanismRegisteredWithSharedSecret:@"qrcodesecret"];
@@ -122,8 +122,8 @@ static NSString * const DEVICE_ID = @"device id";
     NSString *secondCode = @"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=secondcodesecret&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMT1hbWxiY29va2ll&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer=Rm9yZ2Vyb2Nr";
     @autoreleasepool {
         NSError *error;
-        [action read:firstCode error:&error];
-        [action read:secondCode error:&error];
+        [action read:firstCode view:nil error:&error];
+        [action read:secondCode view:nil error:&error];
     }
 }
 

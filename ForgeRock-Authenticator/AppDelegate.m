@@ -84,7 +84,7 @@
     @autoreleasepool {
         NSError *error;
         FRAMechanismReaderAction *mechanismReaderAction = [[self assembly] mechanismReaderAction];
-        BOOL result = [mechanismReaderAction read:url.absoluteString error:&error];
+        BOOL result = [mechanismReaderAction read:url.absoluteString view:self.window error:&error];
         if (result) {
             // Reload the view
             [self.window.rootViewController loadView];

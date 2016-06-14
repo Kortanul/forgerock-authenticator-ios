@@ -63,7 +63,7 @@
  * @see table 1_1 for more details:
  * https://developer.apple.com/library/mac/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/FileSystemOverview/FileSystemOverview.html#//apple_ref/doc/uid/TP40010672-CH2-SW1
  *
- * @param error Reference to an error if any.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  * @return nil if the system folder could not be located, otherwise the path of the folder.
  */
 - (NSURL *)systemLibraryPathWithError:(NSError *__autoreleasing *)error {

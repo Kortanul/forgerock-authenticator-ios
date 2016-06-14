@@ -77,6 +77,8 @@
 
 /*!
  * Generates the next code for this OATH mechanism.
+ *
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  */
 - (void)generateNextCode:(NSError *__autoreleasing*)error;
 

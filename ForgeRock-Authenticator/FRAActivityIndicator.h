@@ -14,21 +14,15 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-
-@class FMDatabase;
-
-/*!
- * Defines the ability to generate new instances of an FMDatabase.
- */
-@interface FRAFMDatabaseFactory : NSObject
+@interface FRAActivityIndicator : UIVisualEffectView
 
 /*!
- * Create an instance of a `FMDatabase`.
- * @param path The path of the database.
- * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
- * @return Non nil initialised database.
- * @throws FRADatabaseException If there was any problem creating the database instance.
+ * Initializes and returns an activity indicator object.
+ *
+ * @param message The message to be displayed in the activity indicator.
+ *
+ * @return The activity indicator object.
  */
--(FMDatabase*)createDatabaseFor:(NSString*)path withError:(NSError *__autoreleasing*)error;
+- (instancetype)init:(NSString *)message;
 
 @end

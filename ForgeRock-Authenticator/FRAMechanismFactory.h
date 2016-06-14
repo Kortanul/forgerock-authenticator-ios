@@ -28,11 +28,14 @@
 /*!
  * Build a FRA Mechanism object using the database and the model provided
  *
- * @param uri the uri string contianing the mechanism informaiton
- * @param database the database to eprsist the new mechanism to
- * @param identityModel the identity model to place the new mechanism into
+ * @param uri The uri string containing the mechanism information.
+ * @param database The database to persist the new mechanism to.
+ * @param identityModel The identity model to place the new mechanism into.
+ * @param handler The block to invoke when asynchronous operation is completed.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
+ * @return The mechanism built from the uri.
  */
-- (FRAMechanism *) buildMechanism:(NSURL *)uri database:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel error:(NSError *__autoreleasing *)error;
+- (FRAMechanism *) buildMechanism:(NSURL *)uri database:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel handler:(void (^)(BOOL, NSError *))handler error:(NSError *__autoreleasing *)error;
 
 /*!
  * Gets whether this FRAMechanismFactory supports the mechnaism type in the given uri

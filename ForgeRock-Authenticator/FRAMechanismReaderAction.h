@@ -37,9 +37,11 @@
  * Read mechanism details from a code.
  *
  * @param code The code with the mechanism details.
+ * @param view The current view.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  * 
- * @return Whether the mechanism has been read successfully.
+ * @return YES if the code is read, otherwise NO.
  */
-- (BOOL)read:(NSString *)code error:(NSError *__autoreleasing*)error;
+- (BOOL)read:(NSString *)code view:(UIView *)view error:(NSError *__autoreleasing*)error;
 
 @end

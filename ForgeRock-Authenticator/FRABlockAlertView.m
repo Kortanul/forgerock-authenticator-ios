@@ -38,7 +38,9 @@
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    callback(self.numberOfButtons - 1 - buttonIndex);
+    if (callback) {
+        callback(self.numberOfButtons - 1 - buttonIndex);
+    }
 }
 
 @end

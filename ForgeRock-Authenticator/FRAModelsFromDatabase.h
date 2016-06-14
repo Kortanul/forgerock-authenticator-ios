@@ -29,7 +29,7 @@
  * @param sqlDatabase The SQL Database to read the identities from.
  * @param identityDatabase Assigned to the model objects created.
  * @param identityModel The identity model which contains the list of identities.
- * @param error To contain any error encountered.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  * @return A non null, possibly empty list of FRAIdentity read from the database.
  */
 + (NSArray<FRAIdentity*> *)getAllIdentitiesFrom:(FRAFMDatabaseConnectionHelper *)sqlDatabase including:(FRAIdentityDatabase *)identityDatabase identityModel:(FRAIdentityModel *)identityModel catchingErrorsWith:(NSError *__autoreleasing *)error;

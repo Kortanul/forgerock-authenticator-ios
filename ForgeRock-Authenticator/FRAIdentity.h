@@ -84,6 +84,7 @@
  * this call.
  *
  * @param mechanism The new mechanism to add to this identity.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  * @return BOOL False if there was an error with the operation, in which case check the error parameter for details.
  */
 - (BOOL)addMechanism:(FRAMechanism *)mechanism error:(NSError *__autoreleasing *)error;
@@ -93,6 +94,7 @@
  * If the identity has no more mechanisms, the identity is removed from the identity model.
  *
  * @param mechanism The mechanism to remove from the identity.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  * @return BOOL False if there was an error with the operation, in which case check the error parameter for details.
  */
 - (BOOL)removeMechanism:(FRAMechanism *)mechanism error:(NSError *__autoreleasing *)error;

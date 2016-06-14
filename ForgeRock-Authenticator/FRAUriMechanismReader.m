@@ -53,22 +53,22 @@
 #pragma mark -
 #pragma mark Factory Functions
 
-- (FRAMechanism *)getMechanism:(NSURL *)url error:(NSError *__autoreleasing *)error {
+- (FRAMechanism *)getMechanism:(NSURL *)url handler:(void(^)(BOOL, NSError *))handler error:(NSError *__autoreleasing *)error {
     
     NSString* scheme = [url scheme];
     
     id<FRAMechanismFactory> mechanismFactory = [_mechanisms objectForKey:scheme];
 
-    return [mechanismFactory buildMechanism:url database:_database identityModel:_identityModel error:error];
+    return [mechanismFactory buildMechanism:url database:_database identityModel:_identityModel handler:handler error:error];
 }
 
-- (FRAMechanism *)parseFromURL:(NSURL *)url error:(NSError *__autoreleasing *)error {
-    FRAMechanism *mechanism = [self getMechanism:url error:error];
+- (FRAMechanism *)parseFromURL:(NSURL *)url handler:(void(^)(BOOL, NSError *))handler error:(NSError *__autoreleasing *)error {
+    FRAMechanism *mechanism = [self getMechanism:url handler:handler error:error];
     return mechanism;
 }
 
-- (FRAMechanism *)parseFromString:(NSString *)string error:(NSError *__autoreleasing *)error {
-    return [self parseFromURL:[[NSURL alloc]initWithString:string] error:error];
+- (FRAMechanism *)parseFromString:(NSString *)string handler:(void(^)(BOOL, NSError *))handler error:(NSError *__autoreleasing *)error {
+    return [self parseFromURL:[[NSURL alloc]initWithString:string] handler:handler error:error];
 }
 
 @end

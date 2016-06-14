@@ -84,7 +84,7 @@ NSString * const FRAQRScanViewControllerStoryboardIdentifer = @"QRScanViewContro
             //TODO: Handle error
             @autoreleasepool {
                 NSError *error;
-                [self.mechanismReaderAction read:qrcode error:&error];
+                [self.mechanismReaderAction read:qrcode view:self.navigationController.view error:&error];
             }
             [self.session stopRunning];
             if (self.popover == nil) {

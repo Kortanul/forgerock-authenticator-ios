@@ -69,7 +69,7 @@
  * the owning Mechanism using this method.
  *
  * @param notification The notification to add to this Mechanism.
- * @param error If there was an error, this value will be populated.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  * @return BOOL NO if there was an error adding the Notification, in which case the error value will be populated.
  */
 - (BOOL)addNotification:(FRANotification *)notification error:(NSError *__autoreleasing*)error;
@@ -79,7 +79,7 @@
  * the Mechanism by this method.
  *
  * @param notification The notification to remove from the Mechanism.
- * @param error If there was an error, this value will be populated.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  * @return BOOL NO if there was an error adding the Notification, in which case the error value will be populated.
  */
 - (BOOL)removeNotification:(FRANotification *)notification error:(NSError *__autoreleasing*)error;

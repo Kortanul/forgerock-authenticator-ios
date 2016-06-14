@@ -62,16 +62,20 @@
  * Given a URL, convert this into a FRAMechanism, complete with associated Identity.
  *
  * @param url The URL to parse, non-nil.
+ * @param handler The block to invoke when asynchronous operation is completed.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  * @return non nil FRAMechanism initialsed with the values present in the URL.
  */
-- (FRAMechanism*)parseFromURL:(NSURL*)url error:(NSError *__autoreleasing *)error;
+- (FRAMechanism*)parseFromURL:(NSURL*)url handler:(void(^)(BOOL, NSError *))handler error:(NSError *__autoreleasing *)error;
 
 /*!
  * Convenience function which will call parseFromURL.
  * 
- * @param string the String uri to parse a mechanism from
+ * @param string the String uri to parse a mechanism from.
+ * @param handler The block to invoke when asynchronous operation is completed.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  * @return the FRAMechanism object extracted from the string.
  */
-- (FRAMechanism*)parseFromString:(NSString*)string error:(NSError *__autoreleasing *)error;
+- (FRAMechanism*)parseFromString:(NSString*)string handler:(void(^)(BOOL, NSError *))handler error:(NSError *__autoreleasing *)error;
 
 @end

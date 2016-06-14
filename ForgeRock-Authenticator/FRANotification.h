@@ -137,7 +137,7 @@
  * Mark the notification as accepted to indicate the user accepts this
  * Notification.
  *
- * @param error If there was an error, this value will be populated.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  * @return BOOL NO if there was an error approving the Notification, in which case the error value will be populated.
  */
 - (BOOL)approveWithError:(NSError *__autoreleasing*)error;
@@ -146,7 +146,7 @@
  * Mark the notification as denied to indicate the user has denied the
  * Notification.
  *
- * @param error If there was an error, this value will be populated.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  * @return BOOL NO if there was an error denying the Notification, in which case the error value will be populated.
  */
 - (BOOL)denyWithError:(NSError *__autoreleasing*)error;

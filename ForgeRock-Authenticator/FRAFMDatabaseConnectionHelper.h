@@ -31,7 +31,7 @@
 /*!
  * Establish a connection to the database and return this to the caller.
  *
- * @param error For any error in the process of initialising the database.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  * @return An initialised instance of the database if successfully initialised. Otherwise nil.
  */
 - (FMDatabase *)getConnectionWithError:(NSError *__autoreleasing *)error;
@@ -49,6 +49,7 @@
  * in the App, otherwise this is an error.
  *
  * @param schema The schema file to read in, excluding the .sql extension.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  * @return non-nil schema file contents as a string.
  * @throws FRADatabaseException If the file did not exist.
  */

@@ -14,21 +14,12 @@
  * Copyright 2016 ForgeRock AS.
  */
 
+/* QR code scan */
+"qr_code_scan_error" = "There has been a problem reading the code.\nPlease try again.";
+"qr_code_scan_contact_server" = "Contacting server...";
 
-@class FMDatabase;
-
-/*!
- * Defines the ability to generate new instances of an FMDatabase.
- */
-@interface FRAFMDatabaseFactory : NSObject
-
-/*!
- * Create an instance of a `FMDatabase`.
- * @param path The path of the database.
- * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
- * @return Non nil initialised database.
- * @throws FRADatabaseException If there was any problem creating the database instance.
- */
--(FMDatabase*)createDatabaseFor:(NSString*)path withError:(NSError *__autoreleasing*)error;
-
-@end
+/* Alert view */
+"cancel" = "Cancel";
+"dismiss" = "Dismiss";
+"ok" = "OK";
+"warning" = "Warning";

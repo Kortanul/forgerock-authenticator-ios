@@ -14,18 +14,21 @@
  * Copyright 2016 ForgeRock AS.
  */
 
+#import "FRAActivityIndicator.h"
 #import "FRABlockAlertView.h"
 #import "FRAError.h"
 #import "FRAIdentity.h"
 #import "FRAUriMechanismReader.h"
 #import "FRAMechanismReaderAction.h"
 
-@implementation FRAMechanismReaderAction
+@implementation FRAMechanismReaderAction {
+    FRAActivityIndicator *activityIndicator;
+}
 
 #pragma mark -
 #pragma mark Lifecyle
 
-- (instancetype)initWithMechanismReader:(FRAUriMechanismReader *)mechanismReader{
+- (instancetype)initWithMechanismReader:(FRAUriMechanismReader *)mechanismReader {
     self = [super init];
     if (self) {
         _mechanismReader = mechanismReader;
@@ -36,27 +39,22 @@
 #pragma mark -
 #pragma mark Public Methods
 
-- (BOOL)read:(NSString *)code error:(NSError *__autoreleasing*)error {
-    // TODO: Handle error
-    FRAMechanism *mechanism = [_mechanismReader parseFromString:code error:error];
+- (BOOL)read:(NSString *)code view:(UIView *)view error:(NSError *__autoreleasing*)error {
+    [self showActivityIndicator:view];
+
+    FRAMechanism *mechanism = [_mechanismReader parseFromString:code handler:[self mechanismReadCallback] error:error];
     
     if (mechanism) {
         return YES;
     }
     
     if (error && (*error).code == FRADuplicateMechanism) {
-        FRAIdentity *identity = [(*error).userInfo valueForKey:@"identity"];
-        FRAMechanism *duplicateMechanism = [(*error).userInfo valueForKey:@"mechanism"];
-        void(^handler)(NSInteger) = [self duplicateMechanismCallback:code identity:identity mechanism:duplicateMechanism error:error];
-        FRABlockAlertView *alertView = [[FRABlockAlertView alloc] initWithTitle:NSLocalizedString(@"Warning", nil)
-                                                                        message:(*error).localizedDescription
-                                                                       delegate:nil
-                                                              cancelButtonTitle:@"Cancel"
-                                                               otherButtonTitle:@"OK"
-                                                                        handler:handler];
-        [alertView show];
+        [self handleDuplicateMechanism:code error:error];
         return YES;
     }
+    
+    [self hideActivityIndicator];
+    [self showAlert];
     
     return NO;
 }
@@ -65,10 +63,54 @@
 #pragma mark Private Methods
 
 /*!
+ * Displays the activity indicator and disables the current view.
+ *
+ * @param view The current view.
+ */
+- (void)showActivityIndicator:(UIView *)view {
+    if (!view) {
+        return;
+    }
+    
+    view.userInteractionEnabled = NO;
+    activityIndicator = [[FRAActivityIndicator alloc] init:NSLocalizedString(@"qr_code_scan_contact_server", nil)];
+    [view addSubview:activityIndicator];
+}
+
+/*!
+ * Hides the activity indicator and enables the current view.
+ */
+- (void)hideActivityIndicator {
+    activityIndicator.superview.userInteractionEnabled = YES;
+    [activityIndicator removeFromSuperview];
+}
+
+/*!
+ * Handles duplicate mechanism detection.
+ *
+ * @param code The code with the mechanism details.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
+ */
+- (void)handleDuplicateMechanism:(NSString *)code error:(NSError *__autoreleasing*)error {
+    FRAIdentity *identity = [(*error).userInfo valueForKey:@"identity"];
+    FRAMechanism *duplicateMechanism = [(*error).userInfo valueForKey:@"mechanism"];
+    void(^handler)(NSInteger) = [self duplicateMechanismCallback:code identity:identity mechanism:duplicateMechanism error:error];
+    FRABlockAlertView *alertView = [[FRABlockAlertView alloc] initWithTitle:NSLocalizedString(@"warning", nil)
+                                                                    message:(*error).localizedDescription
+                                                                   delegate:nil
+                                                          cancelButtonTitle:NSLocalizedString(@"cancel", nil)
+                                                           otherButtonTitle:NSLocalizedString(@"ok", nil)
+                                                                    handler:handler];
+    [alertView show];
+}
+
+/*!
  * Generates a duplicate mechanism callback which once confirmed will remove the duplicate mechanism and re-parse the URL to add in the mechanism.
+ *
  * @param code The code with the mechanism details.
  * @param identity The identity the mechanism is added to.
  * @param mechanism The duplicate mechanism.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  * @return The callback block.
  */
 - (void(^)(NSInteger))duplicateMechanismCallback:(NSString *)code identity:(FRAIdentity *)identity mechanism:(FRAMechanism *)mechanism error:(NSError *__autoreleasing*) error {
@@ -76,12 +118,40 @@
         const NSInteger okButton = 0;
         if (selection == okButton) {
             BOOL successfullyRemoved =[identity removeMechanism:mechanism error:error];
-            // TODO: handle error
             if (successfullyRemoved) {
-                [_mechanismReader parseFromString:code error:error];
+                [_mechanismReader parseFromString:code handler:[self mechanismReadCallback] error:error];
             }
+        } else {
+            [self hideActivityIndicator];
         }
     };
+}
+
+/*!
+ * Generates a callback for any asynchronous operation happening when reading a QR code.
+ *
+ * @return The callback block.
+ */
+- (void(^)(BOOL, NSError *))mechanismReadCallback {
+    return ^(BOOL success, NSError *error) {
+        [self hideActivityIndicator];
+        if (!success) {
+            [self showAlert];
+        }
+    };
+}
+
+/*!
+ * Shows an alert with a failure message.
+ */
+- (void)showAlert {
+    FRABlockAlertView *alertView = [[FRABlockAlertView alloc] initWithTitle:NSLocalizedString(@"qr_code_scan_error", nil)
+                                                                    message:nil
+                                                                   delegate:nil
+                                                          cancelButtonTitle:NSLocalizedString(@"dismiss", nil)
+                                                           otherButtonTitle:nil
+                                                                    handler:nil];
+    [alertView show];
 }
 
 @end

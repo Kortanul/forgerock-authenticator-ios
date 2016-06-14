@@ -85,22 +85,22 @@ extern NSString * const NOTIFICATION_LOAD_BALANCER_COOKIE;
 /*!
  * Given a Dictionary of values, serialised them into JSON.
  *
- * @param dictionary Dictionary of values to map, maybe nil
- * @param jsonString Output string to contain the JSON
- * @param error Error reference if there was a problem during the serialisation
+ * @param dictionary Dictionary of values to map, maybe nil.
+ * @param jsonString Output string to contain the JSON.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  *
- * @return NO if there was an error, otherwise YES to indicate no error occured
+ * @return NO if there was an error, otherwise YES to indicate no error occurred.
  */
 + (BOOL)serializeMap:(NSDictionary *)dictionary intoString:(NSString *__autoreleasing *)jsonString error:(NSError *__autoreleasing *)error;
 
 /*!
  * Given a JSON string, deserialise it into a Dictionary.
  *
- * @param dictionaryJson String containing JSON to deserialise, maybe nil
- * @param dictionary Output value to store Dictionary into
- * @param error Error reference if there was a problem during the serialisation
+ * @param dictionaryJson String containing JSON to deserialise, maybe nil.
+ * @param dictionary Output value to store Dictionary into.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  *
- * @return NO if there was an error, otherwise YES to indicate no error occured
+ * @return NO if there was an error, otherwise YES to indicate no error occurred.
  */
 + (BOOL)deserializeJSON:(NSString *)dictionaryJson intoDictionary:(NSDictionary *__autoreleasing *)dictionary error:(NSError *__autoreleasing *)error;
 

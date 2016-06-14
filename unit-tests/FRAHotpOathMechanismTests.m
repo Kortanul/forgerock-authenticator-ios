@@ -61,7 +61,7 @@
 - (void)testShouldGenerateNextCodeSequence {
     // Given
     NSString *qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0";
-    FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)[reader parseFromString:qrString error:nil];
+    FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)[reader parseFromString:qrString handler:nil error:nil];
     
     // When
     [mechanism generateNextCode:nil];
@@ -74,7 +74,7 @@
 - (void)testGenerateDifferentCodeSequence {
     // Given
     NSString *qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOI======&issuer=Forgerock&counter=0";
-    FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)[reader parseFromString:qrString error:nil];
+    FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)[reader parseFromString:qrString handler:nil error:nil];
     
     // When
     [mechanism generateNextCode:nil];
@@ -87,7 +87,7 @@
 - (void)testSavedHotpOathMechanismAutomaticallySavesItselfToDatabaseWhenIncrementingCounter {
     // Given
     NSString *qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0";
-    FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)[reader parseFromString:qrString error:nil];
+    FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)[reader parseFromString:qrString handler:nil error:nil];
     OCMStub([(FRAIdentityDatabaseSQLiteOperations *)mockSqlOperations insertMechanism:mechanism error:nil]).andReturn(YES);
     [database insertMechanism:mechanism error:nil];
     
@@ -101,7 +101,7 @@
 - (void)testBroadcastsOneChangeNotificationWhenHotpOathMechanismUpdateIsAutomaticallySavedToDatabase {
     // Given
     NSString *qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0";
-    FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)[reader parseFromString:qrString error:nil];
+    FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)[reader parseFromString:qrString handler:nil error:nil];
     OCMStub([(FRAIdentityDatabaseSQLiteOperations *)mockSqlOperations insertMechanism:mechanism error:nil]).andReturn(YES);
     [database insertMechanism:mechanism error:nil];
     OCMStub([(FRAIdentityDatabaseSQLiteOperations *)mockSqlOperations updateMechanism:mechanism error:nil]).andReturn(YES);

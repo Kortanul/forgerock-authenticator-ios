@@ -71,7 +71,7 @@
 
 /*!
  * Internal call to intiailise the database.
- * @param error To contain any error whilst initialising.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  * @return An initialised instance of FMDatabase, or nil if there was an error.
  */
 -(FMDatabase *)internalGetConnectionWithError:(NSError *__autoreleasing *)error {
@@ -100,6 +100,8 @@
 
 /*!
  * Internal call to check if the database schema has been initialised.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
+ * @return Whether the database has been initialised.
  */
 -(BOOL)checkDatabaseInitialised:(NSError *__autoreleasing *)error {
     FMDatabase* database;
@@ -134,6 +136,8 @@
  *
  * Note: Three return states required for this function, thus using an int.
  *
+ * @param database The database.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  * @return -1 if there was an error, 0 if the database is not yet setup and 1 if the database is setup.
  */
 - (int)queryDatabaseSchema: (FMDatabase *) database withError:(NSError *__autoreleasing *)error {
@@ -165,6 +169,8 @@
 
 /*!
  * Internal function to initialise database schema.
+ * @param database The database.
+ * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  * @throws FRADatabaseException If the statement failed to execute.
  */
 - (BOOL)initialiseSchema:(FMDatabase *)database withError:(NSError *__autoreleasing *)error {
