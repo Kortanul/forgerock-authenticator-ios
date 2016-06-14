@@ -24,6 +24,8 @@
 #import "FRAPushMechanismFactory.h"
 
 static NSInteger const RESPOND_WITH_ENDPOINT_HANDLER_CALLBACK_PARAMETER_INDEX = 7;
+static NSString * const DEVICE_ID = @"device id";
+
 @interface FRAPushMechanismFactoryTests : XCTestCase
 
 @end
@@ -32,17 +34,21 @@ static NSInteger const RESPOND_WITH_ENDPOINT_HANDLER_CALLBACK_PARAMETER_INDEX = 
     FRAIdentityModel *identityModel;
     FRAPushMechanismFactory *factory;
     id mockMessageUtils;
+    id mockGateway;
 }
 
 - (void)setUp {
     [super setUp];
     mockMessageUtils = OCMClassMock([FRAMessageUtils class]);
+    mockGateway = OCMClassMock([FRANotificationGateway class]);
+    OCMStub(((FRANotificationGateway *)mockGateway).deviceToken).andReturn(DEVICE_ID);
     identityModel = [[FRAIdentityModel alloc] initWithDatabase:nil sqlDatabase:nil];
-    factory = [[FRAPushMechanismFactory alloc] initWithGateway:nil];
+    factory = [[FRAPushMechanismFactory alloc] initWithGateway:mockGateway];
 }
 
 - (void)tearDown {
     [mockMessageUtils stopMocking];
+    [mockGateway stopMocking];
     [super tearDown];
 }
 
@@ -136,7 +142,7 @@ static NSInteger const RESPOND_WITH_ENDPOINT_HANDLER_CALLBACK_PARAMETER_INDEX = 
                            loadBalancerCookieData:[OCMArg any]
                                              data:[OCMArg any]
                                           handler:[OCMArg any]]);
-    NSURL *qrUrl = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=dA18Iph3slIUDVuRc5+3y7nv9NLGnPksH66d3jIF6uE=&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMT1hbWxiY29va2ll&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer=ForgeRock"];
+    NSURL *qrUrl = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=dA18Iph3slIUDVuRc5+3y7nv9NLGnPksH66d3jIF6uE=&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMT1hbWxiY29va2ll&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer=Rm9yZ2Vyb2Nr"];
     [factory buildMechanism:qrUrl database:nil identityModel:identityModel error:nil];
     
     NSError *error;
@@ -144,6 +150,121 @@ static NSInteger const RESPOND_WITH_ENDPOINT_HANDLER_CALLBACK_PARAMETER_INDEX = 
     
     XCTAssertNil(duplicateMechanism);
     XCTAssertEqual(error.code, FRADuplicateMechanism);
+}
+
+- (void)testBuildMechanismReturnsNilIfNoDeviceId {
+    id gateway = OCMClassMock([FRANotificationGateway class]);
+    OCMStub(((FRANotificationGateway *)gateway).deviceToken).andReturn(@"");
+    FRAPushMechanismFactory *mechanismFactory = [[FRAPushMechanismFactory alloc] initWithGateway:gateway];
+    OCMStub([mockMessageUtils respondWithEndpoint:[OCMArg any]
+                                     base64Secret:[OCMArg any]
+                                        messageId:[OCMArg any]
+                           loadBalancerCookieData:[OCMArg any]
+                                             data:[OCMArg any]
+                                          handler:[OCMArg any]]);
+    NSURL *qrUrl = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=dA18Iph3slIUDVuRc5+3y7nv9NLGnPksH66d3jIF6uE=&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMT1hbWxiY29va2ll&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer=Rm9yZ2Vyb2Nr"];
+
+    NSError *error;
+    FRAMechanism *mechanism = [mechanismFactory buildMechanism:qrUrl database:nil identityModel:identityModel error:&error];
+    
+    XCTAssertNil(mechanism);
+    XCTAssertEqual(error.code, FRAMissingDeviceId);
+}
+
+- (void)testBuildMechanismReturnsNilIfNoSecret {
+    OCMStub([mockMessageUtils respondWithEndpoint:[OCMArg any]
+                                     base64Secret:[OCMArg any]
+                                        messageId:[OCMArg any]
+                           loadBalancerCookieData:[OCMArg any]
+                                             data:[OCMArg any]
+                                          handler:[OCMArg any]]);
+    NSURL *qrUrl = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMQ==&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer=Rm9yZ2Vyb2Nr"];
+    
+    NSError *error;
+    FRAPushMechanism *mechanism = (FRAPushMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel error:&error];
+    
+    XCTAssertNil(mechanism);
+    XCTAssertEqual(error.code, FRAMissingMechanismInfo);
+}
+
+- (void)testBuildMechanismReturnsNilIfNoAuthEndpoint {
+    OCMStub([mockMessageUtils respondWithEndpoint:[OCMArg any]
+                                     base64Secret:[OCMArg any]
+                                        messageId:[OCMArg any]
+                           loadBalancerCookieData:[OCMArg any]
+                                             data:[OCMArg any]
+                                          handler:[OCMArg any]]);
+    NSURL *qrUrl = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=dA18Iph3slIUDVuRc5+3y7nv9NLGnPksH66d3jIF6uE=&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMT1hbWxiY29va2ll&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer=Rm9yZ2Vyb2Nr"];
+    
+    NSError *error;
+    FRAPushMechanism *mechanism = (FRAPushMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel error:&error];
+    
+    XCTAssertNil(mechanism);
+    XCTAssertEqual(error.code, FRAMissingMechanismInfo);
+}
+
+- (void)testBuildMechanismReturnsNilIfNoRegEndpoint {
+    OCMStub([mockMessageUtils respondWithEndpoint:[OCMArg any]
+                                     base64Secret:[OCMArg any]
+                                        messageId:[OCMArg any]
+                           loadBalancerCookieData:[OCMArg any]
+                                             data:[OCMArg any]
+                                          handler:[OCMArg any]]);
+    NSURL *qrUrl = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=&s=dA18Iph3slIUDVuRc5+3y7nv9NLGnPksH66d3jIF6uE=&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMT1hbWxiY29va2ll&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer=Rm9yZ2Vyb2Nr"];
+    
+    NSError *error;
+    FRAPushMechanism *mechanism = (FRAPushMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel error:&error];
+    
+    XCTAssertNil(mechanism);
+    XCTAssertEqual(error.code, FRAMissingMechanismInfo);
+}
+
+- (void)testBuildMechanismReturnsNilIfNoMessageId {
+    OCMStub([mockMessageUtils respondWithEndpoint:[OCMArg any]
+                                     base64Secret:[OCMArg any]
+                                        messageId:[OCMArg any]
+                           loadBalancerCookieData:[OCMArg any]
+                                             data:[OCMArg any]
+                                          handler:[OCMArg any]]);
+    NSURL *qrUrl = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=dA18Iph3slIUDVuRc5+3y7nv9NLGnPksH66d3jIF6uE=&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMT1hbWxiY29va2ll&m=&issuer=Rm9yZ2Vyb2Nr"];
+    
+    NSError *error;
+    FRAPushMechanism *mechanism = (FRAPushMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel error:&error];
+    
+    XCTAssertNil(mechanism);
+    XCTAssertEqual(error.code, FRAMissingMechanismInfo);
+}
+
+- (void)testBuildMechanismReturnsNilIfNoChallenge {
+    OCMStub([mockMessageUtils respondWithEndpoint:[OCMArg any]
+                                     base64Secret:[OCMArg any]
+                                        messageId:[OCMArg any]
+                           loadBalancerCookieData:[OCMArg any]
+                                             data:[OCMArg any]
+                                          handler:[OCMArg any]]);
+    NSURL *qrUrl = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=dA18Iph3slIUDVuRc5+3y7nv9NLGnPksH66d3jIF6uE=&c=&l=YW1sYmNvb2tpZT0wMT1hbWxiY29va2ll&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer=Rm9yZ2Vyb2Nr"];
+    
+    NSError *error;
+    FRAPushMechanism *mechanism = (FRAPushMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel error:&error];
+    
+    XCTAssertNil(mechanism);
+    XCTAssertEqual(error.code, FRAMissingMechanismInfo);
+}
+
+- (void)testBuildMechanismReturnsNilIfNoIssuer {
+    OCMStub([mockMessageUtils respondWithEndpoint:[OCMArg any]
+                                     base64Secret:[OCMArg any]
+                                        messageId:[OCMArg any]
+                           loadBalancerCookieData:[OCMArg any]
+                                             data:[OCMArg any]
+                                          handler:[OCMArg any]]);
+    NSURL *qrUrl = [NSURL URLWithString:@"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=dA18Iph3slIUDVuRc5+3y7nv9NLGnPksH66d3jIF6uE=&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMT1hbWxiY29va2ll&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer="];
+    
+    NSError *error;
+    FRAPushMechanism *mechanism = (FRAPushMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel error:&error];
+    
+    XCTAssertNil(mechanism);
+    XCTAssertEqual(error.code, FRAMissingMechanismInfo);
 }
 
 @end

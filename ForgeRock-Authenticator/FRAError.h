@@ -19,8 +19,10 @@
 typedef NS_ENUM(NSInteger, FRAErrorCodes) {
     FRAFileError = 1000,
     FRAApplicationError = 2000,
-    FRADuplicateMechanism = 2001,
-    FRAInvalidOperation = 2002
+    FRADuplicateMechanism,
+    FRAInvalidOperation,
+    FRAMissingDeviceId,
+    FRAMissingMechanismInfo
 };
 
 @interface FRAError : NSObject

@@ -44,9 +44,13 @@ NSString *const IMAGE_QR_KEY = @"image";
 /*! QR code key for the issuer name. */
 NSString *const ISSUER_QR_KEY = @"issuer";
 
-@implementation FRAPushMechanismFactory {
-    FRANotificationGateway* _gateway;
-}
+@interface FRAPushMechanismFactory ()
+
+@property (strong, nonatomic) FRANotificationGateway *gateway;
+
+@end
+
+@implementation FRAPushMechanismFactory
 
 #pragma mark -
 #pragma mark Lifecyle
@@ -54,7 +58,7 @@ NSString *const ISSUER_QR_KEY = @"issuer";
 - (instancetype)initWithGateway:(FRANotificationGateway *)gateway{
     self = [super init];
     if (self) {
-        _gateway = gateway;
+        self.gateway = gateway;
     }
     return self;
 }
@@ -67,6 +71,10 @@ NSString *const ISSUER_QR_KEY = @"issuer";
 }
 
 - (FRAMechanism *) buildMechanism:(NSURL *)uri database:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel error:(NSError *__autoreleasing *)error {
+    if (![self isValid:self.gateway.deviceToken]) {
+        *error = [FRAError createError:NSLocalizedString(@"Cannot register while notifications are disabled or the device is offline", nil) code:FRAMissingDeviceId];
+        return nil;
+    }
     
     NSDictionary * query = [self readQRCode:uri];
     
@@ -81,14 +89,14 @@ NSString *const ISSUER_QR_KEY = @"issuer";
     NSString *issuer = [self utf8StringFromData:[FRAQRUtils decodeURL:[query objectForKey:ISSUER_QR_KEY]]];
     NSString *_label = [query objectForKey:@"_label"];
     
-    if (nil == secret || nil == regEndpoint || nil == authEndpoint || nil == messageId || nil == challenge || nil == issuer) {
-        return nil; // TODO: throw a sensible exception/Error
+    if (![self isValid:secret] || ![self isValid:regEndpoint] || ![self isValid:authEndpoint] || ![self isValid:messageId] || ![self isValid:challenge] || ![self isValid:issuer]) {
+        *error = [FRAError createError:NSLocalizedString(@"Failed to register mechanism", nil) code:FRAMissingMechanismInfo];
+        return nil;
     }
 
     FRAPushMechanism* mechanism = [FRAPushMechanism pushMechanismWithDatabase:database identityModel:identityModel authEndpoint:authEndpoint secret:secret];
     FRAIdentity *identity = [self identityWithIssuer:issuer accountName:_label identityModel:identityModel backgroundColor:backgroundColor image:image database:database];
-    
-    // TODO: Error Handling
+
     if (![identity addMechanism:mechanism error:error]) {
         return nil;
     }
@@ -96,6 +104,10 @@ NSString *const ISSUER_QR_KEY = @"issuer";
     [self registerMechanismWithEndpoint:regEndpoint secret:secret challenge:challenge messageId:messageId mechanismUid:mechanism.mechanismUID identity:identity mechanism:mechanism identityModel:identityModel loadBalancerCookieData:loadBalancer];
 
     return mechanism;
+}
+
+- (BOOL)isValid:(NSString *)info {
+    return info.length > 0;
 }
 
 - (NSDictionary *) readQRCode:(NSURL *)uri {
@@ -182,20 +194,13 @@ NSString *const ISSUER_QR_KEY = @"issuer";
 
 - (void) registerMechanismWithEndpoint:(NSString *)regEndpoint secret:(NSString *)secret challenge:(NSString *)c messageId:(NSString *)messageId mechanismUid:(NSString *)uid identity:(FRAIdentity *)identity mechanism:(FRAMechanism *)mechanism identityModel:(FRAIdentityModel *)identityModel loadBalancerCookieData:(NSString *)loadBalancerCookieData  {
     
-    NSString* deviceId;
-    if (_gateway.deviceToken == nil) {
-        deviceId = @"";
-    } else {
-        deviceId = _gateway.deviceToken;
-    }
-    
     [FRAMessageUtils respondWithEndpoint:regEndpoint
                             base64Secret:secret
                                messageId:messageId
                   loadBalancerCookieData:loadBalancerCookieData
                                     data:@{@"response":[FRAMessageUtils generateChallengeResponse:c secret:secret],
                                            @"mechanismUid":uid,
-                                           @"deviceId":(_gateway.deviceToken) ? _gateway.deviceToken : @"",
+                                           @"deviceId":self.gateway.deviceToken,
                                            @"deviceType":@"ios",
                                            @"communicationType":@"apns"
                                            }
