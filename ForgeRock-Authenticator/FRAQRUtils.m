@@ -33,6 +33,10 @@
 }
 
 + (NSData *) decodeBase64:(NSString *) base64String {
+    if (!base64String) {
+        return nil;
+    }
+    
     base64String = [self pad:base64String];
     return [[NSData alloc] initWithBase64EncodedString:base64String options:0];
 }

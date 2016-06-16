@@ -51,4 +51,11 @@
     XCTAssertEqualObjects(result, @"123456");
 }
 
+- (void)testDecodeBase64NilReturnsNil {
+    
+    NSData *result = [FRAQRUtils decodeBase64:nil];
+    
+    XCTAssertNil(result);
+}
+
 @end
