@@ -34,7 +34,7 @@
 
 - (FRAHotpOathMechanism *)demoOathMechanism {
     NSString *qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0";
-    return (FRAHotpOathMechanism *)[reader parseFromString:qrString error:nil];
+    return (FRAHotpOathMechanism *)[reader parseFromString:qrString handler:nil error:nil];
 }
 
 @end
