@@ -45,9 +45,15 @@
 #pragma mark -
 #pragma mark Instance Methods
 
-- (void)generateNextCode:(NSError *__autoreleasing*)error {
+- (BOOL)generateNextCode:(NSError *__autoreleasing*)error {
+    NSString *previousCode = _code;
     _code = [FRAOathCode hmac:self.algorithm codeLength:self.codeLength key:self.secretKey counter:_counter++];
-    [self.database updateMechanism:self error:error];
+    if ([self.database updateMechanism:self error:error]) {
+        return YES;
+    }
+    
+    _code = previousCode;
+    return NO;
 }
 
 + (NSString *)mechanismType {

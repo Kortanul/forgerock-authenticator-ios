@@ -94,18 +94,16 @@ static NSString * const CONTENT_TYPE_HEADER = @"Content-Type";
     return [JWTBuilder encodePayload:payload].secretData(secretBytes).algorithm(algorithm).encode;
 }
 
-+ (NSDictionary *)extractJTWBodyFromString:(NSString *)message {
++ (NSDictionary *)extractJTWBodyFromString:(NSString *)message error:(NSError *__autoreleasing*)error {
     NSArray* strings = [message componentsSeparatedByString:@"."];
     NSString* payloadString = strings[1];
     payloadString = [FRAQRUtils pad:payloadString];
     
     NSData *payloadBytes = [[NSData alloc] initWithBase64EncodedString:payloadString options:0];
-    
-    NSError *jsonError;
-    NSDictionary* data =  [NSJSONSerialization JSONObjectWithData:payloadBytes
-                                                          options:NSJSONReadingMutableContainers
-                                                            error:&jsonError];
-    return data;
+
+    return [NSJSONSerialization JSONObjectWithData:payloadBytes
+                                           options:NSJSONReadingMutableContainers
+                                             error:error];
 }
 
 + (NSString *)generateChallengeResponse:(NSString *)challenge secret:(NSString *)secret {

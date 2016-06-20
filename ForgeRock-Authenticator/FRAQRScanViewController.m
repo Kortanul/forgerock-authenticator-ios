@@ -36,9 +36,9 @@ NSString * const FRAQRScanViewControllerStoryboardIdentifer = @"QRScanViewContro
     self.session = [[AVCaptureSession alloc] init];
     AVCaptureDevice* device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
 
-    NSError* error = nil;
+    NSError* error;
     AVCaptureDeviceInput* input = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
-    if (input == nil) {
+    if (!input) {
         [self.navigationController popViewControllerAnimated:TRUE];
         return;
     }
@@ -81,11 +81,7 @@ NSString * const FRAQRScanViewControllerStoryboardIdentifer = @"QRScanViewContro
             NSLog(@"Read QR URL: %@", qrcode);
             
             [self setEditing:NO animated:YES];
-            //TODO: Handle error
-            @autoreleasepool {
-                NSError *error;
-                [self.mechanismReaderAction read:qrcode view:self.navigationController.view error:&error];
-            }
+            [self.mechanismReaderAction read:qrcode view:self.navigationController.view];
             [self.session stopRunning];
             if (self.popover == nil) {
                 [self.navigationController popViewControllerAnimated:YES];

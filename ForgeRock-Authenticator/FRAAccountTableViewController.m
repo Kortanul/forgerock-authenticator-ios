@@ -159,11 +159,11 @@ static const NSInteger PUSH_MECHANISM_ROW_INDEX = 2;
     if (mechanism) {
         FRABlockAlertView *alertView =
                 [[FRABlockAlertView alloc]
-                 initWithTitle:@"Removing this will NOT turn off 2-step verification"
-                 message:[NSString stringWithFormat:@"This may prevent you from logging into your %@ account.", self.identity.issuer]
+                 initWithTitle:[NSString stringWithFormat:NSLocalizedString(@"mechanism_delete_confirmation_title", nil), self.identity.issuer]
+                 message:[NSString stringWithFormat:NSLocalizedString(@"mechanism_delete_confirmation_message", nil), self.identity.issuer]
                  delegate:nil
-                 cancelButtonTitle:@"Cancel"
-                 otherButtonTitle:@"Delete"
+                 cancelButtonTitle:NSLocalizedString(@"cancel", nil)
+                 otherButtonTitle:NSLocalizedString(@"delete", nil)
                  handler: ^(NSInteger offset) {
                      const NSInteger deleteButton = 0;
                      if (offset == deleteButton) {
@@ -210,11 +210,16 @@ static const NSInteger PUSH_MECHANISM_ROW_INDEX = 2;
 
 - (void)deleteMechanism:(FRAMechanism *)mechanism {
     FRAIdentity *parent = mechanism.parent;
-    // TODO: Handle error?
-    @autoreleasepool {
-        NSError* error;
-        [parent removeMechanism:mechanism error:&error];
-    }
+    NSError* error;
+    if (![parent removeMechanism:mechanism error:&error]) {
+        FRABlockAlertView *alertView = [[FRABlockAlertView alloc] initWithTitle:[NSString stringWithFormat:NSLocalizedString(@"mechanism_delete_error_title", nil), parent.issuer]
+                                                                        message:nil
+                                                                       delegate:nil
+                                                              cancelButtonTitle:NSLocalizedString(@"ok", nil)
+                                                               otherButtonTitle:nil
+                                                                        handler:nil];
+        [alertView show];
+    };
     if ([parent mechanisms].count == 0) {
         // If this is the only mechanism registered to the identity, navigate back to the accounts screen so that it's removal can be animated
         [self.navigationController popViewControllerAnimated:YES];

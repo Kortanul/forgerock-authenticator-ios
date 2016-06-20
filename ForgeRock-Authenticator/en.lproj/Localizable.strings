@@ -14,12 +14,38 @@
  * Copyright 2016 ForgeRock AS.
  */
 
+/* App */
+"app_title" = "ForgeRock Authenticator";
+"app_initialization_error_message" = "Unable to start the app.";
+
 /* QR code scan */
-"qr_code_scan_error" = "There has been a problem reading the code.\nPlease try again.";
+"qr_code_scan_error_title" = "Unable to Read QR Code";
+"qr_code_scan_error_network_failure_message" = "Unable to contact the server for registration.\nEnsure you are connected to the internet, and try again.";
+"qr_code_scan_error_no_device_id_message" = "Registration cannot be completed while notifications are disabled or the device is offline.\nEnsure notifications are enabled and you are connected to the internet, and try again.";
+"qr_code_scan_error_invalid_code" = "The QR code is invalid.\nEnsure you have the latest version of the app.";
 "qr_code_scan_contact_server" = "Contacting server...";
+
+/* Accounts */
+"account_delete_confirmation_title" = "Delete %@ Account";
+"account_delete_confirmation_message" = "Removing this entry may prevent you from logging into your %@ account. Confirm you have already disabled this authentication method online.";
+"account_delete_error_title" = "Unable to Remove %@ Account";
+
+/* Mechanisms */
+"mechanism_delete_confirmation_title" = "Delete %@ Authentication Method";
+"mechanism_delete_confirmation_message" = "Removing this entry may prevent you from logging into your %@ account. Confirm you have already disabled this authentication method online.";
+"mechanism_delete_error_title" = "Unable to Remove Authentication Method for %@ Account";
+"mechanism_generate_code_error_title" = "Unable to Generate Code";
+
+/* Notifications */
+"notification_request_received" = "Authentication Request Received";
+"notification_request_error_title" = "Unable to Read Authentication Request";
+"notification_approval_error_title" = "Unable to Approve Authentication Request";
+"notification_dismissal_error_title" = "Unable to Dismiss Authentication Request";
+"notification_error_network_failure_message" = "Unable to contact the server.\nEnsure you are connected to the internet, and try again.";
 
 /* Alert view */
 "cancel" = "Cancel";
+"delete" = "Delete";
 "dismiss" = "Dismiss";
 "ok" = "OK";
 "warning" = "Warning";

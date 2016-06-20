@@ -14,7 +14,12 @@
  * Copyright 2016 ForgeRock AS.
  */
 
+#import <OCMock/OCMock.h>
+
 #import "FRAHotpOathMechanism.h"
+#import "FRAIdentityDatabase.h"
+#import "FRAIdentityDatabaseSQLiteOperations.h"
+#import "FRAIdentityModel.h"
 #import "FRAModelUtils.h"
 #import "FRAOathMechanismFactory.h"
 #import "FRAUriMechanismReader.h"
@@ -26,7 +31,12 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        reader = [[FRAUriMechanismReader alloc] initWithDatabase:nil identityModel:nil];
+        id mockDatabaseOperations = OCMClassMock([FRAIdentityDatabaseSQLiteOperations class]);
+        OCMStub([mockDatabaseOperations insertIdentity:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(YES);
+        OCMStub([mockDatabaseOperations insertMechanism:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(YES);
+        FRAIdentityDatabase *identityDatabase = [[FRAIdentityDatabase alloc] initWithSqlOperations:mockDatabaseOperations];
+        FRAIdentityModel *identityModel = [[FRAIdentityModel alloc] initWithDatabase:identityDatabase sqlDatabase:nil];
+        reader = [[FRAUriMechanismReader alloc] initWithDatabase:identityDatabase identityModel:identityModel];
         [reader addMechanismFactory:[[FRAOathMechanismFactory alloc] init]];
     }
     return self;

@@ -50,10 +50,12 @@
 - (instancetype)initWithDatabase:(FRAIdentityDatabase *)database sqlDatabase:(FRAFMDatabaseConnectionHelper *) sql {
     if (self = [super init]) {
         _database = database;
-        @autoreleasepool {
-            NSError *error;
-            identitiesList = [[NSMutableArray alloc] initWithArray:[FRAModelsFromDatabase getAllIdentitiesFrom:sql including:database identityModel:self catchingErrorsWith:&error]];
+        NSError *error;
+        NSArray<FRAIdentity*> *identities = [FRAModelsFromDatabase allIdentitiesWithDatabase:sql identityDatabase:database identityModel:self error:&error];
+        if (!identities) {
+            return nil;
         }
+        identitiesList = [[NSMutableArray alloc] initWithArray:identities];
     }
     return self;
 }

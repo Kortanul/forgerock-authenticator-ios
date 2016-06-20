@@ -129,19 +129,15 @@ NSString * const FRAAccountsTableViewControllerScanQrCodeSegue = @"scanQrCodeSeg
         FRAIdentity* identity = [self identityAtIndexPath:indexPath];
         FRABlockAlertView* alertView =
                 [[FRABlockAlertView alloc]
-                 initWithTitle:@"Removing this account will NOT turn off 2-step verification"
-                 message:[NSString stringWithFormat:@"This may prevent you from logging into your %@ account.", identity.issuer]
+                 initWithTitle:[NSString stringWithFormat:NSLocalizedString(@"account_delete_confirmation_title", nil), identity.issuer]
+                 message:[NSString stringWithFormat:NSLocalizedString(@"account_delete_confirmation_message", nil), identity.issuer]
                  delegate:nil
-                 cancelButtonTitle:@"Cancel"
-                 otherButtonTitle:@"Delete"
+                 cancelButtonTitle:NSLocalizedString(@"cancel", nil)
+                 otherButtonTitle:NSLocalizedString(@"delete", nil)
                  handler: ^(NSInteger offset) {
                      const NSInteger deleteButton = 0;
                      if (offset == deleteButton) {
-                         // TODO: Handle Error?
-                         @autoreleasepool {
-                             NSError* error;
-                             [self.identityModel removeIdentity:identity error:&error];
-                         }
+                         [self deleteIdentity:identity];
                      }
                      [self setEditing:NO animated:YES];
                  }];
@@ -193,6 +189,19 @@ NSString * const FRAAccountsTableViewControllerScanQrCodeSegue = @"scanQrCodeSeg
     if (!self.tableView.editing) {
         [self.tableView reloadData];
     }
+}
+
+- (void)deleteIdentity:(FRAIdentity *)identity {
+    NSError* error;
+    if (![self.identityModel removeIdentity:identity error:&error]) {
+        FRABlockAlertView *alertView = [[FRABlockAlertView alloc] initWithTitle:[NSString stringWithFormat:NSLocalizedString(@"account_delete_error_title", nil), identity.issuer]
+                                                                        message:nil
+                                                                       delegate:nil
+                                                              cancelButtonTitle:NSLocalizedString(@"ok", nil)
+                                                               otherButtonTitle:nil
+                                                                        handler:nil];
+        [alertView show];
+    };
 }
 
 @end

@@ -17,6 +17,7 @@
  */
 
 #import "AppDelegate.h"
+#import "FRABlockAlertView.h"
 #import "FRAApplicationAssembly.h"
 #import "FRAError.h"
 #import "FRAIdentity.h"
@@ -40,6 +41,7 @@
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [self checkDependenciesAreInitialized];
     [[[self assembly] notificationGateway] application:application didFinishLaunchingWithOptions:launchOptions];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleIdentityDatabaseChanged:) name:FRAIdentityDatabaseChangedNotification object:nil];
     [self updateNotificationsCount];
@@ -81,17 +83,14 @@
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     NSLog(@"application:openURL:sourceApplication:annotation:");
     // Create mechanism from URL
-    @autoreleasepool {
-        NSError *error;
-        FRAMechanismReaderAction *mechanismReaderAction = [[self assembly] mechanismReaderAction];
-        BOOL result = [mechanismReaderAction read:url.absoluteString view:self.window error:&error];
-        if (result) {
-            // Reload the view
-            [self.window.rootViewController loadView];
-        }
-        
-        return result;
+    FRAMechanismReaderAction *mechanismReaderAction = [[self assembly] mechanismReaderAction];
+    BOOL result = [mechanismReaderAction read:url.absoluteString view:self.window];
+    if (result) {
+        // Reload the view
+        [self.window.rootViewController loadView];
     }
+    
+    return result;
 }
 
 #pragma mark -
@@ -105,6 +104,18 @@
 
 - (FRAApplicationAssembly *)assembly {
     return (FRAApplicationAssembly *) [TyphoonComponentFactory defaultFactory];
+}
+
+- (void)checkDependenciesAreInitialized {
+    if (![[self assembly] identityModel]) {
+        FRABlockAlertView *alertView = [[FRABlockAlertView alloc] initWithTitle:NSLocalizedString(@"app_title", nil)
+                                                                        message:NSLocalizedString(@"app_initialization_error_message", nil)
+                                                                       delegate:nil
+                                                              cancelButtonTitle:NSLocalizedString(@"ok", nil)
+                                                               otherButtonTitle:nil
+                                                                        handler:nil];
+        [alertView show];
+    }
 }
 
 - (void)handleIdentityDatabaseChanged:(NSNotification *)notification {

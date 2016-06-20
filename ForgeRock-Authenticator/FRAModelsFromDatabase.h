@@ -32,6 +32,6 @@
  * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
  * @return A non null, possibly empty list of FRAIdentity read from the database.
  */
-+ (NSArray<FRAIdentity*> *)getAllIdentitiesFrom:(FRAFMDatabaseConnectionHelper *)sqlDatabase including:(FRAIdentityDatabase *)identityDatabase identityModel:(FRAIdentityModel *)identityModel catchingErrorsWith:(NSError *__autoreleasing *)error;
++ (NSArray<FRAIdentity*> *)allIdentitiesWithDatabase:(FRAFMDatabaseConnectionHelper *)sqlDatabase identityDatabase:(FRAIdentityDatabase *)identityDatabase identityModel:(FRAIdentityModel *)identityModel error:(NSError *__autoreleasing *)error;
 
 @end

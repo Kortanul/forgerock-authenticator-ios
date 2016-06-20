@@ -327,6 +327,12 @@
 				2D60B6951CEF456B00F0CA2B /* FRAQRUtils.m */,
 				44FF7E111D05C73800BDC512 /* FRAUIUtils.h */,
 				44FF7E121D05C73800BDC512 /* FRAUIUtils.m */,
+				44379CF21CC6664B00D7EAE9 /* FRABlockActionSheet.h */,
+				44379CF31CC6664B00D7EAE9 /* FRABlockActionSheet.m */,
+				44379CF51CC66C0300D7EAE9 /* FRABlockAlertView.h */,
+				44379CF61CC66C0300D7EAE9 /* FRABlockAlertView.m */,
+				E13281CA1CDCE4C40069924A /* FRAError.h */,
+				E13281C81CDCE4800069924A /* FRAError.m */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -673,12 +679,6 @@
 				F15300401801B9DF00A0E179 /* base32.c */,
 				F17A861B17EC12670098E7F3 /* Images.xcassets */,
 				F17A860717EC12670098E7F3 /* Supporting Files */,
-				44379CF21CC6664B00D7EAE9 /* FRABlockActionSheet.h */,
-				44379CF31CC6664B00D7EAE9 /* FRABlockActionSheet.m */,
-				44379CF51CC66C0300D7EAE9 /* FRABlockAlertView.h */,
-				44379CF61CC66C0300D7EAE9 /* FRABlockAlertView.m */,
-				E13281CA1CDCE4C40069924A /* FRAError.h */,
-				E13281C81CDCE4800069924A /* FRAError.m */,
 			);
 			name = Authenticator;
 			path = "ForgeRock-Authenticator";

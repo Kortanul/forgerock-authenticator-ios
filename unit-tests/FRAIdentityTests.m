@@ -24,6 +24,7 @@
 #import "FRAIdentityDatabaseSQLiteOperations.h"
 #import "FRAIdentityModel.h"
 #import "FRAMechanism.h"
+#import "FRAModelsFromDatabase.h"
 #import "FRAPushMechanism.h"
 
 @interface FRAIdentityTests : XCTestCase
@@ -33,6 +34,7 @@
 @implementation FRAIdentityTests {
     id mockSqlOperations;
     id databaseObserverMock;
+    id mockModelsFromDatabase;
     FRAIdentityDatabase *database;
     FRAIdentity *identity;
     FRAIdentityModel *identityModel;
@@ -43,6 +45,8 @@
 
 - (void)setUp {
     [super setUp];
+    mockModelsFromDatabase = OCMClassMock([FRAModelsFromDatabase class]);
+    OCMStub([mockModelsFromDatabase allIdentitiesWithDatabase:[OCMArg any] identityDatabase:[OCMArg any] identityModel:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(@[]);
     mockSqlOperations = OCMClassMock([FRAIdentityDatabaseSQLiteOperations class]);
     database = [[FRAIdentityDatabase alloc] initWithSqlOperations:mockSqlOperations];
     issuer = @"ForgeRock";
@@ -56,6 +60,7 @@
 
 - (void)tearDown {
     [mockSqlOperations stopMocking];
+    [mockModelsFromDatabase stopMocking];
     [super tearDown];
 }
 

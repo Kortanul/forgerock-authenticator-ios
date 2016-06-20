@@ -14,6 +14,7 @@
  * Copyright 2016 ForgeRock AS.
  */
 
+#import "FRABlockAlertView.h"
 #import "FRAIdentity.h"
 #import "FRAMechanism.h"
 #import "FRANotification.h"
@@ -82,9 +83,10 @@ NSString * const FRANotificationViewControllerStoryboardIdentifer = @"Notificati
     [self.authorizeSlider setThumbImage:[UIImage imageNamed:@"OnSwitchIcon"] forState:UIControlStateNormal];
     self.authorizeSlider.userInteractionEnabled = NO;
     self.denyButton.userInteractionEnabled = NO;
-    @autoreleasepool {
-        NSError* error;
-        [self.notification approveWithError:&error];
+    NSError* error;
+    if (![self.notification approveWithHandler:[self approveDismissNotificationCallbackWithTitle:NSLocalizedString(@"notification_approval_error_title", nil)] error:&error]) {
+        [self showAlertWithTitle:NSLocalizedString(@"notification_approval_error_title", nil)
+                         message:nil];
     }
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -92,9 +94,10 @@ NSString * const FRANotificationViewControllerStoryboardIdentifer = @"Notificati
 - (void)dismissNotification {
     self.authorizeSlider.userInteractionEnabled = NO;
     self.denyButton.userInteractionEnabled = NO;
-    @autoreleasepool {
-        NSError* error;
-        [self.notification denyWithError:&error];
+    NSError* error;
+    if (![self.notification denyWithHandler:[self approveDismissNotificationCallbackWithTitle:NSLocalizedString(@"notification_dismissal_error_title", nil)] error:&error]) {
+        [self showAlertWithTitle:NSLocalizedString(@"notification_dismissal_error_title", nil)
+                         message:nil];
     }
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -123,12 +126,29 @@ NSString * const FRANotificationViewControllerStoryboardIdentifer = @"Notificati
                                       [self approveNotification];
                                   });
                               } else {
-                                  // TODO: Provide error feedback to user in some circumstances
                                   dispatch_async(dispatch_get_main_queue(), ^{
                                       [self dismissNotification];
                                   });
                               }
                           }];
+}
+
+- (void)showAlertWithTitle:(NSString *)title message:(NSString *)message {
+    FRABlockAlertView *alertView = [[FRABlockAlertView alloc] initWithTitle:title
+                                                                    message:message
+                                                                   delegate:nil
+                                                          cancelButtonTitle:NSLocalizedString(@"ok", nil)
+                                                           otherButtonTitle:nil
+                                                                    handler:nil];
+    [alertView show];
+}
+
+- (void(^)(NSInteger, NSError *))approveDismissNotificationCallbackWithTitle:(NSString *)title {
+    return ^(NSInteger statusCode, NSError *error) {
+        if (200 != statusCode) {
+            [self showAlertWithTitle:title message:NSLocalizedString(@"notification_error_network_failure_message", nil)];
+        }
+    };
 }
 
 @end

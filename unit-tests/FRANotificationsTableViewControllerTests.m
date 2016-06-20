@@ -259,13 +259,13 @@ static const NSInteger COMPLETED_SECTION = 1;
 
 - (FRANotification *)approvedNotificationReceivedAt:(NSDate *)timeReceived {
     FRANotification *notification = [self pendingNotificationReceivedAt:timeReceived];
-    [notification approveWithError:nil];
+    [notification approveWithHandler:nil error:nil];
     return notification;
 }
 
 - (FRANotification *)deniedNotificationReceivedAt:(NSDate *)timeReceived {
     FRANotification *notification = [self pendingNotificationReceivedAt:timeReceived];
-    [notification denyWithError:nil];
+    [notification denyWithHandler:nil error:nil];
     return notification;
 }
 

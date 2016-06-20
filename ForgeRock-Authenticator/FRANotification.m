@@ -94,15 +94,15 @@ static NSString * const STRING_DATE_FORMAT = @"dd/MM/yyyy";
     }
 }
 
-- (BOOL)approveWithError:(NSError *__autoreleasing*)error {
-    return [self sendAuthenticationResponse:YES withError:error];
+- (BOOL)approveWithHandler:(void (^)(NSInteger, NSError *))handler error:(NSError *__autoreleasing*)error {
+    return [self sendAuthenticationResponse:YES handler:handler error:error];
 }
 
-- (BOOL)denyWithError:(NSError *__autoreleasing*)error {
-    return [self sendAuthenticationResponse:NO withError:error];
+- (BOOL)denyWithHandler:(void (^)(NSInteger, NSError *))handler error:(NSError *__autoreleasing*)error {
+    return [self sendAuthenticationResponse:NO handler:handler error:error];
 }
 
-- (BOOL)sendAuthenticationResponse:(BOOL)approved withError:(NSError *__autoreleasing*)error {
+- (BOOL)sendAuthenticationResponse:(BOOL)approved handler:(void (^)(NSInteger, NSError *))handler error:(NSError *__autoreleasing*)error {
     _approved = approved;
     _pending = NO;
     if ([self isStored]) {
@@ -121,11 +121,7 @@ static NSString * const STRING_DATE_FORMAT = @"dd/MM/yyyy";
                                        messageId:self.messageId
                                     loadBalancerCookieData:self.loadBalancerCookie
                                             data:data
-                                         handler:^(NSInteger statusCode, NSError *error) {
-                                             if (statusCode != 200) {
-                                                 // TODO: Handle error
-                                             }
-                                         }];
+                                         handler:handler];
         }
     }
     return YES;

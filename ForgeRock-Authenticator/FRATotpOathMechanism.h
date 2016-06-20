@@ -79,8 +79,9 @@
  * Generates the next code for this OATH mechanism.
  *
  * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
+ * @return YES if a new code has been successfully generated, otherwise NO.
  */
-- (void)generateNextCode:(NSError *__autoreleasing*)error;
+- (BOOL)generateNextCode:(NSError *__autoreleasing*)error;
 
 /*!
  * Track the time progress of the TOTP code.

@@ -56,7 +56,7 @@ static uint64_t currentTimeInMilli() {
 #pragma mark -
 #pragma mark Instance Methods
 
-- (void)generateNextCode:(NSError *__autoreleasing *)error {
+- (BOOL)generateNextCode:(NSError *__autoreleasing *)error {
     time_t now = time(NULL);
     if (now == (time_t) -1) {
         now = 0;
@@ -65,6 +65,8 @@ static uint64_t currentTimeInMilli() {
     startTime = startTimeInSeconds * 1000;
     endTime = (startTimeInSeconds + self.period) * 1000;
     _code = [FRAOathCode hmac:self.algorithm codeLength:self.codeLength key:self.secretKey counter:now/self.period];
+    
+    return YES;
 }
 
 - (float)progress {

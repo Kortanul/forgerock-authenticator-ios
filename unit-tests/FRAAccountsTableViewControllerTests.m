@@ -23,6 +23,7 @@
 #import "FRAHotpOathMechanism.h"
 #import "FRAIdentityModel.h"
 #import "FRAIdentity.h"
+#import "FRAModelsFromDatabase.h"
 #import "FRAModelUtils.h"
 #import "FRANotification.h"
 #import "FRAPushMechanism.h"
@@ -35,11 +36,15 @@
 @implementation FRAAccountsTableViewControllerTests {
     FRAAccountsTableViewController *accountsController;
     id mockIdentityModel;
+    id mockModelsFromDatabase;
     FRAModelUtils *modelUtils;
 }
 
 - (void)setUp {
     [super setUp];
+    
+    mockModelsFromDatabase = OCMClassMock([FRAModelsFromDatabase class]);
+    OCMStub([mockModelsFromDatabase allIdentitiesWithDatabase:[OCMArg any] identityDatabase:[OCMArg any] identityModel:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(@[]);
     
     // create a mock instance of the identity database
     mockIdentityModel = OCMClassMock([FRAIdentityModel class]);
@@ -64,6 +69,7 @@
 - (void)tearDown {
     [self simulateUnloadingOfView];
     [mockIdentityModel stopMocking];
+    [mockModelsFromDatabase stopMocking];
     [super tearDown];
 }
 

@@ -89,7 +89,7 @@
     // Given
     
     // When
-    [notification approveWithError:nil];
+    [notification approveWithHandler:nil error:nil];
     
     // Then
     XCTAssertEqual([notification isPending], NO);
@@ -109,7 +109,7 @@
                                             handler:[OCMArg any]]);
     
     // When
-    [notification approveWithError:nil];
+    [notification approveWithHandler:nil error:nil];
     
     // Then
     OCMVerifyAll(messageUtilsMock);
@@ -119,7 +119,7 @@
     // Given
     
     // When
-    [notification denyWithError:nil];
+    [notification denyWithHandler:nil error:nil];
     
     // Then
     XCTAssertEqual([notification isPending], NO);
@@ -142,7 +142,7 @@
                                             handler:[OCMArg any]]);
     
     // When
-    [notification denyWithError:nil];
+    [notification denyWithHandler:nil error:nil];
     
     // Then
     OCMVerifyAll(messageUtilsMock);
@@ -163,7 +163,7 @@
 
     
     // When
-    BOOL notificationApproved = [notification approveWithError:nil];
+    BOOL notificationApproved = [notification approveWithHandler:nil error:nil];
     
     // Then
     XCTAssertTrue(notificationApproved);
@@ -176,7 +176,7 @@
     OCMStub([(FRAIdentityDatabaseSQLiteOperations*)mockSqlOperations updateNotification:notification error:nil]).andReturn(YES);
     
     // When
-    BOOL notificationDenied = [notification denyWithError:nil];
+    BOOL notificationDenied = [notification denyWithHandler:nil error:nil];
     
     // Then
     XCTAssertTrue(notificationDenied);
@@ -198,7 +198,7 @@
                                           handler:[OCMArg any]]);
     
     // When
-    BOOL notificationApproved = [notification approveWithError:nil];
+    BOOL notificationApproved = [notification approveWithHandler:nil error:nil];
     
     // Then
     XCTAssertTrue(notificationApproved);

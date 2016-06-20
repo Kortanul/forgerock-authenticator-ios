@@ -24,6 +24,7 @@
 #import "FRAIdentityDatabaseSQLiteOperations.h"
 #import "FRAMechanismReaderAction.h"
 #import "FRAMessageUtils.h"
+#import "FRAModelsFromDatabase.h"
 #import "FRAPushMechanism.h"
 #import "FRAPushMechanismFactory.h"
 #import "FRAUriMechanismReader.h"
@@ -42,6 +43,7 @@ static NSString * const DEVICE_ID = @"device id";
     id mockMessageUtils;
     id mockAlertView;
     id mockGateway;
+    id mockModelsFromDatabase;
     FRAIdentityDatabase *identityDatabase;
     FRAIdentityModel *identityModel;
     FRAUriMechanismReader *mechanismReader;
@@ -57,6 +59,8 @@ static NSString * const DEVICE_ID = @"device id";
                            loadBalancerCookieData:[OCMArg any]
                                              data:[OCMArg any]
                                           handler:[OCMArg any]]);
+    mockModelsFromDatabase = OCMClassMock([FRAModelsFromDatabase class]);
+    OCMStub([mockModelsFromDatabase allIdentitiesWithDatabase:[OCMArg any] identityDatabase:[OCMArg any] identityModel:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(@[]);
     mockSQLiteOperations = OCMClassMock([FRAIdentityDatabaseSQLiteOperations class]);
     OCMStub([mockSQLiteOperations insertIdentity:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(YES);
     OCMStub([mockSQLiteOperations insertMechanism:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(YES);
@@ -78,16 +82,14 @@ static NSString * const DEVICE_ID = @"device id";
     [mockMessageUtils stopMocking];
     [mockAlertView stopMocking];
     [mockGateway stopMocking];
+    [mockModelsFromDatabase stopMocking];
     [super tearDown];
 }
 
 - (void)testReadAddsIdentityAndMechanismToIdentityModel {
     NSString *qrCode = @"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=qrcodesecret&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMT1hbWxiY29va2ll&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer=Rm9yZ2Vyb2Nr";
     
-    @autoreleasepool {
-        NSError *error;
-        [action read:qrCode view:nil error:&error];
-    }
+    [action read:qrCode view:nil];
     
     [self assertOnlyOneMechanismRegisteredWithSharedSecret:@"qrcodesecret"];
 }
@@ -120,11 +122,9 @@ static NSString * const DEVICE_ID = @"device id";
 - (void)attemptToRegisterDuplicateMechanism {
     NSString *firstCode = @"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=firstcodesecret&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMT1hbWxiY29va2ll&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer=Rm9yZ2Vyb2Nr";
     NSString *secondCode = @"pushauth://push/forgerock:demo3?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cDovL3NlYXR0bGV3cml0ZXIuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzAxL3dlaWdodC13YXRjaGVycy1zbWFsbC5naWY&b=ff00ff&r=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249cmVnaXN0ZXI&s=secondcodesecret&c=Yf66ojm3Pm80PVvNpljTB6X9CUhgSJ0WZUzB4su3vCY=&l=YW1sYmNvb2tpZT0wMT1hbWxiY29va2ll&m=9326d19c-4d08-4538-8151-f8558e71475f1464361288472&issuer=Rm9yZ2Vyb2Nr";
-    @autoreleasepool {
-        NSError *error;
-        [action read:firstCode view:nil error:&error];
-        [action read:secondCode view:nil error:&error];
-    }
+    
+    [action read:firstCode view:nil];
+    [action read:secondCode view:nil];
 }
 
 - (void)assertOnlyOneMechanismRegisteredWithSharedSecret:(NSString *)sharedSecret {

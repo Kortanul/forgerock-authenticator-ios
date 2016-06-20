@@ -23,6 +23,7 @@
 #import "FRAHotpOathMechanism.h"
 #import "FRAIdentityModel.h"
 #import "FRAIdentity.h"
+#import "FRAModelsFromDatabase.h"
 #import "FRAModelUtils.h"
 #import "FRANotification.h"
 #import "FRAPushMechanism.h"
@@ -34,17 +35,19 @@
 @end
 
 @implementation FRAAccountTableViewControllerTests {
-    
     FRAAccountTableViewController *viewController;
     FRAIdentity *identity;
     NSIndexPath *oathMechanismIndexPath;
     NSIndexPath *pushMechanismIndexPath;
     FRAModelUtils *modelUtils;
-    
+    id mockModelsFromDatabase;
 }
 
 - (void)setUp {
     [super setUp];
+    
+    mockModelsFromDatabase = OCMClassMock([FRAModelsFromDatabase class]);
+    OCMStub([mockModelsFromDatabase allIdentitiesWithDatabase:[OCMArg any] identityDatabase:[OCMArg any] identityModel:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(@[]);
     
     identity = [FRAIdentity identityWithDatabase:nil identityModel:nil accountName:@"Alice" issuer:@"ForgeRock" image:nil backgroundColor:nil];
     
@@ -61,6 +64,7 @@
 
 - (void)tearDown {
     [self simulateUnloadingOfView];
+    [mockModelsFromDatabase stopMocking];
     [super tearDown];
 }
 
@@ -158,7 +162,7 @@
 
 - (FRANotification *)approvedNotification {
     FRANotification *notification = [self pendingNotification];
-    [notification approveWithError:nil];
+    [notification approveWithHandler:nil error:nil];
     return notification;
 }
 

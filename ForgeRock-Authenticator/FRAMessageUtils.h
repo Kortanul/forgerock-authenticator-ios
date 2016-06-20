@@ -69,9 +69,10 @@
 /*!
  * Extracts the data from the body of a JWT string;
  *
- * @param message the compleye JWT string
- * @NSDictionary the data from the body of the JWT
+ * @param message The compleye JWT string.
+  * @param error If an error occurs, upon returns contains an NSError object that describes the problem. If you are not interested in possible errors, you may pass in NULL.
+ * @return The data from the body of the JWT.
  */
-+ (NSDictionary *)extractJTWBodyFromString:(NSString *)message;
++ (NSDictionary *)extractJTWBodyFromString:(NSString *)message error:(NSError *__autoreleasing*)error;
 
 @end

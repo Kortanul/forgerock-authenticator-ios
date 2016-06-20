@@ -96,12 +96,12 @@ static BOOL FAILURE = NO;
     NSString *_label = [query objectForKey:@"_label"];
     
     if (![self isValid:secret] || ![self isValid:regEndpoint] || ![self isValid:authEndpoint] || ![self isValid:messageId] || ![self isValid:challenge] || ![self isValid:issuer]) {
-        *error = [FRAError createError:NSLocalizedString(@"Failed to register mechanism", nil) code:FRAMissingMechanismInfo];
+        *error = [FRAError createError:NSLocalizedString(@"Invalid QR code", nil) code:FRAInvalidQRCode];
         return nil;
     }
 
     FRAPushMechanism* mechanism = [FRAPushMechanism pushMechanismWithDatabase:database identityModel:identityModel authEndpoint:authEndpoint secret:secret];
-    FRAIdentity *identity = [self identityWithIssuer:issuer accountName:_label identityModel:identityModel backgroundColor:backgroundColor image:image database:database];
+    FRAIdentity *identity = [self identityWithIssuer:issuer accountName:_label identityModel:identityModel backgroundColor:backgroundColor image:image database:database error:error];
 
     if (![identity addMechanism:mechanism error:error]) {
         return nil;
@@ -117,7 +117,7 @@ static BOOL FAILURE = NO;
 }
 
 - (NSDictionary *) readQRCode:(NSURL *)uri {
-
+    
     NSString* scheme = [uri scheme];
     if (scheme == nil || ![scheme isEqualToString:@"pushauth"]) {
         return nil;
@@ -172,33 +172,31 @@ static BOOL FAILURE = NO;
     return query;
 }
 
-- (FRAIdentity *)identityWithIssuer:(NSString *)issuer accountName:(NSString *)accountName identityModel:(FRAIdentityModel *)identityModel backgroundColor:(NSString *)backgroundColor image:(NSString *)image database:(FRAIdentityDatabase *)database {
+- (FRAIdentity *)identityWithIssuer:(NSString *)issuer accountName:(NSString *)accountName identityModel:(FRAIdentityModel *)identityModel backgroundColor:(NSString *)backgroundColor image:(NSString *)image database:(FRAIdentityDatabase *)database error:(NSError *__autoreleasing *)error {
     FRAIdentity *identity = [identityModel identityWithIssuer:issuer accountName:accountName];
     if (!identity) {
         identity = [FRAIdentity identityWithDatabase:database identityModel:identityModel accountName:accountName issuer:issuer image:[NSURL URLWithString:image] backgroundColor:backgroundColor];
-        // TODO: Error Handling
-        @autoreleasepool {
-            NSError* error;
-            [identityModel addIdentity:identity error:&error];
+        if (![identityModel addIdentity:identity error:error]) {
+            return nil;
         }
     }
     
     return identity;
 }
 
-- (BOOL) supports:(NSURL *)uri {
-    NSString* scheme = [uri scheme];
+- (BOOL)supports:(NSURL *)uri {
+    NSString *scheme = [uri scheme];
     if (scheme == nil || ![scheme isEqualToString:@"pushauth"]) {
-        return false;
+        return NO;
     }
-    return true;
+    return YES;
 }
 
-- (NSString *) getSupportedProtocol {
+- (NSString *)getSupportedProtocol {
     return @"pushauth";
 }
 
-- (void) registerMechanismWithEndpoint:(NSString *)regEndpoint secret:(NSString *)secret challenge:(NSString *)c messageId:(NSString *)messageId mechanismUid:(NSString *)uid identity:(FRAIdentity *)identity mechanism:(FRAMechanism *)mechanism identityModel:(FRAIdentityModel *)identityModel loadBalancerCookieData:(NSString *)loadBalancerCookieData handler:(void(^)(BOOL, NSError *))handler {
+- (void)registerMechanismWithEndpoint:(NSString *)regEndpoint secret:(NSString *)secret challenge:(NSString *)c messageId:(NSString *)messageId mechanismUid:(NSString *)uid identity:(FRAIdentity *)identity mechanism:(FRAMechanism *)mechanism identityModel:(FRAIdentityModel *)identityModel loadBalancerCookieData:(NSString *)loadBalancerCookieData handler:(void(^)(BOOL, NSError *))handler {
     
     [FRAMessageUtils respondWithEndpoint:regEndpoint
                             base64Secret:secret
@@ -212,11 +210,9 @@ static BOOL FAILURE = NO;
                                            }
                                  handler:^(NSInteger statusCode, NSError *error) {
                                      if (200 != statusCode) {
-                                         if (![identity removeMechanism:mechanism error:&error]) {
-                                             [self invokeRegistrationHandler:handler result:FAILURE error:error];
-                                         } else {
-                                             [self invokeRegistrationHandler:handler result:FAILURE error:nil];
-                                         }
+                                         error = [FRAError createError:@"Failed to contact server for registration" code:FRANetworkFailure underlyingError:error];
+                                         [identity removeMechanism:mechanism error:&error];
+                                         [self invokeRegistrationHandler:handler result:FAILURE error:error];
                                      } else {
                                          [self invokeRegistrationHandler:handler result:SUCCESS error:nil];
                                      }

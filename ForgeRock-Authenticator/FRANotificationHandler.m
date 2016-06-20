@@ -80,12 +80,17 @@ static NSString * const LOAD_BALANCE_KEY = @"l";
 
 - (FRANotification *)notificationFromRemoteNotification:(NSDictionary *)messageData {
 
+    NSError* error;
+    
     // Decode JWT from modessage
     NSString* dataJwt = [messageData valueForKeyPath:MESSAGE_DATA_PATH];
     
-    NSDictionary *payload = [FRAMessageUtils extractJTWBodyFromString:dataJwt];
-    
-    // makec mechanism from data
+    NSDictionary *payload = [FRAMessageUtils extractJTWBodyFromString:dataJwt error:&error];
+    if (!payload) {
+        [self showAlertWithTitle:NSLocalizedString(@"notification_request_error_title", nil)
+                         message:nil
+                         handler:nil];
+    }
     
     NSLog(@"message data: %@", payload);
 
@@ -114,12 +119,14 @@ static NSString * const LOAD_BALANCE_KEY = @"l";
                                                 timeReceived:[NSDate date]
                                                   timeToLive:timeToLive
                                           loadBalancerCookieData:loadBalancerCookieData];
-    // TODO: Handle error
-    @autoreleasepool {
-        NSError* error;
-        [mechanism addNotification:notification error:&error];
-    }
 
+    
+    if (![mechanism addNotification:notification error:&error]) {
+        [self showAlertWithTitle:NSLocalizedString(@"notification_request_error_title", nil)
+                         message:nil
+                         handler:nil];
+    }
+    
     return notification;
 }
 
@@ -155,19 +162,9 @@ static NSString * const LOAD_BALANCE_KEY = @"l";
             
         case UIApplicationStateActive: {
             // the notification arrived while the app was in the foreground
-            
-            FRABlockAlertView *alertView = [[FRABlockAlertView alloc] initWithTitle:@"Authentication Request Received"
-                                                                            message:nil
-                                                                           delegate:nil
-                                                                  cancelButtonTitle:nil
-                                                                   otherButtonTitle:@"OK"
-                                                                            handler:^(NSInteger offset) {
-                                                                                const NSInteger okButton = 0;
-                                                                                if (offset == okButton) {
-                                                                                    showNotification();
-                                                                                }
-                                                                            }];
-            [alertView show];
+            [self showAlertWithTitle:NSLocalizedString(@"notification_request_received", nil)
+                             message:nil
+                             handler:showNotification];
         }
         break;
             
@@ -177,6 +174,16 @@ static NSString * const LOAD_BALANCE_KEY = @"l";
         }
         break;
     }
+}
+
+- (void)showAlertWithTitle:(NSString *)title message:(NSString *)message handler:(void (^)(NSInteger))handler {
+    FRABlockAlertView *alertView = [[FRABlockAlertView alloc] initWithTitle:title
+                                                                    message:message
+                                                                   delegate:nil
+                                                          cancelButtonTitle:nil
+                                                           otherButtonTitle:NSLocalizedString(@"ok", nil)
+                                                                    handler:handler];
+    [alertView show];
 }
 
 @end

@@ -18,7 +18,10 @@
 #import <OCMock/OCMock.h>
 
 #import "FRAHotpOathMechanism.h"
+#import "FRAIdentityDatabase.h"
+#import "FRAIdentityDatabaseSQLiteOperations.h"
 #import "FRAIdentityModel.h"
+#import "FRAModelsFromDatabase.h"
 #import "FRAOathMechanismFactory.h"
 #import "FRAPushMechanism.h"
 #import "FRAPushMechanismFactory.h"
@@ -32,17 +35,26 @@ static NSString * const DEVICE_ID = @"device id";
 @end
 
 @implementation FRAUriMechanismReaderTests {
+    FRAIdentityDatabase *identityDatabase;
     FRAIdentityModel *identityModel;
     FRAUriMechanismReader *reader;
     id mockGateway;
+    id mockDatabaseOperations;
+    id mockModelsFromDatabase;
 }
 
 - (void)setUp {
     [super setUp];
     mockGateway = OCMClassMock([FRANotificationGateway class]);
     OCMStub(((FRANotificationGateway *)mockGateway).deviceToken).andReturn(DEVICE_ID);
-    identityModel = [[FRAIdentityModel alloc] initWithDatabase:nil sqlDatabase:nil];
-    reader = [[FRAUriMechanismReader alloc] initWithDatabase:nil identityModel:identityModel];
+    mockModelsFromDatabase = OCMClassMock([FRAModelsFromDatabase class]);
+    OCMStub([mockModelsFromDatabase allIdentitiesWithDatabase:[OCMArg any] identityDatabase:[OCMArg any] identityModel:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(@[]);
+    mockDatabaseOperations = OCMClassMock([FRAIdentityDatabaseSQLiteOperations class]);
+    OCMStub([mockDatabaseOperations insertIdentity:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(YES);
+    OCMStub([mockDatabaseOperations insertMechanism:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(YES);
+    identityDatabase = [[FRAIdentityDatabase alloc] initWithSqlOperations:mockDatabaseOperations];
+    identityModel = [[FRAIdentityModel alloc] initWithDatabase:mockDatabaseOperations sqlDatabase:nil];
+    reader = [[FRAUriMechanismReader alloc] initWithDatabase:identityDatabase identityModel:identityModel];
     FRAPushMechanismFactory *pushMechanismFactory = [[FRAPushMechanismFactory alloc] initWithGateway:mockGateway];
     FRAOathMechanismFactory *oathMechanismFactory = [[FRAOathMechanismFactory alloc] init];
     [reader addMechanismFactory:pushMechanismFactory];
@@ -51,6 +63,8 @@ static NSString * const DEVICE_ID = @"device id";
 
 - (void)tearDown {
     [mockGateway stopMocking];
+    [mockDatabaseOperations stopMocking];
+    [mockModelsFromDatabase stopMocking];
     [super tearDown];
 }
 

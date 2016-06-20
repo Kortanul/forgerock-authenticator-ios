@@ -23,6 +23,7 @@
 #import "FRAIdentityDatabaseSQLiteOperations.h"
 #import "FRAIdentityModel.h"
 #import "FRAModelObjectProtected.h"
+#import "FRAModelsFromDatabase.h"
 #import "FRANotification.h"
 #import "FRANotificationHandler.h"
 #import "FRAPushMechanism.h"
@@ -45,12 +46,15 @@ static NSString *const CHALLENGE = @"dGhlbGVnZW5kb2ZsdW5h";
     UIApplication *mockApplication;
     FRAFMDatabaseConnectionHelper *mockSqlDatabase;
     id mockDatabaseOperations;
+    id mockModelsFromDatabase;
 }
 
 - (void)setUp {
     [super setUp];
     
     mockApplication = OCMClassMock([UIApplication class]);
+    mockModelsFromDatabase = OCMClassMock([FRAModelsFromDatabase class]);
+    OCMStub([mockModelsFromDatabase allIdentitiesWithDatabase:[OCMArg any] identityDatabase:[OCMArg any] identityModel:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(@[]);
     mockDatabaseOperations = OCMClassMock([FRAIdentityDatabaseSQLiteOperations class]);
     database = [[FRAIdentityDatabase alloc] initWithSqlOperations:mockDatabaseOperations];
     
@@ -74,6 +78,7 @@ static NSString *const CHALLENGE = @"dGhlbGVnZW5kb2ZsdW5h";
 
 - (void)tearDown {
     [mockDatabaseOperations stopMocking];
+    [mockModelsFromDatabase stopMocking];
     [super tearDown];
 }
 

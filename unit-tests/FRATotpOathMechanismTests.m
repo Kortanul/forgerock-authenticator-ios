@@ -15,9 +15,12 @@
  */
 
 #import <XCTest/XCTest.h>
+#import <OCMock/OCMock.h>
 
 #import "FRAIdentityDatabase.h"
+#import "FRAIdentityDatabaseSQLiteOperations.h"
 #import "FRAIdentityModel.h"
+#import "FRAModelsFromDatabase.h"
 #import "FRAOathMechanismFactory.h"
 #import "FRATotpOathMechanism.h"
 #import "FRAUriMechanismReader.h"
@@ -28,22 +31,36 @@
 
 @implementation FRATotpAothMechanismTests {
     FRAUriMechanismReader *reader;
+    id mockDatabaseOperations;
+    id mockModelsFromDatabase;
 }
 
 - (void)setUp {
     [super setUp];
-    FRAIdentityDatabase *database = [[FRAIdentityDatabase alloc] initWithSqlOperations:nil];
-    FRAIdentityModel *identityModel = [[FRAIdentityModel alloc] initWithDatabase:nil sqlDatabase:nil];
+    mockModelsFromDatabase = OCMClassMock([FRAModelsFromDatabase class]);
+    OCMStub([mockModelsFromDatabase allIdentitiesWithDatabase:[OCMArg any] identityDatabase:[OCMArg any] identityModel:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(@[]);
+    mockDatabaseOperations = OCMClassMock([FRAIdentityDatabaseSQLiteOperations class]);
+    OCMStub([mockDatabaseOperations insertIdentity:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(YES);
+    OCMStub([mockDatabaseOperations insertMechanism:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(YES);
+    FRAIdentityDatabase *database = [[FRAIdentityDatabase alloc] initWithSqlOperations:mockDatabaseOperations];
+    FRAIdentityModel *identityModel = [[FRAIdentityModel alloc] initWithDatabase:database sqlDatabase:nil];
     reader = [[FRAUriMechanismReader alloc] initWithDatabase:database identityModel:identityModel];
     [reader addMechanismFactory:[[FRAOathMechanismFactory alloc] init]];
+}
+
+- (void)tearDown {
+    [mockDatabaseOperations stopMocking];
+    [mockModelsFromDatabase stopMocking];
+    [super tearDown];
 }
 
 - (void)testMechanismCanGenerateCode {
     NSURL *qrUrl = [NSURL URLWithString:@"otpauth://totp/ForgeRock:demo?secret=EE3PFF5BM6GHVRNZIBBQWBNRLQ======&issuer=ForgeRock&digits=6&period=30"];
     
     FRATotpOathMechanism *mechanism = (FRATotpOathMechanism *)[reader parseFromURL:qrUrl handler:nil error:nil];
-    [mechanism generateNextCode:nil];
+    BOOL result = [mechanism generateNextCode:nil];
     
+    XCTAssertTrue(result);
     XCTAssertGreaterThan(mechanism.code.length, 0);
 }
 

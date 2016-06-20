@@ -97,7 +97,7 @@ static NSTimeInterval const testTimeout = 10.0;
 -(void)testDecodeJWTMessage {
     NSString* altertJwt = @"eyAidHlwIjogIkpXVCIsICJhbGciOiAiSFMyNTYiIH0.eyAiYyI6ICJKZVlTTXlLdW9QbldmRHVXaU1GVGlENlc2WTNQOWVYTVBYUDljNUEvSEJNPSIsICJ0IjogIjEyMCIsICJ1IjogIjMiLCAibCI6ICJZVzFzWW1OdmIydHBaVDFoYld4aVkyOXZhMmxsUFRBeCIgfQ.1SAWJlT-5vjYRbpZ_57K-NpFRs4VZbSzZjAF_3RTu7k";
     
-    NSDictionary* dictionary = [FRAMessageUtils extractJTWBodyFromString:altertJwt];
+    NSDictionary* dictionary = [FRAMessageUtils extractJTWBodyFromString:altertJwt error:nil];
     
     XCTAssertEqualObjects([dictionary valueForKey:@"c"], @"JeYSMyKuoPnWfDuWiMFTiD6W6Y3P9eXMPXP9c5A/HBM=");
     XCTAssertEqualObjects([dictionary valueForKey:@"l"], @"YW1sYmNvb2tpZT1hbWxiY29va2llPTAx");

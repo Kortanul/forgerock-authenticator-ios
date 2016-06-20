@@ -120,9 +120,28 @@ extern NSString * const NOTIFICATION_LOAD_BALANCER_COOKIE;
  */
 + (NSData *)deserializeBytes:(NSString *)data;
 
-// TODO think about these functions.
+/*!
+ * Returns the number of seconds since 1970 for the given date.
+ *
+ * @param date The date to convert in seconds.
+ * @return The number of seconds since 1970, or NSNULL if the date is nil.
+ */
 + (id)nonNilDate:(NSDate *)date;
+
+/*!
+ * Returns the string if not nil, NSNull otherwise.
+ *
+ * @param string The string to check.
+ * @return The string if not nil, otherwise NSNull.
+ */
 + (id)nonNilString:(NSString *)string;
+
+/*!
+ * Returns the string if not nil, otherwise an empty string.
+ *
+ * @param string The string to check.
+ * @return The string if not nil, otherwise an empty string.
+ */
 + (NSString *)nullToEmpty:(NSString *)string;
 
 @end

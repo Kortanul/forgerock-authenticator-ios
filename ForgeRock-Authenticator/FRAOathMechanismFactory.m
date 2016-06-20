@@ -36,40 +36,34 @@ static BOOL SUCCESS = YES;
 
 - (FRAMechanism *) buildMechanism:(NSURL *)uri database:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel handler:(void (^)(BOOL, NSError *))handler error:(NSError *__autoreleasing *)error {
     
-    NSString* _type = [uri host];
-    if (nil == _type) {
-        return nil; // TODO: Error handling integration
-    }
-    
     NSDictionary *query = [self readQRCode:uri];
-    if (nil == query) {
-        return nil; // TODO: Error handling integration
-    }
 
     CCHmacAlgorithm algo = parseAlgo([query objectForKey:@"algorithm"]);
-    NSData* key = parseKey([query objectForKey:@"secret"]);
+    NSData *key = parseKey([query objectForKey:@"secret"]);
     NSUInteger _digits = parseDigits([query objectForKey:@"digits"]);
-    NSString* p = [query objectForKey:@"period"];
-    NSString* image = [query objectForKey:@"image"];
-    NSString* issuer = [query objectForKey:@"_issuer"];
-    NSString* label = [query objectForKey:@"_label"];
-    NSString* c = [query objectForKey:@"counter"];
-    NSString* bgColor = [query objectForKey:@"b"];
-    if(nil == key || nil == issuer || nil == label) {
-        return nil; // TODO: Error handling integration
-    }
+    NSString *period = [query objectForKey:@"period"];
+    NSString *image = [query objectForKey:@"image"];
+    NSString *issuer = [query objectForKey:@"_issuer"];
+    NSString *label = [query objectForKey:@"_label"];
+    NSString *counter = [query objectForKey:@"counter"];
+    NSString *bgColor = [query objectForKey:@"b"];
+    NSString *_type = [query objectForKey:@"_type"];
     
-    // TODO: handle Errors or nil values for mechanism and identity
+    if((key.length <= 0) || ![self isValid:issuer] || ![self isValid:label]) {
+        *error = [FRAError createError:NSLocalizedString(@"Invalid QR code", nil) code:FRAInvalidQRCode];
+        return nil;
+    }
+ 
     FRAMechanism *mechanism = [self makeMechanimsObject:database
                                           identityModel:identityModel
                                               algorithm:algo
                                                     key:key
                                              codeLength:_digits
-                                           periodString:p
+                                           periodString:period
                                                    type:_type
-                                          counterString:c];
+                                          counterString:counter];
 
-    FRAIdentity *identity = [self identityWithIssuer:issuer accountName:label identityModel:identityModel backgroundColor:bgColor image:image database:database];
+    FRAIdentity *identity = [self identityWithIssuer:issuer accountName:label identityModel:identityModel backgroundColor:bgColor image:image database:database error:error];
 
     if (![identity addMechanism:mechanism error:error]) {
         return nil;
@@ -131,8 +125,16 @@ static BOOL SUCCESS = YES;
     
     [query setValue:_issuer forKey:@"_issuer"];
     [query setValue:_label forKey:@"_label"];
+    [query setValue:_type forKey:@"_type"];
     
     return query;
+}
+
+/*!
+ * Checks if a string is not null and not empty.
+ */
+- (BOOL)isValid:(NSString *)info {
+    return info.length > 0;
 }
 
 /*!
@@ -167,9 +169,6 @@ static BOOL SUCCESS = YES;
         counter = counterString != nil ? [counterString longLongValue] : 0;
     }
     
-    // TODO: Implicit conversion loses integer precision: 'uint64_t' (aka 'unsigned long long')
-    //       to 'NSUInteger' (aka 'unsigned int')
-    
     if ([type isEqualToString:[FRAHotpOathMechanism mechanismType]]) {
         return [FRAHotpOathMechanism mechanismWithDatabase:database identityModel:identityModel secretKey:key HMACAlgorithm:algorithm codeLength:codeLength counter:counter];
     } else {
@@ -178,17 +177,16 @@ static BOOL SUCCESS = YES;
     
 }
 
-- (FRAIdentity *)identityWithIssuer:(NSString *)issuer accountName:(NSString *)accountName identityModel:(FRAIdentityModel *)identityModel backgroundColor:(NSString *)backgroundColor image:(NSString *)image database:(FRAIdentityDatabase *)database {
+- (FRAIdentity *)identityWithIssuer:(NSString *)issuer accountName:(NSString *)accountName identityModel:(FRAIdentityModel *)identityModel backgroundColor:(NSString *)backgroundColor image:(NSString *)image database:(FRAIdentityDatabase *)database error:(NSError *__autoreleasing *)error {
     
     FRAIdentity *identity = [identityModel identityWithIssuer:issuer accountName:accountName];
     if (!identity) {
         identity = [FRAIdentity identityWithDatabase:database identityModel:identityModel accountName:accountName issuer:issuer image:[NSURL URLWithString:image] backgroundColor:backgroundColor];
-        @autoreleasepool {
-            NSError* error;
-            [identityModel addIdentity:identity error:&error];
+        if (![identityModel addIdentity:identity error:error]) {
+            return nil;
         }
     }
-    
+
     return identity;
 }
 
@@ -200,7 +198,6 @@ static BOOL SUCCESS = YES;
 
 - (bool) supports:(NSURL *)uri {
     NSString* scheme = [uri scheme];
-    // TODO: Currently hardcoded to one scheme, upgrade to support multiple.
     if (scheme == nil || ![scheme isEqualToString:@"otpauth"]) {
         return false;
     }

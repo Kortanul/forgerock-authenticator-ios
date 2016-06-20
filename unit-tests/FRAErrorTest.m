@@ -21,6 +21,7 @@
 #import "FMDatabase.h"
 
 static NSString * const ERROR_DOMAIN = @"ForgeRockErrorDomain";
+static NSString * const ERROR_REASON = @"error reason";
 
 @interface FRAErrorTest : XCTestCase
 
@@ -66,27 +67,33 @@ static NSString * const ERROR_DOMAIN = @"ForgeRockErrorDomain";
 
 - (void)testCreateErrorForFilePathReturnsErrorWithDomainAndCodeAndUserInfo {
     
-    NSString *reason = @"error reason";
     NSString *filePath = @"/file/path";
-    NSError *error = [FRAError createErrorForFilePath:filePath reason:reason];
+    NSError *error = [FRAError createErrorForFilePath:filePath reason:ERROR_REASON];
     
     XCTAssertEqualObjects(error.domain, ERROR_DOMAIN);
     XCTAssertEqual(error.code, 1000);
-    XCTAssertEqualObjects([error.userInfo valueForKey:NSLocalizedDescriptionKey], reason);
+    XCTAssertEqualObjects([error.userInfo valueForKey:NSLocalizedDescriptionKey], ERROR_REASON);
     XCTAssertEqualObjects([error.userInfo valueForKey:NSFilePathErrorKey], filePath);
 }
 
-- (void)testCreateErrorWithReasonCodeAndUserInfoReturnsCorrectError {
+- (void)testCanCreateErrorWithReasonCodeAndUserInfo {
     
-    NSString *reason = @"error reason";
     enum FRAErrorCodes errorCode = FRAApplicationError;
     NSDictionary *userInfo = @{ @"other" : @"data" };
     
-    NSError *error = [FRAError createError:reason code:errorCode userInfo:userInfo];
+    NSError *error = [FRAError createError:ERROR_REASON code:errorCode userInfo:userInfo];
     
     XCTAssertEqual(error.code, errorCode);
-    XCTAssertEqualObjects([error.userInfo valueForKey:NSLocalizedDescriptionKey], reason);
+    XCTAssertEqualObjects([error.userInfo valueForKey:NSLocalizedDescriptionKey], ERROR_REASON);
     XCTAssertEqualObjects([error.userInfo valueForKey:@"other"], @"data");
+}
+
+- (void)testCanCreateErrorWithCodeAndUnderlyingError {
+    
+    NSError *underlyingError = [[NSError alloc] init];
+    NSError *error = [FRAError createError:ERROR_REASON code:FRAApplicationError underlyingError:underlyingError];
+    
+    XCTAssertEqual([error.userInfo valueForKey:NSUnderlyingErrorKey], underlyingError);
 }
 
 @end

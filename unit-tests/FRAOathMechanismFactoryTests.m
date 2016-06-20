@@ -15,11 +15,14 @@
  */
 
 #import <XCTest/XCTest.h>
+#import <OCMock/OCMock.h>
 
 #import "FRAError.h"
 #import "FRAHotpOathMechanism.h"
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
+#import "FRAIdentityDatabaseSQLiteOperations.h"
+#import "FRAModelsFromDatabase.h"
 #import "FRAOathMechanismFactory.h"
 #import "FRATotpOathMechanism.h"
 #import "FRAUriMechanismReader.h"
@@ -31,14 +34,29 @@ static NSUInteger const DEFAULT_CODE_LENGTH = 6;
 @end
 
 @implementation FRAOathMechanismFactoryTests {
+    FRAIdentityDatabase *identityDatabase;
     FRAIdentityModel *identityModel;
     FRAOathMechanismFactory *factory;
+    id mockDatabaseOperations;
+    id mockModelsFromDatabase;
 }
 
 - (void)setUp {
     [super setUp];
-    identityModel = [[FRAIdentityModel alloc] initWithDatabase:nil sqlDatabase:nil];
+    mockModelsFromDatabase = OCMClassMock([FRAModelsFromDatabase class]);
+    OCMStub([mockModelsFromDatabase allIdentitiesWithDatabase:[OCMArg any] identityDatabase:[OCMArg any] identityModel:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(@[]);
+    mockDatabaseOperations = OCMClassMock([FRAIdentityDatabaseSQLiteOperations class]);
+    OCMStub([mockDatabaseOperations insertIdentity:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(YES);
+    OCMStub([mockDatabaseOperations insertMechanism:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(YES);
+    identityDatabase = [[FRAIdentityDatabase alloc] initWithSqlOperations:mockDatabaseOperations];
+    identityModel = [[FRAIdentityModel alloc] initWithDatabase:identityDatabase sqlDatabase:nil];
     factory = [[FRAOathMechanismFactory alloc] init];
+}
+
+- (void)tearDown {
+    [mockDatabaseOperations stopMocking];
+    [mockModelsFromDatabase stopMocking];
+    [super tearDown];
 }
 
 - (void)testParseHotpOathType {
@@ -46,7 +64,7 @@ static NSUInteger const DEFAULT_CODE_LENGTH = 6;
     NSURL *qrUrl = [NSURL URLWithString:@"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0"];
     
     // When
-    FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel handler:nil error:nil];
+    FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)[factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:nil];
     
     // Then
     XCTAssertNotNil(mechanism);
@@ -58,7 +76,7 @@ static NSUInteger const DEFAULT_CODE_LENGTH = 6;
     NSURL *qrUrl = [NSURL URLWithString:@"otpauth://totp/ForgeRock:demo?secret=EE3PFF5BM6GHVRNZIBBQWBNRLQ======&issuer=ForgeRock&digits=6&period=30"];
     
     // When
-    FRATotpOathMechanism *mechanism = (FRATotpOathMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel handler:nil error:nil];
+    FRATotpOathMechanism *mechanism = (FRATotpOathMechanism *)[factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:nil];
     
     // Then
     XCTAssertNotNil(mechanism);
@@ -70,7 +88,7 @@ static NSUInteger const DEFAULT_CODE_LENGTH = 6;
     NSURL *qrUrl = [NSURL URLWithString:@"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0"];
     
     // When
-    FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel handler:nil error:nil];
+    FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)[factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:nil];
     
     // Then
     XCTAssertEqual(mechanism.codeLength, DEFAULT_CODE_LENGTH);
@@ -81,7 +99,7 @@ static NSUInteger const DEFAULT_CODE_LENGTH = 6;
     NSURL *qrUrl = [NSURL URLWithString:@"otpauth://totp/ForgeRock:demo?secret=EE3PFF5BM6GHVRNZIBBQWBNRLQ======&issuer=ForgeRock&period=30"];
     
     // When
-    FRATotpOathMechanism *mechanism = (FRATotpOathMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel handler:nil error:nil];
+    FRATotpOathMechanism *mechanism = (FRATotpOathMechanism *)[factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:nil];
     
     // Then
     XCTAssertEqual(mechanism.codeLength, DEFAULT_CODE_LENGTH);
@@ -92,7 +110,7 @@ static NSUInteger const DEFAULT_CODE_LENGTH = 6;
     NSURL *qrUrl = [NSURL URLWithString:@"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0&digits=8"];
     
     // When
-    FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel handler:nil error:nil];
+    FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)[factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:nil];
     
     // Then
     XCTAssertEqual(mechanism.codeLength, 8);
@@ -103,7 +121,7 @@ static NSUInteger const DEFAULT_CODE_LENGTH = 6;
     NSURL *qrUrl = [NSURL URLWithString:@"otpauth://totp/ForgeRock:demo?secret=EE3PFF5BM6GHVRNZIBBQWBNRLQ======&issuer=ForgeRock&digits=8&period=30"];
     
     // When
-    FRATotpOathMechanism *mechanism = (FRATotpOathMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel handler:nil error:nil];
+    FRATotpOathMechanism *mechanism = (FRATotpOathMechanism *)[factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:nil];
     
     // Then
     XCTAssertEqual(mechanism.codeLength, 8);
@@ -114,7 +132,7 @@ static NSUInteger const DEFAULT_CODE_LENGTH = 6;
     NSURL *qrUrl = [NSURL URLWithString:@"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=12&digits=8"];
     
     // When
-    FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel handler:nil error:nil];
+    FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)[factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:nil];
     
     // Then
     XCTAssertEqual(mechanism.counter, 12);
@@ -125,7 +143,7 @@ static NSUInteger const DEFAULT_CODE_LENGTH = 6;
     NSURL *qrUrl = [NSURL URLWithString:@"otpauth://totp/ForgeRock:demo?secret=EE3PFF5BM6GHVRNZIBBQWBNRLQ======&issuer=ForgeRock&digits=8&period=30"];
     
     // When
-    FRATotpOathMechanism *mechanism = (FRATotpOathMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel handler:nil error:nil];
+    FRATotpOathMechanism *mechanism = (FRATotpOathMechanism *)[factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:nil];
     
     // Then
     XCTAssertEqual(mechanism.period, 30);
@@ -136,7 +154,7 @@ static NSUInteger const DEFAULT_CODE_LENGTH = 6;
     NSURL *qrUrl = [NSURL URLWithString:@"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0"];
     
     // When
-    FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel handler:nil error:nil];
+    FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)[factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:nil];
     
     // Then
     FRAIdentity *identity = mechanism.parent;
@@ -149,7 +167,7 @@ static NSUInteger const DEFAULT_CODE_LENGTH = 6;
     NSURL *qrUrl = [NSURL URLWithString:@"otpauth://totp/Forgerock:demo?secret=EE3PFF5BM6GHVRNZIBBQWBNRLQ======&issuer=ForgeRock&digits=8&period=30"];
     
     // When
-    FRATotpOathMechanism *mechanism = (FRATotpOathMechanism *)[factory buildMechanism:qrUrl database:nil identityModel:identityModel handler:nil error:nil];
+    FRATotpOathMechanism *mechanism = (FRATotpOathMechanism *)[factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:nil];
     
     // Then
     FRAIdentity *identity = mechanism.parent;
@@ -164,11 +182,102 @@ static NSUInteger const DEFAULT_CODE_LENGTH = 6;
     
     // When
     NSError *error;
-    FRAMechanism *duplicateMechanism = [factory buildMechanism:qrUrl database:nil identityModel:identityModel handler:nil error:&error];
+    FRAMechanism *duplicateMechanism = [factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:&error];
     
     // Then
     XCTAssertNil(duplicateMechanism);
     XCTAssertEqual(error.code, FRADuplicateMechanism);
+}
+
+- (void)testBuildMechanismReturnsNilIfNoSecret {
+    // Given
+    NSURL *qrUrl = [NSURL URLWithString:@"otpauth://hotp/Forgerock:demo?secret=&issuer=Forgerock&counter=0&digits=8"];
+    
+    // When
+    NSError *error;
+    FRAMechanism *mechanism = [factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:&error];
+    
+    XCTAssertNil(mechanism);
+    XCTAssertEqual(error.code, FRAInvalidQRCode);
+}
+
+- (void)testBuildMechanismReturnsNilIfNoIssuer {
+    // Given
+    NSURL *qrUrl = [NSURL URLWithString:@"otpauth://hotp/:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0&digits=8"];
+    
+    // When
+    NSError *error;
+    FRAMechanism *mechanism = [factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:&error];
+    
+    XCTAssertNil(mechanism);
+    XCTAssertEqual(error.code, FRAInvalidQRCode);
+}
+
+- (void)testBuildMechanismReturnsNilIfNoAccountName {
+    // Given
+    NSURL *qrUrl = [NSURL URLWithString:@"otpauth://hotp/Forgerock:?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0&digits=8"];
+    
+    // When
+    NSError *error;
+    FRAMechanism *mechanism = [factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:&error];
+    
+    XCTAssertNil(mechanism);
+    XCTAssertEqual(error.code, FRAInvalidQRCode);
+}
+
+- (void)testBuildMechanismReturnsNilIfTypeIsMissing {
+    // Given
+    NSURL *qrUrl = [NSURL URLWithString:@"otpauth:///Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0&digits=8"];
+    
+    // When
+    NSError *error;
+    FRAMechanism *mechanism = [factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:&error];
+    
+    XCTAssertNil(mechanism);
+    XCTAssertEqual(error.code, FRAInvalidQRCode);
+}
+
+- (void)testBuildMechanismReturnsNilIfTypeIsNotSupported {
+    // Given
+    NSURL *qrUrl = [NSURL URLWithString:@"otpauth://anyotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0&digits=8"];
+    
+    // When
+    NSError *error;
+    FRAMechanism *mechanism = [factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:&error];
+    
+    XCTAssertNil(mechanism);
+    XCTAssertEqual(error.code, FRAInvalidQRCode);
+}
+
+- (void)testBuildMechanismReturnsNilIfCantSaveIdentityInDatabase {
+    // Given
+    NSURL *qrUrl = [NSURL URLWithString:@"otpauth://totp/ForgeRock:demo?secret=EE3PFF5BM6GHVRNZIBBQWBNRLQ======&issuer=ForgeRock&digits=8&period=30"];
+    FRAIdentityDatabaseSQLiteOperations *databaseOperations = OCMClassMock([FRAIdentityDatabaseSQLiteOperations class]);
+    OCMStub([databaseOperations insertIdentity:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(NO);
+    identityDatabase = [[FRAIdentityDatabase alloc] initWithSqlOperations:databaseOperations];
+    identityModel = [[FRAIdentityModel alloc] initWithDatabase:identityDatabase sqlDatabase:nil];
+    
+    // When
+    NSError *error;
+    FRAMechanism *mechanism = [factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:&error];
+    
+    XCTAssertNil(mechanism);
+}
+
+- (void)testBuildMechanismReturnsNilIfCantSaveMechanismInDatabase {
+    // Given
+    NSURL *qrUrl = [NSURL URLWithString:@"otpauth://totp/ForgeRock:demo?secret=EE3PFF5BM6GHVRNZIBBQWBNRLQ======&issuer=ForgeRock&digits=8&period=30"];
+    FRAIdentityDatabaseSQLiteOperations *databaseOperations = OCMClassMock([FRAIdentityDatabaseSQLiteOperations class]);
+    OCMStub([databaseOperations insertIdentity:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(YES);
+    OCMStub([databaseOperations insertMechanism:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(NO);
+    identityDatabase = [[FRAIdentityDatabase alloc] initWithSqlOperations:databaseOperations];
+    identityModel = [[FRAIdentityModel alloc] initWithDatabase:identityDatabase sqlDatabase:nil];
+    
+    // When
+    NSError *error;
+    FRAMechanism *mechanism = [factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:&error];
+    
+    XCTAssertNil(mechanism);
 }
 
 @end

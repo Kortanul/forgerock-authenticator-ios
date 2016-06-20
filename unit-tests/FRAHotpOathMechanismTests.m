@@ -21,6 +21,7 @@
 #import "FRAIdentityDatabase.h"
 #import "FRAIdentityDatabaseSQLiteOperations.h"
 #import "FRAIdentityModel.h"
+#import "FRAModelsFromDatabase.h"
 #import "FRAOathCode.h"
 #import "FRAOathMechanismFactory.h"
 #import "FRAFMDatabaseConnectionHelper.h"
@@ -34,6 +35,7 @@
     id mockSqlOperations;
     id mockSqlDatabase;
     id databaseObserverMock;
+    id mockModelsFromDatabase;
     FRAUriMechanismReader *reader;
     FRAIdentityDatabase *database;
     FRAIdentityModel *identityModel;
@@ -41,7 +43,12 @@
 
 - (void)setUp {
     [super setUp];
+    mockModelsFromDatabase = OCMClassMock([FRAModelsFromDatabase class]);
+    OCMStub([mockModelsFromDatabase allIdentitiesWithDatabase:[OCMArg any] identityDatabase:[OCMArg any] identityModel:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(@[]);
     mockSqlOperations = OCMClassMock([FRAIdentityDatabaseSQLiteOperations class]);
+    OCMStub([mockSqlOperations insertIdentity:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(YES);
+    OCMStub([mockSqlOperations insertMechanism:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(YES);
+    OCMStub([mockSqlOperations updateMechanism:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(YES);
     mockSqlDatabase = OCMClassMock([FRAFMDatabaseConnectionHelper class]);
     database = [[FRAIdentityDatabase alloc] initWithSqlOperations:mockSqlOperations];
     identityModel = [[FRAIdentityModel alloc] initWithDatabase:database sqlDatabase:mockSqlDatabase];
@@ -55,6 +62,7 @@
 - (void)tearDown {
     [mockSqlOperations stopMocking];
     [mockSqlDatabase stopMocking];
+    [mockModelsFromDatabase stopMocking];
     [super tearDown];
 }
 
@@ -64,11 +72,12 @@
     FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)[reader parseFromString:qrString handler:nil error:nil];
     
     // When
-    [mechanism generateNextCode:nil];
-    NSString *result = [mechanism code];
+    BOOL result = [mechanism generateNextCode:nil];
+    NSString *nextCode = [mechanism code];
     
     // Then
-    XCTAssertEqualObjects(result, @"352916", @"Incorrect next hash");
+    XCTAssertTrue(result);
+    XCTAssertEqualObjects(nextCode, @"352916", @"Incorrect next hash");
 }
 
 - (void)testGenerateDifferentCodeSequence {
@@ -77,11 +86,12 @@
     FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)[reader parseFromString:qrString handler:nil error:nil];
     
     // When
-    [mechanism generateNextCode:nil];
-    NSString *result = [mechanism code];
+    BOOL result = [mechanism generateNextCode:nil];
+    NSString *nextCode = [mechanism code];
     
     // Then
-    XCTAssertEqualObjects(result, @"545550", @"Incorrect next hash");
+    XCTAssertTrue(result);
+    XCTAssertEqualObjects(nextCode, @"545550", @"Incorrect next hash");
 }
 
 - (void)testSavedHotpOathMechanismAutomaticallySavesItselfToDatabaseWhenIncrementingCounter {
@@ -113,6 +123,28 @@
     
     // Then
     OCMVerifyAll(databaseObserverMock);
+}
+
+- (void)testGenerateNextCodeReturnsNoIfCantUpdateMechanism {
+    // Given
+    FRAIdentityDatabaseSQLiteOperations *sqlOperations = OCMClassMock([FRAIdentityDatabaseSQLiteOperations class]);
+    OCMStub([sqlOperations insertIdentity:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(YES);
+    OCMStub([sqlOperations insertMechanism:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(YES);
+    OCMStub([sqlOperations updateMechanism:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(NO);
+    database = [[FRAIdentityDatabase alloc] initWithSqlOperations:sqlOperations];
+    identityModel = [[FRAIdentityModel alloc] initWithDatabase:database sqlDatabase:mockSqlDatabase];
+    reader = [[FRAUriMechanismReader alloc] initWithDatabase:database identityModel:identityModel];
+    [reader addMechanismFactory:[[FRAOathMechanismFactory alloc] init]];
+    NSString *qrString = @"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOI======&issuer=Forgerock&counter=0";
+    FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)[reader parseFromString:qrString handler:nil error:nil];
+    
+    // When
+    BOOL result = [mechanism generateNextCode:nil];
+    NSString *code = [mechanism code];
+    
+    // Then
+    XCTAssertFalse(result);
+    XCTAssertNil(code);
 }
 
 @end

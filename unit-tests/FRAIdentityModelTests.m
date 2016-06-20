@@ -23,6 +23,7 @@
 #import "FRAIdentityDatabaseSQLiteOperations.h"
 #import "FRAIdentityModel.h"
 #import "FRAMechanism.h"
+#import "FRAModelsFromDatabase.h"
 #import "FRANotification.h"
 #import "FRAPushMechanism.h"
 
@@ -34,6 +35,7 @@
     id mockSqlOperations;
     id mockSqlDatabase;
     id databaseObserverMock;
+    id mockModelsFromDatabase;
     FRAIdentityDatabase *database;
     FRAIdentityModel *identityModel;
     FRAIdentity *aliceIdentity;
@@ -42,6 +44,8 @@
 
 - (void)setUp {
     [super setUp];
+    mockModelsFromDatabase = OCMClassMock([FRAModelsFromDatabase class]);
+    OCMStub([mockModelsFromDatabase allIdentitiesWithDatabase:[OCMArg any] identityDatabase:[OCMArg any] identityModel:[OCMArg any] error:[OCMArg anyObjectRef]]).andReturn(@[]);
     mockSqlOperations = OCMClassMock([FRAIdentityDatabaseSQLiteOperations class]);
     mockSqlDatabase = OCMClassMock([FRAFMDatabaseConnectionHelper class]);
     database = [[FRAIdentityDatabase alloc] initWithSqlOperations:mockSqlOperations];
@@ -54,6 +58,7 @@
 - (void)tearDown {
     [mockSqlOperations stopMocking];
     [mockSqlDatabase stopMocking];
+    [mockModelsFromDatabase stopMocking];
     [super tearDown];
 }
 

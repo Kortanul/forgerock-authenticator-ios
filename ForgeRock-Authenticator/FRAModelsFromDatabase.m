@@ -43,7 +43,7 @@
  *
  * TODO: Split into smaller functions.
  */
-+ (NSArray<FRAIdentity*> *)getAllIdentitiesFrom:(FRAFMDatabaseConnectionHelper *)sqlDatabase including:(FRAIdentityDatabase *)identityDatabase identityModel:(FRAIdentityModel *)identityModel catchingErrorsWith:(NSError *__autoreleasing *)error {
++ (NSArray<FRAIdentity*> *)allIdentitiesWithDatabase:(FRAFMDatabaseConnectionHelper *)sqlDatabase identityDatabase:(FRAIdentityDatabase *)identityDatabase identityModel:(FRAIdentityModel *)identityModel error:(NSError *__autoreleasing *)error {
     
     NSString *sql = [FRAFMDatabaseConnectionHelper readSchema:@"read_all" withError:error];
     if (!sql) {
@@ -68,7 +68,6 @@
         }
         
         // Output rows for debugging purposes.
-        // TODO: Sanitise data.
         NSLog(@"Reading all rows from the database:");
         
         NSMutableArray* identities = [[NSMutableArray alloc] init];
@@ -138,8 +137,6 @@
             // Create the Mechanism
             if ([type  isEqualToString:[FRAHotpOathMechanism mechanismType]]) {
                 
-                // TODO: Null checking on errors.
-                
                 // Options Map is a String to String mapping stored in JSON.
                 NSDictionary *optionsMap;
                 if (![FRASerialization deserializeJSON:optionsJSON intoDictionary:&optionsMap error:error]) {
@@ -175,8 +172,6 @@
                 }
                 
             } else if ([type isEqualToString:[FRATotpOathMechanism mechanismType]]) {
-                
-                // TODO: Null checking on errors.
                 
                 // Options Map is a String to String mapping stored in JSON.
                 NSDictionary *optionsMap;

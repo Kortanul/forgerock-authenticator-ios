@@ -39,22 +39,23 @@
 #pragma mark -
 #pragma mark Public Methods
 
-- (BOOL)read:(NSString *)code view:(UIView *)view error:(NSError *__autoreleasing*)error {
+- (BOOL)read:(NSString *)code view:(UIView *)view {
     [self showActivityIndicator:view];
 
-    FRAMechanism *mechanism = [_mechanismReader parseFromString:code handler:[self mechanismReadCallback] error:error];
+    NSError *error;
+    FRAMechanism *mechanism = [_mechanismReader parseFromString:code handler:[self mechanismReadCallback] error:&error];
     
     if (mechanism) {
         return YES;
     }
     
-    if (error && (*error).code == FRADuplicateMechanism) {
-        [self handleDuplicateMechanism:code error:error];
+    if (error && error.code == FRADuplicateMechanism) {
+        [self handleDuplicateMechanism:code error:&error];
         return YES;
     }
     
     [self hideActivityIndicator];
-    [self showAlert];
+    [self showAlert:error];
     
     return NO;
 }
@@ -94,13 +95,12 @@
 - (void)handleDuplicateMechanism:(NSString *)code error:(NSError *__autoreleasing*)error {
     FRAIdentity *identity = [(*error).userInfo valueForKey:@"identity"];
     FRAMechanism *duplicateMechanism = [(*error).userInfo valueForKey:@"mechanism"];
-    void(^handler)(NSInteger) = [self duplicateMechanismCallback:code identity:identity mechanism:duplicateMechanism error:error];
     FRABlockAlertView *alertView = [[FRABlockAlertView alloc] initWithTitle:NSLocalizedString(@"warning", nil)
                                                                     message:(*error).localizedDescription
                                                                    delegate:nil
                                                           cancelButtonTitle:NSLocalizedString(@"cancel", nil)
                                                            otherButtonTitle:NSLocalizedString(@"ok", nil)
-                                                                    handler:handler];
+                                                                    handler:[self duplicateMechanismCallback:code identity:identity mechanism:duplicateMechanism error:error]];
     [alertView show];
 }
 
@@ -136,22 +136,48 @@
     return ^(BOOL success, NSError *error) {
         [self hideActivityIndicator];
         if (!success) {
-            [self showAlert];
+            [self showAlert:error];
         }
     };
 }
 
 /*!
- * Shows an alert with a failure message.
+ * Displays an alert message to the user.
+ *
+ * @param error The error to display to the user.
+ *
  */
-- (void)showAlert {
-    FRABlockAlertView *alertView = [[FRABlockAlertView alloc] initWithTitle:NSLocalizedString(@"qr_code_scan_error", nil)
-                                                                    message:nil
+- (void)showAlert:(NSError *)error {
+    FRABlockAlertView *alertView = [[FRABlockAlertView alloc] initWithTitle:NSLocalizedString(@"qr_code_scan_error_title", nil)
+                                                                    message:[self errorMessage:error]
                                                                    delegate:nil
-                                                          cancelButtonTitle:NSLocalizedString(@"dismiss", nil)
+                                                          cancelButtonTitle:NSLocalizedString(@"ok", nil)
                                                            otherButtonTitle:nil
                                                                     handler:nil];
     [alertView show];
+}
+
+/*!
+ * Gets the localized error message to display to the user.
+ *
+ * @param error The error to display to the user.
+ *
+ */
+- (NSString *)errorMessage:(NSError *)error {
+    if (!error) {
+        return nil;
+    }
+    
+    switch (error.code) {
+        case FRANetworkFailure:
+            return NSLocalizedString(@"qr_code_scan_error_network_failure_message", nil);
+        case FRAMissingDeviceId:
+            return NSLocalizedString(@"qr_code_scan_error_no_device_id_message", nil);
+        case FRAInvalidQRCode:
+            return NSLocalizedString(@"qr_code_scan_error_invalid_code", nil);
+        default:
+            return nil;
+    }
 }
 
 @end

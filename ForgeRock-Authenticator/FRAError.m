@@ -50,6 +50,15 @@ static NSString * const FRAErrorDomain = @"ForgeRockErrorDomain";
     return [self createErrorWithCode:code userInfo:info];
 }
 
++ (NSError *)createError:(NSString *)reason code:(enum FRAErrorCodes)code underlyingError:(NSError *)underlyingError {
+    if (underlyingError) {
+        NSDictionary *userInfo = @{NSLocalizedDescriptionKey : reason, NSUnderlyingErrorKey : underlyingError};
+        return [self createErrorWithCode:code userInfo:userInfo];
+    }
+    
+    return [self createError:reason code:code];
+}
+
 + (NSException *)createIllegalStateException:(NSString *)reason {
     return [NSException exceptionWithName:@"IllegalStateException" reason:reason userInfo:nil];
 }

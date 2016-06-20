@@ -78,7 +78,7 @@ static NSString * const Data = @"{\"message_id\":\"message id\", \"push_challeng
     
     OCMStub([mockSqlDatabase readSchema:@"read_all" withError:nil]).andReturn(nil);
     
-    NSArray<FRAIdentity*>* identities = [FRAModelsFromDatabase getAllIdentitiesFrom:mockSqlDatabase including:mockIdentityDatabase identityModel:mockIdentityModel catchingErrorsWith:nil];
+    NSArray<FRAIdentity*>* identities = [FRAModelsFromDatabase allIdentitiesWithDatabase:mockSqlDatabase identityDatabase:mockIdentityDatabase identityModel:mockIdentityModel error:nil];
     
     XCTAssertNil(identities);
 }
@@ -88,7 +88,7 @@ static NSString * const Data = @"{\"message_id\":\"message id\", \"push_challeng
     OCMStub([mockSqlDatabase readSchema:@"read_all" withError:nil]).andReturn(ReadSchema);
     OCMStub([mockSqlDatabase getConnectionWithError:nil]).andReturn(nil);
     
-    NSArray<FRAIdentity*>* identities = [FRAModelsFromDatabase getAllIdentitiesFrom:mockSqlDatabase including:mockIdentityDatabase identityModel:mockIdentityModel catchingErrorsWith:nil];
+    NSArray<FRAIdentity*>* identities = [FRAModelsFromDatabase allIdentitiesWithDatabase:mockSqlDatabase identityDatabase:mockIdentityDatabase identityModel:mockIdentityModel error:nil];
     
     XCTAssertNil(identities);
 }
@@ -100,7 +100,7 @@ static NSString * const Data = @"{\"message_id\":\"message id\", \"push_challeng
     OCMStub([mockDatabase executeQuery:ReadSchema]).andReturn(nil);
     NSError *error;
 
-    NSArray<FRAIdentity*>* identities = [FRAModelsFromDatabase getAllIdentitiesFrom:mockSqlDatabase including:mockIdentityDatabase identityModel:mockIdentityModel catchingErrorsWith:&error];
+    NSArray<FRAIdentity*>* identities = [FRAModelsFromDatabase allIdentitiesWithDatabase:mockSqlDatabase identityDatabase:mockIdentityDatabase identityModel:mockIdentityModel error:&error];
   
     XCTAssertNil(identities);
     XCTAssertNotNil(error);
@@ -113,7 +113,7 @@ static NSString * const Data = @"{\"message_id\":\"message id\", \"push_challeng
     OCMStub([mockDatabase executeQuery:ReadSchema]).andReturn(mockQueryResults);
     [self setUpDummyIdentity:HMACOtpType];
     
-    NSArray<FRAIdentity*>* identities = [FRAModelsFromDatabase getAllIdentitiesFrom:mockSqlDatabase including:mockIdentityDatabase identityModel:mockIdentityModel catchingErrorsWith:nil];
+    NSArray<FRAIdentity*>* identities = [FRAModelsFromDatabase allIdentitiesWithDatabase:mockSqlDatabase identityDatabase:mockIdentityDatabase identityModel:mockIdentityModel error:nil];
     
     XCTAssertEqual(identities.count, 1);
     FRAIdentity *identity = [identities objectAtIndex:0];
@@ -132,7 +132,7 @@ static NSString * const Data = @"{\"message_id\":\"message id\", \"push_challeng
     OCMStub([mockDatabase executeQuery:ReadSchema]).andReturn(mockQueryResults);
     [self setUpDummyIdentity:TimeOtpType];
     
-    NSArray<FRAIdentity*>* identities = [FRAModelsFromDatabase getAllIdentitiesFrom:mockSqlDatabase including:mockIdentityDatabase identityModel:mockIdentityModel catchingErrorsWith:nil];
+    NSArray<FRAIdentity*>* identities = [FRAModelsFromDatabase allIdentitiesWithDatabase:mockSqlDatabase identityDatabase:mockIdentityDatabase identityModel:mockIdentityModel error:nil];
     
     XCTAssertEqual(identities.count, 1);
     FRAIdentity *identity = [identities objectAtIndex:0];
@@ -151,7 +151,7 @@ static NSString * const Data = @"{\"message_id\":\"message id\", \"push_challeng
     OCMStub([mockDatabase executeQuery:ReadSchema]).andReturn(mockQueryResults);
     [self setUpDummyIdentity:PushType];
     
-    NSArray<FRAIdentity*>* identities = [FRAModelsFromDatabase getAllIdentitiesFrom:mockSqlDatabase including:mockIdentityDatabase identityModel:mockIdentityModel catchingErrorsWith:nil];
+    NSArray<FRAIdentity*>* identities = [FRAModelsFromDatabase allIdentitiesWithDatabase:mockSqlDatabase identityDatabase:mockIdentityDatabase identityModel:mockIdentityModel error:nil];
     
     XCTAssertEqual(identities.count, 1);
     FRAIdentity *identity = [identities objectAtIndex:0];
@@ -174,7 +174,7 @@ static NSString * const Data = @"{\"message_id\":\"message id\", \"push_challeng
     OCMStub([mockDatabase executeQuery:ReadSchema]).andReturn(mockQueryResults);
     [self setUpDummyIdentity:UnknownType];
     
-    XCTAssertThrows([FRAModelsFromDatabase getAllIdentitiesFrom:mockSqlDatabase including:mockIdentityDatabase identityModel:mockIdentityModel catchingErrorsWith:nil]);
+    XCTAssertThrows([FRAModelsFromDatabase allIdentitiesWithDatabase:mockSqlDatabase identityDatabase:mockIdentityDatabase identityModel:mockIdentityModel error:nil]);
 }
 
 - (void)setUpDummyIdentity:(NSString *)type {

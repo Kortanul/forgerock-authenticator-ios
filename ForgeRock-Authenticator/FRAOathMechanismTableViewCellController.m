@@ -14,13 +14,14 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-#import "FRAHotpOathMechanism.h"
-#import "FRATotpOathMechanism.h"
-#import "FRAOathMechanismTableViewCellController.h"
 #import "FRABlockActionSheet.h"
-#import "FRAOathMechanismTableViewCell.h"
+#import "FRABlockAlertView.h"
 #import "FRAIdentityModel.h"
+#import "FRAHotpOathMechanism.h"
 #import "FRAOathCode.h"
+#import "FRAOathMechanismTableViewCell.h"
+#import "FRAOathMechanismTableViewCellController.h"
+#import "FRATotpOathMechanism.h"
 
 /*!
  * Private interface.
@@ -90,19 +91,17 @@
     if ([self.mechanism isKindOfClass:[FRATotpOathMechanism class]]) {
         FRATotpOathMechanism *mechanism = (FRATotpOathMechanism *)self.mechanism;
         if ((!mechanism.code) || [mechanism hasExpired]) {
-            // TODO: Handle error
-            @autoreleasepool {
-                NSError* error;
-                [mechanism generateNextCode:&error];
+            NSError *error;
+            if (![mechanism generateNextCode:&error]) {
+                [self showAlert];
             }
         }
     } else if ([self.mechanism isKindOfClass:[FRAHotpOathMechanism class]]) {
         FRAHotpOathMechanism *mechanism = (FRAHotpOathMechanism *)self.mechanism;
         if ((!mechanism.code)) {
-            // TODO: Handle error
-            @autoreleasepool {
-                NSError* error;
-                [mechanism generateNextCode:&error];
+            NSError* error;
+            if (![mechanism generateNextCode:&error]) {
+                [self showAlert];
             }
         }
     }
@@ -153,13 +152,14 @@
 
 - (void)generateNextCode {
     if (!self.isEditing) {
-        // TODO: Handle error
-        @autoreleasepool {
-            NSError* error;
-            if ([[self mechanism] isKindOfClass:[FRAHotpOathMechanism class]]) {
-                [(FRAHotpOathMechanism *)self.mechanism generateNextCode:&error];
-            } else if ([[self mechanism] isKindOfClass:[FRATotpOathMechanism class]]) {
-                [(FRATotpOathMechanism *)self.mechanism generateNextCode:&error];
+        NSError* error;
+        if ([[self mechanism] isKindOfClass:[FRAHotpOathMechanism class]]) {
+            if (![(FRAHotpOathMechanism *)self.mechanism generateNextCode:&error]) {
+                [self showAlert];
+            }
+        } else if ([[self mechanism] isKindOfClass:[FRATotpOathMechanism class]]) {
+            if (![(FRATotpOathMechanism *)self.mechanism generateNextCode:&error]) {
+                [self showAlert];
             }
         }
     }
@@ -205,6 +205,16 @@
 - (void)stopProgressAnimationTimer {
     [self.progressAnimationTimer invalidate];
     self.progressAnimationTimer = nil;
+}
+
+- (void)showAlert {
+    FRABlockAlertView *alertView = [[FRABlockAlertView alloc] initWithTitle:NSLocalizedString(@"mechanism_generate_code_error_title", nil)
+                                                                    message:nil
+                                                                   delegate:nil
+                                                          cancelButtonTitle:NSLocalizedString(@"ok", nil)
+                                                           otherButtonTitle:nil
+                                                                    handler:nil];
+    [alertView show];
 }
 
 @end
