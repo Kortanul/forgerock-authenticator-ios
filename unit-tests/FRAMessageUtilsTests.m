@@ -132,5 +132,29 @@ static NSTimeInterval const testTimeout = 10.0;
     [self waitForExpectationsWithTimeout:testTimeout handler:nil];
 }
 
+- (void)testIncludesAcceptAPIVersionHeader {
+    XCTestExpectation *expectation = [self expectationWithDescription:@"request with api version header"];
+    
+    [FRAMessageUtils respondWithEndpoint:url
+                            base64Secret:base64Secret
+                               messageId:messageId
+                  loadBalancerCookieData:@"amlbcookie=03"
+                                    data:@{@"some":@"data"}
+                                protocol:[FRAMockURLProtocol class]
+                                 handler:^(NSInteger statusCode, NSError *error) {
+                                     NSURLRequest *request = [FRAMockURLProtocol getRequest];
+                                     
+                                     NSDictionary<NSString *, NSString *> *headers = [request allHTTPHeaderFields];
+                                     NSString *acceptAPIVersionHeader = [headers valueForKey:@"Accept-API-Version"];
+                                     
+                                     XCTAssertNotNil(acceptAPIVersionHeader);
+                                     XCTAssertEqualObjects(acceptAPIVersionHeader, @"resource=1.0, protocol=1.0");
+                                     
+                                     [expectation fulfill];
+                                 }];
+    
+    [self waitForExpectationsWithTimeout:testTimeout handler:nil];
+}
+
 @end
 

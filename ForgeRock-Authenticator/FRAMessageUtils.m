@@ -23,6 +23,12 @@
 static NSString * const JSON_CONTENT_TYPE = @"application/json";
 /*! The Communication mechanism key. */
 static NSString * const CONTENT_TYPE_HEADER = @"Content-Type";
+/*! The Set-Cookie header field. */
+static NSString * const SET_COOKIE_HEADER = @"Set-Cookie";
+/*! The Accept-API-Version header field. */
+static NSString * const ACCEPT_API_VERSION_HEADER = @"Accept-API-Version";
+/*! The Accept-API-Version header value. */
+static NSString * const ACCEPT_API_VERSION_HEADER_VALUE = @"resource=1.0, protocol=1.0";
 
 @implementation FRAMessageUtils
 
@@ -49,7 +55,8 @@ static NSString * const CONTENT_TYPE_HEADER = @"Content-Type";
     AFHTTPSessionManager *manager = [self createHTTPSessionManager:protocol];
     [manager setRequestSerializer:[AFJSONRequestSerializer serializer]];
     [manager.requestSerializer setValue:JSON_CONTENT_TYPE forHTTPHeaderField:CONTENT_TYPE_HEADER];
-    [manager.requestSerializer setValue:loadBalancerCookieData forHTTPHeaderField:@"Set-Cookie"];
+    [manager.requestSerializer setValue:loadBalancerCookieData forHTTPHeaderField:SET_COOKIE_HEADER];
+    [manager.requestSerializer setValue:ACCEPT_API_VERSION_HEADER_VALUE forHTTPHeaderField:ACCEPT_API_VERSION_HEADER];
     
     [manager POST:URL.absoluteString
       parameters:payload

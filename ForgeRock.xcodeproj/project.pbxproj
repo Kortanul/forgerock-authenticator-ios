@@ -345,6 +345,7 @@
 		0484ED541CE20BDD00DB537A /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				0467E0C91CE60C7800A422D5 /* FRAErrorTest.m */,
 				048C180D1CFBB68C00D16A51 /* FRAQRUtilsTests.m */,
 				04D3D25C1CE4CE9100D77EF6 /* FRAMessageUtilsTests.m */,
 				04D3D25D1CE4CE9100D77EF6 /* FRAMockURLProtocol.h */,
@@ -562,7 +563,6 @@
 			isa = PBXGroup;
 			children = (
 				0484ED541CE20BDD00DB537A /* Utils */,
-				0467E0C91CE60C7800A422D5 /* FRAErrorTest.m */,
 				448EAF2A1CCD636E00FEF058 /* Accounts */,
 				E12246141CD0FBEE00F52C98 /* Notifications */,
 				44695F7B1CA1709B00680799 /* Storage */,
