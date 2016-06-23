@@ -66,6 +66,8 @@
 		44FF7E131D05C73800BDC512 /* FRAUIUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 44FF7E121D05C73800BDC512 /* FRAUIUtils.m */; };
 		B5E90540F95CEF0F71F20925 /* libPods-ForgeRockTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00D810F5F8DD38D1A0B8D06B /* libPods-ForgeRockTests.a */; };
 		C7D2DEB61DEEEB3E3058CC68 /* libPods-ForgeRock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96FCE7C37A708C5D914322B1 /* libPods-ForgeRock.a */; };
+		E10CEC871D1BF8ED00865512 /* splashvideo.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = E10CEC861D1BF8ED00865512 /* splashvideo.mp4 */; };
+		E10CEC8A1D1BFCD000865512 /* FRASplashViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E10CEC891D1BFCD000865512 /* FRASplashViewController.m */; };
 		E12246171CD0FD0600F52C98 /* FRANotificationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E12246151CD0FC8300F52C98 /* FRANotificationTest.m */; };
 		E122461B1CD10EEB00F52C98 /* FRAMechanismTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E122461A1CD10EEB00F52C98 /* FRAMechanismTest.m */; };
 		E13281C71CDCA8D80069924A /* read_all.sql in Resources */ = {isa = PBXBuildFile; fileRef = E13281C61CDCA8D80069924A /* read_all.sql */; };
@@ -220,6 +222,9 @@
 		9C6114B55D3356F2F9573691 /* Pods-ForgeRock.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgeRock.release.xcconfig"; path = "Pods/Target Support Files/Pods-ForgeRock/Pods-ForgeRock.release.xcconfig"; sourceTree = "<group>"; };
 		AE5AF79E2C305DD029C90FB1 /* Pods-ForgeRock.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgeRock.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ForgeRock/Pods-ForgeRock.debug.xcconfig"; sourceTree = "<group>"; };
 		D44FA6E5B0EE20491800704A /* Pods-ForgeRockTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgeRockTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ForgeRockTests/Pods-ForgeRockTests.debug.xcconfig"; sourceTree = "<group>"; };
+		E10CEC861D1BF8ED00865512 /* splashvideo.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = splashvideo.mp4; sourceTree = "<group>"; };
+		E10CEC881D1BFCD000865512 /* FRASplashViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRASplashViewController.h; sourceTree = "<group>"; };
+		E10CEC891D1BFCD000865512 /* FRASplashViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRASplashViewController.m; sourceTree = "<group>"; };
 		E12246151CD0FC8300F52C98 /* FRANotificationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = FRANotificationTest.m; path = "unit-tests/FRANotificationTest.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		E122461A1CD10EEB00F52C98 /* FRAMechanismTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = FRAMechanismTest.m; path = "unit-tests/FRAMechanismTest.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		E13281C61CDCA8D80069924A /* read_all.sql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = read_all.sql; sourceTree = "<group>"; };
@@ -624,6 +629,15 @@
 			name = SQL;
 			sourceTree = "<group>";
 		};
+		E1EF222E1D1C368D00F70A55 /* Splash */ = {
+			isa = PBXGroup;
+			children = (
+				E10CEC881D1BFCD000865512 /* FRASplashViewController.h */,
+				E10CEC891D1BFCD000865512 /* FRASplashViewController.m */,
+			);
+			name = Splash;
+			sourceTree = "<group>";
+		};
 		F17A85F417EC12670098E7F3 = {
 			isa = PBXGroup;
 			children = (
@@ -670,6 +684,7 @@
 				44695F771CA0B9E800680799 /* Storage */,
 				44695F5E1CA0AC5F00680799 /* Mechanisms */,
 				44695F561C9F5ADB00680799 /* Identity */,
+				E1EF222E1D1C368D00F70A55 /* Splash */,
 				E164F3C71ADE9CAF00A440B3 /* forgerock-logo.png */,
 				E164F3C51ADE9CA800A440B3 /* forgerock-logo-text.png */,
 				F1673F1918EC51C900ECD2DB /* Main.storyboard */,
@@ -687,6 +702,7 @@
 		F17A860717EC12670098E7F3 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				E10CEC861D1BF8ED00865512 /* splashvideo.mp4 */,
 				F17A860817EC12670098E7F3 /* ForgeRock-Info.plist */,
 				F17A860917EC12670098E7F3 /* InfoPlist.strings */,
 				F17A860C17EC12670098E7F3 /* main.m */,
@@ -789,6 +805,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E10CEC871D1BF8ED00865512 /* splashvideo.mp4 in Resources */,
 				F17A861C17EC12670098E7F3 /* Images.xcassets in Resources */,
 				E1E53F7D1CD3918A00A0F2ED /* init_check.sql in Resources */,
 				E166B2301CDA50ED00DFB029 /* insert_notification.sql in Resources */,
@@ -933,6 +950,7 @@
 				44B744571CAAA82300A83AF1 /* FRANotificationViewController.m in Sources */,
 				F17A861117EC12670098E7F3 /* AppDelegate.m in Sources */,
 				44379CF71CC66C0300D7EAE9 /* FRABlockAlertView.m in Sources */,
+				E10CEC8A1D1BFCD000865512 /* FRASplashViewController.m in Sources */,
 				E1A92B671CBE639800D7BB04 /* FRAFMDatabaseConnectionHelper.m in Sources */,
 				E1EC51641CF4926E0054077D /* FRAUriMechanismReader.m in Sources */,
 				F1030ED21818322000E478F7 /* FRACircleProgressView.m in Sources */,

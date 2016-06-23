@@ -30,6 +30,7 @@
 @class FRAPushMechanismFactory;
 @class FRAQRScanViewController;
 @class FRAUriMechanismReader;
+@class FRASplashViewController;
 
 /*!
  * Typhoon dependency injection configuration.
@@ -50,5 +51,6 @@
 - (FRAPushMechanismFactory *)pushMechanismFactory;
 - (FRAQRScanViewController *)qrScanViewController;
 - (FRAUriMechanismReader *)uriMechanismReader;
+- (FRASplashViewController *)splashViewController;
 
 @end

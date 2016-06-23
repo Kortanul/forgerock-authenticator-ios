@@ -33,6 +33,7 @@
 #import "FRAQRScanViewController.h"
 #import "FRAFMDatabaseConnectionHelper.h"
 #import "FRAUriMechanismReader.h"
+#import "FRASplashViewController.h"
 
 @implementation FRAApplicationAssembly
 
@@ -155,6 +156,12 @@
             [initializer injectParameterWith:[self pushMechanismFactory]];
         }];
         definition.scope = TyphoonScopeSingleton;
+    }];
+}
+
+- (FRASplashViewController *)splashViewController {
+    return [TyphoonDefinition withClass:[FRASplashViewController class] configuration:^(TyphoonDefinition *definition) {
+        [definition injectProperty:@selector(identityModel) with:[self identityModel]];
     }];
 }
 
