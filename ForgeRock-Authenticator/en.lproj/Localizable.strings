@@ -40,7 +40,6 @@
 "mechanism_duplicate_message" = "This authentication method is already registered. Do you want to replace this authentication method?";
 
 /* Notifications */
-"notification_request_received" = "Authentication Request Received";
 "notification_request_error_title" = "Unable to Read Authentication Request";
 "notification_approval_error_title" = "Unable to Approve Authentication Request";
 "notification_dismissal_error_title" = "Unable to Dismiss Authentication Request";

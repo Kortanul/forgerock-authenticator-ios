@@ -162,9 +162,7 @@ static NSString * const LOAD_BALANCE_KEY = @"l";
             
         case UIApplicationStateActive: {
             // the notification arrived while the app was in the foreground
-            [self showAlertWithTitle:NSLocalizedString(@"notification_request_received", nil)
-                             message:nil
-                             handler:showNotification];
+            showNotification();
         }
         break;
             
