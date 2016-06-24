@@ -16,11 +16,15 @@
 
 #import <AVKit/AVKit.h>
 #import <AVFoundation/AVFoundation.h>
+
+#import "FRAAccountsTableViewController.h"
 #import "FRAError.h"
 #import "FRAIdentityModel.h"
 #import "FRASplashViewController.h"
 
-static NSString * const FRASplashViewControllerTransitionSeque = @"transitionFromSplash";
+
+static NSString * const FRAAccountsViewControllerStoryboardIdentifier = @"AccountsViewController";
+
 // Used for monitoring the rate property on the AVPlayer
 static NSString * const AVPLAYER_RATE = @"rate";
 
@@ -108,7 +112,11 @@ static NSString * const AVPLAYER_RATE = @"rate";
 }
 
 -(void)proceed {
-    [self performSegueWithIdentifier:FRASplashViewControllerTransitionSeque sender:self];
+    UIApplication *application = [UIApplication sharedApplication];
+    UIViewController *rootViewController = application.delegate.window.rootViewController;
+    UIStoryboard *storyboard = rootViewController.storyboard;
+    UIViewController *accountsViewController = [storyboard instantiateViewControllerWithIdentifier:FRAAccountsViewControllerStoryboardIdentifier];
+    application.delegate.window.rootViewController = accountsViewController;
 }
 
 - (void)didReceiveMemoryWarning {
