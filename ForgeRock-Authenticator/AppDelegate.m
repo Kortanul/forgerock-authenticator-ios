@@ -16,6 +16,8 @@
  * Portions Copyright 2013 Nathaniel McCallum, Red Hat
  */
 
+#import <AVFoundation/AVFoundation.h>
+
 #import "AppDelegate.h"
 #import "FRABlockAlertView.h"
 #import "FRAApplicationAssembly.h"
@@ -42,6 +44,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [self checkDependenciesAreInitialized];
+    [self ensureUserHasSetCameraAccessPermissions];
     [[[self assembly] notificationGateway] application:application didFinishLaunchingWithOptions:launchOptions];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleIdentityDatabaseChanged:) name:FRAIdentityDatabaseChangedNotification object:nil];
     [self updateNotificationsCount];
@@ -116,6 +119,14 @@
                                                                         handler:nil];
         [alertView show];
     }
+}
+
+/*!
+ * If this is the first run, prompt user for access to the camera now - As doing it when attempting to
+ * scan a QR code interferes with presentation of the camera view
+ */
+- (void)ensureUserHasSetCameraAccessPermissions {
+    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:nil];
 }
 
 - (void)handleIdentityDatabaseChanged:(NSNotification *)notification {

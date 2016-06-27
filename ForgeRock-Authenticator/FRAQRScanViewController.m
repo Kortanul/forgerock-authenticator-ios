@@ -39,7 +39,8 @@ NSString * const FRAQRScanViewControllerStoryboardIdentifer = @"QRScanViewContro
     NSError* error;
     AVCaptureDeviceInput* input = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
     if (!input) {
-        [self.navigationController popViewControllerAnimated:TRUE];
+        self.session = nil;
+        [self.navigationController popViewControllerAnimated:YES];
         return;
     }
     [self.session addInput:input];
@@ -55,10 +56,12 @@ NSString * const FRAQRScanViewControllerStoryboardIdentifer = @"QRScanViewContro
     [super viewDidAppear:animated];
     /* NOTE: We start output processing in viewDidAppear() to avoid a
      * race condition when the QR code is scanned before the view appears. */
-    AVCaptureMetadataOutput* output = [[AVCaptureMetadataOutput alloc] init];
-    [self.session addOutput:output];
-    [output setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
-    [output setMetadataObjectTypes:@[AVMetadataObjectTypeQRCode]];
+    if (self.session) {
+        AVCaptureMetadataOutput* output = [[AVCaptureMetadataOutput alloc] init];
+        [self.session addOutput:output];
+        [output setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
+        [output setMetadataObjectTypes:@[AVMetadataObjectTypeQRCode]];
+    }
 }
 
 #pragma mark -

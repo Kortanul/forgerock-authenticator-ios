@@ -19,6 +19,8 @@
 "app_initialization_error_message" = "Unable to start the app.";
 
 /* QR code scan */
+"qr_code_scan_camera_access_title" = "Camera Access";
+"qr_code_scan_camera_access_message" = "Unable to scan registration barcode without access to camera. Would you like to open Settings now?";
 "qr_code_scan_error_title" = "Unable to Read QR Code";
 "qr_code_scan_error_network_failure_message" = "Unable to contact the server for registration.\nEnsure you are connected to the internet, and try again.";
 "qr_code_scan_error_no_device_id_message" = "Registration cannot be completed while notifications are disabled or the device is offline.\nEnsure notifications are enabled and you are connected to the internet, and try again.";
@@ -57,3 +59,4 @@
 "dismiss" = "Dismiss";
 "ok" = "OK";
 "warning" = "Warning";
+"settings" = "Settings";

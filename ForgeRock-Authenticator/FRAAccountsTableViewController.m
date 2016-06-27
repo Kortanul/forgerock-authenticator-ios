@@ -14,6 +14,8 @@
  * Copyright 2016 ForgeRock AS.
  */
 
+#import <AVFoundation/AVFoundation.h>
+
 #import "FRAAccountsTableViewController.h"
 #import "FRAAccountTableViewCell.h"
 #import "FRAAccountTableViewController.h"
@@ -55,6 +57,19 @@ NSString * const FRAAccountsTableViewControllerScanQrCodeSegue = @"scanQrCodeSeg
     self.timer = nil;
 }
 
+- (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender {
+    if ([identifier isEqualToString:FRAAccountsTableViewControllerScanQrCodeSegue]) {
+        if ([self hasPermissionToAccessCamera]) {
+            return YES;
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self askUserToAllowCameraAccess];
+            });
+        }
+    }
+    return YES;
+}
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:FRAAccountsTableViewControllerShowAccountSegue]) {
         FRAAccountTableViewController* controller = (FRAAccountTableViewController*)segue.destinationViewController;
@@ -62,7 +77,6 @@ NSString * const FRAAccountsTableViewControllerScanQrCodeSegue = @"scanQrCodeSeg
         NSIndexPath* indexPath = [selection objectAtIndex:0];
         controller.identity = [self identityAtIndexPath:indexPath];
     }
-    
     if ([segue.identifier isEqualToString:FRAAccountsTableViewControllerScanQrCodeSegue]) {
         [self setEditing:NO animated:YES];
     }
@@ -234,6 +248,40 @@ NSString * const FRAAccountsTableViewControllerScanQrCodeSegue = @"scanQrCodeSeg
     } else {
         self.navigationItem.rightBarButtonItem = nil;
     }
+}
+
+- (BOOL)hasPermissionToAccessCamera {
+    AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+    if (authStatus == AVAuthorizationStatusAuthorized) {
+        return YES;
+    } else if (authStatus == AVAuthorizationStatusDenied || authStatus == AVAuthorizationStatusRestricted) {
+        return NO;
+    } else if (authStatus == AVAuthorizationStatusNotDetermined) {
+        @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                       reason:@"Camera permission should be established when app starts"
+                                     userInfo:nil];
+    } else {
+        return NO;
+    }
+}
+
+- (void)askUserToAllowCameraAccess {
+    FRABlockAlertView* alertView = [[FRABlockAlertView alloc] initWithTitle:NSLocalizedString(@"qr_code_scan_camera_access_title", nil)
+                                                                    message:NSLocalizedString(@"qr_code_scan_camera_access_message", nil)
+                                                                   delegate:nil
+                                                          cancelButtonTitle:NSLocalizedString(@"cancel", nil)
+                                                           otherButtonTitle:NSLocalizedString(@"settings", nil)
+                                                                    handler:^(NSInteger selection) {
+                                                                        const NSInteger settingsButton = 0;
+                                                                        if (selection == settingsButton) {
+                                                                            [self openAppSettings];
+                                                                        }
+                                                                    }];
+    [alertView show];
+}
+
+- (void)openAppSettings {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
 }
 
 @end
