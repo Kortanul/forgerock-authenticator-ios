@@ -26,7 +26,6 @@
 #import "FRANotificationsTableViewController.h"
 #import "FRAPushMechanism.h"
 
-static const NSInteger SECTIONS = 2;
 static const NSInteger PENDING_SECTION = 0;
 static const NSInteger COMPLETED_SECTION = 1;
 
@@ -64,7 +63,7 @@ static const NSInteger COMPLETED_SECTION = 1;
     [self simulateLoadingOfView];
     
     // Then
-    XCTAssertEqual([viewController numberOfSectionsInTableView:viewController.tableView], SECTIONS);
+    XCTAssertEqual([viewController numberOfSectionsInTableView:viewController.tableView], 1);
     XCTAssertEqual([viewController tableView:viewController.tableView numberOfRowsInSection:PENDING_SECTION], 0);
     XCTAssertEqual([viewController tableView:viewController.tableView numberOfRowsInSection:COMPLETED_SECTION], 0);
 }

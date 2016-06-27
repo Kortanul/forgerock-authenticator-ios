@@ -75,7 +75,7 @@
 
     if (duplicateMechanism) {
         if (error) {
-            *error = [FRAError createError:[NSString stringWithFormat:@"This will replace an existing login mechanism for your %@ account. This operation cannot be undone. You should only proceed if you were expecting to update a mechanism.", _issuer]
+            *error = [FRAError createError:[NSString stringWithFormat:@"Duplicate mechanism for %@ account.", _issuer]
                                       code:FRADuplicateMechanism
                                   userInfo:@{ @"identity":self, @"mechanism":duplicateMechanism }];
         }

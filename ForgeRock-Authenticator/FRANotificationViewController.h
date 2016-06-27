@@ -62,6 +62,11 @@ extern NSString * const FRANotificationViewControllerStoryboardIdentifer;
 - (IBAction)updateSliderPosition:(id)sender;
 
 /*!
+ * The callback used to check when the finger is outside the bounds of the control.
+ */
+- (IBAction)touchUpOutside:(id)sender;
+
+/*!
  * The callback used to permit the requested authorization requested.
  */
 - (IBAction)authorize:(id)sender;

@@ -26,6 +26,7 @@
 "qr_code_scan_contact_server" = "Contacting server...";
 
 /* Accounts */
+"account_no_accounts" = "No accounts registered";
 "account_delete_confirmation_title" = "Delete %@ Account";
 "account_delete_confirmation_message" = "Removing this entry may prevent you from logging into your %@ account. Confirm you have already disabled this authentication method online.";
 "account_delete_error_title" = "Unable to Remove %@ Account";
@@ -35,6 +36,8 @@
 "mechanism_delete_confirmation_message" = "Removing this entry may prevent you from logging into your %@ account. Confirm you have already disabled this authentication method online.";
 "mechanism_delete_error_title" = "Unable to Remove Authentication Method for %@ Account";
 "mechanism_generate_code_error_title" = "Unable to Generate Code";
+"mechanism_duplicate_title" = "Replace this Authentication Method?";
+"mechanism_duplicate_message" = "This authentication method is already registered. Do you want to replace this authentication method?";
 
 /* Notifications */
 "notification_request_received" = "Authentication Request Received";
@@ -42,6 +45,12 @@
 "notification_approval_error_title" = "Unable to Approve Authentication Request";
 "notification_dismissal_error_title" = "Unable to Dismiss Authentication Request";
 "notification_error_network_failure_message" = "Unable to contact the server.\nEnsure you are connected to the internet, and try again.";
+"notifications_no_notifications" = "No notifications received";
+"notifications_completed_section_title" = "COMPLETED";
+"notifications_approved_status" = "Approved";
+"notifications_denied_status" = "Denied";
+"notifications_expired_status" = "Expired";
+"notifications_pending_status" = "Pending";
 
 /* Alert view */
 "cancel" = "Cancel";

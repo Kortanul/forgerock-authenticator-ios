@@ -239,4 +239,23 @@
     XCTAssertEqual(mechanism, foundMechanism);
 }
 
+- (void)testIsEmptyReturnsTrueIfModelHasNoIdentities {
+    // Given
+    
+    // When
+    
+    // Then
+    XCTAssertTrue([identityModel isEmpty]);
+}
+
+- (void)testIsEmptyReturnsFalseIfModelHasIdentities {
+    // Given
+    OCMStub([mockSqlOperations insertIdentity:aliceIdentity error:nil]).andReturn(YES);
+    
+    // When
+    [identityModel addIdentity:aliceIdentity error:nil];
+    
+    // Then
+    XCTAssertFalse([identityModel isEmpty]);}
+
 @end

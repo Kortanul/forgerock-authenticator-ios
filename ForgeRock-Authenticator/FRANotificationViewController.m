@@ -23,6 +23,9 @@
 
 NSString * const FRANotificationViewControllerStoryboardIdentifer = @"NotificationViewController";
 
+static NSString * const OFF_SWITCH_IMAGE_NAME = @"OffSwitchIcon";
+static NSString * const ON_SWITCH_IMAGE_NAME = @"OnSwitchIcon";
+
 @implementation FRANotificationViewController
 
 #pragma mark -
@@ -31,7 +34,8 @@ NSString * const FRANotificationViewControllerStoryboardIdentifer = @"Notificati
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self.authorizeSlider setThumbImage:[UIImage imageNamed:@"OffSwitchIcon"] forState:UIControlStateNormal];
+    self.authorizeSlider.continuous = YES;
+    [self setSliderThumbImage:OFF_SWITCH_IMAGE_NAME];
     FRAIdentity *identity = self.notification.parent.parent;
     [FRAUIUtils setImage:self.image fromIssuerLogoURL:identity.image];
     self.image.layer.cornerRadius = self.image.frame.size.width / 2;
@@ -54,13 +58,22 @@ NSString * const FRANotificationViewControllerStoryboardIdentifer = @"Notificati
 
 - (IBAction)updateSliderPosition:(id)sender {
     if (![self isSliderAtEndOfTrack]) {
-        [self moveSliderToStartOfTrack];
+        [self setSliderThumbImage:OFF_SWITCH_IMAGE_NAME];
+    } else {
+        [self setSliderThumbImage:ON_SWITCH_IMAGE_NAME];
     }
+}
+
+- (IBAction)touchUpOutside:(id)sender {
+    [self setSliderThumbImage:OFF_SWITCH_IMAGE_NAME];
+    [self moveSliderToStartOfTrack];
 }
 
 - (IBAction)authorize:(id)sender {
     if ([self isSliderAtEndOfTrack]) {
         [self approveNotification];
+    } else {
+        [self moveSliderToStartOfTrack];
     }
 }
 
@@ -71,6 +84,10 @@ NSString * const FRANotificationViewControllerStoryboardIdentifer = @"Notificati
 #pragma mark -
 #pragma mark Helper methods
 
+- (void)setSliderThumbImage:(NSString *)imageName {
+    [self.authorizeSlider setThumbImage:[UIImage imageNamed:imageName] forState:UIControlStateNormal];
+}
+
 - (BOOL)isSliderAtEndOfTrack {
     return (self.authorizeSlider.value == self.authorizeSlider.maximumValue);
 }
@@ -80,7 +97,6 @@ NSString * const FRANotificationViewControllerStoryboardIdentifer = @"Notificati
 }
 
 - (void)approveNotification {
-    [self.authorizeSlider setThumbImage:[UIImage imageNamed:@"OnSwitchIcon"] forState:UIControlStateNormal];
     self.authorizeSlider.userInteractionEnabled = NO;
     self.denyButton.userInteractionEnabled = NO;
     NSError* error;

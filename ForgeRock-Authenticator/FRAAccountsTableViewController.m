@@ -37,7 +37,7 @@ NSString * const FRAAccountsTableViewControllerScanQrCodeSegue = @"scanQrCodeSeg
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    [self layoutUI];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -77,6 +77,7 @@ NSString * const FRAAccountsTableViewControllerScanQrCodeSegue = @"scanQrCodeSeg
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    [self layoutUI];
     return [self.identityModel identities].count;
 }
 
@@ -137,6 +138,7 @@ NSString * const FRAAccountsTableViewControllerScanQrCodeSegue = @"scanQrCodeSeg
                  handler: ^(NSInteger offset) {
                      const NSInteger deleteButton = 0;
                      if (offset == deleteButton) {
+                         [self layoutUI];
                          [self deleteIdentity:identity];
                      }
                      [self setEditing:NO animated:YES];
@@ -202,6 +204,37 @@ NSString * const FRAAccountsTableViewControllerScanQrCodeSegue = @"scanQrCodeSeg
                                                                         handler:nil];
         [alertView show];
     };
+}
+
+- (void)layoutUI {
+    [self showHideEditButton];
+    
+    if ([self.identityModel identities].count == 0) {
+        [self addLabelToTableViewBackground];
+    } else {
+        [self clearTableViewBackground];
+    }
+}
+
+- (void)addLabelToTableViewBackground {
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.tableView.bounds.size.width, self.tableView.bounds.size.height)];
+    label.text = NSLocalizedString(@"account_no_accounts", nil);
+    label.textColor = [UIColor grayColor];
+    label.textAlignment = NSTextAlignmentCenter;
+    self.tableView.backgroundView = label;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+}
+
+- (void)clearTableViewBackground {
+    self.tableView.backgroundView = nil;
+}
+
+- (void)showHideEditButton {
+    if (![self.identityModel isEmpty]) {
+        self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    } else {
+        self.navigationItem.rightBarButtonItem = nil;
+    }
 }
 
 @end

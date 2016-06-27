@@ -86,6 +86,10 @@
     return [self.database deleteIdentity:identity error:error];
 }
 
+- (BOOL)isEmpty {
+    return self.identities.count == 0;
+}
+
 #pragma mark -
 #pragma mark Mechanism Functions
 

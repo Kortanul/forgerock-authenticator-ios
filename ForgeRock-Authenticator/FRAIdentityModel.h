@@ -63,6 +63,12 @@
  */
 - (BOOL)removeIdentity:(FRAIdentity *)identity error:(NSError *__autoreleasing *)error;
 
+/*!
+ * Returns whether IdentityModel has identities.
+ * @return YES if there are no identities in the model, otherwise NO.
+ */
+- (BOOL)isEmpty;
+
 #pragma mark -
 #pragma mark Mechanism Functions
 

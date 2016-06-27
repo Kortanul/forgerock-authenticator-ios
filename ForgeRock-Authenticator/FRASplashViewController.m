@@ -47,7 +47,7 @@ static NSString * const AVPLAYER_RATE = @"rate";
     [super viewDidAppear:animated];
     
     // If we have some Identities already, do not show the splash screen.
-    if ([[self.identityModel identities] count] != 0) {
+    if (![self.identityModel isEmpty]) {
         [self proceed];
         return;
     }

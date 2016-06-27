@@ -95,8 +95,8 @@
 - (void)handleDuplicateMechanism:(NSString *)code error:(NSError *__autoreleasing*)error {
     FRAIdentity *identity = [(*error).userInfo valueForKey:@"identity"];
     FRAMechanism *duplicateMechanism = [(*error).userInfo valueForKey:@"mechanism"];
-    FRABlockAlertView *alertView = [[FRABlockAlertView alloc] initWithTitle:NSLocalizedString(@"warning", nil)
-                                                                    message:(*error).localizedDescription
+    FRABlockAlertView *alertView = [[FRABlockAlertView alloc] initWithTitle:NSLocalizedString(@"mechanism_duplicate_title", nil)
+                                                                    message:NSLocalizedString(@"mechanism_duplicate_message", nil)
                                                                    delegate:nil
                                                           cancelButtonTitle:NSLocalizedString(@"cancel", nil)
                                                            otherButtonTitle:NSLocalizedString(@"ok", nil)

@@ -48,6 +48,11 @@ static const NSInteger COMPLETED_SECTION_INDEX = 1;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.tableView reloadData];
+    if ([self numberOfNotifications] == 0) {
+        [self addLabelToTableViewBackground];
+    } else {
+        [self clearTableViewBackground];
+    }
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleIdentityDatabaseChanged:) name:FRAIdentityDatabaseChangedNotification object:nil];
     if (!self.timer) {
         self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(timerCallback:) userInfo:nil repeats:YES];
@@ -73,6 +78,9 @@ static const NSInteger COMPLETED_SECTION_INDEX = 1;
 #pragma mark UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    if ([self completedNotifications].count == 0) {
+        return 1;
+    }
     return NUMBER_OF_SECTIONS;
 }
 
@@ -85,7 +93,7 @@ static const NSInteger COMPLETED_SECTION_INDEX = 1;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return section == PENDING_SECTION_INDEX ? @"" : @"COMPLETED";
+    return section == PENDING_SECTION_INDEX ? @"" : NSLocalizedString(@"notifications_completed_section_title", nil);
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -99,7 +107,7 @@ static const NSInteger COMPLETED_SECTION_INDEX = 1;
         FRANotificationTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
         FRANotification *notification = [[self pendingNotifications] objectAtIndex:indexPath.row];
         
-        cell.status.text = @"Pending";
+        cell.status.text = NSLocalizedString(@"notifications_pending_status", nil);
         cell.image.image = [[UIImage imageNamed:@"PendingIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         cell.image.tintColor = [UIColor grayColor];
         cell.time.text = [notification age];
@@ -116,15 +124,15 @@ static const NSInteger COMPLETED_SECTION_INDEX = 1;
         FRANotification *notification = [[self completedNotifications] objectAtIndex:indexPath.row];
         
         if (notification.isApproved) {
-            cell.status.text = @"Approved";
+            cell.status.text = NSLocalizedString(@"notifications_approved_status", nil);
             cell.image.image = [[UIImage imageNamed:@"ApprovedIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
             cell.image.tintColor = seaGreen;
         } else if (notification.isDenied) {
-            cell.status.text = @"Denied";
+            cell.status.text = NSLocalizedString(@"notifications_denied_status", nil);
             cell.image.image = [[UIImage imageNamed:@"DeniedIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
             cell.image.tintColor = dashboardRed;
         } else if (notification.isExpired) {
-            cell.status.text = @"Expired";
+            cell.status.text = NSLocalizedString(@"notifications_expired_status", nil);
             cell.image.image = [[UIImage imageNamed:@"DeniedIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
             cell.image.tintColor = dashboardRed;
         }
@@ -204,6 +212,23 @@ static const NSInteger COMPLETED_SECTION_INDEX = 1;
 
 - (void)timerCallback:(NSTimer*)timer {
     [self.tableView reloadData];
+}
+
+- (NSUInteger)numberOfNotifications {
+    return [self pendingNotifications].count + [self completedNotifications].count;
+}
+
+- (void)addLabelToTableViewBackground {
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.tableView.bounds.size.width, self.tableView.bounds.size.height)];
+    label.text = NSLocalizedString(@"notifications_no_notifications", nil);
+    label.textColor = [UIColor grayColor];
+    label.textAlignment = NSTextAlignmentCenter;
+    self.tableView.backgroundView = label;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+}
+
+- (void)clearTableViewBackground {
+    self.tableView.backgroundView = nil;
 }
 
 @end
