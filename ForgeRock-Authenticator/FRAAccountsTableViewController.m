@@ -222,7 +222,6 @@ NSString * const FRAAccountsTableViewControllerScanQrCodeSegue = @"scanQrCodeSeg
     label.textColor = [UIColor grayColor];
     label.textAlignment = NSTextAlignmentCenter;
     self.tableView.backgroundView = label;
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 }
 
 - (void)clearTableViewBackground {

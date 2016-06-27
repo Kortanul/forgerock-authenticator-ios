@@ -224,7 +224,6 @@ static const NSInteger COMPLETED_SECTION_INDEX = 1;
     label.textColor = [UIColor grayColor];
     label.textAlignment = NSTextAlignmentCenter;
     self.tableView.backgroundView = label;
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 }
 
 - (void)clearTableViewBackground {
