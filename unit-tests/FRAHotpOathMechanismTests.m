@@ -77,7 +77,7 @@
     
     // Then
     XCTAssertTrue(result);
-    XCTAssertEqualObjects(nextCode, @"352916", @"Incorrect next hash");
+    XCTAssertEqualObjects(nextCode, @"366313", @"Incorrect next hash");
 }
 
 - (void)testGenerateDifferentCodeSequence {
@@ -91,7 +91,7 @@
     
     // Then
     XCTAssertTrue(result);
-    XCTAssertEqualObjects(nextCode, @"545550", @"Incorrect next hash");
+    XCTAssertEqualObjects(nextCode, @"136335", @"Incorrect next hash");
 }
 
 - (void)testSavedHotpOathMechanismAutomaticallySavesItselfToDatabaseWhenIncrementingCounter {

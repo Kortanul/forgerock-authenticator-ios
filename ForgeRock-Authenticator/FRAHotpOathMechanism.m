@@ -47,7 +47,7 @@
 
 - (BOOL)generateNextCode:(NSError *__autoreleasing*)error {
     NSString *previousCode = _code;
-    _code = [FRAOathCode hmac:self.algorithm codeLength:self.codeLength key:self.secretKey counter:_counter++];
+    _code = [FRAOathCode hmac:self.algorithm codeLength:self.codeLength key:self.secretKey counter:++_counter];
     if ([self.database updateMechanism:self error:error]) {
         return YES;
     }
