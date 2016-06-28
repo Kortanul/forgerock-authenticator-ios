@@ -44,12 +44,10 @@ static NSString * const ON_SWITCH_IMAGE_NAME = @"OnSwitchIcon";
     [FRAUIUtils setView:self.backgroundView issuerBackgroundColor:identity.backgroundColor];
     
     if ([self isTouchIDEnabled]) {
-        self.authorizeSlider.hidden = YES;
-        self.denyButton.hidden = YES;
+        [self layoutViewForTouchID];
         [self authenticateUsingTouchID];
     } else {
-        self.authorizeSlider.hidden = NO;
-        self.denyButton.hidden = NO;
+        [self layoutViewForSlider];
     }
 }
 
@@ -162,6 +160,39 @@ static NSString * const ON_SWITCH_IMAGE_NAME = @"OnSwitchIcon";
             [self showAlertWithTitle:title message:NSLocalizedString(@"notification_error_network_failure_message", nil)];
         }
     };
+}
+
+- (void)layoutViewForTouchID {
+    [self hideControls:YES];
+    NSLayoutConstraint *backgroundViewBottom =[NSLayoutConstraint
+                                               constraintWithItem:self.backgroundView
+                                               attribute:NSLayoutAttributeBottom
+                                               relatedBy:NSLayoutRelationEqual
+                                               toItem:self.view
+                                               attribute:NSLayoutAttributeBottom
+                                               multiplier:1.0f
+                                               constant:0.f];
+    [self.view addConstraint:backgroundViewBottom];
+}
+
+- (void)layoutViewForSlider {
+    [self hideControls:NO];
+    [self.message setCenter:self.backgroundView.center];
+    NSLayoutConstraint *backgroundViewBottom =[NSLayoutConstraint
+                                               constraintWithItem:self.view
+                                               attribute:NSLayoutAttributeTop
+                                               relatedBy:NSLayoutRelationEqual
+                                               toItem:self.backgroundView
+                                               attribute:NSLayoutAttributeBottom
+                                               multiplier:1.0f
+                                               constant:0.f];
+    [self.view addConstraint:backgroundViewBottom];
+}
+
+- (void)hideControls:(BOOL)hide {
+    self.authorizeSlider.hidden = hide;
+    self.denyButton.hidden = hide;
+    self.message.hidden = hide;
 }
 
 @end
