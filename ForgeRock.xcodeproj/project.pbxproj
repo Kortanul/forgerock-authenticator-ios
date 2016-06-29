@@ -10,6 +10,7 @@
 		0419018E1D0B1FEE00EF1309 /* FRAUriMechanismReaderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0419018C1D0B1FAF00EF1309 /* FRAUriMechanismReaderTests.m */; };
 		041901931D0B238B00EF1309 /* FRATotpOathMechanismTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 041901901D0B238300EF1309 /* FRATotpOathMechanismTests.m */; };
 		041901941D0B239000EF1309 /* FRAHotpOathMechanismTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0419018F1D0B238300EF1309 /* FRAHotpOathMechanismTests.m */; };
+		042B346B1D240D950047847D /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 042B346A1D240D950047847D /* Settings.bundle */; };
 		0434730B1D083428008F1C8A /* FRAHotpOathMechanism.m in Sources */ = {isa = PBXBuildFile; fileRef = 043473081D083428008F1C8A /* FRAHotpOathMechanism.m */; };
 		0434730C1D083428008F1C8A /* FRATotpOathMechanism.m in Sources */ = {isa = PBXBuildFile; fileRef = 0434730A1D083428008F1C8A /* FRATotpOathMechanism.m */; };
 		044DDC7D1D01CC6500FDC9E7 /* FRAIdentityModelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 044DDC7B1D01CC5E00FDC9E7 /* FRAIdentityModelTests.m */; };
@@ -128,6 +129,7 @@
 		0419018C1D0B1FAF00EF1309 /* FRAUriMechanismReaderTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FRAUriMechanismReaderTests.m; path = "unit-tests/FRAUriMechanismReaderTests.m"; sourceTree = "<group>"; };
 		0419018F1D0B238300EF1309 /* FRAHotpOathMechanismTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FRAHotpOathMechanismTests.m; path = "unit-tests/FRAHotpOathMechanismTests.m"; sourceTree = "<group>"; };
 		041901901D0B238300EF1309 /* FRATotpOathMechanismTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FRATotpOathMechanismTests.m; path = "unit-tests/FRATotpOathMechanismTests.m"; sourceTree = "<group>"; };
+		042B346A1D240D950047847D /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		043473071D083428008F1C8A /* FRAHotpOathMechanism.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRAHotpOathMechanism.h; sourceTree = "<group>"; };
 		043473081D083428008F1C8A /* FRAHotpOathMechanism.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRAHotpOathMechanism.m; sourceTree = "<group>"; };
 		043473091D083428008F1C8A /* FRATotpOathMechanism.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRATotpOathMechanism.h; sourceTree = "<group>"; };
@@ -699,6 +701,7 @@
 				F15300401801B9DF00A0E179 /* base32.c */,
 				F17A861B17EC12670098E7F3 /* Images.xcassets */,
 				F17A860717EC12670098E7F3 /* Supporting Files */,
+				042B346A1D240D950047847D /* Settings.bundle */,
 			);
 			name = Authenticator;
 			path = "ForgeRock-Authenticator";
@@ -810,6 +813,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				042B346B1D240D950047847D /* Settings.bundle in Resources */,
 				E10CEC871D1BF8ED00865512 /* splashvideo.mp4 in Resources */,
 				F17A861C17EC12670098E7F3 /* Images.xcassets in Resources */,
 				E1E53F7D1CD3918A00A0F2ED /* init_check.sql in Resources */,
