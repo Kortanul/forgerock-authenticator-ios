@@ -85,7 +85,7 @@
     OCMStub([identity accountName]).andReturn(@"alice");
     OCMExpect([authContext canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics
                                        error:[OCMArg anyObjectRef]]).andReturn(YES);
-    OCMExpect([authContext evaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics
+    OCMExpect([authContext evaluatePolicy:LAPolicyDeviceOwnerAuthentication
                           localizedReason:@"Log in to Umbrella Corp as alice using Touch ID" reply:[OCMArg any]]);
     
     // When
