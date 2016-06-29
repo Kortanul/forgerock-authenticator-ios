@@ -130,11 +130,8 @@ static NSString * const ON_SWITCH_IMAGE_NAME = @"OnSwitchIcon";
     
     LAContext *authContext = [self.authContextFactory newLAContext];
     
-    // Disable option to enter password instead of fingerprint
-    authContext.localizedFallbackTitle = @"";
-    
-    // Request Touch ID authentication
-    [authContext evaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics
+    // Request Touch ID authentication, (allowing user fallback to Password)
+    [authContext evaluatePolicy:LAPolicyDeviceOwnerAuthentication
                 localizedReason:localizedReason
                           reply:^(BOOL success, NSError *callbackError) {
                               if (success) {
