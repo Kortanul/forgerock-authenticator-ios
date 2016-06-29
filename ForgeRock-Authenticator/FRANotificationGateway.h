@@ -40,9 +40,10 @@
  */
 + (instancetype)gatewayWithHandler:(FRANotificationHandler *)handler;
 /*!
- * Method copied from UIApplicationDelegate protocol.
+ * Contact APNS to register for remote notifications. The first time an installation of this app calls
+ * this method, the user will be asked whether or not they give permission for this app to show notifications.
  */
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;
+- (void)registerForRemoteNotifications;
 
 /*!
  * Method copied from UIApplicationDelegate protocol.

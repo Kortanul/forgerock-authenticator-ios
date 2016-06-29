@@ -20,6 +20,7 @@
 #import "FRAAccountsTableViewController.h"
 #import "FRAError.h"
 #import "FRAIdentityModel.h"
+#import "FRASplashEvents.h"
 #import "FRASplashViewController.h"
 
 
@@ -117,6 +118,7 @@ static NSString * const AVPLAYER_RATE = @"rate";
     UIStoryboard *storyboard = rootViewController.storyboard;
     UIViewController *accountsViewController = [storyboard instantiateViewControllerWithIdentifier:FRAAccountsViewControllerStoryboardIdentifier];
     application.delegate.window.rootViewController = accountsViewController;
+    [[NSNotificationCenter defaultCenter] postNotificationName:FRASplashScreenDidFinish object:self];
 }
 
 - (void)didReceiveMemoryWarning {

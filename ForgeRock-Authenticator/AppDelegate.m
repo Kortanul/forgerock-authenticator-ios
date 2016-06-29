@@ -19,17 +19,18 @@
 #import <AVFoundation/AVFoundation.h>
 
 #import "AppDelegate.h"
-#import "FRABlockAlertView.h"
 #import "FRAApplicationAssembly.h"
+#import "FRABlockAlertView.h"
 #import "FRAError.h"
 #import "FRAIdentity.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAIdentityModel.h"
 #import "FRAMechanismReaderAction.h"
-#import "FRAUriMechanismReader.h"
 #import "FRANotification.h"
 #import "FRANotificationGateway.h"
 #import "FRAPushMechanism.h"
+#import "FRASplashEvents.h"
+#import "FRAUriMechanismReader.h"
 
 
 @implementation AppDelegate
@@ -44,8 +45,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [self checkDependenciesAreInitialized];
-    [self ensureUserHasSetCameraAccessPermissions];
-    [[[self assembly] notificationGateway] application:application didFinishLaunchingWithOptions:launchOptions];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleSplashScreenDidFinish:) name:FRASplashScreenDidFinish object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleIdentityDatabaseChanged:) name:FRAIdentityDatabaseChangedNotification object:nil];
     [self updateNotificationsCount];
     NSLog(@"application:didFinishLaunchingWithOptions\n%@", launchOptions);
@@ -121,14 +121,6 @@
     }
 }
 
-/*!
- * If this is the first run, prompt user for access to the camera now - As doing it when attempting to
- * scan a QR code interferes with presentation of the camera view
- */
-- (void)ensureUserHasSetCameraAccessPermissions {
-    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:nil];
-}
-
 - (void)handleIdentityDatabaseChanged:(NSNotification *)notification {
     NSLog(@"database changed: %@", notification.userInfo);
     [self updateNotificationsCount];
@@ -136,6 +128,19 @@
 
 - (void)updateNotificationsCount {
     [UIApplication sharedApplication].applicationIconBadgeNumber = [[[self assembly] identityModel] pendingNotificationsCount];
+}
+
+-(void)handleSplashScreenDidFinish:(NSNotification *)notification {
+    [self ensureUserHasSetCameraAccessPermissions];
+    [[[self assembly] notificationGateway] registerForRemoteNotifications];
+}
+
+/*!
+ * If this is the first run, prompt user for access to the camera now - As doing it when attempting to
+ * scan a QR code interferes with presentation of the camera view
+ */
+- (void)ensureUserHasSetCameraAccessPermissions {
+    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:nil];
 }
 
 @end
