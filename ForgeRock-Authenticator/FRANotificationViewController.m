@@ -43,7 +43,7 @@ static NSString * const ON_SWITCH_IMAGE_NAME = @"OnSwitchIcon";
     self.message.text = [NSString stringWithFormat:@"Log in to %@", identity.issuer];
     [FRAUIUtils setView:self.backgroundView issuerBackgroundColor:identity.backgroundColor];
     
-    if ([self isTouchIDEnabled]) {
+    if (![self isTouchIDEnabled]) {
         [self layoutViewForTouchID];
         [self authenticateUsingTouchID];
     } else {
@@ -164,6 +164,23 @@ static NSString * const ON_SWITCH_IMAGE_NAME = @"OnSwitchIcon";
 
 - (void)layoutViewForTouchID {
     [self hideControls:YES];
+    [self.backgroundView removeConstraints:self.backgroundView.constraints];
+    NSLayoutConstraint *imageCenterX =[NSLayoutConstraint
+                                       constraintWithItem:self.image
+                                       attribute:NSLayoutAttributeCenterX
+                                       relatedBy:NSLayoutRelationEqual
+                                       toItem:self.view
+                                       attribute:NSLayoutAttributeCenterX
+                                       multiplier:1.0f
+                                       constant:0.f];
+    NSLayoutConstraint *imageCenterY =[NSLayoutConstraint
+                                       constraintWithItem:self.image
+                                       attribute:NSLayoutAttributeCenterY
+                                       relatedBy:NSLayoutRelationEqual
+                                       toItem:self.backgroundView
+                                       attribute:NSLayoutAttributeCenterY
+                                       multiplier:0.4f
+                                       constant:0.f];
     NSLayoutConstraint *backgroundViewBottom =[NSLayoutConstraint
                                                constraintWithItem:self.backgroundView
                                                attribute:NSLayoutAttributeBottom
@@ -172,21 +189,13 @@ static NSString * const ON_SWITCH_IMAGE_NAME = @"OnSwitchIcon";
                                                attribute:NSLayoutAttributeBottom
                                                multiplier:1.0f
                                                constant:0.f];
+    [self.view addConstraint:imageCenterX];
+    [self.view addConstraint:imageCenterY];
     [self.view addConstraint:backgroundViewBottom];
 }
 
 - (void)layoutViewForSlider {
     [self hideControls:NO];
-    [self.message setCenter:self.backgroundView.center];
-    NSLayoutConstraint *backgroundViewBottom =[NSLayoutConstraint
-                                               constraintWithItem:self.view
-                                               attribute:NSLayoutAttributeTop
-                                               relatedBy:NSLayoutRelationEqual
-                                               toItem:self.backgroundView
-                                               attribute:NSLayoutAttributeBottom
-                                               multiplier:1.0f
-                                               constant:0.f];
-    [self.view addConstraint:backgroundViewBottom];
 }
 
 - (void)hideControls:(BOOL)hide {
