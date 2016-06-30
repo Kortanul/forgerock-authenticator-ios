@@ -43,7 +43,7 @@ static NSString * const ON_SWITCH_IMAGE_NAME = @"OnSwitchIcon";
     self.message.text = [NSString stringWithFormat:@"Log in to %@", identity.issuer];
     [FRAUIUtils setView:self.backgroundView issuerBackgroundColor:identity.backgroundColor];
     
-    if (![self isTouchIDEnabled]) {
+    if ([self isTouchIDEnabled]) {
         [self layoutViewForTouchID];
         [self authenticateUsingTouchID];
     } else {
