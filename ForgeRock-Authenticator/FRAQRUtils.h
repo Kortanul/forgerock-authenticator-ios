@@ -46,18 +46,18 @@
 /*!
  * Decodes an encoded string.
  *
- * @param str The original string to decode.
+ * @param content The original string to decode.
  * @return The decode string.
  */
-+ (NSString *)decode:(NSString*)str;
++ (NSString *)decode:(NSString*)content;
 
 /*!
  * Pads a string with '=' to have length multiple of 4 (for Base64 decoding).
  *
- * @param str The original string to pad.
+ * @param content The original string to pad.
  * @return The padded string.
  */
-+ (NSString *)pad:(NSString*)str;
++ (NSString *)pad:(NSString*)content;
 
 
 /*!

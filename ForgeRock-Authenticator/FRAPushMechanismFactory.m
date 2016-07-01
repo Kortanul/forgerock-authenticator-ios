@@ -200,13 +200,13 @@ static BOOL FAILURE = NO;
     return @"pushauth";
 }
 
-- (void)registerMechanismWithEndpoint:(NSString *)regEndpoint secret:(NSString *)secret challenge:(NSString *)c messageId:(NSString *)messageId mechanismUid:(NSString *)uid identity:(FRAIdentity *)identity mechanism:(FRAMechanism *)mechanism identityModel:(FRAIdentityModel *)identityModel loadBalancerCookieData:(NSString *)loadBalancerCookieData handler:(void(^)(BOOL, NSError *))handler {
+- (void)registerMechanismWithEndpoint:(NSString *)regEndpoint secret:(NSString *)secret challenge:(NSString *)challenge messageId:(NSString *)messageId mechanismUid:(NSString *)uid identity:(FRAIdentity *)identity mechanism:(FRAMechanism *)mechanism identityModel:(FRAIdentityModel *)identityModel loadBalancerCookieData:(NSString *)loadBalancerCookieData handler:(void(^)(BOOL, NSError *))handler {
     
     [FRAMessageUtils respondWithEndpoint:regEndpoint
                             base64Secret:secret
                                messageId:messageId
                   loadBalancerCookieData:loadBalancerCookieData
-                                    data:@{@"response":[FRAMessageUtils generateChallengeResponse:c secret:secret],
+                                    data:@{@"response":[FRAMessageUtils generateChallengeResponse:challenge secret:secret],
                                            @"mechanismUid":uid,
                                            @"deviceId":self.gateway.deviceToken,
                                            @"deviceType":@"ios",

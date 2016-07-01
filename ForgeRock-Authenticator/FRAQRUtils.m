@@ -42,38 +42,20 @@ static NSString * const VALID_BASE64_CHARACTERS = @"ABCDEFGHIJKLMNOPQRSTUVWXYZab
     return [[NSData alloc] initWithBase64EncodedString:base64String options:0];
 }
 
-+ (NSString *)decode:(NSString *) str {
-    if (str == nil) {
-        return nil;
-    }
-    const char *tmp = [str UTF8String];
-    NSMutableString *ret = [[NSMutableString alloc] init];
-    for (NSUInteger i = 0; i < str.length; i++) {
-        if (tmp[i] != '%' || !ishex(tmp[i + 1]) || !ishex(tmp[i + 2])) {
-            [ret appendFormat:@"%c", tmp[i]];
-            continue;
-        }
-        
-        uint8_t c = 0;
-        c |= fromhex(tmp[++i]) << 4;
-        c |= fromhex(tmp[++i]);
-        
-        [ret appendFormat:@"%c", c];
-    }
-    
-    return ret;
++ (NSString *)decode:(NSString *)content {
+    return [content stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 }
 
-+ (NSString *)pad:(NSString *)str {
-    int paddSize = (4 - ([str length] % 4)) % 4;
++ (NSString *)pad:(NSString *)content {
+    int paddSize = (4 - ([content length] % 4)) % 4;
     
     if(paddSize != 0) {
         for(int i = 0; i < paddSize; ++i) {
-            str = [str stringByAppendingString:@"="];
+            content = [content stringByAppendingString:@"="];
         }
     }
 
-    return str;
+    return content;
 }
 
 + (BOOL)isBase64:(NSString *)content {
@@ -82,32 +64,6 @@ static NSString * const VALID_BASE64_CHARACTERS = @"ABCDEFGHIJKLMNOPQRSTUVWXYZab
         invertedBase64CharacterSet = [[NSCharacterSet characterSetWithCharactersInString:VALID_BASE64_CHARACTERS] invertedSet];
     }
     return [content rangeOfCharacterFromSet:invertedBase64CharacterSet options:NSLiteralSearch].location == NSNotFound;
-}
-
-static BOOL ishex(char c) {
-    if (c >= '0' && c <= '9') {
-        return YES;
-    }
-    if (c >= 'A' && c <= 'F') {
-        return YES;
-    }
-    if (c >= 'a' && c <= 'f') {
-        return YES;
-    }
-    return NO;
-}
-
-static uint8_t fromhex(char c) {
-    if (c >= '0' && c <= '9') {
-        return c - '0';
-    }
-    if (c >= 'A' && c <= 'F') {
-        return c - 'A' + 10;
-    }
-    if (c >= 'a' && c <= 'f') {
-        return c - 'a' + 10;
-    }
-    return 0;
 }
 
 @end

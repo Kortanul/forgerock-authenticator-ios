@@ -72,4 +72,36 @@
     XCTAssertFalse(result);
 }
 
+- (void)testDecodeNilReturnsNil {
+    
+    NSString *decodedString = [FRAQRUtils decode:nil];
+    
+    XCTAssertNil(decodedString);
+}
+
+- (void)testDecodeStringWithNoEscapedCharactersReturnsString {
+    
+    NSString *encodedString = @"anystringwithnoescapedcharacters";
+    
+    NSString *decodedString = [FRAQRUtils decode:encodedString];
+    
+    XCTAssertEqualObjects(decodedString, encodedString);
+}
+
+- (void)testDecodeStringWithEscapedCharactersReturnsDecodedString {
+    
+    NSString *encodedString = @"Weight%E6%BC%A2%E5%AD%97Watchers";
+    
+    NSString *decodedString = [FRAQRUtils decode:encodedString];
+    
+    XCTAssertEqualObjects(decodedString, @"Weight漢字Watchers");
+}
+
+- (void)testDecodeEmptyStringReturnsEmptyString {
+    
+    NSString *decodedString = [FRAQRUtils decode:@""];
+    
+    XCTAssertEqualObjects(decodedString, @"");
+}
+
 @end
