@@ -14,8 +14,7 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-
-
+#import "FRADateUtils.h"
 #import "FRAIdentityDatabase.h"
 #import "FRAMessageUtils.h"
 #import "FRAModelObjectProtected.h"
@@ -35,21 +34,12 @@
 @synthesize approved = _approved;
 @synthesize pending = _pending;
 
-static double const ONE_MINUTE_IN_SECONDS = 60.0;
-static double const ONE_HOUR_IN_SECONDS = 3600.0;
-static double const ONE_DAY_IN_SECONDS = 86400.0;
-static double const TWO_DAYS_IN_SECONDS = 172800.0;
-static double const ONE_WEEK_IN_SECONDS = 604800.0;
-static NSString * const STRING_DATE_FORMAT = @"dd/MM/yyyy";
-
 - (instancetype)initWithDatabase:(FRAIdentityDatabase *)database identityModel:(FRAIdentityModel *)identityModel messageId:(NSString *)messageId challenge:(NSString *)challenge timeReceived:(NSDate *)timeReceived timeToLive:(NSTimeInterval)timeToLive loadBalancerCookieData:(NSString *)loadBalancerCookie pending:(BOOL)pendingState approved:(BOOL)approvedState {
     self = [super initWithDatabase:database identityModel:identityModel];
     if (self) {
         _pending = pendingState;
         _approved = approvedState;
         
-        formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:STRING_DATE_FORMAT];
         _messageId = messageId;
         _challenge = challenge;
         _timeReceived = timeReceived;
@@ -73,25 +63,7 @@ static NSString * const STRING_DATE_FORMAT = @"dd/MM/yyyy";
 }
 
 - (NSString *)age {
-    NSTimeInterval age = [[NSDate date] timeIntervalSinceDate:self.timeReceived];
-    if (age < ONE_MINUTE_IN_SECONDS) {
-        return @"less than a minute ago";
-    } else if (age < ONE_HOUR_IN_SECONDS) {
-        // TODO: Handle "1 minutes ago" as a special case
-        return [NSString stringWithFormat:@"%ld minutes ago", (long)((age/ONE_MINUTE_IN_SECONDS)+0.5)];
-    } else if (age < ONE_DAY_IN_SECONDS) {
-        // TODO: Handle "1 hours ago" as a special case
-        return [NSString stringWithFormat:@"%ld hours ago", (long)(age / ONE_HOUR_IN_SECONDS)];
-    } else if (age < TWO_DAYS_IN_SECONDS) {
-        // TODO: Make this check more accurate, if it's 9am Tuesday then 2 days ago in seconds was 9am Sunday
-        //       so time after 9am Sunday would be reported as "Yesterday" which is incorrect :-(
-        return @"Yesterday";
-    } else if (age < ONE_WEEK_IN_SECONDS) {
-        // TODO: Handle "1 days ago" as a special case
-        return [NSString stringWithFormat:@"%ld days ago", (long)(age / ONE_DAY_IN_SECONDS)];
-    } else {
-        return [formatter stringFromDate:self.timeReceived];
-    }
+    return [[[FRADateUtils alloc] init] ageOfEventTime:self.timeReceived];
 }
 
 - (BOOL)approveWithHandler:(void (^)(NSInteger, NSError *))handler error:(NSError *__autoreleasing*)error {

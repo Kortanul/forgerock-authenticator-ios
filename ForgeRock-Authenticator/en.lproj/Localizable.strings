@@ -52,6 +52,7 @@
 "notifications_denied_status" = "Denied";
 "notifications_expired_status" = "Expired";
 "notifications_pending_status" = "Pending";
+"yesterday" = "Yesterday";
 
 /* Alert view */
 "cancel" = "Cancel";

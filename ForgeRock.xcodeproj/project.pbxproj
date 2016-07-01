@@ -53,7 +53,9 @@
 		44695F671CA0AE4300680799 /* FRAOathCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 44695F651CA0AE4300680799 /* FRAOathCode.m */; };
 		44695F7A1CA0BA0600680799 /* FRAIdentityDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 44695F791CA0BA0600680799 /* FRAIdentityDatabase.m */; };
 		44893B181D0F0D05002EB804 /* FRAModelUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 44893B171D0F0D05002EB804 /* FRAModelUtils.m */; };
+		448CD4451D27102500EA2A8C /* FRADateUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 448CD4441D27102500EA2A8C /* FRADateUtilsTests.m */; };
 		4497E0481D23CABC0050B575 /* FRASplashEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = 4497E0471D23CABC0050B575 /* FRASplashEvents.m */; };
+		4497E04B1D26D8CC0050B575 /* FRADateUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 4497E04A1D26D8CC0050B575 /* FRADateUtils.m */; };
 		449FD43C1CAAC9FC00A9BF99 /* FRAAccountsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 449FD43B1CAAC9FC00A9BF99 /* FRAAccountsTableViewController.m */; };
 		449FD43F1CAD7D7400A9BF99 /* FRAAccountTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 449FD43E1CAD7D7400A9BF99 /* FRAAccountTableViewCell.m */; };
 		44B744571CAAA82300A83AF1 /* FRANotificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44B744561CAAA82300A83AF1 /* FRANotificationViewController.m */; };
@@ -195,8 +197,11 @@
 		44695F811CA17DD300680799 /* FRAMechanism.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAMechanism.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		44893B161D0F0D05002EB804 /* FRAModelUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FRAModelUtils.h; path = "unit-tests/FRAModelUtils.h"; sourceTree = "<group>"; };
 		44893B171D0F0D05002EB804 /* FRAModelUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FRAModelUtils.m; path = "unit-tests/FRAModelUtils.m"; sourceTree = "<group>"; };
+		448CD4441D27102500EA2A8C /* FRADateUtilsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRADateUtilsTests.m; sourceTree = "<group>"; };
 		4497E0461D23CABC0050B575 /* FRASplashEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRASplashEvents.h; sourceTree = "<group>"; };
 		4497E0471D23CABC0050B575 /* FRASplashEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRASplashEvents.m; sourceTree = "<group>"; };
+		4497E0491D26D8CC0050B575 /* FRADateUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FRADateUtils.h; sourceTree = "<group>"; };
+		4497E04A1D26D8CC0050B575 /* FRADateUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FRADateUtils.m; sourceTree = "<group>"; };
 		449FD43A1CAAC9FC00A9BF99 /* FRAAccountsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAAccountsTableViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		449FD43B1CAAC9FC00A9BF99 /* FRAAccountsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRAAccountsTableViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		449FD43D1CAD7D7400A9BF99 /* FRAAccountTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAAccountTableViewCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -343,6 +348,8 @@
 				44379CF61CC66C0300D7EAE9 /* FRABlockAlertView.m */,
 				E13281CA1CDCE4C40069924A /* FRAError.h */,
 				E13281C81CDCE4800069924A /* FRAError.m */,
+				4497E0491D26D8CC0050B575 /* FRADateUtils.h */,
+				4497E04A1D26D8CC0050B575 /* FRADateUtils.m */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -357,6 +364,7 @@
 				04D3D25E1CE4CE9100D77EF6 /* FRAMockURLProtocol.m */,
 				44893B161D0F0D05002EB804 /* FRAModelUtils.h */,
 				44893B171D0F0D05002EB804 /* FRAModelUtils.m */,
+				448CD4441D27102500EA2A8C /* FRADateUtilsTests.m */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -942,6 +950,7 @@
 			files = (
 				E1A8B8AA1CD8E1F20029B89B /* FRAFMDatabaseFactory.m in Sources */,
 				4497E0481D23CABC0050B575 /* FRASplashEvents.m in Sources */,
+				4497E04B1D26D8CC0050B575 /* FRADateUtils.m in Sources */,
 				44FF7E131D05C73800BDC512 /* FRAUIUtils.m in Sources */,
 				44BC41821CA97DD6000931F3 /* FRANotificationsTableViewController.m in Sources */,
 				442CB7A91D09869D0074716B /* FRALAContextFactory.m in Sources */,
@@ -1020,6 +1029,7 @@
 				44695F671CA0AE4300680799 /* FRAOathCode.m in Sources */,
 				2D977EAB1CD8BEBA000A7F29 /* FRANotificationHandlerTest.m in Sources */,
 				04E11A421D0090250000180E /* FRAOathMechanismFactoryTests.m in Sources */,
+				448CD4451D27102500EA2A8C /* FRADateUtilsTests.m in Sources */,
 				E1C725FA1AEE7D0300388026 /* base32test.m in Sources */,
 				E178664D1CEB4C9300DC8443 /* FRASqlStorageConstantsTest.m in Sources */,
 				44893B181D0F0D05002EB804 /* FRAModelUtils.m in Sources */,
