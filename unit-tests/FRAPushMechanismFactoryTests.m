@@ -215,6 +215,22 @@ static NSString * const DEVICE_ID = @"device id";
     XCTAssertEqual(error.code, FRAInvalidQRCode);
 }
 
+- (void)testBuildMechanismReturnsNilIfInvalidSecret {
+    OCMStub([mockMessageUtils respondWithEndpoint:[OCMArg any]
+                                     base64Secret:[OCMArg any]
+                                        messageId:[OCMArg any]
+                           loadBalancerCookieData:[OCMArg any]
+                                             data:[OCMArg any]
+                                          handler:[OCMArg any]]);
+    NSURL *qrUrl = [NSURL URLWithString:@"pushauth://push/ForgeRock:Bob?a=aHR0cDovL2FtcWEtY2xvbmU2OS50ZXN0LmZvcmdlcm9jay5jb206ODA4MC9vcGVuYW0vanNvbi9wdXNoL3Nucy9tZXNzYWdlP19hY3Rpb249YXV0aGVudGljYXRl&image=aHR0cHM6Ly91cGxvYWQud2lraW1lZGlhLm9yZy93aWtpcGVkaWEvY29tbW9ucy90aHVtYi81LzUzL0dvb2dsZV8lMjJHJTIyX0xvZ28uc3ZnLzEwMjRweC1Hb29nbGVfJTIyRyUyMl9Mb2dvLnN2Zy5wbmc&b=FF00FF&r=aHR0cDovL2V4YW1wbGUuY29t&s=bsrb4udv4zCZ%20T8oydh06YhVGmvBROSoR8vAJ4ZLjYl4&c=uu8HIjTm6tqzxw_pyhuDLtP38XxqBE0XmbMduJ4HmmU&l=YW1sYmNvb2tpZT0wMQ&m=49e99acb-1af1-467b-960b-ae4f4be6b8711467293481948&issuer=Rm9yZ2VSb2Nr"];
+    
+    NSError *error;
+    FRAPushMechanism *mechanism = (FRAPushMechanism *)[factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:&error];
+    
+    XCTAssertNil(mechanism);
+    XCTAssertEqual(error.code, FRAInvalidQRCode);
+}
+
 - (void)testBuildMechanismReturnsNilIfNoAuthEndpoint {
     OCMStub([mockMessageUtils respondWithEndpoint:[OCMArg any]
                                      base64Secret:[OCMArg any]

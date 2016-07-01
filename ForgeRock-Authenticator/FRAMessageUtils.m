@@ -97,8 +97,8 @@ static NSString * const ACCEPT_API_VERSION_HEADER_VALUE = @"resource=1.0, protoc
 + (NSString *)generateJwtWithPayload:(NSDictionary *)payload base64Secret:(NSString *)base64Secret {
     id<JWTAlgorithm> algorithm = [JWTAlgorithmFactory algorithmByName:@"HS256"];
     NSData *secretBytes = [FRAQRUtils decodeURL:base64Secret];
- 
-    return [JWTBuilder encodePayload:payload].secretData(secretBytes).algorithm(algorithm).encode;
+    
+    return (secretBytes) ? [JWTBuilder encodePayload:payload].secretData(secretBytes).algorithm(algorithm).encode : @"";
 }
 
 + (NSDictionary *)extractJTWBodyFromString:(NSString *)message error:(NSError *__autoreleasing*)error {

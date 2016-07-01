@@ -20,29 +20,52 @@
 @interface FRAQRUtils : NSObject
 
 /*!
- * replace characters for url decoding
+ * Replaces characters for url decoding.
+ *
+ * @param content The original string.
+ * @return The string with replaced characters.
  */
-+ (NSString *) replaceCharactersForURLDecoding:(NSString *)content;
++ (NSString *)replaceCharactersForURLDecoding:(NSString *)content;
 
 /*!
- * decode a url from base 64 url encoded string
+ * Decodes from Base64 url encoded string.
+ *
+ * @param content The original string to decode.
+ * @return The decoded string.
  */
-+ (NSData *) decodeURL:(NSString *) content;
++ (NSData *)decodeURL:(NSString *)content;
 
 /*!
- * decode a base 64 encoded string
+ * Decodes a Base64 encoded string.
+ *
+ * @param base64String The original Base64 string to decode.
+ * @return The decoded string.
  */
-+ (NSData *) decodeBase64:(NSString *) base64String;
++ (NSData *)decodeBase64:(NSString *)base64String;
 
 /*!
- * decode an encoded string
+ * Decodes an encoded string.
+ *
+ * @param str The original string to decode.
+ * @return The decode string.
  */
-+ (NSString *) decode:(NSString*) str;
++ (NSString *)decode:(NSString*)str;
 
 /*!
- * Pad string with '=' to have length multiple of 4 (for base 64 decoding)
+ * Pads a string with '=' to have length multiple of 4 (for Base64 decoding).
+ *
+ * @param str The original string to pad.
+ * @return The padded string.
  */
-+ (NSString *) pad:(NSString*) str;
++ (NSString *)pad:(NSString*)str;
 
+
+/*!
+ * Checks if the given string is a valid Base64 string.
+ *
+ * @param content The original string to check.
+ * @return YES if the string is a valid Base64 string, otherwise NO.
+ */
++ (BOOL)isBase64:(NSString *)content;
 
 @end

@@ -17,22 +17,23 @@
 
 #import "FRAQRUtils.h"
 
+static NSString * const VALID_BASE64_CHARACTERS = @"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
 @implementation FRAQRUtils
 
-+ (NSString *) replaceCharactersForURLDecoding:(NSString *)content {
++ (NSString *)replaceCharactersForURLDecoding:(NSString *)content {
     NSString * fixed = [content stringByReplacingOccurrencesOfString:@"-" withString:@"+"];
     return [fixed stringByReplacingOccurrencesOfString:@"_" withString:@"/"];
 }
 
-+ (NSData *) decodeURL:(NSString *) content {
++ (NSData *)decodeURL:(NSString *) content {
     NSString * fixed = [FRAQRUtils replaceCharactersForURLDecoding:content];
     [self pad:fixed];
     
     return [FRAQRUtils decodeBase64:fixed];
 }
 
-+ (NSData *) decodeBase64:(NSString *) base64String {
++ (NSData *)decodeBase64:(NSString *) base64String {
     if (!base64String) {
         return nil;
     }
@@ -41,7 +42,7 @@
     return [[NSData alloc] initWithBase64EncodedString:base64String options:0];
 }
 
-+ (NSString *) decode:(NSString *) str {
++ (NSString *)decode:(NSString *) str {
     if (str == nil) {
         return nil;
     }
@@ -73,6 +74,14 @@
     }
 
     return str;
+}
+
++ (BOOL)isBase64:(NSString *)content {
+    static NSCharacterSet *invertedBase64CharacterSet = nil;
+    if (invertedBase64CharacterSet == nil) {
+        invertedBase64CharacterSet = [[NSCharacterSet characterSetWithCharactersInString:VALID_BASE64_CHARACTERS] invertedSet];
+    }
+    return [content rangeOfCharacterFromSet:invertedBase64CharacterSet options:NSLiteralSearch].location == NSNotFound;
 }
 
 static BOOL ishex(char c) {

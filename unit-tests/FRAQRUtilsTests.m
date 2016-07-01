@@ -58,4 +58,18 @@
     XCTAssertNil(result);
 }
 
+- (void)testIsBase64ReturnsTrueIfStringIsValidBase64 {
+    
+    BOOL result = [FRAQRUtils isBase64:@"somethingTHATisvalid1244+"];
+    
+    XCTAssertTrue(result);
+}
+
+- (void)testIsBase64ReturnsFalseIfStringIsNotValidBase64 {
+    
+    BOOL result = [FRAQRUtils isBase64:@"somethingTHATisNOT%valid1244+"];
+    
+    XCTAssertFalse(result);
+}
+
 @end

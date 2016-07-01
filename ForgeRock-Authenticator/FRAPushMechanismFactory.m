@@ -95,7 +95,7 @@ static BOOL FAILURE = NO;
     NSString *issuer = [self utf8StringFromData:[FRAQRUtils decodeURL:[query objectForKey:ISSUER_QR_KEY]]];
     NSString *_label = [query objectForKey:@"_label"];
     
-    if (![self isValid:secret] || ![self isValid:regEndpoint] || ![self isValid:authEndpoint] || ![self isValid:messageId] || ![self isValid:challenge] || ![self isValid:issuer]) {
+    if (![self isValidSecret:secret] || ![self isValid:regEndpoint] || ![self isValid:authEndpoint] || ![self isValid:messageId] || ![self isValid:challenge] || ![self isValid:issuer]) {
         *error = [FRAError createError:NSLocalizedString(@"Invalid QR code", nil) code:FRAInvalidQRCode];
         return nil;
     }
@@ -110,6 +110,10 @@ static BOOL FAILURE = NO;
     [self registerMechanismWithEndpoint:regEndpoint secret:secret challenge:challenge messageId:messageId mechanismUid:mechanism.mechanismUID identity:identity mechanism:mechanism identityModel:identityModel loadBalancerCookieData:loadBalancer handler:handler];
 
     return mechanism;
+}
+
+- (BOOL)isValidSecret:(NSString *)secret {
+    return [self isValid:secret] && [FRAQRUtils isBase64:secret];
 }
 
 - (BOOL)isValid:(NSString *)info {
