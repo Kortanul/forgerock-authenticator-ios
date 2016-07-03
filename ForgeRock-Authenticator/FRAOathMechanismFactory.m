@@ -30,7 +30,7 @@
 static BOOL SUCCESS = YES;
 
 @implementation FRAOathMechanismFactory
-    
+
 #pragma mark -
 #pragma mark Fractory Methods
 
@@ -38,32 +38,34 @@ static BOOL SUCCESS = YES;
     
     NSDictionary *query = [self readQRCode:uri];
 
-    CCHmacAlgorithm algo = parseAlgo([query objectForKey:@"algorithm"]);
+    NSNumber *algorithm = parseAlgorithm([query objectForKey:@"algorithm"]);
     NSData *key = parseKey([query objectForKey:@"secret"]);
-    NSUInteger _digits = parseDigits([query objectForKey:@"digits"]);
-    NSString *period = [query objectForKey:@"period"];
+    NSNumber *_digits = parseDigits([query objectForKey:@"digits"]);
+    NSNumber *period = parsePeriod([query objectForKey:@"period"]);
     NSString *image = [query objectForKey:@"image"];
-    NSString *issuer = [query objectForKey:@"_issuer"];
     NSString *label = [query objectForKey:@"_label"];
-    NSString *counter = [query objectForKey:@"counter"];
-    NSString *bgColor = [query objectForKey:@"b"];
+    NSString *issuer = parseIssuer([query objectForKey:@"_issuer"], [query objectForKey:@"issuer"], label);
+    NSNumber *counter = parseCounter([query objectForKey:@"counter"]);
+    NSString *backgroundColor = [query objectForKey:@"b"];
     NSString *_type = [query objectForKey:@"_type"];
     
-    if((key.length <= 0) || ![self isValid:issuer] || ![self isValid:label]) {
-        *error = [FRAError createError:NSLocalizedString(@"Invalid QR code", nil) code:FRAInvalidQRCode];
+    if(![self hasValidType:_type key:key issuer:issuer counter:counter algorithm:algorithm digits:_digits period:period backgroundColor:backgroundColor]) {
+        if (error) {
+            *error = [FRAError createError:NSLocalizedString(@"Invalid QR code", nil) code:FRAInvalidQRCode];
+        }
         return nil;
     }
  
     FRAMechanism *mechanism = [self makeMechanimsObject:database
                                           identityModel:identityModel
-                                              algorithm:algo
+                                              algorithm:algorithm.intValue
                                                     key:key
-                                             codeLength:_digits
-                                           periodString:period
+                                             codeLength:_digits.intValue
+                                                 period:period.intValue
                                                    type:_type
-                                          counterString:counter];
+                                                counter:counter.integerValue];
 
-    FRAIdentity *identity = [self identityWithIssuer:issuer accountName:label identityModel:identityModel backgroundColor:bgColor image:image database:database error:error];
+    FRAIdentity *identity = [self identityWithIssuer:issuer accountName:label identityModel:identityModel backgroundColor:backgroundColor image:image database:database error:error];
 
     if (![identity addMechanism:mechanism error:error]) {
         return nil;
@@ -80,7 +82,7 @@ static BOOL SUCCESS = YES;
         return nil;
     }
     NSString* _type = [uri host];
-    if (_type == nil || (![_type isEqualToString:[FRATotpOathMechanism mechanismType]] && ![_type isEqualToString:[FRAHotpOathMechanism mechanismType]])) {
+    if (_type == nil || (![self isTotp:_type] && ![self isHotp:_type])) {
         return nil;
     }
     // Get the path and strip it of its leading '/'
@@ -131,10 +133,39 @@ static BOOL SUCCESS = YES;
 }
 
 /*!
- * Checks if a string is not null and not empty.
+ * Checks if parameters are valid.
  */
-- (BOOL)isValid:(NSString *)info {
-    return info.length > 0;
+- (BOOL)hasValidType:(NSString *)type
+                 key:(NSData *)key
+              issuer:(NSString *)issuer
+             counter:(NSNumber *)counter
+           algorithm:(NSNumber *)algorithm
+              digits:(NSNumber *)digits
+              period:(NSNumber *)period
+     backgroundColor:(NSString *)backgroundColor {
+    if (!algorithm || key.length == 0 || !digits || (issuer.length == 0) || !isValidBackgroundColor(backgroundColor)) {
+        return NO;
+    }
+    
+    if ([self isHotp:type]) {
+        return counter;
+    }
+    
+    return period;
+}
+
+/*!
+ * Checks if mechanism type is HOTP.
+ */
+- (BOOL)isHotp:(NSString *)type {
+    return [[type lowercaseString] isEqualToString:[FRAHotpOathMechanism mechanismType]];
+}
+
+/*!
+ * Checks if mechanism type is TOTP.
+ */
+- (BOOL)isTotp:(NSString *)type {
+    return [[type lowercaseString] isEqualToString:[FRATotpOathMechanism mechanismType]];
 }
 
 /*!
@@ -145,36 +176,16 @@ static BOOL SUCCESS = YES;
                              algorithm:(CCHmacAlgorithm)algorithm
                                    key:(NSData *)key
                             codeLength:(NSUInteger)codeLength
-                          periodString:(NSString *)periodString
+                                period:(u_int32_t)period
                                   type:(NSString *)type
-                         counterString:(NSString *)counterString {
-    // verify
-    if (key == nil) {
-        return nil;
-    }
-    // get period
-    uint32_t period;
-    if (nil == periodString) {
-        period = 30;
-    } else {
-        period = [periodString intValue];
-    }
-    if (0 == period) {
-        period = 30;
-    }
-    
-    // Get counter
-    uint64_t counter = 0;
-    if ([type isEqualToString:[FRAHotpOathMechanism mechanismType]]) {
-        counter = counterString != nil ? [counterString longLongValue] : 0;
-    }
-    
-    if ([type isEqualToString:[FRAHotpOathMechanism mechanismType]]) {
+                               counter:(NSUInteger)counter {
+
+
+    if ([self isHotp:type]) {
         return [FRAHotpOathMechanism mechanismWithDatabase:database identityModel:identityModel secretKey:key HMACAlgorithm:algorithm codeLength:codeLength counter:counter];
     } else {
         return [FRATotpOathMechanism mechanismWithDatabase:database identityModel:identityModel secretKey:key HMACAlgorithm:algorithm codeLength:codeLength period:period];
     }
-    
 }
 
 - (FRAIdentity *)identityWithIssuer:(NSString *)issuer accountName:(NSString *)accountName identityModel:(FRAIdentityModel *)identityModel backgroundColor:(NSString *)backgroundColor image:(NSString *)image database:(FRAIdentityDatabase *)database error:(NSError *__autoreleasing *)error {
@@ -196,7 +207,7 @@ static BOOL SUCCESS = YES;
     }
 }
 
-- (bool) supports:(NSURL *)uri {
+- (bool)supports:(NSURL *)uri {
     NSString* scheme = [uri scheme];
     if (scheme == nil || ![scheme isEqualToString:@"otpauth"]) {
         return false;
@@ -227,41 +238,84 @@ static NSData* parseKey(const NSString *secret) {
     return [NSData dataWithBytes:key length:res];
 }
 
-static CCHmacAlgorithm parseAlgo(const NSString* algo) {
-    static struct {
-        const char *name;
-        CCHmacAlgorithm num;
-    } algomap[] = {
-        { "md5", kCCHmacAlgMD5 },
-        { "sha1", kCCHmacAlgSHA1 },
-        { "sha256", kCCHmacAlgSHA256 },
-        { "sha512", kCCHmacAlgSHA512 },
-    };
-    if (algo == nil) {
-        return kCCHmacAlgSHA1;
-    }
-    const char *calgo = [algo cStringUsingEncoding:NSUTF8StringEncoding];
-    if (calgo == NULL) {
-        return kCCHmacAlgSHA1;
-    }
-    for (int i = 0; i < sizeof(algomap) / sizeof(algomap[0]); i++) {
-        if (strcasecmp(calgo, algomap[i].name) == 0) {
-            return algomap[i].num;
-        }
+static NSNumber* parseAlgorithm(const NSString *algorithm) {
+    if (algorithm.length == 0) {
+        return [NSNumber numberWithInt:kCCHmacAlgSHA1];
     }
     
-    return kCCHmacAlgSHA1;
+    NSDictionary<NSString *, NSNumber *> *supportedAlgorithms = @{@"md5": [NSNumber numberWithInt:kCCHmacAlgMD5],
+                                                                  @"sha1": [NSNumber numberWithInt:kCCHmacAlgSHA1],
+                                                                  @"sha256": [NSNumber numberWithInt:kCCHmacAlgSHA256],
+                                                                  @"sha512": [NSNumber numberWithInt:kCCHmacAlgSHA512]};
+    
+    return [supportedAlgorithms valueForKey:[algorithm lowercaseString]];
 }
 
-static NSInteger parseDigits(const NSString* digits) {
-    if (digits == nil) {
-        return 6;
+static NSNumber* parseDigits(const NSString *digits) {
+    if (digits.length == 0) {
+        return [NSNumber numberWithInt:6];
     }
-    NSInteger val = [digits integerValue];
+    int val = [digits intValue];
     if (val != 6 && val != 8) {
-        return 6;
+        return nil;
     }
-    return val;
+    return [NSNumber numberWithInt:val];
+}
+
+static NSNumber* parseCounter(const NSString *counter) {
+    if (counter.length == 0 || !isNumeric(counter)) {
+        return nil;
+    }
+    
+    return [NSNumber numberWithInteger:[counter integerValue]];
+}
+
+static NSNumber* parsePeriod(const NSString *period) {
+    if (period.length == 0) {
+        return [NSNumber numberWithInt:30];
+    }
+    
+    if (!isNumeric(period)) {
+        return nil;
+    }
+    
+    uint32_t intPeriod = [period intValue];
+    if (intPeriod == 0) {
+        return nil;
+    }
+    
+    return [NSNumber numberWithInt:intPeriod];
+}
+
+static BOOL isNumeric (const NSString *string) {
+    NSCharacterSet* notDigits = [[NSCharacterSet decimalDigitCharacterSet] invertedSet];
+    return [string rangeOfCharacterFromSet:notDigits].location == NSNotFound;
+}
+
+static NSString* parseIssuer(NSString* issuerPrefix, NSString* issuerParameter, NSString* accountName) {
+    if (issuerPrefix.length > 0) {
+        return issuerPrefix;
+    }
+    
+    if (issuerParameter.length > 0) {
+        return issuerParameter;
+    }
+    
+    return accountName;
+}
+
+static BOOL isValidBackgroundColor(NSString *color) {
+    if (color.length == 0) {
+        return YES;
+    }
+    
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^[0-9a-fA-F]{6}$" options:0 error:nil];
+    NSUInteger numberOfMatches = [regex numberOfMatchesInString:color options:0 range:NSMakeRange(0, [color length])];
+    
+    if (numberOfMatches == 1) {
+        return YES;
+    };
+    return NO;
 }
 
 @end

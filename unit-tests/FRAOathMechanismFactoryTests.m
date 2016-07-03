@@ -189,7 +189,7 @@ static NSUInteger const DEFAULT_CODE_LENGTH = 6;
     XCTAssertEqual(error.code, FRADuplicateMechanism);
 }
 
-- (void)testBuildMechanismReturnsNilIfNoSecret {
+- (void)testBuildMechanismReturnsNilIfNoSecretForHotp {
     // Given
     NSURL *qrUrl = [NSURL URLWithString:@"otpauth://hotp/Forgerock:demo?secret=&issuer=Forgerock&counter=0&digits=8"];
     
@@ -201,9 +201,9 @@ static NSUInteger const DEFAULT_CODE_LENGTH = 6;
     XCTAssertEqual(error.code, FRAInvalidQRCode);
 }
 
-- (void)testBuildMechanismReturnsNilIfNoIssuer {
+- (void)testBuildMechanismReturnsNilIfNoSecretForTotp {
     // Given
-    NSURL *qrUrl = [NSURL URLWithString:@"otpauth://hotp/:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0&digits=8"];
+    NSURL *qrUrl = [NSURL URLWithString:@"otpauth://totp/Forgerock:demo?secret=&issuer=Forgerock&period=30&digits=8"];
     
     // When
     NSError *error;
@@ -213,21 +213,107 @@ static NSUInteger const DEFAULT_CODE_LENGTH = 6;
     XCTAssertEqual(error.code, FRAInvalidQRCode);
 }
 
-- (void)testBuildMechanismReturnsNilIfNoAccountName {
+- (void)testBuildMechanismReturnsIssuerFromParameter {
     // Given
-    NSURL *qrUrl = [NSURL URLWithString:@"otpauth://hotp/Forgerock:?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0&digits=8"];
+    NSURL *qrUrl = [NSURL URLWithString:@"otpauth://hotp/demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0&digits=8"];
+    
+    // When
+    NSError *error;
+    FRAMechanism *mechanism = [factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:&error];
+
+    FRAIdentity *identity = mechanism.parent;
+    XCTAssertEqualObjects(identity.issuer, @"Forgerock");
+    XCTAssertEqualObjects(identity.accountName, @"demo");
+}
+
+- (void)testBuildMechanismWithNoIssuerSetsIssuerToAccountName {
+    // Given
+    NSURL *qrUrl = [NSURL URLWithString:@"otpauth://hotp/Forgerock?secret=IJQWIZ3FOIQUEYLE&counter=0&digits=8"];
     
     // When
     NSError *error;
     FRAMechanism *mechanism = [factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:&error];
     
-    XCTAssertNil(mechanism);
-    XCTAssertEqual(error.code, FRAInvalidQRCode);
+    FRAIdentity *identity = mechanism.parent;
+    XCTAssertEqualObjects(identity.issuer, @"Forgerock");
+    XCTAssertEqualObjects(identity.accountName, @"Forgerock");
 }
 
 - (void)testBuildMechanismReturnsNilIfTypeIsMissing {
     // Given
     NSURL *qrUrl = [NSURL URLWithString:@"otpauth:///Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&counter=0&digits=8"];
+    
+    // When
+    NSError *error;
+    FRAMechanism *mechanism = [factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:&error];
+    
+    XCTAssertNil(mechanism);
+    XCTAssertEqual(error.code, FRAInvalidQRCode);
+}
+
+- (void)testBuildMechanismReturnsNilIfNoCounterForHotp {
+    // Given
+    NSURL *qrUrl = [NSURL URLWithString:@"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&digits=8"];
+    
+    // When
+    NSError *error;
+    FRAMechanism *mechanism = [factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:&error];
+    
+    XCTAssertNil(mechanism);
+    XCTAssertEqual(error.code, FRAInvalidQRCode);
+}
+
+- (void)testBuildMechanismReturnsNilIfInvalidCounterForHotp {
+    // Given
+    NSURL *qrUrl = [NSURL URLWithString:@"otpauth://hotp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&digits=8&counter=invalid"];
+    
+    // When
+    NSError *error;
+    FRAMechanism *mechanism = [factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:&error];
+    
+    XCTAssertNil(mechanism);
+    XCTAssertEqual(error.code, FRAInvalidQRCode);
+}
+
+- (void)testBuildMechanismReturnsNilIfInvalidPeriodForTotp {
+    // Given
+    NSURL *qrUrl = [NSURL URLWithString:@"otpauth://totp/Forgerock:demo?secret=IJQWIZ3FOIQUEYLE&issuer=Forgerock&digits=8&period=invalid"];
+    
+    // When
+    NSError *error;
+    FRAMechanism *mechanism = [factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:&error];
+    
+    XCTAssertNil(mechanism);
+    XCTAssertEqual(error.code, FRAInvalidQRCode);
+}
+
+- (void)testBuildMechanismReturnsNilIfInvalidAlgorithm {
+    // Given
+    NSURL *qrUrl = [NSURL URLWithString:@"otpauth://hotp/WeightWatchers:Dave?secret=JMEZ2W7D462P3JYBDG2HV7PFBM======&issuer=WeightWatchers&digits=8&algorithm=SHA%20256&counter=0&b=FF00FF&image=http://www.utimes.pitt.edu/wp-content/uploads/2013/01/ww-logo1.jpg"];
+    
+    // When
+    NSError *error;
+    FRAMechanism *mechanism = [factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:&error];
+    
+    XCTAssertNil(mechanism);
+    XCTAssertEqual(error.code, FRAInvalidQRCode);
+}
+
+- (void)testBuildMechanismReturnsNilIfInvalidDigits {
+    // Given
+    NSURL *qrUrl = [NSURL URLWithString:@"otpauth://hotp/WeightWatchers:Dave?secret=JMEZ2W7D462P3JYBDG2HV7PFBM======&issuer=WeightWatchers&digits=9&algorithm=SHA1&period=60&b=FF00FF&image=http://www.utimes.pitt.edu/wp-content/uploads/2013/01/ww-logo1.jpg&counter=0"];
+    
+    // When
+    NSError *error;
+    FRAMechanism *mechanism = [factory buildMechanism:qrUrl database:identityDatabase identityModel:identityModel handler:nil error:&error];
+    
+    XCTAssertNil(mechanism);
+    XCTAssertEqual(error.code, FRAInvalidQRCode);
+}
+
+- (void)testBuildMechanismReturnsNilIfInvalidBackgroundColor {
+    // Given
+    NSURL *qrUrl = [NSURL URLWithString:@"otpauth://hotp/WeightWatchers:Dave?secret=JMEZ2W7D462P3JYBDG2HV7PFBM======&issuer=WeightWatchers&digits=6&algorithm=SHA1&b=FF0Z0FF&image=http://www.utimes.pitt.edu/wp-content/uploads/2013/01/ww-logo1.jpg&counter=0"];
     
     // When
     NSError *error;
