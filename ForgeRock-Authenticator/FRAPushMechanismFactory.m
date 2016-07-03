@@ -113,7 +113,7 @@ static BOOL FAILURE = NO;
 }
 
 - (BOOL)isValidSecret:(NSString *)secret {
-    return [self isValid:secret] && [FRAQRUtils isBase64:secret];
+    return [self isValid:secret] && [FRAQRUtils isBase64:[FRAQRUtils replaceCharactersForURLDecoding:secret]];
 }
 
 - (BOOL)isValid:(NSString *)info {
