@@ -27,7 +27,11 @@
     
     NSDateFormatter *dayOfWeekFormatter = [[NSDateFormatter alloc] init];
     [dayOfWeekFormatter setDateFormat:@"EEEE"];
-    [dayOfWeekFormatter setLocale:locale];
+    // Although iOS will give day of the week in the correct language for the device's locale/language settings
+    // we should instead perform explicit translation ourselves. This ensures that the app's localizable strings
+    // are fully translated or not translated at all - It would seem odd to only show day of the week in the
+    // device's language while all other strings are shown in English.
+    [dayOfWeekFormatter setLocale:[NSLocale localeWithLocaleIdentifier:@"en_GB"]];
 
     NSDateFormatter *localeDateFormatter = [[NSDateFormatter alloc] init];
     NSString *shortDateFormat = [NSDateFormatter dateFormatFromTemplate:@"ddMMyyyy" options:0 locale:locale];
@@ -45,7 +49,7 @@
     } else if (secondsSinceNotification < (secondsSinceMidnight + secondsInDay)) {
         return NSLocalizedString(@"yesterday", nil);
     } else if (secondsSinceNotification < (secondsSinceMidnight + (7 * secondsInDay))) {
-        return [dayOfWeekFormatter stringFromDate:eventTime];
+        return NSLocalizedString([dayOfWeekFormatter stringFromDate:eventTime], nil);
     }
     return [localeDateFormatter stringFromDate:eventTime];
 }

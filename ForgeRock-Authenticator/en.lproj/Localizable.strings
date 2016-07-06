@@ -53,6 +53,13 @@
 "notifications_expired_status" = "Expired";
 "notifications_pending_status" = "Pending";
 "yesterday" = "Yesterday";
+"Monday" = "Monday";
+"Tuesday" = "Tuesday";
+"Wednesday" = "Wednesday";
+"Thursday" = "Thursday";
+"Friday" = "Friday";
+"Saturday" = "Saturday";
+"Sunday" = "Sunday";
 
 /* Alert view */
 "cancel" = "Cancel";

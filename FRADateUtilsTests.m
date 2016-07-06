@@ -114,22 +114,23 @@ static NSString * const IT_IT_LOCALE = @"it_IT";
 }
 
 - (void)testAgeOfNotificationReceivedBetweenTwoAndSevenDaysAgoIsReportedAsDayOfTheWeekInCurrentLanguage {
-    XCTAssertEqualObjects(@"sabato",
+    // This test can be improved when we have a translation for Localizable.strings
+    XCTAssertEqualObjects(@"Saturday",
                           [self ageOfEventTime:TIME_2_DAYS_AGO inLocale:IT_IT_LOCALE],
                           @"Notifications received two days ago should be displayed as day of week");
-    XCTAssertEqualObjects(@"venerdì",
+    XCTAssertEqualObjects(@"Friday",
                           [self ageOfEventTime:TIME_3_DAYS_AGO inLocale:IT_IT_LOCALE],
                           @"Notifications received three days ago should be displayed as day of week");
-    XCTAssertEqualObjects(@"giovedì",
+    XCTAssertEqualObjects(@"Thursday",
                           [self ageOfEventTime:TIME_4_DAYS_AGO inLocale:IT_IT_LOCALE],
                           @"Notifications received four days ago should be displayed as day of week");
-    XCTAssertEqualObjects(@"mercoledì",
+    XCTAssertEqualObjects(@"Wednesday",
                           [self ageOfEventTime:TIME_5_DAYS_AGO inLocale:IT_IT_LOCALE],
                           @"Notifications received five days ago should be displayed as day of week");
-    XCTAssertEqualObjects(@"martedì",
+    XCTAssertEqualObjects(@"Tuesday",
                           [self ageOfEventTime:TIME_6_DAYS_AGO inLocale:IT_IT_LOCALE],
                           @"Notifications received six days ago should be displayed as day of week");
-    XCTAssertEqualObjects(@"lunedì",
+    XCTAssertEqualObjects(@"Monday",
                           [self ageOfEventTime:TIME_7_DAYS_AGO inLocale:IT_IT_LOCALE],
                           @"Notifications received seven days ago should be displayed as day of week");
 }
