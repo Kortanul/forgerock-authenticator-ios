@@ -1157,7 +1157,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.forgerock.authenticator;
 				PRODUCT_NAME = ForgeRock;
 				PROVISIONING_PROFILE = "";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1178,7 +1178,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.forgerock.authenticator;
 				PRODUCT_NAME = ForgeRock;
 				PROVISIONING_PROFILE = "";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
