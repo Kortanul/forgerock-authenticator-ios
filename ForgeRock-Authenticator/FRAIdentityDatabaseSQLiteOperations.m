@@ -147,7 +147,7 @@
         FRAHotpOathMechanism *hotpOathMechanism = (FRAHotpOathMechanism *)mechanism;
         
         // Secret Key
-        NSString *base64Key = [FRASerialization serializeBytes:hotpOathMechanism.secretKey];
+        NSString *base64Key = [FRASerialization serializeSecret:hotpOathMechanism.secretKey];
         [options setObject:[FRASerialization nonNilString:base64Key] forKey:OATH_MECHANISM_SECRET];
         
         // Algorithm

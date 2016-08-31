@@ -121,6 +121,22 @@ extern NSString * const NOTIFICATION_LOAD_BALANCER_COOKIE;
 + (NSData *)deserializeBytes:(NSString *)data;
 
 /*!
+ * Given an NSData object, serialise it to a hexadecimal string.
+ *
+ * @param data Encoded data to deserialise.
+ * @return nil if the input was nil, otherwise non nil byte array.
+ */
++ (NSString *)serializeSecret:(NSData *)data;
+
+/*!
+ * Given a hex encoded string, deserialise it to an NSData object.
+ *
+ * @param hexOfSecret hex encoded data to deserialise.
+ * @return nil if the input was nil, otherwise non nil byte array.
+ */
++ (NSData *)deserializeSecret:(NSString *)hexOfSecret;
+
+/*!
  * Returns the number of seconds since 1970 for the given date.
  *
  * @param date The date to convert in seconds.

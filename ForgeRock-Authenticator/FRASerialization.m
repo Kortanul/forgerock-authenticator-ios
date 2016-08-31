@@ -69,6 +69,42 @@ NSString * const NOTIFICATION_LOAD_BALANCER_COOKIE = @"load_balancer_cookie";
     return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 }
 
++ (NSString *)serializeSecret:(NSData *)data {
+    if (data == nil) {
+        return nil;
+    }
+    const unsigned char *dataBuffer = (const unsigned char *)[data bytes];
+
+    if (!dataBuffer) {
+        return [NSString string];
+    }
+
+    NSUInteger dataLength = [data length];
+    NSMutableString *hexString  = [NSMutableString stringWithCapacity:(dataLength * 2)];
+
+    for (int i = 0; i < dataLength; ++i) {
+        [hexString appendString:[NSString stringWithFormat:@"%02lx", (unsigned long)dataBuffer[i]]];
+    }
+
+    return [NSString stringWithString:hexString];
+}
+
++ (NSData *)deserializeSecret:(NSString *)hexOfSecret {
+    char characterBuffer[3];
+    characterBuffer[2] = '\0';
+
+    unsigned char *bytes = malloc([hexOfSecret length]/2);
+    unsigned char *byteTraversal = bytes;
+    for (int i = 0; i < [hexOfSecret length]; i += 2) {
+        characterBuffer[0] = [hexOfSecret characterAtIndex:i];
+        characterBuffer[1] = [hexOfSecret characterAtIndex:i+1];
+        char *byte2 = NULL;
+        *byteTraversal++ = strtol(characterBuffer, &byte2, 16);
+    }
+
+    return [NSData dataWithBytesNoCopy:bytes length:[hexOfSecret length]/2 freeWhenDone:YES];
+}
+
 + (NSData *)deserializeBytes:(NSString *)data {
     if (data == nil || [data isKindOfClass:[NSNull class]]) {
         return nil;
