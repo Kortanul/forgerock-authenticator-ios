@@ -90,6 +90,10 @@ NSString * const NOTIFICATION_LOAD_BALANCER_COOKIE = @"load_balancer_cookie";
 }
 
 + (NSData *)deserializeSecret:(NSString *)hexOfSecret {
+    if (hexOfSecret == (id)[NSNull null]) {
+        return nil;
+    }
+    
     char characterBuffer[3];
     characterBuffer[2] = '\0';
 

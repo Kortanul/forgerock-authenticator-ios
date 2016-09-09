@@ -88,7 +88,7 @@
 		E166B2301CDA50ED00DFB029 /* insert_notification.sql in Resources */ = {isa = PBXBuildFile; fileRef = E166B22F1CDA50ED00DFB029 /* insert_notification.sql */; };
 		E166B2321CDB601200DFB029 /* delete_identity.sql in Resources */ = {isa = PBXBuildFile; fileRef = E166B2311CDB601200DFB029 /* delete_identity.sql */; };
 		E173594A1CCA2EDB00828709 /* FRAMechanism.m in Sources */ = {isa = PBXBuildFile; fileRef = E17359491CCA2EDB00828709 /* FRAMechanism.m */; };
-		E178664D1CEB4C9300DC8443 /* FRASqlStorageConstantsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E178664C1CEB4C9300DC8443 /* FRASqlStorageConstantsTest.m */; };
+		E178664D1CEB4C9300DC8443 /* FRASerializationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E178664C1CEB4C9300DC8443 /* FRASerializationTest.m */; };
 		E187E1AC1CBD4DD400F9427D /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E187E1AB1CBD4DD400F9427D /* libsqlite3.0.tbd */; };
 		E1A8B8AA1CD8E1F20029B89B /* FRAFMDatabaseFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = E1A8B8A91CD8E1F20029B89B /* FRAFMDatabaseFactory.m */; };
 		E1A92B651CBE637200D7BB04 /* schema.sql in Resources */ = {isa = PBXBuildFile; fileRef = E1A92B641CBE637200D7BB04 /* schema.sql */; };
@@ -253,7 +253,7 @@
 		E166B22F1CDA50ED00DFB029 /* insert_notification.sql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = insert_notification.sql; sourceTree = "<group>"; };
 		E166B2311CDB601200DFB029 /* delete_identity.sql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = delete_identity.sql; sourceTree = "<group>"; };
 		E17359491CCA2EDB00828709 /* FRAMechanism.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRAMechanism.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		E178664C1CEB4C9300DC8443 /* FRASqlStorageConstantsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = FRASqlStorageConstantsTest.m; path = "unit-tests/FRASqlStorageConstantsTest.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		E178664C1CEB4C9300DC8443 /* FRASerializationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = FRASerializationTest.m; path = "unit-tests/FRASerializationTest.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		E187E1AB1CBD4DD400F9427D /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
 		E1A8B8A91CD8E1F20029B89B /* FRAFMDatabaseFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FRAFMDatabaseFactory.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		E1A8B8AB1CD8E21E0029B89B /* FRAFMDatabaseFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FRAFMDatabaseFactory.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -637,7 +637,7 @@
 				04C223C61CECD09F001F8BD3 /* FRASqlDatabaseFactoryTest.m */,
 				0467E0C61CE5E4D200A422D5 /* FRADatabaseConfigurationTest.m */,
 				E1E53F7F1CD3A07700A0F2ED /* FRAFMDatabaseConnectionHelperTest.m */,
-				E178664C1CEB4C9300DC8443 /* FRASqlStorageConstantsTest.m */,
+				E178664C1CEB4C9300DC8443 /* FRASerializationTest.m */,
 			);
 			name = SQL;
 			sourceTree = "<group>";
@@ -1031,7 +1031,7 @@
 				04E11A421D0090250000180E /* FRAOathMechanismFactoryTests.m in Sources */,
 				448CD4451D27102500EA2A8C /* FRADateUtilsTests.m in Sources */,
 				E1C725FA1AEE7D0300388026 /* base32test.m in Sources */,
-				E178664D1CEB4C9300DC8443 /* FRASqlStorageConstantsTest.m in Sources */,
+				E178664D1CEB4C9300DC8443 /* FRASerializationTest.m in Sources */,
 				44893B181D0F0D05002EB804 /* FRAModelUtils.m in Sources */,
 				E1E53F801CD3A07700A0F2ED /* FRAFMDatabaseConnectionHelperTest.m in Sources */,
 				0467E0C81CE5E4D600A422D5 /* FRADatabaseConfigurationTest.m in Sources */,

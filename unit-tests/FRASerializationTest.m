@@ -18,15 +18,14 @@
 
 #import "FRASerialization.h"
 
-@interface FRASqlStorageConstantsTest : XCTestCase
+@interface FRASerializationTest : XCTestCase
 
 @end
 
 /*!
- * A collection of tests to ensure that the serialise/deserialise functions
- * are sane.
+ * A collection of tests to ensure that the serialise/deserialise functions are sane.
  */
-@implementation FRASqlStorageConstantsTest {
+@implementation FRASerializationTest {
 }
 
 - (void)setUp {
@@ -42,11 +41,11 @@
 
 - (void)testBytesCanBeSerialised {
     // Given - badger steps into 'the converter'
-    NSData* badgerBytes = [@"badger" dataUsingEncoding:NSUTF8StringEncoding];
-    NSString* stringifiedBadger = [FRASerialization serializeBytes:badgerBytes];
+    NSData *badgerBytes = [@"badger" dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *stringifiedBadger = [FRASerialization serializeBytes:badgerBytes];
     
     // When
-    NSData* result = [FRASerialization deserializeBytes:stringifiedBadger];
+    NSData *result = [FRASerialization deserializeBytes:stringifiedBadger];
     
     // Then
     XCTAssertEqualObjects(badgerBytes, result, @"Badger did not survive the conversion process");
@@ -54,10 +53,10 @@
 
 - (void)testNilIsNotSerialised {
     // Given - nothing steps into 'the converter'
-    NSData* nilBytes = nil;
+    NSData *nilBytes = nil;
     
     // When
-    NSString* result = [FRASerialization serializeBytes:nilBytes];
+    NSString *result = [FRASerialization serializeBytes:nilBytes];
     
     // Then
     XCTAssertNil(result, @"Did not return nil for nil input");
@@ -65,13 +64,28 @@
 
 - (void)testNilIsNotDeserialised {
     // Given
-    NSString* nilString = nil;
+    NSString *nilString = nil;
     
     // When
-    NSData* result = [FRASerialization deserializeBytes:nilString];
+    NSData *result = [FRASerialization deserializeBytes:nilString];
     
     // Then
     XCTAssertNil(result, @"Did not return nil for nil input");
+}
+
+
+#pragma mark --
+#pragma mark Secret Serialisation/Deserialisation
+
+- (void)testNullSecretIsNotDeserialised {
+    // Given
+    NSString *nullSecret = (id)[NSNull null];
+    
+    // When
+    NSData *result = [FRASerialization deserializeSecret:nullSecret];
+    
+    // Then
+    XCTAssertNil(result, @"Did not return nil for null input");
 }
 
 #pragma mark --
@@ -79,15 +93,15 @@
 
 - (void)testDictionaryCanBeSerialised {
     // Given - A map steps into 'the converter'
-    NSMutableDictionary* map = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary *map = [[NSMutableDictionary alloc] init];
     [map setValue:@"badger" forKey:@"first"];
     [map setValue:@"ferret" forKey:@"second"];
     
-    NSString* stringifiedMap;
+    NSString *stringifiedMap;
     XCTAssertTrue([FRASerialization serializeMap:map intoString:&stringifiedMap error:nil], @"Serialisation failed");
     
     // When
-    NSDictionary* result;
+    NSDictionary *result;
     XCTAssertTrue([FRASerialization deserializeJSON:stringifiedMap intoDictionary:&result error:nil]);
     
     // Then
@@ -96,10 +110,10 @@
 
 - (void)testNilDictionaryIsNotSerialised {
     // Given - A map steps into 'the converter'
-    NSDictionary* map = nil;
+    NSDictionary *map = nil;
     
     // When
-    NSString* result;
+    NSString *result;
     XCTAssertTrue([FRASerialization serializeMap:map intoString:&result error:nil]);
     
     // Then
@@ -108,10 +122,10 @@
 
 - (void)testNilIsNotDeserialisedIntoADictionary {
     // Given
-    NSString* nilString = nil;
+    NSString *nilString = nil;
     
     // When
-    NSDictionary* result;
+    NSDictionary *result;
     XCTAssertTrue([FRASerialization deserializeJSON:nilString intoDictionary:&result error:nil]);
     
     // Then
@@ -120,12 +134,12 @@
 
 - (void)testEmptyDictionaryIsSerialised {
     // Given - A map steps into 'the converter'
-    NSDictionary* map = [[NSDictionary alloc] init];
-    NSString* stringifiedMap;
+    NSDictionary *map = [[NSDictionary alloc] init];
+    NSString *stringifiedMap;
     XCTAssertTrue([FRASerialization serializeMap:map intoString:&stringifiedMap error:nil]);
     
     // When
-    NSDictionary* result;
+    NSDictionary *result;
     XCTAssertTrue([FRASerialization deserializeJSON:stringifiedMap intoDictionary:&result error:nil]);
     
     // Then
