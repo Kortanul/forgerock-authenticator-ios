@@ -181,7 +181,7 @@
                 
                 // Secret Key - Base 64 encoded bytes
                 NSString *secretValue = [optionsMap objectForKey:OATH_MECHANISM_SECRET];
-                NSData* secret = [FRASerialization deserializeBytes:secretValue];
+                NSData* secret = [FRASerialization deserializeSecret:secretValue];
                 
                 // Algorithm - String enumeration
                 NSString *algorithmValue = [optionsMap objectForKey:OATH_MECHANISM_ALGORITHM];

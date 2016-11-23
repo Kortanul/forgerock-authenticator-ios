@@ -166,7 +166,7 @@
         FRATotpOathMechanism *totpOathMechanism = (FRATotpOathMechanism *)mechanism;
         
         // Secret Key
-        NSString *base64Key = [FRASerialization serializeBytes:totpOathMechanism.secretKey];
+        NSString *base64Key = [FRASerialization serializeSecret:totpOathMechanism.secretKey];
         [options setObject:[FRASerialization nonNilString:base64Key] forKey:OATH_MECHANISM_SECRET];
         
         // Algorithm
@@ -180,6 +180,7 @@
         // Period
         NSString *periodString = [[NSNumber numberWithUnsignedInteger:totpOathMechanism.period] stringValue];
         [options setObject:[FRASerialization nonNilString:periodString] forKey:OATH_MECHANISM_PERIOD];
+        
     } else if ([mechanism isKindOfClass:[FRAPushMechanism class]]) {
         FRAPushMechanism *pushMechanism = (FRAPushMechanism *)mechanism;
         
